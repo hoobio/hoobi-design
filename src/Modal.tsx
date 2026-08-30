@@ -1,0 +1,55 @@
+import { useEffect, useRef, type MouseEvent, type ReactNode } from 'react';
+import { cx } from './cx.js';
+
+export interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  title?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}
+
+export function Modal({ open, onClose, title, children, className }: ModalProps) {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    if (open && !dialog.open) dialog.showModal();
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  const onBackdrop = (e: MouseEvent<HTMLDialogElement>) => {
+    if (e.target === ref.current) onClose();
+  };
+
+  return (
+    <dialog
+      ref={ref}
+      onClose={onClose}
+      onCancel={onClose}
+      onClick={onBackdrop}
+      className={cx(
+        'm-auto w-[min(38rem,calc(100vw-1.5rem))] max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel border border-border bg-surface-raised p-0 text-text backdrop:bg-black/60',
+        className,
+      )}
+    >
+      <div className="flex max-h-[inherit] flex-col">
+        <header className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
+          <h2 className="min-w-0 text-base break-words text-text-dim">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="-mt-1 -mr-1 shrink-0 rounded-full px-2 py-1 text-lg leading-none text-text-dim hover:bg-surface hover:text-text"
+          >
+            &times;
+          </button>
+        </header>
+        <div className="styled-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          {children}
+        </div>
+      </div>
+    </dialog>
+  );
+}
