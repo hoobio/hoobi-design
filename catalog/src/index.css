@@ -1,0 +1,4 @@
+@import '@hoobi/design/styles.css';
+
+/* The library's own @source only covers its dist/, so point Tailwind at the catalog too. */
+@source '.';
