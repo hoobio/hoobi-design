@@ -147,8 +147,7 @@ export function Typography() {
     <>
       <p className="max-w-prose text-body text-text-dim">
         The WinUI 3 ramp, expressed in rem against the 18px root so it still tracks user zoom. Noto
-        Sans carries every step. Dank Mono is reserved for code and for the{' '}
-        <code className="text-accent-blue">$</code> command line in Section.
+        Sans carries every step. Dank Mono is reserved for code.
       </p>
       <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel border border-border bg-border">
         {RAMP.map((r) => (

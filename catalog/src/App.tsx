@@ -20,7 +20,6 @@ interface Page {
   id: string;
   group: string;
   title: string;
-  command: string;
   caption: string;
   render: () => ReactNode;
 }
@@ -30,7 +29,6 @@ const PAGES: Page[] = [
     id: 'identity',
     group: 'Foundations',
     title: 'Identity',
-    command: 'cat ./IDENTITY.md',
     caption: 'What this library is, and what it refuses to be.',
     render: () => <Identity />,
   },
@@ -38,7 +36,6 @@ const PAGES: Page[] = [
     id: 'colour',
     group: 'Foundations',
     title: 'Colour',
-    command: 'grep --color styles.css',
     caption: 'Ayu Mirage, as Tailwind v4 theme tokens.',
     render: () => <Colour />,
   },
@@ -46,7 +43,6 @@ const PAGES: Page[] = [
     id: 'typography',
     group: 'Foundations',
     title: 'Typography',
-    command: 'fc-list | grep -E "Noto|Dank"',
     caption: 'The WinUI 3 type ramp in Noto Sans, plus Dank Mono for code.',
     render: () => <Typography />,
   },
@@ -54,7 +50,6 @@ const PAGES: Page[] = [
     id: 'spacing',
     group: 'Foundations',
     title: 'Spacing & Radius',
-    command: 'cat ./spacing.css',
     caption: 'A 4px pixel grid, two radii, one control height.',
     render: () => <Spacing />,
   },
@@ -62,7 +57,6 @@ const PAGES: Page[] = [
     id: 'button',
     group: 'Components',
     title: 'Button',
-    command: 'cat ./src/Button.tsx',
     caption: 'Four variants, two sizes. Accent is spent once per view.',
     render: () => <ButtonPage />,
   },
@@ -70,7 +64,6 @@ const PAGES: Page[] = [
     id: 'badge',
     group: 'Components',
     title: 'Badge',
-    command: 'cat ./src/Badge.tsx',
     caption: 'Six tones, optional status dot. 20px tall.',
     render: () => <BadgePage />,
   },
@@ -78,7 +71,6 @@ const PAGES: Page[] = [
     id: 'card',
     group: 'Components',
     title: 'Card',
-    command: 'cat ./src/Card.tsx',
     caption: 'A raised surface with an optional header and actions.',
     render: () => <CardPage />,
   },
@@ -86,7 +78,6 @@ const PAGES: Page[] = [
     id: 'alert',
     group: 'Components',
     title: 'Alert',
-    command: 'cat ./src/Alert.tsx',
     caption: 'Four semantic tones, with the ARIA role picked for you.',
     render: () => <AlertPage />,
   },
@@ -94,7 +85,6 @@ const PAGES: Page[] = [
     id: 'input',
     group: 'Components',
     title: 'Input',
-    command: 'cat ./src/Input.tsx',
     caption: 'A 32px field with label, hint and error slots.',
     render: () => <InputPage />,
   },
@@ -102,7 +92,6 @@ const PAGES: Page[] = [
     id: 'select',
     group: 'Components',
     title: 'Select',
-    command: 'cat ./src/Select.tsx',
     caption: 'A native select, styled to match Input exactly.',
     render: () => <SelectPage />,
   },
@@ -110,7 +99,6 @@ const PAGES: Page[] = [
     id: 'modal',
     group: 'Components',
     title: 'Modal',
-    command: 'cat ./src/Modal.tsx',
     caption: 'A native dialog, so the platform does the hard parts.',
     render: () => <ModalPage />,
   },
@@ -118,7 +106,6 @@ const PAGES: Page[] = [
     id: 'tabs',
     group: 'Components',
     title: 'Tabs',
-    command: 'cat ./src/Tabs.tsx',
     caption: 'Controlled, scrollable, no panel opinions.',
     render: () => <TabsPage />,
   },
@@ -126,7 +113,6 @@ const PAGES: Page[] = [
     id: 'progress',
     group: 'Components',
     title: 'Progress',
-    command: 'cat ./src/Progress.tsx',
     caption: 'A 4px determinate bar with an optional label row.',
     render: () => <ProgressPage />,
   },
@@ -134,7 +120,6 @@ const PAGES: Page[] = [
     id: 'spinner',
     group: 'Components',
     title: 'Spinner',
-    command: 'cat ./src/Spinner.tsx',
     caption: 'Two sizes. Compose it, do not prop it into everything.',
     render: () => <SpinnerPage />,
   },
@@ -142,7 +127,6 @@ const PAGES: Page[] = [
     id: 'section',
     group: 'Components',
     title: 'Section',
-    command: 'cat ./src/Section.tsx',
     caption: 'The page heading used throughout this catalog.',
     render: () => <SectionPage />,
   },
@@ -150,7 +134,6 @@ const PAGES: Page[] = [
     id: 'cx',
     group: 'Utilities',
     title: 'cx',
-    command: 'cat ./src/cx.ts',
     caption: 'The whole class-joining story, in one line.',
     render: () => <CxPage />,
   },
@@ -179,7 +162,7 @@ export function App() {
       <header className="sticky top-0 z-10 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur md:hidden">
         <div className="flex items-baseline justify-between gap-3">
           <span className="font-mono text-body text-text">@hoobi/design</span>
-          <span className="font-mono text-caption text-text-mute">v0.2.0</span>
+          <span className="font-mono text-caption text-text-mute">v0.2.1</span>
         </div>
         <Select
           aria-label="Page"
@@ -203,7 +186,7 @@ export function App() {
 
       <nav className="styled-scrollbar sticky top-0 hidden h-dvh w-56 shrink-0 overflow-y-auto border-r border-border px-4 py-6 md:block">
         <div className="font-mono text-body text-text">@hoobi/design</div>
-        <div className="font-mono text-caption text-text-mute">v0.2.0</div>
+        <div className="font-mono text-caption text-text-mute">v0.2.1</div>
         {GROUPS.map((g) => (
           <div key={g} className="mt-6">
             <div className="text-caption text-text-mute">{g}</div>
@@ -230,13 +213,7 @@ export function App() {
       </nav>
 
       <main className="min-w-0 flex-1 px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
-        <Section
-          id={page.id}
-          title={page.title}
-          command={page.command}
-          caption={page.caption}
-          className="pt-6 md:pt-10"
-        >
+        <Section id={page.id} title={page.title} caption={page.caption} className="pt-6 md:pt-10">
           {page.render()}
         </Section>
       </main>

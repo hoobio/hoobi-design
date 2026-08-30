@@ -30,7 +30,7 @@ operations/pipelines/publish.yaml
 
 ```jsonc
 // consumer package.json
-"@hoobi/design": "0.2.0"
+"@hoobi/design": "0.2.1"
 ```
 
 ```css
@@ -55,7 +55,7 @@ save-exact=true
 Button, Badge (tone + optional dot, covers status dots), Card, Modal, Tabs (controlled), Section,
 Progress, Spinner, Alert, Input, Select, plus the `cx` helper.
 
-Deliberately absent: Table, Toggle (use a native checkbox), Toast, Skeleton, TerminalPrompt.
+Deliberately absent: Table, Toggle (use a native checkbox), Toast, Skeleton.
 
 **Components are only added when a consumer actually needs one.** No speculative components, no
 props added "for later". A consumer wanting Table is the trigger to write Table.
@@ -66,8 +66,7 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
   opacity modifiers (`bg-warn/10`) cannot decompose a nested `var()`.
-- Root font-size 18px, 16px under 40rem. Noto Sans everywhere; Dank Mono only for code and for the
-  `$ command` line in `Section`.
+- Root font-size 18px, 16px under 40rem. Noto Sans everywhere; Dank Mono only for code.
 
 - **Mobile first, always.** Every component has to survive a 360px viewport: `min-w-0` on flex
   children, wrapping headers, horizontally scrollable tab strips, `dvh`-capped scrollable modals,

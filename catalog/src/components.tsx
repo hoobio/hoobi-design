@@ -746,13 +746,11 @@ export function SectionPage() {
     <>
       <Import names="Section" />
       <p className="max-w-prose text-body text-text-dim">
-        Every heading on this page is a Section. It is the one place the terminal identity survives:
-        a Dank Mono <code className="text-accent-blue">$</code> command line above a neutral Noto
-        Sans title.
+        Every heading on this page is a Section: a title at the top of the ramp, an optional muted
+        caption, and an optional actions slot on the same baseline as the title.
       </p>
       <Demo
         title="Default"
-        note="command defaults to `cat ./<id>.yaml`."
         stack
         code={`<Section id="queue" title="Queue">
   <p>Anything.</p>
@@ -766,12 +764,11 @@ export function SectionPage() {
       </Demo>
 
       <Demo
-        title="Command, caption and actions"
+        title="Caption and actions"
         stack
         code={`<Section
   id="issues"
   title="Open issues"
-  command="mendarr issues --open"
   caption="Reported by Seerr, awaiting a plan."
   actions={<Badge tone="danger" dot>3</Badge>}
 >
@@ -782,7 +779,6 @@ export function SectionPage() {
           <Section
             id="issues"
             title="Open issues"
-            command="mendarr issues --open"
             caption="Reported by Seerr, awaiting a plan."
             className="pt-0"
             actions={
@@ -800,11 +796,10 @@ export function SectionPage() {
 
       <Props
         rows={[
-          ['id', 'string', 'required', 'Element id and anchor target; also seeds the command.'],
+          ['id', 'string', 'required', 'Element id and anchor target.'],
           ['title', 'string', 'required', 'Title-sized heading.'],
-          ['command', 'string', '`cat ./<id>.yaml`', 'The mono line after the $.'],
           ['caption', 'string', '', 'Body line under the title.'],
-          ['actions', 'ReactNode', '', 'Right of the command line.'],
+          ['actions', 'ReactNode', '', 'Right of the title.'],
           ['children', 'ReactNode', 'required', 'Section body.'],
         ]}
       />
