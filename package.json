@@ -1,0 +1,47 @@
+{
+  "name": "@hoobi/design",
+  "version": "0.1.0",
+  "description": "Ayu Mirage dark-only React components and design tokens for Hoobi apps.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "styles.css",
+    "fonts"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./styles.css",
+    "./fonts/*": "./fonts/*"
+  },
+  "publishConfig": {
+    "registry": "https://pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/npm/registry/"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19",
+    "tailwindcss": ">=4.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "prettier": "3.9.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2"
+  }
+}
