@@ -95,10 +95,18 @@ npm version patch      # or minor/major
 git push --follow-tags
 ```
 
-The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`, Home Lab pool):
-npmAuthenticate -> npm ci -> typecheck -> guard that the tag matches `package.json` version ->
-`npm publish` (`prepublishOnly` builds). ADO feed versions are immutable: a wrong publish burns the
-version number permanently, which is what the guard exists to prevent.
+The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`, definition 23, Home
+Lab pool): npmAuthenticate -> npm ci -> typecheck -> build -> guard that the tag matches
+`package.json` version -> publish, skipped when that version is already on the feed.
+
+ADO feed versions are immutable: a wrong publish burns the version number permanently, which is what
+the tag guard exists to prevent. The build step is explicit rather than leaning on `prepublishOnly`,
+because `ignore-scripts=true` in a user `.npmrc` silently skips lifecycle scripts and would publish
+a stale `dist`.
+
+The pipeline runs as **Project Collection Build Service (Hoobi)** (collection-scoped job auth), not
+the project build service, so that is the identity that needs Contributor on the feed. Granting only
+`Hoobi Build Service (Hoobi)` yields a 403 "lacks ReadPackages" at publish time.
 
 ## Workflow
 
