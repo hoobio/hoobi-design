@@ -23,18 +23,15 @@ export function Section({
 }: SectionProps) {
   return (
     <section id={id} className={cx('scroll-mt-16 pt-8 md:pt-12', className)}>
-      <header className="mb-6 font-mono">
-        <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm text-text-mute">
-          <div className="min-w-0 break-all">
+      <header className="mb-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-2 text-caption text-text-mute">
+          <div className="min-w-0 font-mono break-all">
             <span className="text-accent-red">$</span> {command ?? `cat ./${id}.yaml`}
           </div>
           {actions}
         </div>
-        <h2 className="mt-1 text-2xl break-words text-accent-blue md:text-3xl">
-          <span className="text-text-mute"># </span>
-          {title}
-        </h2>
-        {caption ? <p className="mt-1 text-text-dim">{caption}</p> : null}
+        <h2 className="mt-1 text-title break-words text-text">{title}</h2>
+        {caption ? <p className="mt-1 text-body text-text-dim">{caption}</p> : null}
       </header>
       {children}
     </section>

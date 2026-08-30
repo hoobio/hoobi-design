@@ -14,7 +14,7 @@ export function Card({ title, actions, className, children, ...rest }: CardProps
     >
       {title || actions ? (
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          {title ? <h3 className="text-base text-text">{title}</h3> : <span />}
+          {title ? <h3 className="text-body-strong text-text">{title}</h3> : <span />}
           {actions}
         </div>
       ) : null}

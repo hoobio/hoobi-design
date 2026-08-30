@@ -32,7 +32,7 @@ export function Tabs({ items, value, onChange, className }: TabsProps) {
             aria-selected={active}
             onClick={() => onChange(item.id)}
             className={cx(
-              '-mb-px shrink-0 border-b-2 px-3 py-2 text-sm whitespace-nowrap transition-colors',
+              '-mb-px inline-flex h-8 shrink-0 items-center border-b-2 px-3 text-body whitespace-nowrap transition-colors',
               active
                 ? 'border-accent text-text'
                 : 'border-transparent text-text-dim hover:text-text',

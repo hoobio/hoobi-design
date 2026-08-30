@@ -22,7 +22,7 @@ export function Badge({ tone = 'neutral', dot = false, className, children, ...r
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1.5 rounded-chip border border-chip-border bg-chip px-2 py-0.5 text-xs leading-5 whitespace-nowrap',
+        'inline-flex h-5 items-center gap-1.5 rounded-chip border border-chip-border bg-chip px-2 text-caption whitespace-nowrap',
         t.text,
         className,
       )}

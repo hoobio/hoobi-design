@@ -36,12 +36,12 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     >
       <div className="flex max-h-[inherit] flex-col">
         <header className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
-          <h2 className="min-w-0 text-base break-words text-text-dim">{title}</h2>
+          <h2 className="min-w-0 text-subtitle break-words text-text">{title}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="-mt-1 -mr-1 shrink-0 rounded-full px-2 py-1 text-lg leading-none text-text-dim hover:bg-surface hover:text-text"
+            className="-mt-1 -mr-1 inline-flex size-8 shrink-0 items-center justify-center rounded-control text-body-large leading-none text-text-dim hover:bg-surface hover:text-text"
           >
             &times;
           </button>

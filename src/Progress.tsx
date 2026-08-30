@@ -13,7 +13,7 @@ export function Progress({ value, max = 100, label, className }: ProgressProps) 
   return (
     <div className={className}>
       {label ? (
-        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2 text-xs text-text-dim">
+        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2 text-caption text-text-dim">
           <span className="min-w-0">{label}</span>
           <span className="tabular-nums">{Math.round(pct)}%</span>
         </div>
@@ -23,7 +23,7 @@ export function Progress({ value, max = 100, label, className }: ProgressProps) 
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
-        className="h-2 overflow-hidden rounded-full border border-border bg-surface"
+        className="h-1 overflow-hidden rounded-full bg-border"
       >
         <div
           className="h-full rounded-full bg-accent transition-[width] duration-500"

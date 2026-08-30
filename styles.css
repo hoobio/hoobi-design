@@ -32,9 +32,31 @@
   --color-chip: #1a1f2b;
   --color-chip-border: #3e4757;
 
-  --radius-chip: 0.35rem;
-  --radius-control: 0.5rem;
-  --radius-panel: 0.75rem;
+  /* WinUI 3 works in device-independent pixels, so spacing and radii are px, not rem.
+     Text stays rem so it still tracks the root size and user zoom. */
+  --spacing: 4px;
+
+  --radius-chip: 4px;
+  --radius-control: 4px;
+  --radius-panel: 8px;
+
+  /* WinUI 3 type ramp, in rem against the 18px root. */
+  --text-caption: 0.6667rem;
+  --text-caption--line-height: 1.3333;
+  --text-body: 0.7778rem;
+  --text-body--line-height: 1.4286;
+  --text-body-strong: 0.7778rem;
+  --text-body-strong--line-height: 1.4286;
+  --text-body-strong--font-weight: 600;
+  --text-body-large: 1rem;
+  --text-body-large--line-height: 1.3333;
+  --text-subtitle: 1.1111rem;
+  --text-subtitle--line-height: 1.4;
+  --text-subtitle--font-weight: 600;
+  --text-title: 1.5556rem;
+  --text-title--line-height: 1.2857;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.01em;
 
   --font-sans:
     'Noto Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
@@ -122,14 +144,6 @@
     font-family: var(--font-mono);
   }
 
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-mono);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
@@ -157,16 +171,6 @@
 }
 
 @layer utilities {
-  .comment {
-    color: var(--color-text-mute);
-  }
-  .hash::before {
-    content: '# ';
-    color: var(--color-text-mute);
-  }
-  .blink {
-    animation: blink 1.2s step-end infinite;
-  }
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -197,15 +201,5 @@
   }
   .styled-scrollbar:hover {
     scrollbar-color: var(--color-text-mute) transparent;
-  }
-}
-
-@keyframes blink {
-  from,
-  to {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
   }
 }
