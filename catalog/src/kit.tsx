@@ -69,7 +69,8 @@ export function Snippet({ code, flush = false }: { code: string; flush?: boolean
       <Button
         size="sm"
         variant="ghost"
-        className="absolute top-1.5 right-1.5"
+        // The code scrolls under this, so the button needs the surface's own fill to sit on.
+        className="absolute top-1.5 right-1.5 bg-chip"
         onClick={() => {
           copy(code);
           setCopied(true);
