@@ -118,6 +118,10 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 
 Minimalism: a component gets no decoration it does not need. No gradients, no shadows, no
 double-signalling a state that the border or the ring already carries.
+- A stateful tone tints the **whole surface** as a solid `/15` fill (`bg-warn/15`) - never a
+  gradient fade, never a border.
+- Tone semantics: `warn` (yellow) = paused, a person must act; `success` (green) = done, the fix
+  landed; `danger` = failure; `info` = in progress / informational.
 
 ## Code style
 

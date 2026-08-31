@@ -1,6 +1,15 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx.js';
 
+export type CardTone = 'info' | 'success' | 'warn' | 'danger';
+
+const TONE_FILLS: Record<CardTone, string> = {
+  info: 'bg-info/15',
+  success: 'bg-success/15',
+  warn: 'bg-warn/15',
+  danger: 'bg-danger/15',
+};
+
 export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: ReactNode;
   actions?: ReactNode;
@@ -9,6 +18,11 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>
    * blurred and tinted towards surface-raised. The layer becomes the fill.
    */
   mirage?: string;
+  /**
+   * Tints the whole card as a solid semantic fill instead of surface-raised
+   * (e.g. a triage banner). Ignored when `mirage` is also set.
+   */
+  tone?: CardTone;
   /**
    * false makes this a sliced card: the body runs flush to the edges so content that
    * bleeds its own hairlines (DescriptionList, a full-width list) can actually reach
@@ -21,6 +35,7 @@ export function Card({
   title,
   actions,
   mirage,
+  tone,
   padded = true,
   className,
   style,
@@ -45,7 +60,7 @@ export function Card({
       className={cx(
         'rounded-panel',
         padded ? 'p-4' : 'overflow-hidden',
-        mirage ? 'mirage-scoped' : 'bg-surface-raised',
+        mirage ? 'mirage-scoped' : tone ? TONE_FILLS[tone] : 'bg-surface-raised',
         className,
       )}
       // --pad is what a Divider inside cancels to reach the edges, so the card states its

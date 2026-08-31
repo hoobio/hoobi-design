@@ -707,6 +707,39 @@ export function CardPage() {
       </Demo>
 
       <Demo
+        title="tone"
+        note="The whole card - not just a strip inside it - takes the tone as a solid fill. warn pauses for a person to act, success is a landed fix, danger a failure, info in-progress. Ignored when mirage is also set."
+        stack
+        code={`<Card tone="warn" title="Awaiting approval">
+  A person needs to act.
+</Card>
+<Card tone="success" title="Landed">
+  The fix went through.
+</Card>
+<Card tone="danger" title="Failed">
+  The grab was rejected.
+</Card>
+<Card tone="info" title="In progress">
+  The agent is still working.
+</Card>`}
+      >
+        <div className="grid w-full gap-3 sm:grid-cols-2">
+          <Card tone="warn" title="Awaiting approval">
+            <p className="text-body text-text-dim">A person needs to act.</p>
+          </Card>
+          <Card tone="success" title="Landed">
+            <p className="text-body text-text-dim">The fix went through.</p>
+          </Card>
+          <Card tone="danger" title="Failed">
+            <p className="text-body text-text-dim">The grab was rejected.</p>
+          </Card>
+          <Card tone="info" title="In progress">
+            <p className="text-body text-text-dim">The agent is still working.</p>
+          </Card>
+        </div>
+      </Demo>
+
+      <Demo
         title="Mirage"
         note="The scoped material: the card's own fill becomes the artwork, blurred and tinted towards surface-raised. Text stays readable; the colour comes along."
         stack
@@ -730,6 +763,12 @@ export function CardPage() {
             'string (CSS image)',
             '',
             'Scoped mirage: the image becomes the card fill, blurred and tinted. Hand-rolled surfaces get the same via .mirage-scoped and --mirage-image.',
+          ],
+          [
+            'tone',
+            "'info' | 'success' | 'warn' | 'danger'",
+            '',
+            'Solid tone tint for the whole card fill (bg-{tone}/15). Ignored when mirage is set.',
           ],
           ['...rest', 'HTMLAttributes<HTMLDivElement> (minus title)', '', 'id, onClick, aria-*.'],
         ]}
