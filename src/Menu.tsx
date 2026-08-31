@@ -86,26 +86,38 @@ export function MenuItem({
         {iconProp}
       </span>
     );
-  const row = (
+  // A row without its own onClick is data, not a control (a linked account whose only act is
+  // its trailing button): no hover fill, no button semantics, and clicking it closes nothing.
+  const interactive = onClick !== undefined;
+  const rowClass = cx(
+    // caption, not body: a flyout is a 216px pane and its rows are controls, not reading.
+    'flex h-10 w-full items-center gap-3 rounded-control px-3 text-caption',
+    tone === 'danger' ? 'text-danger' : 'text-text',
+    interactive && (tone === 'danger' ? 'hover:bg-danger/15' : 'hover:bg-surface'),
+    // Clears a ghost sm action ("unlink") so a long label truncates instead of colliding.
+    action ? 'pr-16' : undefined,
+    className,
+  );
+  const inner = (
+    <>
+      {icon ?? (gutter ? <span aria-hidden className="size-5 shrink-0" /> : null)}
+      <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+    </>
+  );
+  const row = interactive ? (
     <button
       type="button"
       onClick={(e) => {
         close();
-        onClick?.(e);
+        onClick(e);
       }}
-      className={cx(
-        // caption, not body: a flyout is a 216px pane and its rows are controls, not reading.
-        'flex h-10 w-full items-center gap-3 rounded-control px-3 text-caption',
-        tone === 'danger' ? 'text-danger hover:bg-danger/15' : 'text-text hover:bg-surface',
-        // Clears a ghost sm action ("unlink") so a long label truncates instead of colliding.
-        action ? 'pr-16' : undefined,
-        className,
-      )}
+      className={rowClass}
       {...rest}
     >
-      {icon ?? (gutter ? <span aria-hidden className="size-5 shrink-0" /> : null)}
-      <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+      {inner}
     </button>
+  ) : (
+    <div className={rowClass}>{inner}</div>
   );
 
   if (!action) return row;

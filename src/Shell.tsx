@@ -724,6 +724,7 @@ function ShellUser({
     menu || onSignOut ? (
       <MenuGutter>
         {menu}
+        {menu && onSignOut ? <MenuDivider /> : null}
         {onSignOut ? (
           <MenuItem tone="danger" onClick={onSignOut}>
             Sign out
