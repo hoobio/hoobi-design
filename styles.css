@@ -40,14 +40,16 @@
   --radius-control: 4px;
   --radius-panel: 8px;
 
-  /* WinUI 3 type ramp, in rem against the 18px root. */
-  --text-caption: 0.6667rem;
-  --text-caption--line-height: 1.3333;
-  --text-body: 0.7778rem;
-  --text-body--line-height: 1.4286;
-  --text-body-strong: 0.7778rem;
-  --text-body-strong--line-height: 1.4286;
-  --text-body-strong--font-weight: 600;
+  /* WinUI 3 ramp shape, with the reading tier sized like YouTube's video grid:
+     body 16/22 (their title), caption 14/20 (their channel/views metadata).
+     Caption is de-emphasised by colour, not by shrinking below 14px. */
+  --text-caption: 0.7778rem;
+  --text-caption--line-height: 1.4286;
+  --text-body: 0.8889rem;
+  --text-body--line-height: 1.375;
+  --text-body-strong: 0.8889rem;
+  --text-body-strong--line-height: 1.375;
+  --text-body-strong--font-weight: 500;
   --text-body-large: 1rem;
   --text-body-large--line-height: 1.3333;
   --text-subtitle: 1.1111rem;

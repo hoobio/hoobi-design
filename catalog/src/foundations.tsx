@@ -113,16 +113,16 @@ const RAMP: { cls: string; name: string; size: string; lh: string; use: string }
   {
     cls: 'text-caption',
     name: 'Caption',
-    size: '12px',
-    lh: '16px',
+    size: '14px',
+    lh: '20px',
     use: 'Labels, hints, metadata',
   },
-  { cls: 'text-body', name: 'Body', size: '14px', lh: '20px', use: 'Default UI text' },
+  { cls: 'text-body', name: 'Body', size: '16px', lh: '22px', use: 'Default UI text' },
   {
     cls: 'text-body-strong',
     name: 'Body Strong',
-    size: '14px / 600',
-    lh: '20px',
+    size: '16px / 500',
+    lh: '22px',
     use: 'Card and alert titles',
   },
   { cls: 'text-body-large', name: 'Body Large', size: '18px', lh: '24px', use: 'Lead paragraphs' },
@@ -146,8 +146,9 @@ export function Typography() {
   return (
     <>
       <p className="max-w-prose text-body text-text-dim">
-        The WinUI 3 ramp, expressed in rem against the 18px root so it still tracks user zoom. Noto
-        Sans carries every step. Dank Mono is reserved for code.
+        The WinUI 3 ramp shape with a YouTube-sized reading tier, expressed in rem against the 18px
+        root so it still tracks user zoom. Noto Sans carries every step. Dank Mono is reserved for
+        code.
       </p>
       <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel border border-border bg-border">
         {RAMP.map((r) => (
