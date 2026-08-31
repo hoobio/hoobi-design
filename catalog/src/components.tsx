@@ -518,9 +518,12 @@ export function TooltipPage() {
 </Tooltip>`}
       />
       <p className="text-body text-text-dim">
-        CSS-only: the styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so
-        anything carrying that attribute grows a tooltip - no JS, no positioning library. It shows
-        instantly on hover and on keyboard focus.
+        The styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so anything
+        carrying that attribute grows a tooltip, shown instantly on hover and on keyboard focus.
+        Tooltip and Badge place theirs <em>fixed</em>, off the anchor's own rect, because an
+        absolutely positioned tip is cut off by any scrolling or clipping ancestor - a page shell's
+        main column, a card that rounds by clipping. Still no positioning library: two lines of
+        measurement in <code className="text-accent-blue">tipAnchor</code>, and CSS does the rest.
       </p>
       <Demo
         title="Wrap anything"
@@ -638,6 +641,26 @@ export function CardPage() {
             <p className="text-subtitle text-text">99.8%</p>
           </Card>
         </div>
+      </Demo>
+
+      <Demo
+        title="padded={false}"
+        note="For content that bleeds its own hairlines - a DescriptionList, a full-width list. The body runs flush to the edges so those hairlines actually reach them, and the title becomes its own section above one."
+        stack
+        code={`<Card padded={false} title="facts">
+  <DescriptionList items={facts} />
+</Card>`}
+      >
+        <Card padded={false} title="facts" className="w-full max-w-[28rem]">
+          <DescriptionList
+            items={[
+              { label: 'status', value: 'awaiting_approval' },
+              { label: 'reporter', value: 'hoobi' },
+              { label: 'media', value: 'MegaMan: NT Warrior - Season 1' },
+            ]}
+            className="py-2"
+          />
+        </Card>
       </Demo>
 
       <Demo

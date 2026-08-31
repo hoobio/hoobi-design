@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx.js';
+import { tipAnchor } from './tip.js';
 
 export interface TooltipProps extends HTMLAttributes<HTMLSpanElement> {
   text: string;
@@ -7,18 +8,13 @@ export interface TooltipProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /**
- * CSS-only: the base layer renders [data-tip] on hover and keyboard focus.
- * tabIndex makes the anchor reachable so keyboard users get the tip too.
+ * The base layer renders [data-tip] on hover and keyboard focus; tabIndex makes the
+ * anchor reachable so keyboard users get the tip too. Placed fixed off the anchor's
+ * own rect, so no scrolling or clipping ancestor can cut it off.
  */
 export function Tooltip({ text, children, className, ...rest }: TooltipProps) {
   return (
-    <span
-      data-tip={text}
-      aria-description={text}
-      tabIndex={0}
-      className={cx('inline-flex', className)}
-      {...rest}
-    >
+    <span {...tipAnchor(text)} className={cx('tip-fixed inline-flex', className)} {...rest}>
       {children}
     </span>
   );

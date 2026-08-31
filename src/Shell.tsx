@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from 'react';
 import { cx } from './cx.js';
+import { tipAnchor } from './tip.js';
 import {
   MenuDivider,
   MenuGutter,
@@ -155,6 +156,16 @@ export function Shell({
   const [overlayOpen, setOverlayOpen] = useState(false);
   // Top mode keeps its bar whatever is asked: the bar IS its nav.
   const showBar = bar || mode === 'top';
+
+  // Only ever a fallback: a document that declares its own icon is left alone.
+  useEffect(() => {
+    if (document.querySelector('link[rel~="icon"]')) return;
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/svg+xml';
+    link.href = markFavicon(document.title || 'app');
+    document.head.append(link);
+  }, []);
 
   useEffect(() => {
     if (!overlayOpen) return;
@@ -402,16 +413,7 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
  * uses the fixed [data-tip].tip-fixed variant, placed beside the anchor on entry.
  * Expanded rows carry no tip at all - the label is right there.
  */
-function sideTip(label: string) {
-  return {
-    'data-tip': label,
-    onPointerEnter: (e: PointerEvent<HTMLElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      e.currentTarget.style.setProperty('--tip-x', `${String(rect.right + 8)}px`);
-      e.currentTarget.style.setProperty('--tip-y', `${String(rect.top + rect.height / 2)}px`);
-    },
-  };
-}
+const sideTip = (label: string) => tipAnchor(label, 'right');
 
 function ShellItem({ as, icon, label, active = false, className, ...rest }: ShellItemProps) {
   const { collapsed } = useContext(ShellContext);
@@ -506,6 +508,27 @@ function hueFor(label: string): string {
   return MARK_HUES[slot % MARK_HUES.length] ?? 'accent-blue';
 }
 
+/**
+ * The same mark, as a tab icon: an app that ships no favicon of its own still gets its
+ * initial on its own hue rather than the browser's blank page glyph. Tokens are read off
+ * the document because a data: URI cannot see a CSS variable.
+ */
+export function markFavicon(label: string, hue?: string): string {
+  const style = getComputedStyle(document.documentElement);
+  // The accent by default, because a favicon is the APP's mark rather than one item
+  // among many - and it is the same fill a brand square uses. Pass a hue token name
+  // ('accent-purple') to match a specific nav mark instead.
+  const fill = style.getPropertyValue(`--color-${hue ?? 'accent'}`).trim() || '#409fff';
+  const ink = style.getPropertyValue(hue ? '--color-bg' : '--color-on-accent').trim() || '#ffffff';
+  const initial = label.trim().charAt(0) || '?';
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">` +
+    `<rect width="32" height="32" rx="7" fill="${fill}"/>` +
+    `<text x="16" y="16" fill="${ink}" font-family="ui-monospace,monospace" font-size="19"` +
+    ` text-anchor="middle" dominant-baseline="central">${initial}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 function InitialMark({ label }: { label: string }) {
   const hue = hueFor(label);
   return (
@@ -513,7 +536,7 @@ function InitialMark({ label }: { label: string }) {
       className="flex size-6 items-center justify-center rounded-control font-mono text-caption"
       style={{ backgroundColor: `var(--color-${hue})`, color: 'var(--color-bg)' }}
     >
-      {label.charAt(0).toUpperCase()}
+      {label.charAt(0)}
     </span>
   );
 }
@@ -623,8 +646,7 @@ function ShellUser({
     .split(/\s+/)
     .map((part) => part.charAt(0))
     .slice(0, 2)
-    .join('')
-    .toUpperCase();
+    .join('');
 
   // The flyout is fixed (the pane clips overflow), placed off the row when it opens.
   const openFlyout = (e: MouseEvent<HTMLButtonElement>) => {

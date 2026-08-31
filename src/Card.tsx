@@ -9,21 +9,49 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>
    * blurred and tinted towards surface-raised. The layer becomes the fill.
    */
   mirage?: string;
+  /**
+   * false makes this a sliced card: the body runs flush to the edges so content that
+   * bleeds its own hairlines (DescriptionList, a full-width list) can actually reach
+   * them, and the title becomes its own section above a hairline of page background.
+   */
+  padded?: boolean;
 }
 
-export function Card({ title, actions, mirage, className, style, children, ...rest }: CardProps) {
+export function Card({
+  title,
+  actions,
+  mirage,
+  padded = true,
+  className,
+  style,
+  children,
+  ...rest
+}: CardProps) {
+  const header =
+    title || actions ? (
+      <div
+        className={cx(
+          'flex items-baseline justify-between gap-3',
+          padded ? 'mb-3' : 'border-b border-bg px-4 py-3',
+        )}
+      >
+        {title ? <h3 className="text-body-strong text-text">{title}</h3> : <span />}
+        {actions}
+      </div>
+    ) : null;
+
   return (
     <div
-      className={cx('rounded-panel p-4', mirage ? 'mirage-scoped' : 'bg-surface-raised', className)}
+      className={cx(
+        'rounded-panel',
+        padded ? 'p-4' : 'overflow-hidden',
+        mirage ? 'mirage-scoped' : 'bg-surface-raised',
+        className,
+      )}
       style={mirage ? ({ ...style, '--mirage-image': mirage } as CSSProperties) : style}
       {...rest}
     >
-      {title || actions ? (
-        <div className="mb-3 flex items-baseline justify-between gap-3">
-          {title ? <h3 className="text-body-strong text-text">{title}</h3> : <span />}
-          {actions}
-        </div>
-      ) : null}
+      {header}
       {children}
     </div>
   );

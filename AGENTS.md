@@ -65,7 +65,13 @@ Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout
 Ayu Mirage), Modal, Tabs (controlled), Breadcrumbs, Timeline (`Timeline.Item`), DescriptionList,
 Section, Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
-Select, Checkbox, Tooltip (CSS-only `[data-tip]`, no JS), plus the `cx` helper and `mirageImage`.
+Select, Checkbox, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
+scrolling or clipping ancestor can cut it off), plus `cx`, `mirageImage` and `markFavicon`.
+
+`Card` takes `padded={false}` for a sliced card: the body runs flush to the edges so content that
+bleeds its own hairlines (DescriptionList, a full-width list) can actually reach them. `Shell`
+injects a `markFavicon` tab icon - the InitialMark's hue and initial - when the document declares
+no icon of its own.
 
 Deliberately absent: Table, Toast, Skeleton. Toggle came off that list rather than onto this one:
 Checkbox is the native input given the house look, which is what the absence already recommended.

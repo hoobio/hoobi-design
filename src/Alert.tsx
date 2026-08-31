@@ -19,11 +19,7 @@ export function Alert({ tone = 'info', title, className, children, ...rest }: Al
   return (
     <div
       role={tone === 'danger' ? 'alert' : 'status'}
-      className={cx(
-        'rounded-control px-3 py-2 text-body break-words',
-        TONES[tone],
-        className,
-      )}
+      className={cx('rounded-control px-3 py-2 text-body break-words', TONES[tone], className)}
       {...rest}
     >
       {title ? <div className="text-body-strong">{title}</div> : null}

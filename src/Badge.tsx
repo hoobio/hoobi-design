@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react';
 import { cx } from './cx.js';
+import { tipAnchor } from './tip.js';
 
 export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info';
 
@@ -30,11 +31,10 @@ export function Badge({
   const t = TONES[tone];
   return (
     <span
-      data-tip={tooltip}
-      aria-description={tooltip}
-      tabIndex={tooltip ? 0 : undefined}
+      {...tipAnchor(tooltip)}
       className={cx(
         'inline-flex h-5 items-center gap-1.5 rounded-chip bg-chip px-2 text-caption whitespace-nowrap',
+        tooltip && 'tip-fixed',
         t.text,
         className,
       )}

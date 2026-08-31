@@ -218,13 +218,18 @@
   [data-tip]:focus-visible::after {
     display: block;
   }
-  /* Fixed variant for anchors inside scroll containers (a rail item): the box escapes
-     ancestor clipping, placed from --tip-x/--tip-y set by the anchor on pointerenter. */
+  /* Fixed variant: the box escapes every scrolling and clipping ancestor, placed from
+     --tip-x/--tip-y which the anchor sets on pointerenter and focus (see tipAnchor).
+     Default sits above the anchor and centred; 'right' hangs off its right edge, which
+     is what a nav rail wants. */
   [data-tip].tip-fixed::after {
     position: fixed;
     bottom: auto;
     left: var(--tip-x);
     top: var(--tip-y);
+    translate: -50% -100%;
+  }
+  [data-tip].tip-fixed[data-tip-place='right']::after {
     translate: 0 -50%;
   }
 

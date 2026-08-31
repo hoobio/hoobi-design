@@ -173,7 +173,7 @@ const PAGES: Page[] = [
     id: 'tooltip',
     group: 'Overlays',
     title: 'Tooltip',
-    caption: 'CSS-only, instant on hover and keyboard focus.',
+    caption: 'Instant on hover and keyboard focus, and nothing can clip it.',
     render: () => <TooltipPage />,
   },
   {

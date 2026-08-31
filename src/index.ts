@@ -28,6 +28,7 @@ export { Spinner, type SpinnerProps } from './Spinner.js';
 export { Tabs, type TabItem, type TabsProps } from './Tabs.js';
 export {
   Shell,
+  markFavicon,
   mirageImage,
   type ShellItemProps,
   type ShellMenuDividerProps,
@@ -42,3 +43,4 @@ export {
   type TimelineTone,
 } from './Timeline.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';
+export { tipAnchor } from './tip.js';

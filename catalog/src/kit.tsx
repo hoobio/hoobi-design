@@ -64,7 +64,7 @@ export function Snippet({ code, flush = false }: { code: string; flush?: boolean
       <CodeBlock
         code={code}
         html={highlight(code)}
-        className={cx('pr-20', flush && 'rounded-none')}
+        className={cx('pr-20', flush ? 'rounded-t-none rounded-b-panel' : undefined)}
       />
       <Button
         size="sm"
@@ -190,10 +190,10 @@ export function Demo({
     <div className="mt-8 first:mt-6">
       <h3 className="text-body-strong text-text">{title}</h3>
       {note ? <p className="mt-1 text-caption text-text-dim">{note}</p> : null}
-      <div className="mt-2 flex flex-col gap-px overflow-hidden rounded-panel">
+      <div className="mt-2 flex flex-col gap-px">
         <div
           className={cx(
-            'bg-surface',
+            'rounded-t-panel bg-surface',
             flush ? 'py-2' : 'p-4',
             stack ? 'flex flex-col gap-4' : 'flex flex-wrap items-center gap-3',
           )}
