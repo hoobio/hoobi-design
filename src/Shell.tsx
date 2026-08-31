@@ -136,8 +136,7 @@ export function Shell({
   return (
     <ShellContext.Provider value={{ collapsed, overlayOpen }}>
       <div className="flex min-h-dvh flex-col">
-        {/* Full width, layered above the overlay scrim so the trigger stays reachable.
-            textura's order: brand mark first in the icon column, trigger beside the wordmark. */}
+        {/* Full width, layered above the overlay scrim so the trigger stays reachable. */}
         <header className="relative z-40 flex h-12 shrink-0 items-center bg-bg pr-3">
           {brand ? (
             <span aria-hidden className="flex size-12 shrink-0 items-center justify-center">
@@ -149,19 +148,32 @@ export function Shell({
               className={cx(
                 'min-w-0 shrink-0 truncate text-body-strong text-text',
                 !brand && 'pl-3',
+                // The absolute trigger owns the pane's last 48px while expanded; the title
+                // stops short of it, and gets the room back once the trigger slides home.
+                mode === 'side' && !triggerHiddenMd && !collapsed && 'md:max-w-30',
               )}
             >
               {title}
             </span>
           ) : null}
+          {/* textura's trigger: absolute, pinned to the pane's top-RIGHT while expanded, and
+              sliding onto the brand's square when collapsed - invisible there until hovered,
+              when its fill and icon appear over the mark. Static in the flow below md. */}
           <button
             type="button"
             onClick={toggle}
             aria-expanded={overlayOpen || !collapsed}
             aria-label="Toggle navigation"
             className={cx(
-              'ml-1 flex size-12 shrink-0 items-center justify-center rounded-control text-text-dim hover:bg-surface hover:text-text',
+              'z-10 flex size-12 shrink-0 items-center justify-center rounded-control',
               triggerHiddenMd && 'md:hidden',
+              mode === 'side' &&
+                !triggerHiddenMd &&
+                'md:absolute md:top-0 md:transition-[left] md:duration-250 md:ease-decelerate',
+              mode === 'side' && !triggerHiddenMd && collapsed
+                ? 'md:left-0 md:text-transparent md:hover:bg-surface md:hover:text-text'
+                : 'md:left-42',
+              'max-md:ml-1 text-text-dim hover:bg-surface hover:text-text',
             )}
           >
             <TriggerIcon close={overlayOpen} />
