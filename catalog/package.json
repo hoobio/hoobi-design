@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "build:artifact": "vite build && node artifact.mjs"
+    "build:artifact": "vite build && node artifact.mjs",
+    "build:ds": "vite build && node ds.mjs"
   },
   "dependencies": {
     "@hoobi/design": "file:..",

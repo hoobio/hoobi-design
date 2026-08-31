@@ -1,6 +1,7 @@
-import { useContext, useEffect, useState, type ReactNode } from 'react';
+import { useContext, type ReactNode } from 'react';
 import { Alert, Badge, Card, Select } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
+import { colour, token } from './tokens.js';
 import posterUrl from './poster.jpg';
 
 const GROUPS: { group: string; note: string; names: string[] }[] = [
@@ -39,41 +40,7 @@ const GROUPS: { group: string; note: string; names: string[] }[] = [
   },
 ];
 
-const hex = (rgb: string) => {
-  const m = rgb.match(/\d+(\.\d+)?/g);
-  if (!m || m.length < 3) return rgb;
-  return (
-    '#' +
-    m
-      .slice(0, 3)
-      .map((n) => Math.round(Number(n)).toString(16).padStart(2, '0'))
-      .join('')
-  );
-};
-
-// Resolve through a real element so color-mix() tokens report a concrete value.
-function useResolved(names: string[]) {
-  const [values, setValues] = useState<Record<string, string>>({});
-  useEffect(() => {
-    const probe = document.createElement('span');
-    probe.style.position = 'fixed';
-    probe.style.opacity = '0';
-    document.body.append(probe);
-    const out: Record<string, string> = {};
-    for (const n of names) {
-      probe.style.backgroundColor = `var(--color-${n})`;
-      out[n] = hex(getComputedStyle(probe).backgroundColor);
-    }
-    probe.remove();
-    setValues(out);
-  }, [names.join(',')]);
-  return values;
-}
-
-const ALL = GROUPS.flatMap((g) => g.names);
-
 export function Colour() {
-  const values = useResolved(ALL);
   return (
     <>
       <p className="text-body text-text-dim">
@@ -95,7 +62,7 @@ export function Colour() {
                   style={{ backgroundColor: `var(--color-${n})` }}
                 />
                 <div className="mt-2 truncate font-mono text-caption text-text">{n}</div>
-                <div className="font-mono text-caption text-text-mute">{values[n] ?? '...'}</div>
+                <div className="font-mono text-caption text-text-mute">{colour(n)}</div>
               </div>
             ))}
           </div>
@@ -331,10 +298,10 @@ export function Identity({ children }: { children?: ReactNode }) {
             toolbars align without effort.
           </p>
         </Card>
-        <Card title="Borders, not shadows">
+        <Card title="Fills, not strokes">
           <p className="text-caption text-text-dim">
-            A single 1px border does the separating. The only scrim in the library is the Modal
-            backdrop.
+            Surfaces are told apart by background alone. Cards, pills and alerts carry no border;
+            segmentation is a 1px hairline of page background. The only scrim is the Modal backdrop.
           </p>
         </Card>
         <Card title="One accent">
@@ -449,6 +416,152 @@ export function Mirage() {
           </span>
         </div>
       </div>
+    </>
+  );
+}
+
+const CURVES: { name: string; token: string; fluent: string; use: string }[] = [
+  {
+    name: 'Decelerate',
+    token: '--ease-decelerate',
+    fluent: 'curveDecelerateMid',
+    use: 'Entering and growing. Arrives fast, settles softly - the thing is coming to rest where you are looking.',
+  },
+  {
+    name: 'Accelerate',
+    token: '--ease-accelerate',
+    fluent: 'curveAccelerateMid',
+    use: 'Leaving and shrinking. Departs slowly, exits fast - nobody needs to watch the last half of an exit.',
+  },
+  {
+    name: 'Standard',
+    token: '--ease-standard',
+    fluent: 'curveEasyEase',
+    use: 'Moving in place. A colour shift, a hover, a value changing where it already is.',
+  },
+];
+
+const DURATIONS: [ms: string, fluent: string, use: string][] = [
+  ['150ms', 'durationFast', 'Colour, opacity, hover and focus - anything that does not move.'],
+  ['250ms', 'durationGentle', 'A pane, a flyout, a modal. The library default for travel.'],
+  ['300ms', 'durationSlow', 'Large surfaces crossing most of the viewport.'],
+];
+
+/** The cubic-bezier as an SVG path in a 0-100 box, y flipped so time runs left, progress up. */
+function curvePath(value: string): string {
+  const n = value.match(/-?\d*\.?\d+/g)?.map(Number);
+  if (!n || n.length < 4) return '';
+  const [x1, y1, x2, y2] = n as [number, number, number, number];
+  return `M0,100 C${x1 * 100},${100 - y1 * 100} ${x2 * 100},${100 - y2 * 100} 100,0`;
+}
+
+export function Motion() {
+  return (
+    <>
+      <p className="text-body text-text-dim">
+        Fluent 2 motion, unmodified: three curves and three durations, and nothing outside them. The
+        library&apos;s easings are the exact values Microsoft ships in{' '}
+        <code className="text-accent-blue">@fluentui/tokens</code> - the mid tier of each family,
+        which is the one Fluent uses for UI. Motion here signals <em>what happened</em>, never
+        decoration; a component gets an animation only when something moved or appeared.
+      </p>
+
+      <h3 className="mt-8 text-body-strong text-text">Curves</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        Time runs left to right, progress bottom to top. The dot replays the curve on a loop.
+      </p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        {CURVES.map((c) => (
+          <div key={c.token} className="rounded-panel bg-surface p-4">
+            <svg viewBox="-6 -6 112 112" className="w-full" role="img" aria-label={c.name}>
+              <path d="M0,100 L100,0" stroke="var(--color-border)" strokeWidth="1" fill="none" />
+              <path
+                d={curvePath(token(c.token))}
+                stroke="var(--color-accent)"
+                strokeWidth="3"
+                fill="none"
+              />
+              <circle r="5" fill="var(--color-accent-yellow)" cx="0" cy="100">
+                <animate
+                  attributeName="cx"
+                  values="0;100;100"
+                  keyTimes="0;0.55;1"
+                  dur="2.2s"
+                  calcMode="linear"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="cy"
+                  values="100;0;0"
+                  keyTimes="0;0.55;1"
+                  dur="2.2s"
+                  calcMode="spline"
+                  keySplines={`${token(c.token)
+                    .replace(/cubic-bezier\(|\)/g, '')
+                    .split(',')
+                    .map((v) => v.trim())
+                    .join(' ')};0 0 1 1`}
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+            <div className="mt-3 text-body-strong text-text">{c.name}</div>
+            <div className="font-mono text-caption-small text-accent-blue">{c.token}</div>
+            <div className="font-mono text-caption-small text-text-mute">{token(c.token)}</div>
+            <div className="font-mono text-caption-small text-text-mute">Fluent {c.fluent}</div>
+            <p className="mt-2 text-caption text-text-dim">{c.use}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3">
+        <Snippet
+          code={`transition: translate 0.25s var(--ease-decelerate);
+/* Tailwind: the easings are @theme tokens, so they are utilities too. */
+<div className="transition-opacity duration-150 ease-standard" />`}
+        />
+      </div>
+
+      <h3 className="mt-8 text-body-strong text-text">Durations</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        Fluent&apos;s ramp runs 50 / 100 / 150 / 200 / 250 / 300 / 400 / 500ms. This library uses
+        three of them, because a house with three durations is one nobody has to think about. Size
+        and distance pick the value: a small thing moving a short way takes 150ms, a pane crossing
+        the viewport takes 300ms.
+      </p>
+      <div className="mt-3 flex flex-col gap-px overflow-hidden rounded-panel">
+        {DURATIONS.map(([ms, fluent, use]) => (
+          <div key={ms} className="flex flex-wrap items-center gap-x-4 gap-y-1 bg-surface p-4">
+            <span className="w-16 shrink-0 font-mono text-caption text-accent-blue">{ms}</span>
+            <span className="w-32 shrink-0 font-mono text-caption-small text-text-mute">
+              {fluent}
+            </span>
+            <span className="min-w-0 flex-1 text-caption text-text-dim">{use}</span>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="mt-8 text-body-strong text-text">What the library animates</h3>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <Card title=".slide-in-left">
+          <p className="text-caption text-text-dim">
+            250ms on decelerate. The Shell&apos;s side pane entering. Travel is the whole point, so
+            it gets the middle duration.
+          </p>
+        </Card>
+        <Card title=".fade-in">
+          <p className="text-caption text-text-dim">
+            150ms on standard. Menus, tooltips and anything appearing in place. No movement, so it
+            takes the fast tier.
+          </p>
+        </Card>
+      </div>
+
+      <Alert tone="warn" title="Reduced motion is handled globally" className="mt-6">
+        The base layer collapses every animation, transition and smooth scroll to 0.01ms under{' '}
+        <code>prefers-reduced-motion: reduce</code>. Components must not re-implement that check,
+        and must not rely on an animation to convey state - the state has to survive the animation
+        being switched off.
+      </Alert>
     </>
   );
 }

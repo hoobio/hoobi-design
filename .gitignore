@@ -3,3 +3,4 @@ dist/
 *.tgz
 *.log
 .tw-check.css
+catalog/design-system/

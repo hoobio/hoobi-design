@@ -90,6 +90,7 @@ export interface ShellProps {
  * Builds a mirage image from a few hues - the default backdrop when there is no
  * artwork to derive one from. Colours are 6-digit hex; each becomes a soft blob.
  */
+// hex-ok: a JS default parameter cannot read @theme; these are accent, purple, cyan.
 export function mirageImage(colors: string[] = ['#409fff', '#d4bfff', '#95e6cb']): string {
   const spots = [
     '40rem 30rem at 20% 10%',
@@ -519,6 +520,7 @@ export function markFavicon(label: string, hue?: string): string {
   // The accent by default, because a favicon is the APP's mark rather than one item
   // among many - and it is the same fill a brand square uses. Pass a hue token name
   // ('accent-purple') to match a specific nav mark instead.
+  // hex-ok x2: fallbacks for a document with no stylesheet; the tokens are read first.
   const fill = style.getPropertyValue(`--color-${hue ?? 'accent'}`).trim() || '#409fff';
   const ink = style.getPropertyValue(hue ? '--color-bg' : '--color-on-accent').trim() || '#ffffff';
   const initial = label.trim().charAt(0) || '?';

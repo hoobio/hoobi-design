@@ -1,0 +1,304 @@
+import type { ReactNode } from 'react';
+import { Colour, Identity, Mirage, Motion, Spacing, Typography } from './foundations.js';
+import { Rules } from './rules.js';
+import { DestructiveRecipe, DetailRecipe, ListRecipe, StatesRecipe } from './recipes.js';
+import {
+  AlertPage,
+  BadgePage,
+  BreadcrumbsPage,
+  ButtonPage,
+  CardPage,
+  CheckboxPage,
+  CodeBlockPage,
+  ConfirmButtonPage,
+  CxPage,
+  DescriptionListPage,
+  DividerPage,
+  InputPage,
+  MenuPage,
+  ModalPage,
+  ProgressPage,
+  SectionPage,
+  SelectPage,
+  ShellPage,
+  SpinnerPage,
+  TabsPage,
+  TimelinePage,
+  TooltipPage,
+} from './components.js';
+
+export interface Page {
+  id: string;
+  group: string;
+  title: string;
+  caption: string;
+  render: () => ReactNode;
+  /**
+   * Reveal the overlays in the static export. The bundle is server-rendered, so a
+   * Modal exports as the button that opens it and a Menu as its trigger - a card
+   * that teaches the reader the component is a button. Both keep their panel in
+   * the DOM when closed (dialog without [open], flyout with .hidden), so the
+   * exporter unhides them rather than anything hand-rolling an open copy.
+   */
+  dsOpen?: true;
+  /** Kept out of the design-system export: a catalog mechanic, not a design fact. */
+  dsSkip?: true;
+}
+
+/**
+ * The one page registry. The catalog nav and the design-system export both read
+ * this, so a component cannot appear in one and be missing from the other, and
+ * `group` is the same word in the sidebar and on the exported card.
+ */
+export const PAGES: Page[] = [
+  {
+    id: 'identity',
+    group: 'Foundations',
+    title: 'Identity',
+    caption: 'What this library is, and what it refuses to be.',
+    render: () => <Identity />,
+  },
+  {
+    id: 'rules',
+    group: 'Foundations',
+    title: 'Rules',
+    caption: 'The house rules, as pairs: the right render beside the wrong one.',
+    render: () => <Rules />,
+  },
+  {
+    id: 'colour',
+    group: 'Foundations',
+    title: 'Colour',
+    caption: 'Ayu Mirage, as Tailwind v4 theme tokens.',
+    render: () => <Colour />,
+  },
+  {
+    id: 'typography',
+    group: 'Foundations',
+    title: 'Typography',
+    caption: 'The WinUI 3 type ramp in Noto Sans, plus Dank Mono for code.',
+    render: () => <Typography />,
+  },
+  {
+    id: 'spacing',
+    group: 'Foundations',
+    title: 'Spacing & Radius',
+    caption: 'A 4px pixel grid, two radii, one control height.',
+    render: () => <Spacing />,
+  },
+  {
+    id: 'motion',
+    group: 'Foundations',
+    title: 'Motion',
+    caption: "Fluent 2's three curves and three durations, unmodified.",
+    render: () => <Motion />,
+  },
+  {
+    id: 'mirage',
+    group: 'Foundations',
+    title: 'Mirage',
+    caption: 'The house material: any image, blurred into the backdrop.',
+    render: () => <Mirage />,
+  },
+  {
+    id: 'recipe-list',
+    group: 'Recipes',
+    title: 'List page',
+    caption: 'Filters as section actions, one markup path from desktop to phone.',
+    render: () => <ListRecipe />,
+  },
+  {
+    id: 'recipe-detail',
+    group: 'Recipes',
+    title: 'Detail page',
+    caption: 'Breadcrumbs, tabs, and facts that are not a table.',
+    render: () => <DetailRecipe />,
+  },
+  {
+    id: 'recipe-destructive',
+    group: 'Recipes',
+    title: 'Destructive action',
+    caption: 'Arm in place, or spell out the cost. Picking wrong is the risk.',
+    render: () => <DestructiveRecipe />,
+  },
+  {
+    id: 'recipe-states',
+    group: 'Recipes',
+    title: 'Empty, loading, failed',
+    caption: 'The three moments every view has and most designs skip.',
+    render: () => <StatesRecipe />,
+  },
+  {
+    id: 'button',
+    group: 'Actions',
+    title: 'Button',
+    caption: 'Four variants, two sizes. Accent is spent once per view.',
+    render: () => <ButtonPage />,
+  },
+  {
+    id: 'confirm-button',
+    group: 'Actions',
+    title: 'Confirm Button',
+    caption: 'Arm, then confirm. The destructive click, twice.',
+    render: () => <ConfirmButtonPage />,
+  },
+  {
+    id: 'menu',
+    group: 'Actions',
+    title: 'Menu',
+    caption: 'A trigger and an anchored panel of rows, nothing can clip it.',
+    render: () => <MenuPage />,
+    dsOpen: true,
+  },
+  {
+    id: 'code-block',
+    group: 'Visual Elements',
+    title: 'Code Block',
+    caption: 'Bring-your-own-engine highlighting on the Ayu Mirage scheme.',
+    render: () => <CodeBlockPage />,
+  },
+  {
+    id: 'badge',
+    group: 'Visual Elements',
+    title: 'Badge',
+    caption: 'Six tones, optional status dot. 20px tall.',
+    render: () => <BadgePage />,
+  },
+  {
+    id: 'card',
+    group: 'Layout',
+    title: 'Card',
+    caption: 'A raised surface with an optional header and actions.',
+    render: () => <CardPage />,
+  },
+  {
+    id: 'alert',
+    group: 'Notifications',
+    title: 'Alert',
+    caption: 'Four semantic tones, with the ARIA role picked for you.',
+    render: () => <AlertPage />,
+  },
+  {
+    id: 'input',
+    group: 'Inputs',
+    title: 'Input',
+    caption: 'A 32px field with label, hint and error slots.',
+    render: () => <InputPage />,
+  },
+  {
+    id: 'checkbox',
+    group: 'Inputs',
+    title: 'Checkbox',
+    caption: 'A native checkbox in house clothes. 20px box, 44px target.',
+    render: () => <CheckboxPage />,
+  },
+  {
+    id: 'select',
+    group: 'Inputs',
+    title: 'Select',
+    caption: 'A native select, styled to match Input exactly.',
+    render: () => <SelectPage />,
+  },
+  {
+    id: 'modal',
+    group: 'Overlays',
+    title: 'Modal',
+    caption: 'A native dialog, so the platform does the hard parts.',
+    render: () => <ModalPage />,
+    dsOpen: true,
+  },
+  {
+    id: 'breadcrumbs',
+    group: 'Navigation',
+    title: 'Breadcrumbs',
+    caption: 'Where you are, and the way back. The last one is never a link.',
+    render: () => <BreadcrumbsPage />,
+  },
+  {
+    id: 'tabs',
+    group: 'Navigation',
+    title: 'Tabs',
+    caption: 'Controlled, scrollable, no panel opinions.',
+    render: () => <TabsPage />,
+  },
+  {
+    id: 'shell',
+    group: 'Navigation',
+    title: 'Shell',
+    caption: 'The one page chrome: top bar, collapsible side pane, Fluent motion.',
+    render: () => <ShellPage />,
+  },
+  {
+    id: 'tooltip',
+    group: 'Overlays',
+    title: 'Tooltip',
+    caption: 'Instant on hover and keyboard focus, and nothing can clip it.',
+    render: () => <TooltipPage />,
+  },
+  {
+    id: 'progress',
+    group: 'Progress',
+    title: 'Progress',
+    caption: 'A 4px determinate bar with an optional label row.',
+    render: () => <ProgressPage />,
+  },
+  {
+    id: 'spinner',
+    group: 'Progress',
+    title: 'Spinner',
+    caption: 'Two sizes. Compose it, do not prop it into everything.',
+    render: () => <SpinnerPage />,
+  },
+  {
+    id: 'divider',
+    group: 'Layout',
+    title: 'Divider',
+    caption: 'A slice of page background, edge to edge by default.',
+    render: () => <DividerPage />,
+  },
+  {
+    id: 'description-list',
+    group: 'Layout',
+    title: 'Description List',
+    caption: 'Label and value pairs, as a real dl.',
+    render: () => <DescriptionListPage />,
+  },
+  {
+    id: 'timeline',
+    group: 'Visual Elements',
+    title: 'Timeline',
+    caption: 'A tone-coloured rail and what happened beside it.',
+    render: () => <TimelinePage />,
+  },
+  {
+    id: 'section',
+    group: 'Layout',
+    title: 'Section',
+    caption: 'The page heading used throughout this catalog.',
+    render: () => <SectionPage />,
+  },
+  {
+    id: 'cx',
+    group: 'Utilities',
+    title: 'cx',
+    caption: 'The whole class-joining story, in one line.',
+    render: () => <CxPage />,
+    // A class-joining helper has no render. The design system is what things look
+    // like; this one is documentation and belongs only in the catalog.
+    dsSkip: true,
+  },
+];
+
+export const GROUPS = [
+  'Foundations',
+  'Recipes',
+  'Actions',
+  'Inputs',
+  'Layout',
+  'Navigation',
+  'Notifications',
+  'Overlays',
+  'Progress',
+  'Visual Elements',
+  'Utilities',
+];

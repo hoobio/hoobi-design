@@ -246,3 +246,68 @@ export function Import({ names }: { names: string }) {
 export function Label({ children }: { children: ReactNode }) {
   return <span className="w-24 shrink-0 text-caption text-text-mute">{children}</span>;
 }
+
+/**
+ * A rule, shown rather than stated: the correct render beside the wrong one.
+ * Pairs are the highest-value thing in a design system for anyone - human or
+ * model - generating new UI, because a rule you can only read is a rule that
+ * gets averaged away against every other library they have seen.
+ */
+export function DoDont({
+  rule,
+  why,
+  doLabel,
+  dontLabel,
+  children,
+}: {
+  rule: string;
+  why: string;
+  doLabel: string;
+  dontLabel: string;
+  /** Exactly two: the good render, then the bad one. */
+  children: [ReactNode, ReactNode];
+}) {
+  return (
+    <div className="mt-8 first:mt-6">
+      <h3 className="text-body-strong text-text">{rule}</h3>
+      <p className="mt-1 text-caption text-text-dim">{why}</p>
+      <div className="mt-2 grid gap-3 md:grid-cols-2">
+        {(
+          [
+            ['Do', doLabel, 'text-success', children[0]],
+            ["Don't", dontLabel, 'text-danger', children[1]],
+          ] as const
+        ).map(([verdict, label, tone, node]) => (
+          <div key={verdict} className="flex min-w-0 flex-col gap-px overflow-hidden rounded-panel">
+            <div className="flex items-center gap-2 bg-surface px-4 py-2">
+              <span className={cx('text-caption font-medium', tone)}>{verdict}</span>
+              <span className="min-w-0 flex-1 text-caption text-text-dim">{label}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 bg-surface p-4">{node}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** A page-shaped composition, with the JSX that produced it underneath. */
+export function Recipe({
+  note,
+  code,
+  children,
+}: {
+  note: string;
+  code: string;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <p className="text-body text-text-dim">{note}</p>
+      <div className="mt-4 overflow-hidden rounded-panel bg-bg p-4">{children}</div>
+      <div className="mt-2">
+        <Snippet code={code} />
+      </div>
+    </>
+  );
+}

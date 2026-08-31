@@ -154,6 +154,11 @@ cd catalog && npm run dev      # Vite on :5173
 Open each changed page, check spacing/alignment/tones at desktop width and at 360px, and only then
 commit. A component that was never rendered is not verified.
 
+`npm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
+literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
+lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
+in `catalog/src/pages.tsx`. A rule that is only prose is a rule that drifts.
+
 Sanity-check token to utility generation after touching `styles.css`:
 
 ```bash
@@ -177,6 +182,26 @@ npm run build            # -> catalog/dist/index.html, one self-contained file, 
 
 `vite-plugin-singlefile` plus `assetsInlineLimit` inlines the JS, the CSS and the four woff2 fonts,
 so `catalog/dist/index.html` opens with zero external requests and can be published as-is.
+
+## Claude Design sync
+
+The catalog doubles as a **Claude Design system** (claude.ai/design project "Hoobi Design"), so
+Claude generates Hoobi-shaped UI from the real components, the real rules, and the real tokens.
+
+- `catalog/src/pages.tsx` is the one page registry: the catalog nav and the export both read it,
+  so a component cannot be in one and missing from the other. `check.mjs` enforces that every
+  library export has a page. Foundations include Rules (do/don't pairs) and Motion; Recipes are
+  page-shaped compositions - both exist chiefly for the design system's benefit.
+- `cd catalog && npm run build:ds` renders every page to static HTML in `catalog/design-system/`
+  (gitignored): one standalone card per page with the compiled stylesheet and fonts inlined, a
+  `<!-- @dsCard group="..." -->` marker for the Design System pane, plus `tokens.json` (the parsed
+  `@theme` block) and `_hashes.json`. Static SSR on purpose: cards are readable markup, not a
+  React bundle. Overlay pages (`dsOpen`) export with their panel revealed.
+- **Sync runs at release time, not per commit** - the design system should show what consumers
+  can `npm install`, and every card is stamped with the library version. After
+  `npm version && git push --follow-tags`, ask Claude to sync: it diffs the remote `_hashes.json`
+  against the local one via the DesignSync tool and uploads only what changed (re-running is a
+  no-op). This cannot run in the pipeline: DesignSync needs an interactive claude.ai login.
 
 ## Publishing
 
