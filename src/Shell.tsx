@@ -110,9 +110,13 @@ export function Shell({
     };
   }, [overlayOpen]);
 
+  // Whether the brand button collapses a pane on md+ (top mode and pinned panes have none).
+  const canToggleMd = mode === 'side' && collapsible;
+
   const toggle = () => {
     // One button, two behaviours: overlay on small screens, rail on md+.
-    if (mode === 'side' && window.matchMedia('(min-width: 48rem)').matches) {
+    if (window.matchMedia('(min-width: 48rem)').matches) {
+      if (!canToggleMd) return;
       const next = !collapsed;
       setCollapsed(next);
       onCollapseChange?.(next);
@@ -130,54 +134,54 @@ export function Shell({
     </NavAreaContext.Provider>
   );
 
-  // In top mode md+ there is no pane, so the trigger only exists for the overlay.
-  const triggerHiddenMd = mode === 'top' || !collapsible;
+  // The overlay needs the icon shown outright - there is no hover on touch.
+  const forceIcon = overlayOpen;
 
   return (
     <ShellContext.Provider value={{ collapsed, overlayOpen }}>
       <div className="flex min-h-dvh flex-col">
-        {/* Full width, layered above the overlay scrim so the trigger stays reachable. */}
+        {/* Full width, layered above the overlay scrim so the brand button stays reachable. */}
         <header className="relative z-40 flex h-12 shrink-0 items-center bg-bg pr-3">
-          {brand ? (
-            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center">
-              {brand}
-            </span>
-          ) : null}
-          {title ? (
-            <span
-              className={cx(
-                'min-w-0 shrink-0 truncate text-body-strong text-text',
-                !brand && 'pl-3',
-                // The absolute trigger owns the pane's last 48px while expanded; the title
-                // stops short of it, and gets the room back once the trigger slides home.
-                mode === 'side' && !triggerHiddenMd && !collapsed && 'md:max-w-30',
-              )}
-            >
-              {title}
-            </span>
-          ) : null}
-          {/* textura's trigger: absolute, pinned to the pane's top-RIGHT while expanded, and
-              sliding onto the brand's square when collapsed - invisible there until hovered,
-              when its fill and icon appear over the mark. Static in the flow below md. */}
+          {/* THE LOGO IS THE COLLAPSE BUTTON: the brand mark sits in the top-left column and
+              swaps to the panel glyph on hover (a close cross while the overlay is up). Where
+              there is nothing to toggle on md+ (top mode, pinned pane) it is inert there and
+              shows the plain mark. */}
           <button
             type="button"
             onClick={toggle}
             aria-expanded={overlayOpen || !collapsed}
             aria-label="Toggle navigation"
             className={cx(
-              'z-10 flex size-12 shrink-0 items-center justify-center rounded-control',
-              triggerHiddenMd && 'md:hidden',
-              mode === 'side' &&
-                !triggerHiddenMd &&
-                'md:absolute md:top-0 md:transition-[left] md:duration-250 md:ease-decelerate',
-              mode === 'side' && !triggerHiddenMd && collapsed
-                ? 'md:left-0 md:text-transparent md:hover:bg-surface md:hover:text-text'
-                : 'md:left-42',
-              'max-md:ml-1 text-text-dim hover:bg-surface hover:text-text',
+              'group flex size-12 shrink-0 items-center justify-center rounded-control',
+              canToggleMd ? 'hover:bg-surface' : 'max-md:hover:bg-surface md:cursor-default',
             )}
           >
-            <TriggerIcon close={overlayOpen} />
+            <span
+              aria-hidden
+              className={cx(
+                'items-center justify-center',
+                forceIcon
+                  ? 'hidden'
+                  : cx('flex', canToggleMd ? 'group-hover:hidden' : 'max-md:group-hover:hidden'),
+              )}
+            >
+              {brand ?? <TriggerIcon close={false} />}
+            </span>
+            <span
+              aria-hidden
+              className={cx(
+                'items-center justify-center text-text-dim group-hover:text-text',
+                forceIcon
+                  ? 'flex'
+                  : cx('hidden', canToggleMd ? 'group-hover:flex' : 'max-md:group-hover:flex'),
+              )}
+            >
+              <TriggerIcon close={overlayOpen} />
+            </span>
           </button>
+          {title ? (
+            <span className="min-w-0 shrink-0 truncate text-body-strong text-text">{title}</span>
+          ) : null}
           {mode === 'top' ? (
             <NavAreaContext.Provider value="top">
               <nav

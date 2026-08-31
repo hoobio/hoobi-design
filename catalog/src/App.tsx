@@ -189,7 +189,7 @@ export function App() {
   const page = useHashPage();
   // The chrome doubles as the Shell demo: this switches the real nav between
   // its three presentations so each can be experienced, not just read about.
-  const [navType, setNavType] = useState<NavType>('pinned');
+  const [navType, setNavType] = useState<NavType>('rail');
   return (
     <Shell
       brand={
@@ -237,7 +237,8 @@ export function App() {
       navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
     >
       <div className="mx-auto max-w-[72rem] px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
-        <Section id={page.id} title={page.title} caption={page.caption} className="pt-4 md:pt-6">
+        {/* pt-2 seats the title level with the pane's first row, not below it. */}
+        <Section id={page.id} title={page.title} caption={page.caption} className="pt-2">
           {page.render()}
         </Section>
       </div>
