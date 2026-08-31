@@ -317,15 +317,20 @@ const MARK_HUES = [
 ];
 
 /**
- * Icon-less items get a brand-mark-styled square with the label's initial, coloured
- * by hashing the whole label onto the hue wheel - stable per label, and spread out
- * so runs of neighbours rarely match. ponytail: a hash can still collide on
- * adjacent items; give the item a real icon if that offends.
+ * Icon-less items get a brand-mark-styled square with the label's initial. Hues are
+ * dealt around the wheel in first-seen order, so a list of marks never repeats a
+ * colour until the wheel wraps - a hash would cluster. The registry is module-level:
+ * stable per label for the session, and list order is what seeds it.
  */
+const assignedHues = new Map<string, number>();
+
 function InitialMark({ label }: { label: string }) {
-  let hash = 7;
-  for (const ch of label) hash = (hash * 31 + ch.charCodeAt(0)) | 0;
-  const hue = MARK_HUES[Math.abs(hash) % MARK_HUES.length];
+  let slot = assignedHues.get(label);
+  if (slot === undefined) {
+    slot = assignedHues.size;
+    assignedHues.set(label, slot);
+  }
+  const hue = MARK_HUES[slot % MARK_HUES.length];
   return (
     <span
       className="flex size-6 items-center justify-center rounded-control font-mono text-caption"
