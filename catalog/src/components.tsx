@@ -212,7 +212,7 @@ export function TooltipPage() {
       <p className="max-w-prose text-body text-text-dim">
         CSS-only: the styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so
         anything carrying that attribute grows a tooltip - no JS, no positioning library. It shows
-        on hover and on keyboard focus, after the WinUI ~400ms delay.
+        instantly on hover and on keyboard focus.
       </p>
       <Demo
         title="Wrap anything"

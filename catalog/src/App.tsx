@@ -114,7 +114,7 @@ const PAGES: Page[] = [
     id: 'tooltip',
     group: 'Components',
     title: 'Tooltip',
-    caption: 'CSS-only, on hover and keyboard focus, after the WinUI delay.',
+    caption: 'CSS-only, instant on hover and keyboard focus.',
     render: () => <TooltipPage />,
   },
   {

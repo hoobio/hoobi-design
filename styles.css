@@ -172,8 +172,8 @@
 }
 
 @layer utilities {
-  /* CSS-only tooltip: content lives in the data-tip attribute, shown on hover and
-     keyboard focus after the WinUI ~400ms delay. No JS, no positioning library.
+  /* CSS-only tooltip: content lives in the data-tip attribute, shown instantly on
+     hover and keyboard focus. No JS, no positioning library.
      ponytail: centred above the anchor, no edge-collision handling - flip to a
      positioning lib only if a real overflow case shows up. */
   [data-tip] {
@@ -209,7 +209,6 @@
   [data-tip]:focus-visible::after {
     opacity: 1;
     visibility: visible;
-    transition-delay: 0.4s;
   }
 
   .no-scrollbar {
