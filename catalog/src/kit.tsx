@@ -1,5 +1,20 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { Button, Input, Select, cx, mirageImage } from '@hoobi/design';
+import { Button, CodeBlock, Input, Select, cx, mirageImage } from '@hoobi/design';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
+import json from 'highlight.js/lib/languages/json';
+import typescript from 'highlight.js/lib/languages/typescript';
+import yaml from 'highlight.js/lib/languages/yaml';
+
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('yaml', yaml);
+
+/** Highlight through the shared registry; CodeBlock takes the html and the theme does the rest. */
+export function highlight(code: string, language = 'typescript'): string {
+  return hljs.highlight(code, { language }).value;
+}
 
 /** The Shell page steers the catalog's own chrome through this. */
 export interface ShellDemo {
@@ -39,9 +54,7 @@ export function Snippet({ code }: { code: string }) {
   }, [copied]);
   return (
     <div className="relative">
-      <pre className="styled-scrollbar overflow-x-auto rounded-control bg-chip p-3 pr-20 text-caption text-text-dim">
-        <code>{code}</code>
-      </pre>
+      <CodeBlock code={code} html={highlight(code)} className="pr-20" />
       <Button
         size="sm"
         variant="ghost"

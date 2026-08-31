@@ -249,6 +249,57 @@
     scale: 1.1; /* keeps the blur's edge bleed off-screen */
   }
 
+  /* CodeBlock tones: standard highlight.js token classes mapped onto the theme
+     tokens, which ARE the Ayu Mirage syntax scheme - keywords orange, strings
+     green, constants purple, functions yellow, entities blue. Bring your own
+     engine; any hljs grammar lands themed. */
+  .code-block .hljs-keyword,
+  .code-block .hljs-operator,
+  .code-block .hljs-selector-pseudo {
+    color: var(--color-accent-orange);
+  }
+  .code-block .hljs-string,
+  .code-block .hljs-regexp,
+  .code-block .hljs-addition {
+    color: var(--color-accent-green);
+  }
+  .code-block .hljs-number,
+  .code-block .hljs-literal,
+  .code-block .hljs-symbol,
+  .code-block .hljs-variable.constant_ {
+    color: var(--color-accent-purple);
+  }
+  .code-block .hljs-title,
+  .code-block .hljs-section {
+    color: var(--color-accent-yellow);
+  }
+  .code-block .hljs-attr,
+  .code-block .hljs-attribute,
+  .code-block .hljs-property,
+  .code-block .hljs-name,
+  .code-block .hljs-selector-tag,
+  .code-block .hljs-selector-class,
+  .code-block .hljs-selector-id {
+    color: var(--color-accent-blue);
+  }
+  .code-block .hljs-built_in,
+  .code-block .hljs-type,
+  .code-block .hljs-class .hljs-title {
+    color: var(--color-accent-cyan);
+  }
+  .code-block .hljs-comment,
+  .code-block .hljs-quote,
+  .code-block .hljs-meta,
+  .code-block .hljs-deletion {
+    color: var(--color-text-mute);
+    font-style: italic;
+  }
+  .code-block .hljs-punctuation,
+  .code-block .hljs-params,
+  .code-block .hljs-subst {
+    color: var(--color-text-dim);
+  }
+
   /* Mirage, scoped to one surface (a card): the same recipe as .mirage-layer but
      tinted towards surface-raised and clipped to the host, which must NOT paint its
      own opaque background - the layer IS the fill. Hover states go translucent. */

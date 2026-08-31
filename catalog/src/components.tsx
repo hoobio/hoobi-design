@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Card,
+  CodeBlock,
   Input,
   Modal,
   Progress,
@@ -15,7 +16,16 @@ import {
   cx,
 } from '@hoobi/design';
 import { useContext } from 'react';
-import { Demo, Import, Label, Playground, Props, ShellDemoContext, Snippet } from './kit.js';
+import {
+  Demo,
+  Import,
+  Label,
+  Playground,
+  Props,
+  ShellDemoContext,
+  Snippet,
+  highlight,
+} from './kit.js';
 import posterUrl from './poster.jpg';
 
 export function ButtonPage() {
@@ -1255,6 +1265,94 @@ export const cx = (...parts: ClassValue[]): string => parts.filter(Boolean).join
             '',
             'Drops falsy entries, joins the rest with a space.',
           ],
+        ]}
+      />
+    </>
+  );
+}
+
+const CODE_SAMPLES: { language: string; label: string; code: string }[] = [
+  {
+    language: 'json',
+    label: 'json',
+    code: `{
+  "seerr": { "baseUrl": "http://seerr:5057", "resolved": true },
+  "retries": 3,
+  "bazarr": null
+}`,
+  },
+  {
+    language: 'typescript',
+    label: 'typescript',
+    code: `export async function remediate(issue: SeerrIssue): Promise<Plan> {
+  // believe the reporter, not the label
+  const plan = await agent.plan(issue);
+  return plan.risky ? approve(plan) : execute(plan);
+}`,
+  },
+  {
+    language: 'bash',
+    label: 'bash',
+    code: `# publish flows through the v* tag
+npm version minor && git push --follow-tags`,
+  },
+  {
+    language: 'yaml',
+    label: 'yaml',
+    code: `trigger:
+  tags:
+    include: [v*]
+steps:
+  - script: npm publish`,
+  },
+];
+
+export function CodeBlockPage() {
+  return (
+    <>
+      <Import names="CodeBlock" />
+      <p className="text-body text-text-dim">
+        The house code surface, bring-your-own-engine: the library ships the chrome and a stylesheet
+        mapping standard highlight.js token classes onto the theme tokens - which ARE the Ayu Mirage
+        syntax scheme - and stays dependency-free. Install{' '}
+        <code className="text-accent-blue">highlight.js</code> in the app, register only the
+        grammars it needs, and pass the highlighted markup in. Without{' '}
+        <code className="text-accent-blue">html</code> the code renders as plain text.
+      </p>
+      <div className="mt-4">
+        <Snippet
+          code={`import hljs from 'highlight.js/lib/core';
+import json from 'highlight.js/lib/languages/json';
+hljs.registerLanguage('json', json);
+
+<CodeBlock code={src} html={hljs.highlight(src, { language: 'json' }).value} />`}
+        />
+      </div>
+      {CODE_SAMPLES.map((sample) => (
+        <Demo
+          key={sample.language}
+          title={sample.label}
+          code={`hljs.registerLanguage('${sample.language}', ${sample.language});
+<CodeBlock code={src} html={hljs.highlight(src, { language: '${sample.language}' }).value} />`}
+          stack
+        >
+          <CodeBlock
+            code={sample.code}
+            html={highlight(sample.code, sample.language)}
+            className="w-full"
+          />
+        </Demo>
+      ))}
+      <Props
+        rows={[
+          ['code', 'string', 'required', 'The source; rendered as plain text when html is absent.'],
+          [
+            'html',
+            'string',
+            '',
+            'Pre-highlighted markup from a trusted engine - hljs.highlight(...).value. hljs escapes its input; never pass user-authored markup.',
+          ],
+          ['...rest', 'HTMLAttributes<HTMLPreElement>', '', 'className, id, aria-*.'],
         ]}
       />
     </>

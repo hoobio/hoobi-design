@@ -3,6 +3,7 @@ export { Alert, type AlertProps, type AlertTone } from './Alert.js';
 export { Badge, type BadgeProps, type BadgeTone } from './Badge.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';
 export { Card, type CardProps } from './Card.js';
+export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
 export { Input, type InputProps } from './Input.js';
 export { Modal, type ModalProps } from './Modal.js';
 export { Progress, type ProgressProps } from './Progress.js';

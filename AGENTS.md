@@ -58,9 +58,11 @@ save-exact=true
 
 ## Components
 
-Button, Badge (tone + optional dot + tooltip, covers status dots), Card, Modal, Tabs (controlled),
-Section, Progress, Spinner, Alert, Input, Select, Tooltip (CSS-only `[data-tip]`, no JS), plus the
-`cx` helper.
+Button, Badge (tone + optional dot + tooltip, covers status dots), Card (optional scoped mirage),
+CodeBlock (bring-your-own-engine: consumers install highlight.js and pass `html`; the stylesheet
+maps standard hljs token classes onto the theme tokens, so any grammar lands Ayu Mirage), Modal,
+Tabs (controlled), Section, Shell (the one page chrome), Progress, Spinner, Alert, Input, Select,
+Tooltip (CSS-only `[data-tip]`, no JS), plus the `cx` helper and `mirageImage`.
 
 Deliberately absent: Table, Toggle (use a native checkbox), Toast, Skeleton.
 

@@ -8,6 +8,7 @@ import {
   BadgePage,
   ButtonPage,
   CardPage,
+  CodeBlockPage,
   CxPage,
   InputPage,
   ModalPage,
@@ -70,6 +71,13 @@ const PAGES: Page[] = [
     title: 'Button',
     caption: 'Four variants, two sizes. Accent is spent once per view.',
     render: () => <ButtonPage />,
+  },
+  {
+    id: 'code-block',
+    group: 'Visual Elements',
+    title: 'Code Block',
+    caption: 'Bring-your-own-engine highlighting on the Ayu Mirage scheme.',
+    render: () => <CodeBlockPage />,
   },
   {
     id: 'badge',
