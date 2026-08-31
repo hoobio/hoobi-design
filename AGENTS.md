@@ -199,8 +199,9 @@ Claude generates Hoobi-shaped UI from the real components, the real rules, and t
   React bundle. Overlay pages (`dsOpen`) export with their panel revealed.
 - **Sync runs at release time, not per commit** - the design system should show what consumers
   can `npm install`, and every card is stamped with the library version. After
-  `npm version && git push --follow-tags`, ask Claude to sync: it diffs the remote `_hashes.json`
-  against the local one via the DesignSync tool and uploads only what changed (re-running is a
+  `npm version && git push --follow-tags`, run `/design-sync` (the repo skill at
+  `.claude/skills/design-sync/` carries the project id and the exact procedure): it diffs the
+  remote `_hashes.json` against the local one and uploads only what changed (re-running is a
   no-op). This cannot run in the pipeline: DesignSync needs an interactive claude.ai login.
 
 ## Publishing
