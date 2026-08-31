@@ -42,7 +42,12 @@ const escapeAttr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').repla
  */
 function stylesheet() {
   const html = readFileSync('dist/index.html', 'utf8');
-  const style = html.match(/<style[^>]*>[\s\S]*?<\/style>/)?.[0];
+  // Scripts go first: the bundled hljs XML grammar contains the literal text
+  // `<style(?=\s|>)`, so matching the style tag on the raw file starts the match
+  // inside the JS and drags a chunk of the bundle into every card.
+  const style = html
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .match(/<style[^>]*>[\s\S]*?<\/style>/)?.[0];
   if (!style) throw new Error('no inlined <style> in dist/index.html - run vite build first');
   if (!style.includes('data:font'))
     throw new Error('fonts are not inlined - check assetsInlineLimit');

@@ -8,8 +8,11 @@ const head = src.match(/<head>([\s\S]*?)<\/head>/)?.[1];
 const body = src.match(/<body>([\s\S]*?)<\/body>/)?.[1];
 if (!head || !body) throw new Error('dist/index.html is not the expected shape - run vite build');
 
+// Same trap as ds.mjs: the bundled hljs grammar contains the text `<style(...)`,
+// so the style tag is matched on a scripts-stripped copy of the head.
 const pick = (tag) => {
-  const m = head.match(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?</${tag}>`));
+  const src = tag === 'style' ? head.replace(/<script[\s\S]*?<\/script>/g, '') : head;
+  const m = src.match(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?</${tag}>`));
   if (!m) throw new Error(`no inlined <${tag}> in dist/index.html - is vite-plugin-singlefile on?`);
   return m[0];
 };
