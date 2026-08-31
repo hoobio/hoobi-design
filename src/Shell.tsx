@@ -637,12 +637,15 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
   if (menu) {
     return (
       <div ref={rootRef}>
-        {/* Expanded: the menu concertinas open above the row, inside the pane. */}
-        {open && !railed ? <div className="fade-in border-t border-bg py-1">{menu}</div> : null}
         <button
           type="button"
           aria-expanded={open}
           onClick={openFlyout}
+          // A menu button never takes focus from a pointer, so a click can never
+          // paint the focus ring; keyboard focus still rings as it should.
+          onPointerDown={(e) => {
+            e.preventDefault();
+          }}
           {...(railed ? sideTip(name) : null)}
           className={cx(rowClasses, 'hover:bg-surface')}
         >
@@ -653,12 +656,12 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
               aria-hidden
               fill="none"
               className={cx(
-                'mr-3 size-3 shrink-0 text-text-mute transition-transform duration-150 ease-standard',
+                'mr-3 size-3 shrink-0 text-text-mute transition-transform duration-250 ease-standard',
                 open && 'rotate-180',
               )}
             >
               <path
-                d="M2.5 7.5L6 4l3.5 3.5"
+                d="M2.5 4.5L6 8l3.5-3.5"
                 stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"
@@ -666,6 +669,22 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
             </svg>
           ) : null}
         </button>
+        {/* Expanded: the WinUI expander - the menu grows downward off the row on the
+            decelerate curve (the bottom-anchored footer gives the row the lift). Always
+            mounted, so the button never remounts and the grid rows can animate. */}
+        <div
+          aria-hidden={!open}
+          inert={!open || railed}
+          className={cx(
+            'grid transition-[grid-template-rows] duration-250 ease-decelerate',
+            railed && 'hidden',
+          )}
+          style={{ gridTemplateRows: open && !railed ? '1fr' : '0fr' }}
+        >
+          <div className="overflow-hidden">
+            <div className="border-t border-bg">{menu}</div>
+          </div>
+        </div>
         {/* Railed: a flyout beside the rail. */}
         <div
           data-shell-user-flyout
