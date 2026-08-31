@@ -10,3 +10,4 @@ export { Section, type SectionProps } from './Section.js';
 export { Select, type SelectProps } from './Select.js';
 export { Spinner, type SpinnerProps } from './Spinner.js';
 export { Tabs, type TabItem, type TabsProps } from './Tabs.js';
+export { Tooltip, type TooltipProps } from './Tooltip.js';

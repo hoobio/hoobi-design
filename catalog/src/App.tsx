@@ -14,6 +14,7 @@ import {
   SelectPage,
   SpinnerPage,
   TabsPage,
+  TooltipPage,
 } from './components.js';
 
 interface Page {
@@ -110,6 +111,13 @@ const PAGES: Page[] = [
     render: () => <TabsPage />,
   },
   {
+    id: 'tooltip',
+    group: 'Components',
+    title: 'Tooltip',
+    caption: 'CSS-only, on hover and keyboard focus, after the WinUI delay.',
+    render: () => <TooltipPage />,
+  },
+  {
     id: 'progress',
     group: 'Components',
     title: 'Progress',
@@ -197,7 +205,7 @@ export function App() {
                     href={`#${p.id}`}
                     aria-current={p.id === page.id ? 'page' : undefined}
                     className={cx(
-                      '-mx-2 block rounded-control px-2 py-1 text-body no-underline hover:no-underline',
+                      '-mx-2 block rounded-control px-2 py-1 text-body',
                       p.id === page.id
                         ? 'bg-surface text-text'
                         : 'text-text-dim hover:bg-surface hover:text-text',

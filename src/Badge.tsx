@@ -6,6 +6,8 @@ export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' | '
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: BadgeTone;
   dot?: boolean;
+  /** Tooltip shown on hover and keyboard focus, explaining what the badge means. */
+  tooltip?: string;
 }
 
 const TONES: Record<BadgeTone, { text: string; dot: string }> = {
@@ -17,10 +19,20 @@ const TONES: Record<BadgeTone, { text: string; dot: string }> = {
   info: { text: 'text-info', dot: 'bg-info' },
 };
 
-export function Badge({ tone = 'neutral', dot = false, className, children, ...rest }: BadgeProps) {
+export function Badge({
+  tone = 'neutral',
+  dot = false,
+  tooltip,
+  className,
+  children,
+  ...rest
+}: BadgeProps) {
   const t = TONES[tone];
   return (
     <span
+      data-tip={tooltip}
+      aria-description={tooltip}
+      tabIndex={tooltip ? 0 : undefined}
       className={cx(
         'inline-flex h-5 items-center gap-1.5 rounded-chip bg-chip px-2 text-caption whitespace-nowrap',
         t.text,

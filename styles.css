@@ -132,10 +132,10 @@
     text-decoration: none;
     transition: color 0.15s ease;
   }
+  /* WinUI hyperlinks shift shade on hover, never underline. Nav items and other
+     button-shaped links highlight their own surface (hover:bg-*) instead. */
   a:hover {
     color: var(--color-accent-cyan);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 
   code,
@@ -172,6 +172,46 @@
 }
 
 @layer utilities {
+  /* CSS-only tooltip: content lives in the data-tip attribute, shown on hover and
+     keyboard focus after the WinUI ~400ms delay. No JS, no positioning library.
+     ponytail: centred above the anchor, no edge-collision handling - flip to a
+     positioning lib only if a real overflow case shows up. */
+  [data-tip] {
+    position: relative;
+  }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    translate: -50%;
+    z-index: 30;
+    width: max-content;
+    max-width: 18rem;
+    padding: 4px 8px;
+    border-radius: var(--radius-control);
+    background-color: var(--color-chip);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+    font-weight: 400;
+    white-space: normal;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.1s ease,
+      visibility 0.1s;
+    pointer-events: none;
+  }
+  [data-tip]:hover::after,
+  [data-tip]:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.4s;
+  }
+
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;

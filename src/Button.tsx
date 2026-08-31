@@ -10,8 +10,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
-    'border border-transparent bg-accent-fill text-on-accent hover:bg-accent disabled:hover:bg-accent-fill',
+  primary: 'border border-transparent bg-accent-fill text-on-accent hover:bg-accent',
   secondary: 'border border-border bg-surface text-text hover:bg-surface-raised',
   ghost: 'border border-transparent bg-transparent text-text-dim hover:bg-surface hover:text-text',
   danger: 'border border-danger bg-transparent text-danger hover:bg-danger hover:text-bg',
@@ -26,7 +25,7 @@ export function Button({ variant = 'secondary', size = 'md', className, ...rest 
   return (
     <button
       className={cx(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-control font-medium whitespace-nowrap transition-colors disabled:cursor-default disabled:opacity-50',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-control font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50',
         VARIANTS[variant],
         SIZES[size],
         className,

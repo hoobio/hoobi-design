@@ -12,7 +12,7 @@ export function Spinner({ size = 'sm', label = 'Loading', className }: SpinnerPr
       role="status"
       aria-label={label}
       className={cx(
-        'inline-block animate-spin rounded-full border-2 border-border border-t-accent',
+        'inline-block animate-spin rounded-full border-2 border-[color-mix(in_srgb,currentColor_30%,transparent)] border-t-current',
         size === 'sm' ? 'size-4' : 'size-6',
         className,
       )}

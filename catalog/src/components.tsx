@@ -11,6 +11,7 @@ import {
   Select,
   Spinner,
   Tabs,
+  Tooltip,
   cx,
 } from '@hoobi/design';
 import { Demo, Import, Label, Props, Snippet } from './kit.js';
@@ -191,7 +192,67 @@ export function BadgePage() {
             'Text and dot colour.',
           ],
           ['dot', 'boolean', 'false', 'Leading 6px status dot in the tone colour.'],
+          [
+            'tooltip',
+            'string',
+            '',
+            'Explains the badge on hover and keyboard focus. Also its accessible description.',
+          ],
           ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'title, aria-*, onClick.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function TooltipPage() {
+  return (
+    <>
+      <Import names="Tooltip" />
+      <p className="max-w-prose text-body text-text-dim">
+        CSS-only: the styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so
+        anything carrying that attribute grows a tooltip - no JS, no positioning library. It shows
+        on hover and on keyboard focus, after the WinUI ~400ms delay.
+      </p>
+      <Demo
+        title="Wrap anything"
+        note="Hover or Tab to the chip. The wrapper is focusable so keyboard users get the tip too."
+        code={`<Tooltip text="Radarr accepted the release and the download is running.">
+  <Badge tone="info" dot>grabbing</Badge>
+</Tooltip>`}
+      >
+        <Tooltip text="Radarr accepted the release and the download is running.">
+          <Badge tone="info" dot>
+            grabbing
+          </Badge>
+        </Tooltip>
+        <Tooltip text="ffprobe saw a 42 minute file where a 105 minute film was expected.">
+          <Badge tone="danger" dot>
+            runtime mismatch
+          </Badge>
+        </Tooltip>
+      </Demo>
+
+      <Demo
+        title="Badge shorthand"
+        note="Badge takes a tooltip prop directly - no wrapper element."
+        code={`<Badge tone="warn" dot tooltip="Waiting for an admin to approve the plan.">
+  awaiting_approval
+</Badge>`}
+      >
+        <Badge tone="warn" dot tooltip="Waiting for an admin to approve the plan.">
+          awaiting_approval
+        </Badge>
+        <Badge tone="accent" tooltip="Opened automatically by the unfilled-anime scan, not by a person.">
+          auto
+        </Badge>
+      </Demo>
+
+      <Props
+        rows={[
+          ['text', 'string', 'required', 'The tip. Also the accessible description of the anchor.'],
+          ['children', 'ReactNode', 'required', 'The anchor the tip is attached to.'],
+          ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'className, aria-*.'],
         ]}
       />
     </>

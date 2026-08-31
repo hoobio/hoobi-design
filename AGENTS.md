@@ -52,8 +52,9 @@ save-exact=true
 
 ## Components
 
-Button, Badge (tone + optional dot, covers status dots), Card, Modal, Tabs (controlled), Section,
-Progress, Spinner, Alert, Input, Select, plus the `cx` helper.
+Button, Badge (tone + optional dot + tooltip, covers status dots), Card, Modal, Tabs (controlled),
+Section, Progress, Spinner, Alert, Input, Select, Tooltip (CSS-only `[data-tip]`, no JS), plus the
+`cx` helper.
 
 Deliberately absent: Table, Toggle (use a native checkbox), Toast, Skeleton.
 
@@ -87,6 +88,7 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 | Depth           | Fills, not strokes, never shadows. Surfaces are told apart by background alone (`bg` / `surface` / `surface-raised` / `chip`); cards, pills and alerts carry no border. Segmented cards are **sliced**: a 1px hairline of page background between full-bleed sections (`gap-px` in a clipped `rounded-panel`, or `border-t border-bg`), the earmark card treatment (its section divider is literally `Height="1"`). A stateful tone tints the whole surface (`bg-danger/15`), never a border. Borders remain only on interactive controls (secondary/danger Button, Input, Select) and the Tabs underline. The only overlay scrim is the Modal backdrop. |
 | Accent          | Restrained. `--color-accent` is for the one primary action, the Tabs selection indicator, Progress fill, Spinner arc and the focus ring. Everything else is neutral: secondary and ghost buttons hover on `bg-surface`/`bg-surface-raised`, not on accent. |
 | Focus           | One language everywhere: the global `:focus-visible` 2px outer ring at 2px offset. Components must **not** set `focus:outline-none` or re-style their own focus border.                                                                                    |
+| Links           | Colour shift on hover (`accent-blue` -> `accent-cyan`), **never an underline** - WinUI hyperlinks shift shade. A button-shaped link (nav item, sidebar entry) highlights its own surface on hover (`hover:bg-surface`), not its text.                       |
 
 `--spacing: 4px` means every Tailwind spacing utility is `n * 4px`. Reach for the WinUI grid values
 (4 / 8 / 12 / 16 / 24 / 32) rather than odd numbers.
