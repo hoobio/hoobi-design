@@ -4,6 +4,7 @@ export { Badge, type BadgeProps, type BadgeTone } from './Badge.js';
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from './Breadcrumbs.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';
 export { Card, type CardProps } from './Card.js';
+export { Divider, type DividerProps } from './Divider.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
 export { ConfirmButton, type ConfirmButtonProps } from './ConfirmButton.js';

@@ -68,6 +68,11 @@ Section, Shell (the one page chrome; `bar={false}` for a full-height pane, and `
 Select, Checkbox, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
 scrolling or clipping ancestor can cut it off), plus `cx`, `mirageImage` and `markFavicon`.
 
+`Divider` is the house hairline as a component: 1px of page background, and it **bleeds to the
+surface's edges by default** by cancelling whatever padding the container published as `--pad`
+(a Card sets it), so nothing has to be told a magic inset. `padded` opts out. A consumer writing
+`border-t border-bg` by hand is a Divider that has not been reached for yet.
+
 `Card` takes `padded={false}` for a sliced card: the body runs flush to the edges so content that
 bleeds its own hairlines (DescriptionList, a full-width list) can actually reach them. `Shell`
 injects a `markFavicon` tab icon - the InitialMark's hue and initial - when the document declares

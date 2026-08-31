@@ -48,7 +48,15 @@ export function Card({
         mirage ? 'mirage-scoped' : 'bg-surface-raised',
         className,
       )}
-      style={mirage ? ({ ...style, '--mirage-image': mirage } as CSSProperties) : style}
+      // --pad is what a Divider inside cancels to reach the edges, so the card states its
+      // own padding rather than every rule having to guess it.
+      style={
+        {
+          ...style,
+          '--pad': padded ? '16px' : '0px',
+          ...(mirage ? { '--mirage-image': mirage } : null),
+        } as CSSProperties
+      }
       {...rest}
     >
       {header}

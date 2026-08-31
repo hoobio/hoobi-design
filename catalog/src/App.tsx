@@ -14,6 +14,7 @@ import {
   ConfirmButtonPage,
   CxPage,
   DescriptionListPage,
+  DividerPage,
   InputPage,
   MenuPage,
   ModalPage,
@@ -189,6 +190,13 @@ const PAGES: Page[] = [
     title: 'Spinner',
     caption: 'Two sizes. Compose it, do not prop it into everything.',
     render: () => <SpinnerPage />,
+  },
+  {
+    id: 'divider',
+    group: 'Layout',
+    title: 'Divider',
+    caption: 'A slice of page background, edge to edge by default.',
+    render: () => <DividerPage />,
   },
   {
     id: 'description-list',

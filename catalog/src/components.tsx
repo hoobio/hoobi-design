@@ -9,6 +9,7 @@ import {
   CodeBlock,
   ConfirmButton,
   DescriptionList,
+  Divider,
   Input,
   Menu,
   Modal,
@@ -1982,6 +1983,70 @@ export function TimelinePage() {
             'Badges or labels beside the time. The row stacks below sm and is one baseline-aligned row from sm up.',
           ],
           ['className', 'string', '', 'On the ol, and on each li.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function DividerPage() {
+  return (
+    <>
+      <Import names="Divider" />
+      <p className="text-body text-text-dim">
+        A slice, not a rule you draw: 1px of page background cutting a surface in two. It bleeds to
+        the surface's edges by cancelling whatever padding its container published as{' '}
+        <code className="text-accent-blue">--pad</code>, which a Card does for free - so a hairline
+        inside a padded card reaches the edges without anyone passing it a magic inset.
+      </p>
+
+      <Demo
+        title="Inside a Card"
+        note="The default. The card pads its content by 16px and the rule undoes exactly that, so it lands edge to edge."
+        stack
+        code={`<Card title="plan">
+  <p>...</p>
+  <Divider />
+  <p>...</p>
+</Card>`}
+      >
+        <Card title="plan" className="w-full max-w-[32rem]">
+          <p className="text-body">Replace the current file with the English-dubbed release.</p>
+          <Divider className="my-3" />
+          <p className="text-caption text-text-dim">
+            The release is a partial season, which matches what is on disk.
+          </p>
+        </Card>
+      </Demo>
+
+      <Demo
+        title="padded"
+        note="Opts out, for a rule that should sit inside the padding rather than cut the whole surface. Rare - reach for it only when the two sides are not really separate sections."
+        stack
+        code={`<Divider padded />`}
+      >
+        <Card title="plan" className="w-full max-w-[32rem]">
+          <p className="text-body">Replace the current file.</p>
+          <Divider padded className="my-3" />
+          <p className="text-caption text-text-dim">The release is a partial season.</p>
+        </Card>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'padded',
+            'boolean',
+            'false',
+            'Insets the rule to the container padding instead of bleeding to its edges.',
+          ],
+          [
+            'className',
+            'string',
+            '-',
+            'Spacing lives here - the rule ships none, so my-3 or my-4 is yours to pick.',
+          ],
+          ['... rest', 'HTMLAttributes<HTMLHRElement>', '-', 'It is a real hr.'],
         ]}
       />
     </>
