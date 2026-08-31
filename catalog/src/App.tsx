@@ -1,16 +1,21 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Section, Shell } from '@hoobi/design';
+import { Button, Section, Shell } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext } from './kit.js';
 import posterUrl from './poster.jpg';
 import { Colour, Identity, Mirage, Spacing, Typography } from './foundations.js';
 import {
   AlertPage,
   BadgePage,
+  BreadcrumbsPage,
   ButtonPage,
   CardPage,
+  CheckboxPage,
   CodeBlockPage,
+  ConfirmButtonPage,
   CxPage,
+  DescriptionListPage,
   InputPage,
+  MenuPage,
   ModalPage,
   ProgressPage,
   SectionPage,
@@ -18,6 +23,7 @@ import {
   ShellPage,
   SpinnerPage,
   TabsPage,
+  TimelinePage,
   TooltipPage,
 } from './components.js';
 
@@ -73,6 +79,20 @@ const PAGES: Page[] = [
     render: () => <ButtonPage />,
   },
   {
+    id: 'confirm-button',
+    group: 'Actions',
+    title: 'Confirm Button',
+    caption: 'Arm, then confirm. The destructive click, twice.',
+    render: () => <ConfirmButtonPage />,
+  },
+  {
+    id: 'menu',
+    group: 'Actions',
+    title: 'Menu',
+    caption: 'A trigger and an anchored panel of rows, nothing can clip it.',
+    render: () => <MenuPage />,
+  },
+  {
     id: 'code-block',
     group: 'Visual Elements',
     title: 'Code Block',
@@ -108,6 +128,13 @@ const PAGES: Page[] = [
     render: () => <InputPage />,
   },
   {
+    id: 'checkbox',
+    group: 'Inputs',
+    title: 'Checkbox',
+    caption: 'A native checkbox in house clothes. 20px box, 44px target.',
+    render: () => <CheckboxPage />,
+  },
+  {
     id: 'select',
     group: 'Inputs',
     title: 'Select',
@@ -120,6 +147,13 @@ const PAGES: Page[] = [
     title: 'Modal',
     caption: 'A native dialog, so the platform does the hard parts.',
     render: () => <ModalPage />,
+  },
+  {
+    id: 'breadcrumbs',
+    group: 'Navigation',
+    title: 'Breadcrumbs',
+    caption: 'Where you are, and the way back. The last one is never a link.',
+    render: () => <BreadcrumbsPage />,
   },
   {
     id: 'tabs',
@@ -157,6 +191,20 @@ const PAGES: Page[] = [
     render: () => <SpinnerPage />,
   },
   {
+    id: 'description-list',
+    group: 'Layout',
+    title: 'Description List',
+    caption: 'Label and value pairs, as a real dl.',
+    render: () => <DescriptionListPage />,
+  },
+  {
+    id: 'timeline',
+    group: 'Visual Elements',
+    title: 'Timeline',
+    caption: 'A tone-coloured rail and what happened beside it.',
+    render: () => <TimelinePage />,
+  },
+  {
     id: 'section',
     group: 'Layout',
     title: 'Section',
@@ -172,7 +220,6 @@ const PAGES: Page[] = [
   },
 ];
 
-// Textura's storybook taxonomy, minus the groups nothing lives in yet.
 const GROUPS = [
   'Foundations',
   'Actions',
@@ -209,6 +256,7 @@ export function App() {
   // its three presentations so each can be experienced, not just read about.
   const [navType, setNavType] = useState<NavType>('rail');
   const [mirageSrc, setMirageSrc] = useState<'off' | 'hues' | 'poster'>('off');
+  const [bar, setBar] = useState(true);
   return (
     <Shell
       brand={
@@ -218,6 +266,7 @@ export function App() {
       }
       title={<span className="font-mono">@hoobi/design</span>}
       subtitle={<span className="font-mono">v{__LIB_VERSION__}</span>}
+      bar={bar}
       mode={navType === 'top' ? 'top' : 'side'}
       collapsible={navType === 'rail'}
       mirage={
@@ -248,17 +297,28 @@ export function App() {
           name="hoobi"
           detail="design.hoobi.io"
           menu={
-            <div className="p-2 text-caption text-text-dim">
-              The menu slot: a flyout beside the rail, a downward expander here. Real vouch identity
-              is still to be wired, so sign out below is a demo row.
-            </div>
+            <>
+              <Shell.MenuLabel>Signed in as hoobi</Shell.MenuLabel>
+              <Shell.MenuItem onClick={() => undefined}>Copy API key</Shell.MenuItem>
+              <Shell.MenuItem
+                onClick={() => undefined}
+                action={
+                  <Button size="sm" variant="ghost" onClick={() => undefined}>
+                    Unlink
+                  </Button>
+                }
+              >
+                user@example.com
+              </Shell.MenuItem>
+              <Shell.MenuDivider />
+            </>
           }
           onSignOut={() => undefined}
         />
       }
     >
       <ShellDemoContext.Provider
-        value={{ navType, setNavType, mirage: mirageSrc, setMirage: setMirageSrc }}
+        value={{ navType, setNavType, mirage: mirageSrc, setMirage: setMirageSrc, bar, setBar }}
       >
         <Section id={page.id} title={page.title} caption={page.caption}>
           {page.render()}

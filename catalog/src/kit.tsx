@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { Button, CodeBlock, Input, Select, cx, mirageImage } from '@hoobi/design';
+import { Button, Checkbox, CodeBlock, Input, Select, cx, mirageImage } from '@hoobi/design';
 import hljs from 'highlight.js/lib/core';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
@@ -22,6 +22,8 @@ export interface ShellDemo {
   setNavType: (v: ShellDemo['navType']) => void;
   mirage: 'off' | 'hues' | 'poster';
   setMirage: (v: ShellDemo['mirage']) => void;
+  bar: boolean;
+  setBar: (v: boolean) => void;
 }
 export const ShellDemoContext = createContext<ShellDemo | null>(null);
 
@@ -123,16 +125,15 @@ export function Playground({
             }
             if (def.kind === 'boolean') {
               return (
-                <label key={name} className="flex h-8 items-center gap-1.5 text-body text-text-dim">
-                  <input
-                    type="checkbox"
-                    checked={values[name] as boolean}
-                    onChange={(e) => {
-                      set(name, e.target.checked);
-                    }}
-                  />
-                  {name}
-                </label>
+                <Checkbox
+                  key={name}
+                  className="h-8 text-text-dim"
+                  label={name}
+                  checked={values[name] as boolean}
+                  onChange={(e) => {
+                    set(name, e.target.checked);
+                  }}
+                />
               );
             }
             return (

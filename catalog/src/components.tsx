@@ -2,16 +2,22 @@ import { useState } from 'react';
 import {
   Alert,
   Badge,
+  Breadcrumbs,
   Button,
   Card,
+  Checkbox,
   CodeBlock,
+  ConfirmButton,
+  DescriptionList,
   Input,
+  Menu,
   Modal,
   Progress,
   Section,
   Select,
   Spinner,
   Tabs,
+  Timeline,
   Tooltip,
   cx,
 } from '@hoobi/design';
@@ -168,6 +174,17 @@ export function ButtonPage() {
 }
 
 const TONES = ['neutral', 'accent', 'success', 'warn', 'danger', 'info'] as const;
+const TIMELINE_TONES = TONES;
+const FACTS = [
+  { label: 'status', value: 'awaiting_approval' },
+  { label: 'reporter', value: 'hoobi' },
+  { label: 'media', value: 'MegaMan: NT Warrior - Season 1' },
+  {
+    label: 'release',
+    value: '[TADA] Rockman EXE (2002 - 2003) Singapore-English Dubbed; 01 - 56',
+  },
+  { label: 'opened', value: '31 Aug 2026, 14:01' },
+];
 
 export function BadgePage() {
   return (
@@ -299,16 +316,22 @@ export function ShellPage() {
             <option value="hues">mirage: hues</option>
             <option value="poster">mirage: poster</option>
           </Select>
+          <Checkbox
+            label="bar"
+            checked={demo.bar}
+            onChange={(e) => {
+              demo.setBar(e.target.checked);
+            }}
+          />
         </Demo>
       ) : null}
       <p className="text-body text-text-dim">
         The one page chrome, so every Hoobi app lays out the same way: a full-width 48px top bar
-        with the brand mark in the top-left column (textura's arrangement) and the panel trigger
-        beside the wordmark. In side mode a pane below animates between a 48px icon rail and a 216px
-        pane on the Fluent decelerate curve - the mark and the rail icons share one 48px column. In
-        top mode the items lie along the bar and groups auto-convert to dropdowns. Below md both
-        modes become a slide-in overlay with a scrim, and the trigger swaps to a close cross while
-        it is up.
+        with the brand mark in the top-left column and the panel trigger beside the wordmark. In
+        side mode a pane below animates between a 48px icon rail and a 216px pane on the Fluent
+        decelerate curve - the mark and the rail icons share one 48px column. In top mode the items
+        lie along the bar and groups auto-convert to dropdowns. Below md both modes become a
+        slide-in overlay with a scrim, and the trigger swaps to a close cross while it is up.
       </p>
       <p className="mt-3 text-body text-text-dim">
         <strong className="text-text">This catalog is the live demo</strong> - the chrome around
@@ -337,11 +360,64 @@ export function ShellPage() {
 </Shell>`}
         />
       </div>
+      <Demo
+        title="bar={false}"
+        note="Uncheck bar above to see it on this page. The top bar goes on md+ and the side pane runs the full viewport height, taking a 48px header cell of its own at its top - the same cell, holding the same wordmark and collapse trigger. Below md the bar still renders whatever bar says: it carries the overlay trigger, which is the only nav there is at that width, so actions are unavailable on md+ in this mode."
+        stack
+        code={`<Shell bar={false} nav={nav} navFooter={<Shell.User ... />}>
+  {routes}
+</Shell>`}
+      >
+        <p className="text-caption text-text-dim">
+          The content column loses its 40px desktop gap too (md:pt-6 rather than md:pt-10) - with no
+          bar above it, that gap reads as a hole rather than as breathing room.
+        </p>
+      </Demo>
+      <Demo
+        title="The user menu"
+        note="Live in the pane's bottom row - click hoobi. Expanded it grows downward as a distinct raised panel; collapse the pane and the same rows become a flyout beside the rail. The rows are Menu.Item / Label / Divider re-exported as Shell.MenuItem / MenuLabel / MenuDivider, so a consumer's row and the built-in Sign out row are one implementation, and onSignOut appends that danger row for you."
+        stack
+        code={`<Shell.User
+  name="hoobi"
+  detail="design.hoobi.io"
+  menu={
+    <>
+      <Shell.MenuLabel>Signed in as hoobi</Shell.MenuLabel>
+      <Shell.MenuItem onClick={copyKey}>Copy API key</Shell.MenuItem>
+      <Shell.MenuItem
+        onClick={relink}
+        action={<Button size="sm" variant="ghost" onClick={unlink}>Unlink</Button>}
+      >
+        user@example.com
+      </Shell.MenuItem>
+      <Shell.MenuDivider />
+    </>
+  }
+  onSignOut={signOut}
+/>`}
+      >
+        <p className="text-caption text-text-dim">
+          A real button, not a details/summary: Chromium paints a summary's focus ring on mouse
+          clicks. Outside pointerdown and Escape close it, and the flyout is fixed and placed off
+          the row's rect, so the pane's own overflow cannot clip it.
+        </p>
+      </Demo>
       <Props
         rows={[
           ['brand', 'ReactNode', '', 'Square mark in the top bar, ~24px.'],
           ['title', 'ReactNode', '', 'Wordmark / app name next to the mark.'],
-          ['actions', 'ReactNode', '', 'Right side of the top bar.'],
+          [
+            'actions',
+            'ReactNode',
+            '',
+            'Right side of the top bar. Unavailable on md+ when bar={false} - there is no bar to put them in.',
+          ],
+          [
+            'bar',
+            'boolean',
+            'true',
+            'false drops the top bar on md+ and gives the pane the full viewport height with the pane header cell at its own top. Below md the bar always renders.',
+          ],
           ['nav', 'ReactNode', 'required', 'Shell.Item and Shell.Group rows.'],
           ['navFooter', 'ReactNode', '', 'Bottom-docked pane rows (the settings slot).'],
           [
@@ -400,10 +476,16 @@ export function ShellPage() {
             'Caption over its items; a hairline on the rail; a dropdown in top mode.',
           ],
           [
+            'Shell.MenuItem / MenuLabel / MenuDivider',
+            'icon, tone, action, ...button props',
+            '',
+            'The same rows as Menu.Item / Label / Divider, for composing into the Shell.User menu. The built-in Sign out row is one of them, so a consumer row and the library row are one implementation.',
+          ],
+          [
             'Shell.User',
             'name, detail, avatar, menu, onSignOut, as, onClick',
             '',
-            'Bottom-docked identity row, avatar-only on the rail, initials hue-hashed from the name. menu renders as a flyout beside the rail when collapsed and an upward accordion when expanded - on a real button, so no summary focus-ring quirk. onSignOut appends the standard danger sign-out row.',
+            'Bottom-docked identity row, avatar-only on the rail, initials hue-hashed from the name. menu renders as a flyout beside the rail when collapsed and a downward expander when expanded - a distinct raised panel either way, on a real button, so no summary focus-ring quirk. onSignOut appends the standard danger sign-out row.',
           ],
         ]}
       />
@@ -1353,6 +1435,560 @@ hljs.registerLanguage('json', json);
             'Pre-highlighted markup from a trusted engine - hljs.highlight(...).value. hljs escapes its input; never pass user-authored markup.',
           ],
           ['...rest', 'HTMLAttributes<HTMLPreElement>', '', 'className, id, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function BreadcrumbsPage() {
+  return (
+    <>
+      <Import names="Breadcrumbs" />
+      <Demo
+        title="Default"
+        note="The last item is the current page: never a link whatever as says, so its href is dropped rather than rendered inert."
+        code={`<Breadcrumbs
+  items={[
+    { label: 'issues', as: 'a', href: '/issues' },
+    { label: 'open', as: 'a', href: '/issues?status=open' },
+    { label: 'Severance S01E03' },
+  ]}
+/>`}
+      >
+        <Breadcrumbs
+          items={[
+            { label: 'issues', as: 'a', href: '#breadcrumbs' },
+            { label: 'open', as: 'a', href: '#breadcrumbs' },
+            { label: 'Severance S01E03' },
+          ]}
+        />
+      </Demo>
+
+      <Demo
+        title="Custom separator"
+        note="Any node. The default is the Fluent 12px chevron in text-mute."
+        code={`<Breadcrumbs separator="/" items={items} />`}
+      >
+        <Breadcrumbs
+          separator="/"
+          items={[
+            { label: 'radarr', as: 'a', href: '#breadcrumbs' },
+            { label: 'The Odyssey (2026)' },
+          ]}
+        />
+      </Demo>
+
+      <Demo
+        title="One item"
+        note="A single item is just the current page - no separator, no link."
+        code={`<Breadcrumbs items={[{ label: 'config' }]} />`}
+      >
+        <Breadcrumbs items={[{ label: 'config' }]} />
+      </Demo>
+
+      <Demo
+        title="At 360px"
+        note="The last item truncates and the earlier ones hold their width; the strip scrolls rather than wrapping to a second line."
+        stack
+        code={`<Breadcrumbs items={items} />   // inside a 360px column`}
+      >
+        <div className="w-[360px] max-w-full rounded-panel bg-bg p-3">
+          <Breadcrumbs
+            items={[
+              { label: 'issues', as: 'a', href: '#breadcrumbs' },
+              { label: 'open', as: 'a', href: '#breadcrumbs' },
+              { label: 'Rockman.EXE: The Program of Light and Darkness' },
+            ]}
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'items',
+            'BreadcrumbItem[]',
+            'required',
+            'label, an optional as, and anything else (href, to, onClick) spread onto the element.',
+          ],
+          ['separator', 'ReactNode', 'Fluent chevron', 'Rendered between items, aria-hidden.'],
+          ['className', 'string', '', 'On the nav element.'],
+          [
+            'BreadcrumbItem.as',
+            'ElementType',
+            `'span'`,
+            'The element for that crumb - pass a router Link for SPA nav. Ignored on the last item, which is the current page.',
+          ],
+        ]}
+      />
+    </>
+  );
+}
+
+export function MenuPage() {
+  return (
+    <>
+      <Import names="Menu" />
+      <Playground
+        knobs={{
+          variant: {
+            kind: 'select',
+            options: ['secondary', 'primary', 'ghost', 'danger'],
+            init: 'secondary',
+          },
+          size: { kind: 'select', options: ['md', 'sm'], init: 'md' },
+          align: { kind: 'select', options: ['start', 'end'], init: 'start' },
+          disabled: { kind: 'boolean', init: false },
+          label: { kind: 'text', init: 'Bulk actions' },
+        }}
+        render={(v) => (
+          <Menu
+            variant={v.variant as 'secondary'}
+            size={v.size as 'md'}
+            align={v.align as 'start'}
+            disabled={v.disabled as boolean}
+            label={v.label as string}
+          >
+            <Menu.Item onClick={() => undefined}>Approve selected</Menu.Item>
+            <Menu.Item onClick={() => undefined}>Reanalyze selected</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item tone="danger" onClick={() => undefined}>
+              Reject selected
+            </Menu.Item>
+          </Menu>
+        )}
+        code={(v) =>
+          `<Menu label="${String(v.label)}" variant="${String(v.variant)}" size="${String(v.size)}" align="${String(v.align)}"${v.disabled ? ' disabled' : ''}>
+  <Menu.Item onClick={approve}>Approve selected</Menu.Item>
+  <Menu.Item onClick={reanalyze}>Reanalyze selected</Menu.Item>
+  <Menu.Divider />
+  <Menu.Item tone="danger" onClick={reject}>Reject selected</Menu.Item>
+</Menu>`
+        }
+      />
+
+      <Demo
+        title="The row set"
+        note="Label, item, divider and a trailing action - so a menu never needs a consumer to hand-roll a row at a different indent than the ones beside it. Selecting a row closes the menu; the action is its own control and does not."
+        code={`<Menu label="Account">
+  <Menu.Label>Signed in as hoobi</Menu.Label>
+  <Menu.Item icon={<KeyIcon />} onClick={copyKey}>Copy API key</Menu.Item>
+  <Menu.Item
+    onClick={link}
+    action={<Button size="sm" variant="ghost" onClick={unlink}>Unlink</Button>}
+  >
+    user@example.com
+  </Menu.Item>
+  <Menu.Divider />
+  <Menu.Item tone="danger" onClick={signOut}>Sign out</Menu.Item>
+</Menu>`}
+      >
+        <Menu label="Account">
+          <Menu.Label>Signed in as hoobi</Menu.Label>
+          <Menu.Item onClick={() => undefined}>Copy API key</Menu.Item>
+          <Menu.Item
+            onClick={() => undefined}
+            action={
+              <Button size="sm" variant="ghost" onClick={() => undefined}>
+                Unlink
+              </Button>
+            }
+          >
+            user@example.com
+          </Menu.Item>
+          <Menu.Divider />
+          <Menu.Item tone="danger" onClick={() => undefined}>
+            Sign out
+          </Menu.Item>
+        </Menu>
+      </Demo>
+
+      <Demo
+        title="Alignment"
+        note="The panel is fixed and placed off the trigger's rect when it opens, so no scroll-container ancestor can clip it. align='end' hangs it off the trigger's right edge - what a menu at the end of a toolbar wants."
+        code={`<Menu label="More" align="end" variant="ghost">...</Menu>`}
+      >
+        <Menu label="More" align="end" variant="ghost">
+          <Menu.Item onClick={() => undefined}>Export</Menu.Item>
+          <Menu.Item onClick={() => undefined}>Refresh</Menu.Item>
+        </Menu>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'label',
+            'ReactNode',
+            'required',
+            "The trigger's content. A chevron is appended and rotates when open.",
+          ],
+          [
+            'variant',
+            `'primary' | 'secondary' | 'ghost' | 'danger'`,
+            `'secondary'`,
+            'Trigger styling, straight through to Button.',
+          ],
+          ['size', `'sm' | 'md'`, `'md'`, 'Trigger height, straight through to Button.'],
+          [
+            'align',
+            `'start' | 'end'`,
+            `'start'`,
+            "Which of the panel's edges lines up with the trigger's.",
+          ],
+          ['disabled', 'boolean', 'false', 'Disables the trigger.'],
+          ['children', 'ReactNode', 'required', 'Menu.Item / Menu.Label / Menu.Divider rows.'],
+          [
+            'Menu.Item',
+            'icon, tone, action, ...button props',
+            '',
+            '40px row. tone="danger" for a destructive one. Selecting it closes the menu.',
+          ],
+          [
+            'Menu.Item action',
+            'ReactNode',
+            '',
+            'Trailing control, right-aligned. Its own button, so its clicks never reach the row.',
+          ],
+          [
+            'Menu.Label',
+            'children, className',
+            '',
+            'Group caption on the same 12px rhythm as the rows.',
+          ],
+          [
+            'Menu.Divider',
+            'className',
+            '',
+            'House hairline: 1px of page background, never a border colour.',
+          ],
+        ]}
+      />
+    </>
+  );
+}
+
+export function CheckboxPage() {
+  const [checked, setChecked] = useState(true);
+  return (
+    <>
+      <Import names="Checkbox" />
+      <Playground
+        knobs={{
+          label: { kind: 'text', init: 'Whole season' },
+          indeterminate: { kind: 'boolean', init: false },
+          disabled: { kind: 'boolean', init: false },
+        }}
+        render={(v) => (
+          <Checkbox
+            label={(v.label as string) || undefined}
+            aria-label={(v.label as string) || 'Whole season'}
+            indeterminate={v.indeterminate as boolean}
+            disabled={v.disabled as boolean}
+            defaultChecked
+          />
+        )}
+        code={(v) =>
+          `<Checkbox label="${String(v.label)}"${v.indeterminate ? ' indeterminate' : ''}${v.disabled ? ' disabled' : ''} checked={value} onChange={onChange} />`
+        }
+      />
+
+      <Demo
+        title="States"
+        note="A native input type=checkbox given the house look, not a re-implementation: the label association, the space key and the global focus ring are all still the platform's."
+        code={`<Checkbox label="Unchecked" />
+<Checkbox label="Checked" defaultChecked />
+<Checkbox label="Indeterminate" indeterminate />
+<Checkbox label="Disabled" disabled />`}
+      >
+        <Checkbox label="Unchecked" />
+        <Checkbox label="Checked" defaultChecked />
+        <Checkbox label="Indeterminate" indeterminate />
+        <Checkbox label="Disabled" disabled defaultChecked />
+      </Demo>
+
+      <Demo
+        title="Controlled"
+        note="Standard React: checked plus onChange. indeterminate is not an attribute, so it is set on the DOM node for you."
+        stack
+        code={`const [checked, setChecked] = useState(true);
+
+<Checkbox
+  label="Search the whole season"
+  checked={checked}
+  onChange={(e) => setChecked(e.target.checked)}
+/>`}
+      >
+        <Checkbox
+          label="Search the whole season"
+          checked={checked}
+          onChange={(e) => {
+            setChecked(e.target.checked);
+          }}
+        />
+        <p className="text-caption text-text-dim">
+          checked is <span className="font-mono text-accent-blue">{String(checked)}</span>
+        </p>
+      </Demo>
+
+      <Demo
+        title="Without a label"
+        note="A row-selection box in a table has its label in the row beside it, so pass aria-label instead."
+        code={`<Checkbox aria-label="Select issue 1042" />`}
+      >
+        <Checkbox aria-label="Select issue 1042" />
+      </Demo>
+
+      <Props
+        rows={[
+          ['label', 'ReactNode', '', 'Text beside the box. Without one, pass aria-label.'],
+          [
+            'indeterminate',
+            'boolean',
+            'false',
+            'The dash state, for a parent box over a partial selection. Set on the DOM node via a ref effect.',
+          ],
+          [
+            '...rest',
+            'InputHTMLAttributes<HTMLInputElement> minus type/size',
+            '',
+            'checked, defaultChecked, onChange, disabled, name, value, aria-*.',
+          ],
+          [
+            'className',
+            'string',
+            '',
+            'On the label wrapper, which is the 44px touch target under a coarse pointer. The painted box stays 20px.',
+          ],
+        ]}
+      />
+    </>
+  );
+}
+
+export function ConfirmButtonPage() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <Import names="ConfirmButton" />
+      <Demo
+        title="Arm, then confirm"
+        note="First click arms it: the button turns danger and shows confirmLabel. A second click within the timeout fires onConfirm; otherwise it disarms itself. Press it once and wait to see that."
+        stack
+        code={`<ConfirmButton onConfirm={deleteFile}>Delete file</ConfirmButton>`}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <ConfirmButton
+            onConfirm={() => {
+              setCount((n) => n + 1);
+            }}
+          >
+            Delete file
+          </ConfirmButton>
+          <span className="text-caption text-text-dim">
+            confirmed <span className="font-mono text-accent-blue">{count}</span> times
+          </span>
+        </div>
+      </Demo>
+
+      <Demo
+        title="Labels and timing"
+        note="The armed label defaults to 'Confirm' plus the children when they are a string. Override it when that reads badly, and shorten the timeout for something cheap to redo."
+        code={`<ConfirmButton confirmLabel="Yes, revert" timeout={8000} onConfirm={revert}>
+  Revert
+</ConfirmButton>
+<ConfirmButton variant="ghost" timeout={2000} onConfirm={clear}>Clear</ConfirmButton>`}
+      >
+        <ConfirmButton confirmLabel="Yes, revert" timeout={8000} onConfirm={() => undefined}>
+          Revert
+        </ConfirmButton>
+        <ConfirmButton variant="ghost" timeout={2000} onConfirm={() => undefined}>
+          Clear
+        </ConfirmButton>
+        <ConfirmButton size="sm" onConfirm={() => undefined}>
+          Blocklist
+        </ConfirmButton>
+      </Demo>
+
+      <Props
+        rows={[
+          ['onConfirm', '() => void', 'required', 'Fires on the second click, which also disarms.'],
+          [
+            'variant',
+            `'primary' | 'secondary' | 'ghost' | 'danger'`,
+            `'secondary'`,
+            'The resting variant. Armed is always danger.',
+          ],
+          [
+            'confirmLabel',
+            'ReactNode',
+            `'Confirm ' + children`,
+            'The armed label. Falls back to plain Confirm when the children are not a string.',
+          ],
+          [
+            'timeout',
+            'number',
+            '4000',
+            'ms before it disarms itself. The timer is cleared on confirm and on unmount.',
+          ],
+          ['...rest', 'ButtonProps minus onClick', '', 'size, disabled, className, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function TimelinePage() {
+  return (
+    <>
+      <Import names="Timeline" />
+      <Demo
+        title="Default"
+        note="The rail is one of the border exceptions the design rules allow. Tone carries the outcome; time is dense metadata in mono, head takes badges or labels beside it."
+        stack
+        code={`<Timeline>
+  <Timeline.Item tone="accent" time="14:02:11" head={<Badge tone="accent">plan</Badge>}>
+    Replace with <strong>[TADA] Rockman EXE - 01-56</strong>
+  </Timeline.Item>
+  <Timeline.Item tone="success" time="14:04:47" head={<Badge tone="success" dot>imported</Badge>}>
+    56 episodes mapped through Override and Grab.
+  </Timeline.Item>
+</Timeline>`}
+      >
+        <Timeline className="w-full">
+          <Timeline.Item tone="info" time="14:01:03" head={<Badge tone="info">webhook</Badge>}>
+            Issue 1042 opened by hoobi: wrong audio track.
+          </Timeline.Item>
+          <Timeline.Item tone="accent" time="14:02:11" head={<Badge tone="accent">plan</Badge>}>
+            Replace with <strong className="text-text">[TADA] Rockman EXE - 01-56</strong>.
+          </Timeline.Item>
+          <Timeline.Item
+            tone="warn"
+            time="14:02:40"
+            head={
+              <Badge tone="warn" dot>
+                awaiting approval
+              </Badge>
+            }
+          >
+            Reporter is not the requester, so it waits.
+          </Timeline.Item>
+          <Timeline.Item
+            tone="success"
+            time="14:04:47"
+            head={
+              <Badge tone="success" dot>
+                imported
+              </Badge>
+            }
+          >
+            56 episodes mapped through Override and Grab.
+          </Timeline.Item>
+        </Timeline>
+      </Demo>
+
+      <Demo
+        title="Tones"
+        note="Neutral is the border colour - the resting rail. The rest are the semantic set, same six as Badge."
+        stack
+        code={`{(['neutral', 'accent', 'success', 'warn', 'danger', 'info'] as const).map((t) => (
+  <Timeline.Item key={t} tone={t} time="00:00:00">{t}</Timeline.Item>
+))}`}
+      >
+        <Timeline className="w-full">
+          {TIMELINE_TONES.map((t) => (
+            <Timeline.Item key={t} tone={t} time="00:00:00">
+              {t}
+            </Timeline.Item>
+          ))}
+        </Timeline>
+      </Demo>
+
+      <Demo
+        title="Content only"
+        note="Both time and head are optional; with neither, the head row is not rendered at all."
+        stack
+        code={`<Timeline>
+  <Timeline.Item>Blocklisted the previous release.</Timeline.Item>
+  <Timeline.Item>Deleted 1 file (4.4 GB).</Timeline.Item>
+</Timeline>`}
+      >
+        <Timeline className="w-full">
+          <Timeline.Item>Blocklisted the previous release.</Timeline.Item>
+          <Timeline.Item>Deleted 1 file (4.4 GB).</Timeline.Item>
+        </Timeline>
+      </Demo>
+
+      <Props
+        rows={[
+          ['children', 'ReactNode', 'required', 'Timeline.Item rows. The list is a real ol.'],
+          [
+            'Timeline.Item tone',
+            `'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info'`,
+            `'neutral'`,
+            "The 2px rail's colour.",
+          ],
+          [
+            'Timeline.Item time',
+            'ReactNode',
+            '',
+            'Dense metadata on the head row - a timestamp, in mono caption.',
+          ],
+          [
+            'Timeline.Item head',
+            'ReactNode',
+            '',
+            'Badges or labels beside the time. The row stacks below sm and is one baseline-aligned row from sm up.',
+          ],
+          ['className', 'string', '', 'On the ol, and on each li.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function DescriptionListPage() {
+  return (
+    <>
+      <Import names="DescriptionList" />
+      <Demo
+        title="Stacked"
+        note="The default: label above value, rows sliced by a 1px hairline of page background. A real dl / dt / dd, so it reads as facts to a screen reader rather than as a table."
+        stack
+        code={`<DescriptionList
+  items={[
+    { label: 'status', value: 'awaiting_approval' },
+    { label: 'reporter', value: 'hoobi' },
+    { label: 'release', value: '[TADA] Rockman EXE (2002 - 2003) Singapore-English Dubbed; 01 - 56' },
+  ]}
+/>`}
+      >
+        <div className="w-full max-w-[28rem] rounded-panel bg-surface-raised p-4">
+          <DescriptionList items={FACTS} />
+        </div>
+      </Demo>
+
+      <Demo
+        title="Inline"
+        note="A two-column grid from sm up, stacked below it. Long values wrap rather than pushing the row wide, which is what makes it survive 360px."
+        stack
+        code={`<DescriptionList layout="inline" items={items} />`}
+      >
+        <div className="w-full max-w-[36rem] rounded-panel bg-surface-raised p-4">
+          <DescriptionList layout="inline" items={FACTS} />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['items', 'DescriptionItem[]', 'required', 'label and value pairs, both ReactNode.'],
+          [
+            'layout',
+            `'stack' | 'inline'`,
+            `'stack'`,
+            'Label above value, or a two-column grid from sm up.',
+          ],
+          ['className', 'string', '', 'On the dl.'],
         ]}
       />
     </>
