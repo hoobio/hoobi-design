@@ -1,4 +1,4 @@
-import { useContext, type ReactNode } from 'react';
+import { useContext, type CSSProperties, type ReactNode } from 'react';
 import { Alert, Badge, Card, Select } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
 import { colour, token } from './tokens.js';
@@ -414,6 +414,38 @@ export function Mirage() {
           <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
             mirage
           </span>
+        </div>
+      </div>
+
+      <h3 className="mt-8 text-body-strong text-text">Edge, for a row</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        A third strength for list rows: the host paints its own{' '}
+        <code className="text-accent-blue">bg-surface</code> and{' '}
+        <code className="text-accent-blue">.mirage-edge</code> masks a strip of artwork at the left,
+        fading out before it reaches the text - a hint at the row&apos;s edge, not the fill. A full
+        <code className="text-accent-blue">.mirage-scoped</code> per row is too busy at list density.
+      </p>
+      <div className="mt-3">
+        <Snippet
+          code={`<div className="mirage-edge rounded-panel bg-surface" style={{ '--mirage-image': 'url(/poster.jpg)' }}>
+  ...
+</div>`}
+        />
+      </div>
+      <div className="mt-3 flex flex-col gap-2">
+        <div
+          className="mirage-edge rounded-panel bg-surface p-4"
+          style={{ '--mirage-image': DEMO_TEXTURE } as CSSProperties}
+        >
+          <p className="text-body-strong text-text">The Odyssey</p>
+          <p className="text-caption text-text-dim">Video issue - wrong quality</p>
+        </div>
+        <div
+          className="mirage-edge rounded-panel bg-surface p-4"
+          style={{ '--mirage-image': `url(${posterUrl})` } as CSSProperties}
+        >
+          <p className="text-body-strong text-text">Rockman.EXE</p>
+          <p className="text-caption text-text-dim">Audio issue - wrong language</p>
         </div>
       </div>
     </>

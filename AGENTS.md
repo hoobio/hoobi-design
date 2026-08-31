@@ -68,6 +68,10 @@ Section, Shell (the one page chrome; `bar={false}` for a full-height pane, and `
 Select, Checkbox, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
 scrolling or clipping ancestor can cut it off), plus `cx`, `mirageImage` and `markFavicon`.
 
+Mirage comes in three strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
+own fill (or `Card mirage="..."`), and `.mirage-edge` as a masked strip at a list row's left edge -
+for rows/lists where a full-bleed mirage per row would be too busy.
+
 `Divider` is the house hairline as a component: 1px of page background, and it **bleeds to the
 surface's edges by default** by cancelling whatever padding the container published as `--pad`
 (a Card sets it), so nothing has to be told a magic inset. `padded` opts out. A consumer writing

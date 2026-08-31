@@ -349,6 +349,29 @@
     scale: 1.2;
   }
 
+  /* Mirage, as an edge accent on a list row: unlike .mirage-scoped the art is a hint at
+     the row's edge, not the fill - the host paints its OWN bg/surface and a masked strip
+     of artwork sits at the left, fading out before it reaches the text. */
+  .mirage-edge {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .mirage-edge::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 200px;
+    z-index: -1;
+    background-image: var(--mirage-image);
+    background-size: cover;
+    background-position: center;
+    filter: saturate(1.2);
+    mask-image: linear-gradient(to right, rgb(0 0 0 / 45%), transparent 90%);
+    -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 45%), transparent 90%);
+  }
+
   /* Fluent 2 pane entrance: slide from the left on the decelerate curve. */
   .slide-in-left {
     animation: slide-in-left 0.25s var(--ease-decelerate);
