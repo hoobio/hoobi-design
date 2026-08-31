@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
   type ElementType,
@@ -554,32 +555,57 @@ export interface ShellUserProps extends HTMLAttributes<HTMLElement> {
   detail?: string;
   /** ~24px avatar; falls back to the name's initials. */
   avatar?: ReactNode;
+  /**
+   * Account actions. With this set the row becomes a real button (never a summary -
+   * Chromium paints summaries' focus ring on mouse clicks) that opens the menu as a
+   * flyout beside the rail when collapsed, and an upward accordion when expanded.
+   */
+  menu?: ReactNode;
   [key: string]: unknown;
 }
 
 /** textura's MainNav.User: bottom-docked identity row, avatar-only on the rail. */
-function ShellUser({ as, name, detail, avatar, className, ...rest }: ShellUserProps) {
+function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: ShellUserProps) {
   const { collapsed } = useContext(ShellContext);
   const area = useContext(NavAreaContext);
   const railed = area === 'side' && collapsed;
-  const Comp: ElementType = as ?? 'div';
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const initials = name
     .split(/\s+/)
     .map((part) => part.charAt(0))
     .slice(0, 2)
     .join('')
     .toUpperCase();
-  return (
-    <Comp
-      {...(railed ? sideTip(name) : null)}
-      className={cx(
-        'flex h-12 w-full items-center gap-3 overflow-hidden rounded-control whitespace-nowrap text-text',
-        (rest.onClick !== undefined || as !== undefined) && 'hover:bg-surface',
-        railed && 'tip-fixed',
-        className,
-      )}
-      {...rest}
-    >
+
+  // The flyout is fixed (the pane clips overflow), placed off the row when it opens.
+  const openFlyout = (e: MouseEvent<HTMLButtonElement>) => {
+    const row = e.currentTarget;
+    setOpen((was) => !was);
+    const panel = rootRef.current?.querySelector<HTMLDivElement>('[data-shell-user-flyout]');
+    if (!panel) return;
+    const rect = row.getBoundingClientRect();
+    panel.style.left = `${String(rect.right + 8)}px`;
+    panel.style.bottom = `${String(window.innerHeight - rect.bottom)}px`;
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e instanceof PointerEvent && rootRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    window.addEventListener('pointerdown', close);
+    window.addEventListener('keydown', close);
+    return () => {
+      window.removeEventListener('pointerdown', close);
+      window.removeEventListener('keydown', close);
+    };
+  }, [open]);
+
+  const row = (
+    <>
       <span aria-hidden className="flex w-10 shrink-0 items-center justify-center">
         {avatar ?? (
           <span
@@ -592,13 +618,79 @@ function ShellUser({ as, name, detail, avatar, className, ...rest }: ShellUserPr
       </span>
       <span
         className={cx(
-          'flex min-w-0 flex-col text-left transition-opacity',
+          'flex min-w-0 flex-1 flex-col text-left transition-opacity',
           railed ? 'opacity-0' : 'opacity-100',
         )}
       >
         <span className="truncate text-body">{name}</span>
         {detail ? <span className="truncate text-caption text-text-mute">{detail}</span> : null}
       </span>
+    </>
+  );
+
+  const rowClasses = cx(
+    'flex h-12 w-full items-center gap-3 overflow-hidden rounded-control whitespace-nowrap text-text',
+    railed && 'tip-fixed',
+    className,
+  );
+
+  if (menu) {
+    return (
+      <div ref={rootRef}>
+        {/* Expanded: the menu concertinas open above the row, inside the pane. */}
+        {open && !railed ? <div className="fade-in border-t border-bg py-1">{menu}</div> : null}
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={openFlyout}
+          {...(railed ? sideTip(name) : null)}
+          className={cx(rowClasses, 'hover:bg-surface')}
+        >
+          {row}
+          {!railed ? (
+            <svg
+              viewBox="0 0 12 12"
+              aria-hidden
+              fill="none"
+              className={cx(
+                'mr-3 size-3 shrink-0 text-text-mute transition-transform duration-150 ease-standard',
+                open && 'rotate-180',
+              )}
+            >
+              <path
+                d="M2.5 7.5L6 4l3.5 3.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : null}
+        </button>
+        {/* Railed: a flyout beside the rail. */}
+        <div
+          data-shell-user-flyout
+          className={cx(
+            'fixed z-50 w-72 max-w-[calc(100vw-4rem)] rounded-panel bg-surface-raised p-1',
+            open && railed ? 'fade-in' : 'hidden',
+          )}
+        >
+          {menu}
+        </div>
+      </div>
+    );
+  }
+
+  const Comp: ElementType = as ?? 'div';
+  return (
+    <Comp
+      {...(railed ? sideTip(name) : null)}
+      className={cx(
+        rowClasses,
+        (rest.onClick !== undefined || as !== undefined) && 'hover:bg-surface',
+      )}
+      {...rest}
+    >
+      {row}
     </Comp>
   );
 }

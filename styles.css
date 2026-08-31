@@ -249,6 +249,30 @@
     scale: 1.1; /* keeps the blur's edge bleed off-screen */
   }
 
+  /* Mirage, scoped to one surface (a card): the same recipe as .mirage-layer but
+     tinted towards surface-raised and clipped to the host, which must NOT paint its
+     own opaque background - the layer IS the fill. Hover states go translucent. */
+  .mirage-scoped {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .mirage-scoped::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(
+        color-mix(in srgb, var(--color-surface-raised) 75%, transparent),
+        color-mix(in srgb, var(--color-surface-raised) 75%, transparent)
+      ),
+      var(--mirage-image);
+    background-size: cover;
+    background-position: center 25%;
+    filter: blur(32px) saturate(1.4);
+    scale: 1.2;
+  }
+
   /* Fluent 2 pane entrance: slide from the left on the decelerate curve. */
   .slide-in-left {
     animation: slide-in-left 0.25s var(--ease-decelerate);

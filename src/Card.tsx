@@ -1,15 +1,21 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx.js';
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: ReactNode;
   actions?: ReactNode;
+  /**
+   * Mirage backdrop scoped to this card: any CSS image (a poster url(...)),
+   * blurred and tinted towards surface-raised. The layer becomes the fill.
+   */
+  mirage?: string;
 }
 
-export function Card({ title, actions, className, children, ...rest }: CardProps) {
+export function Card({ title, actions, mirage, className, style, children, ...rest }: CardProps) {
   return (
     <div
-      className={cx('rounded-panel bg-surface-raised p-4', className)}
+      className={cx('rounded-panel p-4', mirage ? 'mirage-scoped' : 'bg-surface-raised', className)}
+      style={mirage ? ({ ...style, '--mirage-image': mirage } as CSSProperties) : style}
       {...rest}
     >
       {title || actions ? (

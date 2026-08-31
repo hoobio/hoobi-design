@@ -16,6 +16,7 @@ import {
 } from '@hoobi/design';
 import { useContext } from 'react';
 import { Demo, Import, Label, Playground, Props, ShellDemoContext, Snippet } from './kit.js';
+import posterUrl from './poster.jpg';
 
 export function ButtonPage() {
   return (
@@ -390,9 +391,9 @@ export function ShellPage() {
           ],
           [
             'Shell.User',
-            'name, detail, avatar, as, onClick',
+            'name, detail, avatar, menu, as, onClick',
             '',
-            'Bottom-docked identity row, avatar-only on the rail. Initials fall out of the name.',
+            'Bottom-docked identity row, avatar-only on the rail, initials hue-hashed from the name. menu renders as a flyout beside the rail when collapsed and an upward accordion when expanded - on a real button, so no summary focus-ring quirk.',
           ],
         ]}
       />
@@ -589,10 +590,31 @@ export function CardPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Mirage"
+        note="The scoped material: the card's own fill becomes the artwork, blurred and tinted towards surface-raised. Text stays readable; the colour comes along."
+        stack
+        code={`<Card title="The Odyssey" mirage="url(/poster.jpg)">
+  ...
+</Card>`}
+      >
+        <Card title="The Odyssey" mirage={`url(${posterUrl})`} className="w-full">
+          <p className="text-body text-text-dim">
+            The poster, melted into the card - the issue-card treatment.
+          </p>
+        </Card>
+      </Demo>
+
       <Props
         rows={[
           ['title', 'ReactNode', '', 'Rendered as an h3 at the body-strong step.'],
           ['actions', 'ReactNode', '', 'Right side of the header, baseline aligned.'],
+          [
+            'mirage',
+            'string (CSS image)',
+            '',
+            'Scoped mirage: the image becomes the card fill, blurred and tinted. Hand-rolled surfaces get the same via .mirage-scoped and --mirage-image.',
+          ],
           ['...rest', 'HTMLAttributes<HTMLDivElement> (minus title)', '', 'id, onClick, aria-*.'],
         ]}
       />

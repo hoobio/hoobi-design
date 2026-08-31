@@ -235,7 +235,18 @@ export function App() {
           ))}
         </>
       }
-      navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
+      navFooter={
+        <Shell.User
+          name="hoobi"
+          detail="design.hoobi.io"
+          menu={
+            <div className="p-2 text-caption text-text-dim">
+              The menu slot: a flyout beside the rail, an accordion here. Real vouch identity is
+              still to be wired.
+            </div>
+          }
+        />
+      }
     >
       <ShellDemoContext.Provider
         value={{ navType, setNavType, mirage: mirageSrc, setMirage: setMirageSrc }}
