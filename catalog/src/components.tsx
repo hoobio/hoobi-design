@@ -315,8 +315,8 @@ export function AlertPage() {
 <Alert tone="danger" title="Search failed" />`}
       >
         <Alert tone="info" title="Heads up">
-          A 10% tint, a 40% border and the title in the tone colour. Body copy stays dim so the tone
-          reads as a signal rather than as decoration.
+          A 15% tint of the whole surface and the title in the tone colour - no border. Body copy
+          stays dim so the tone reads as a signal rather than as decoration.
         </Alert>
         <Alert tone="success" title="Imported">
           Severance S01E03 landed at 1080p.
@@ -799,7 +799,7 @@ export function SectionPage() {
 </Section>`}
       >
         <div className="w-full rounded-panel bg-surface p-4">
-          <Section id="queue" title="Queue" className="pt-0">
+          <Section id="queue" title="Queue">
             <p className="text-body text-text-dim">Anything.</p>
           </Section>
         </div>
@@ -822,7 +822,6 @@ export function SectionPage() {
             id="issues"
             title="Open issues"
             caption="Reported by Seerr, awaiting a plan."
-            className="pt-0"
             actions={
               <Badge tone="danger" dot>
                 3

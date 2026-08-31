@@ -5,7 +5,7 @@ import { Snippet } from './kit.js';
 const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
     group: 'Surfaces',
-    note: 'Ayu Mirage backgrounds, stacked darkest to lightest. Separation comes from a 1px border, never a shadow.',
+    note: 'Ayu Mirage backgrounds, stacked darkest to lightest. Separation comes from the fills themselves - no borders, no shadows; segmented surfaces are sliced by a 4px gap of bg.',
     names: ['bg', 'surface', 'surface-raised', 'border', 'chip'],
   },
   {

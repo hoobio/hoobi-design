@@ -12,7 +12,7 @@ export interface SectionProps {
 
 export function Section({ id, title, caption, actions, className, children }: SectionProps) {
   return (
-    <section id={id} className={cx('scroll-mt-16 pt-8 md:pt-12', className)}>
+    <section id={id} className={cx('scroll-mt-16', className)}>
       <header className="mb-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="min-w-0 text-title break-words text-text">{title}</h2>
