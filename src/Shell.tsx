@@ -12,9 +12,17 @@ import {
   type ReactNode,
 } from 'react';
 import { cx } from './cx.js';
+import {
+  MenuDivider,
+  MenuItem,
+  MenuLabel,
+  type MenuDividerProps,
+  type MenuItemProps,
+  type MenuLabelProps,
+} from './Menu.js';
 
 /**
- * The one page chrome, WinUI 3 NavigationView sized like exp-textura's MainNav:
+ * The one page chrome, WinUI 3 NavigationView:
  * a 48px top bar spanning the full width with the brand mark in the top-left
  * column, and either a side pane below it (48px icon rail <-> 216px pane on the
  * Fluent decelerate curve) or, in top mode, the items laid along the bar with
@@ -40,8 +48,14 @@ export interface ShellProps {
   title?: ReactNode;
   /** Line under the title - a version, a tagline. */
   subtitle?: ReactNode;
-  /** Right side of the top bar. */
+  /** Right side of the top bar. Unavailable on md+ when bar={false} - there is no bar. */
   actions?: ReactNode;
+  /**
+   * false drops the top bar on md+ and gives the side pane the full viewport height,
+   * with the pane header cell at its own top. Below md the bar always renders: it
+   * carries the overlay trigger, which is the only nav there is at that width.
+   */
+  bar?: boolean;
   /** 'side' (default) is the collapsible pane; 'top' lays items along the bar. */
   mode?: 'side' | 'top';
   /** Pane content: Shell.Item / Shell.Group / Shell.User. */
@@ -49,7 +63,7 @@ export interface ShellProps {
   /** Bottom-docked pane content - the settings / user slot. Side pane and overlay only. */
   navFooter?: ReactNode;
   defaultCollapsed?: boolean;
-  /** Controlled collapse state; omit for uncontrolled (textura's contract). */
+  /** Controlled collapse state; omit for uncontrolled */
   collapsed?: boolean;
   onCollapseChange?: (collapsed: boolean) => void;
   /** false pins the pane expanded on md+ (the trigger still opens the mobile overlay). */
@@ -62,7 +76,7 @@ export interface ShellProps {
    */
   mirage?: string;
   /**
-   * textura's PageLayout contract: 'default' centres the content in a max-width
+   * PageLayout contract: 'default' centres the content in a max-width
    * column that breathes with the pane; 'full' lets it run fluid. The Shell owns
    * the content paddings either way - children need no wrapper of their own.
    */
@@ -121,6 +135,7 @@ export function Shell({
   title,
   subtitle,
   actions,
+  bar = true,
   mode = 'side',
   nav,
   navFooter,
@@ -137,6 +152,8 @@ export function Shell({
   const collapsed =
     mode === 'side' && collapsible ? (controlledCollapsed ?? uncontrolledCollapsed) : false;
   const [overlayOpen, setOverlayOpen] = useState(false);
+  // Top mode keeps its bar whatever is asked: the bar IS its nav.
+  const showBar = bar || mode === 'top';
 
   useEffect(() => {
     if (!overlayOpen) return;
@@ -164,6 +181,53 @@ export function Shell({
     }
   };
 
+  /**
+   * The pane header cell. Expanded it holds the wordmark block on the left and
+   * the collapse trigger at its right edge; collapsed it is the 48px square showing the
+   * brand mark, which reveals the expand glyph on hover. It sits in the bar's pane
+   * column when there is a bar, and at the top of the pane itself when there is not.
+   */
+  const paneHeader = () =>
+    collapsed ? (
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={false}
+        aria-label="Expand navigation"
+        className="group flex h-full w-12 items-center justify-center hover:bg-surface"
+      >
+        <span aria-hidden className="flex items-center justify-center group-hover:hidden">
+          {brand ?? <TriggerIcon close={false} />}
+        </span>
+        <span
+          aria-hidden
+          className="hidden items-center justify-center text-text-dim group-hover:flex group-hover:text-text"
+        >
+          <TriggerIcon close={false} />
+        </span>
+      </button>
+    ) : (
+      <>
+        <span className="flex min-w-0 flex-1 flex-col justify-center pl-3">
+          <span className="truncate text-body-strong leading-5 text-text">{title}</span>
+          {subtitle ? (
+            <span className="truncate text-caption-small leading-4 text-text-mute">{subtitle}</span>
+          ) : null}
+        </span>
+        {collapsible ? (
+          <button
+            type="button"
+            onClick={toggle}
+            aria-expanded
+            aria-label="Collapse navigation"
+            className="flex h-full w-12 shrink-0 items-center justify-center text-text-dim hover:bg-surface hover:text-text"
+          >
+            <TriggerIcon close={false} />
+          </button>
+        ) : null}
+      </>
+    );
+
   const pane = (area: NavArea) => (
     <NavAreaContext.Provider value={area}>
       <div className="flex h-full min-h-0 flex-col overflow-x-hidden">
@@ -189,17 +253,18 @@ export function Shell({
         <header
           className={cx(
             'relative z-40 flex h-12 shrink-0 items-center pr-3',
+            !showBar && 'md:hidden',
             divided && 'border-b border-border',
             // Sliced chrome stays transparent over the mirage; only seamless chrome
             // takes a fill to tell itself apart.
             mirage ? (divided ? undefined : 'bg-bg/85') : 'bg-bg',
           )}
         >
-          {/* textura's pane header, lifted into the bar: a hairlined cell exactly as wide as
+          {/* Pane header, lifted into the bar: a hairlined cell exactly as wide as
               the pane, animating with it. Expanded it holds the wordmark block on the left and
               the collapse trigger at its right edge; collapsed it is the 48px square showing
               the brand mark, which reveals the expand glyph on hover. */}
-          {mode === 'side' ? (
+          {mode === 'side' && showBar ? (
             <div
               className={cx(
                 'hidden h-full shrink-0 items-center transition-[width] duration-250 ease-decelerate md:flex',
@@ -207,51 +272,11 @@ export function Shell({
                 collapsed ? 'w-12' : 'w-54',
               )}
             >
-              {collapsed ? (
-                <button
-                  type="button"
-                  onClick={toggle}
-                  aria-expanded={false}
-                  aria-label="Expand navigation"
-                  className="group flex h-full w-12 items-center justify-center hover:bg-surface"
-                >
-                  <span aria-hidden className="flex items-center justify-center group-hover:hidden">
-                    {brand ?? <TriggerIcon close={false} />}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="hidden items-center justify-center text-text-dim group-hover:flex group-hover:text-text"
-                  >
-                    <TriggerIcon close={false} />
-                  </span>
-                </button>
-              ) : (
-                <>
-                  <span className="flex min-w-0 flex-1 flex-col justify-center pl-3">
-                    <span className="truncate text-body-strong leading-5 text-text">{title}</span>
-                    {subtitle ? (
-                      <span className="truncate text-caption-small leading-4 text-text-mute">
-                        {subtitle}
-                      </span>
-                    ) : null}
-                  </span>
-                  {collapsible ? (
-                    <button
-                      type="button"
-                      onClick={toggle}
-                      aria-expanded
-                      aria-label="Collapse navigation"
-                      className="flex h-full w-12 shrink-0 items-center justify-center text-text-dim hover:bg-surface hover:text-text"
-                    >
-                      <TriggerIcon close={false} />
-                    </button>
-                  ) : null}
-                </>
-              )}
+              {paneHeader()}
             </div>
           ) : null}
           {/* Collapsed, the wordmark takes the window-title spot: centred across the bar. */}
-          {mode === 'side' && collapsed ? (
+          {mode === 'side' && collapsed && showBar ? (
             <span className="fade-in pointer-events-none absolute inset-x-0 hidden flex-col items-center justify-center text-center md:flex">
               <span className="truncate text-body-strong leading-5 text-text">{title}</span>
               {subtitle ? (
@@ -308,12 +333,22 @@ export function Shell({
             <nav
               aria-label="Main"
               className={cx(
-                'hidden shrink-0 transition-[width] duration-250 ease-decelerate md:block',
+                'hidden shrink-0 flex-col transition-[width] duration-250 ease-decelerate md:flex',
                 divided && 'border-r border-border',
                 collapsed ? 'w-12' : 'w-54',
               )}
             >
-              {pane('side')}
+              {!showBar ? (
+                <div
+                  className={cx(
+                    'flex h-12 shrink-0 items-center',
+                    divided && 'border-b border-border',
+                  )}
+                >
+                  {paneHeader()}
+                </div>
+              ) : null}
+              <div className="min-h-0 flex-1">{pane('side')}</div>
             </nav>
           ) : null}
 
@@ -338,7 +373,8 @@ export function Shell({
           <main className="styled-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto">
             <div
               className={cx(
-                'w-full px-4 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-10 md:pt-10',
+                'w-full px-4 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-10',
+                showBar ? 'md:pt-10' : 'md:pt-6',
                 pageWidth === 'default' && 'mx-auto max-w-[72rem]',
               )}
             >
@@ -566,7 +602,7 @@ export interface ShellUserProps extends HTMLAttributes<HTMLElement> {
   [key: string]: unknown;
 }
 
-/** textura's MainNav.User: bottom-docked identity row, avatar-only on the rail. */
+/** MainNav.User: bottom-docked identity row, avatar-only on the rail. */
 function ShellUser({
   as,
   name,
@@ -651,13 +687,9 @@ function ShellUser({
       <>
         {menu}
         {onSignOut ? (
-          <button
-            type="button"
-            onClick={onSignOut}
-            className="flex h-10 w-full items-center rounded-control px-3 text-body text-danger hover:bg-danger/15"
-          >
+          <MenuItem tone="danger" onClick={onSignOut}>
             Sign out
-          </button>
+          </MenuItem>
         ) : null}
       </>
     ) : undefined;
@@ -710,7 +742,9 @@ function ShellUser({
           style={{ gridTemplateRows: open && !railed ? '1fr' : '0fr' }}
         >
           <div className="overflow-hidden">
-            <div className="border-t border-bg">{menuContent}</div>
+            {/* A distinct raised panel, not a hairlined continuation of the pane:
+                surfaces are told apart by fill. The same look as the railed flyout. */}
+            <div className="mt-1 rounded-panel bg-surface-raised p-1">{menuContent}</div>
           </div>
         </div>
         {/* Railed: a flyout beside the rail. */}
@@ -745,3 +779,12 @@ function ShellUser({
 Shell.Item = ShellItem;
 Shell.Group = ShellGroup;
 Shell.User = ShellUser;
+Shell.MenuItem = MenuItem;
+Shell.MenuLabel = MenuLabel;
+Shell.MenuDivider = MenuDivider;
+
+export type {
+  MenuDividerProps as ShellMenuDividerProps,
+  MenuItemProps as ShellMenuItemProps,
+  MenuLabelProps as ShellMenuLabelProps,
+};
