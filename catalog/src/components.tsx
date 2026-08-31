@@ -416,7 +416,7 @@ export function ShellPage() {
             'bar',
             'boolean',
             'true',
-            'false drops the top bar on md+ and gives the pane the full viewport height with the pane header cell at its own top. Below md the bar always renders.',
+            'false drops the top bar on md+ and gives the pane the full viewport height with the pane header cell at its own top. Below md the bar always renders, and mode="top" ignores it outright - there the bar IS the nav.',
           ],
           ['nav', 'ReactNode', 'required', 'Shell.Item and Shell.Group rows.'],
           ['navFooter', 'ReactNode', '', 'Bottom-docked pane rows (the settings slot).'],
@@ -1699,7 +1699,7 @@ export function CheckboxPage() {
         code={`<Checkbox label="Unchecked" />
 <Checkbox label="Checked" defaultChecked />
 <Checkbox label="Indeterminate" indeterminate />
-<Checkbox label="Disabled" disabled />`}
+<Checkbox label="Disabled" disabled defaultChecked />`}
       >
         <Checkbox label="Unchecked" />
         <Checkbox label="Checked" defaultChecked />
@@ -1797,7 +1797,8 @@ export function ConfirmButtonPage() {
         code={`<ConfirmButton confirmLabel="Yes, revert" timeout={8000} onConfirm={revert}>
   Revert
 </ConfirmButton>
-<ConfirmButton variant="ghost" timeout={2000} onConfirm={clear}>Clear</ConfirmButton>`}
+<ConfirmButton variant="ghost" timeout={2000} onConfirm={clear}>Clear</ConfirmButton>
+<ConfirmButton size="sm" onConfirm={blocklist}>Blocklist</ConfirmButton>`}
       >
         <ConfirmButton confirmLabel="Yes, revert" timeout={8000} onConfirm={() => undefined}>
           Revert
