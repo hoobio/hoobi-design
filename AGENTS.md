@@ -58,13 +58,17 @@ save-exact=true
 
 ## Components
 
-Button, Badge (tone + optional dot + tooltip, covers status dots), Card (optional scoped mirage),
-CodeBlock (bring-your-own-engine: consumers install highlight.js and pass `html`; the stylesheet
-maps standard hljs token classes onto the theme tokens, so any grammar lands Ayu Mirage), Modal,
-Tabs (controlled), Section, Shell (the one page chrome), Progress, Spinner, Alert, Input, Select,
-Tooltip (CSS-only `[data-tip]`, no JS), plus the `cx` helper and `mirageImage`.
+Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout; `Menu.Item` /
+`Menu.Label` / `Menu.Divider`), Badge (tone + optional dot + tooltip, covers status dots), Card
+(optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
+`html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar lands
+Ayu Mirage), Modal, Tabs (controlled), Breadcrumbs, Timeline (`Timeline.Item`), DescriptionList,
+Section, Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
+`MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
+Select, Checkbox, Tooltip (CSS-only `[data-tip]`, no JS), plus the `cx` helper and `mirageImage`.
 
-Deliberately absent: Table, Toggle (use a native checkbox), Toast, Skeleton.
+Deliberately absent: Table, Toast, Skeleton. Toggle came off that list rather than onto this one:
+Checkbox is the native input given the house look, which is what the absence already recommended.
 
 **Components are only added when a consumer actually needs one.** No speculative components, no
 props added "for later". A consumer wanting Table is the trigger to write Table.
