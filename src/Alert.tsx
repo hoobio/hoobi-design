@@ -9,10 +9,10 @@ export interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'
 }
 
 const TONES: Record<AlertTone, string> = {
-  info: 'border-info/40 bg-info/10 text-info',
-  success: 'border-success/40 bg-success/10 text-success',
-  warn: 'border-warn/40 bg-warn/10 text-warn',
-  danger: 'border-danger/40 bg-danger/10 text-danger',
+  info: 'bg-info/15 text-info',
+  success: 'bg-success/15 text-success',
+  warn: 'bg-warn/15 text-warn',
+  danger: 'bg-danger/15 text-danger',
 };
 
 export function Alert({ tone = 'info', title, className, children, ...rest }: AlertProps) {
@@ -20,7 +20,7 @@ export function Alert({ tone = 'info', title, className, children, ...rest }: Al
     <div
       role={tone === 'danger' ? 'alert' : 'status'}
       className={cx(
-        'rounded-control border px-3 py-2 text-body break-words',
+        'rounded-control px-3 py-2 text-body break-words',
         TONES[tone],
         className,
       )}

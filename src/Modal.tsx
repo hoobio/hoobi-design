@@ -30,12 +30,12 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       onCancel={onClose}
       onClick={onBackdrop}
       className={cx(
-        'm-auto w-[min(38rem,calc(100vw-1.5rem))] max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel border border-border bg-surface-raised p-0 text-text backdrop:bg-black/60',
+        'm-auto w-[min(38rem,calc(100vw-1.5rem))] max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-black/60',
         className,
       )}
     >
       <div className="flex max-h-[inherit] flex-col">
-        <header className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
+        <header className="flex items-start justify-between gap-3 border-b-4 border-bg px-4 py-3">
           <h2 className="min-w-0 text-subtitle break-words text-text">{title}</h2>
           <button
             type="button"

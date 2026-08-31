@@ -30,7 +30,6 @@
   --color-info: #73d0ff;
 
   --color-chip: #1a1f2b;
-  --color-chip-border: #3e4757;
 
   /* WinUI 3 works in device-independent pixels, so spacing and radii are px, not rem.
      Text stays rem so it still tracks the root size and user zoom. */

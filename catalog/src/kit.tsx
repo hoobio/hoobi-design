@@ -27,7 +27,7 @@ export function Snippet({ code }: { code: string }) {
   }, [copied]);
   return (
     <div className="relative">
-      <pre className="styled-scrollbar overflow-x-auto rounded-control border border-border bg-chip p-3 pr-20 text-caption text-text-dim">
+      <pre className="styled-scrollbar overflow-x-auto rounded-control bg-chip p-3 pr-20 text-caption text-text-dim">
         <code>{code}</code>
       </pre>
       <Button
@@ -64,7 +64,7 @@ export function Demo({
       {note ? <p className="mt-1 text-caption text-text-dim">{note}</p> : null}
       <div
         className={cx(
-          'mt-2 rounded-panel border border-border bg-surface p-4',
+          'mt-2 rounded-panel bg-surface p-4',
           stack ? 'flex flex-col gap-4' : 'flex flex-wrap items-center gap-3',
         )}
       >
@@ -81,7 +81,7 @@ export type PropRow = [name: string, type: string, def: string, description: str
 
 export function Props({ rows }: { rows: PropRow[] }) {
   return (
-    <div className="styled-scrollbar mt-6 overflow-x-auto rounded-panel border border-border">
+    <div className="styled-scrollbar mt-6 overflow-x-auto rounded-panel bg-surface">
       <table className="w-full min-w-[34rem] border-collapse text-left text-body">
         <thead>
           <tr className="bg-surface text-caption text-text-mute">
@@ -93,7 +93,7 @@ export function Props({ rows }: { rows: PropRow[] }) {
         </thead>
         <tbody>
           {rows.map(([name, type, def, description]) => (
-            <tr key={name} className="border-t border-border align-top">
+            <tr key={name} className="border-t-2 border-bg align-top">
               <td className="px-3 py-2 font-mono text-caption text-accent-blue">{name}</td>
               <td className="px-3 py-2 font-mono text-caption text-text-dim">{type}</td>
               <td className="px-3 py-2 font-mono text-caption text-text-mute">{def || '-'}</td>

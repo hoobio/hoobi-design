@@ -9,7 +9,7 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>
 export function Card({ title, actions, className, children, ...rest }: CardProps) {
   return (
     <div
-      className={cx('rounded-panel border border-border bg-surface-raised p-4', className)}
+      className={cx('rounded-panel bg-surface-raised p-4', className)}
       {...rest}
     >
       {title || actions ? (

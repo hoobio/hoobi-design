@@ -249,6 +249,48 @@ export function CardPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Sliced"
+        note="Segmented information is cut by a 4px slice of page background, never ruled by a border. The container rounds and clips; each segment is its own fill."
+        stack
+        code={`<div className="flex flex-col gap-1 overflow-hidden rounded-panel">
+  <div className="bg-surface-raised p-4">...</div>
+  <div className="bg-surface-raised p-4">...</div>
+</div>`}
+      >
+        <div className="flex w-full flex-col gap-1 overflow-hidden rounded-panel">
+          <div className="bg-surface-raised p-4">
+            <p className="text-body-strong text-text">Comms</p>
+            <p className="text-caption text-text-dim">Elgato Virtual Audio</p>
+          </div>
+          <div className="bg-surface-raised p-4">
+            <p className="text-caption text-text-mute">Rules</p>
+            <p className="mt-1 text-body text-text">Default Devices</p>
+          </div>
+        </div>
+      </Demo>
+
+      <Demo
+        title="Toned"
+        note="A state tints the whole surface - the WinUI critical-background treatment. The tone lives in the fill, not on a border."
+        stack
+        code={`<div className="flex flex-col gap-1 overflow-hidden rounded-panel">
+  <div className="bg-danger/15 p-4">...</div>
+  <div className="bg-danger/15 p-4">...</div>
+</div>`}
+      >
+        <div className="flex w-full flex-col gap-1 overflow-hidden rounded-panel">
+          <div className="bg-danger/15 p-4">
+            <p className="text-body-strong text-text">Microphone Mix</p>
+            <p className="text-caption text-text-dim">Muted</p>
+          </div>
+          <div className="bg-danger/15 p-4">
+            <p className="text-caption text-text-mute">Rules</p>
+            <p className="mt-1 text-body text-text">Default Devices</p>
+          </div>
+        </div>
+      </Demo>
+
       <Props
         rows={[
           ['title', 'ReactNode', '', 'Rendered as an h3 at the body-strong step.'],
@@ -756,7 +798,7 @@ export function SectionPage() {
   <p>Anything.</p>
 </Section>`}
       >
-        <div className="w-full rounded-panel border border-border bg-surface p-4">
+        <div className="w-full rounded-panel bg-surface p-4">
           <Section id="queue" title="Queue" className="pt-0">
             <p className="text-body text-text-dim">Anything.</p>
           </Section>
@@ -775,7 +817,7 @@ export function SectionPage() {
   ...
 </Section>`}
       >
-        <div className="w-full rounded-panel border border-border bg-surface p-4">
+        <div className="w-full rounded-panel bg-surface p-4">
           <Section
             id="issues"
             title="Open issues"
@@ -827,12 +869,10 @@ export const cx = (...parts: ClassValue[]): string => parts.filter(Boolean).join
         title="Usage"
         note="Later classes win in the source order Tailwind emits, so put the caller's className last."
         stack
-        code={`<div className={cx('rounded-panel border border-border', active && 'border-accent', className)} />`}
+        code={`<div className={cx('rounded-panel bg-surface', active && 'bg-surface-raised', className)} />`}
       >
-        <div
-          className={cx('rounded-panel border border-border bg-surface p-4 text-body text-text')}
-        >
-          cx(&apos;rounded-panel border border-border&apos;, false, &apos;bg-surface p-4&apos;)
+        <div className={cx('rounded-panel bg-surface p-4 text-body text-text')}>
+          cx(&apos;rounded-panel bg-surface&apos;, false, &apos;p-4&apos;)
         </div>
       </Demo>
       <Props

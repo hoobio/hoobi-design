@@ -6,7 +6,7 @@ const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
     group: 'Surfaces',
     note: 'Ayu Mirage backgrounds, stacked darkest to lightest. Separation comes from a 1px border, never a shadow.',
-    names: ['bg', 'surface', 'surface-raised', 'border', 'chip', 'chip-border'],
+    names: ['bg', 'surface', 'surface-raised', 'border', 'chip'],
   },
   {
     group: 'Text',
@@ -88,7 +88,7 @@ export function Colour() {
           <p className="mt-1 max-w-prose text-caption text-text-dim">{g.note}</p>
           <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
             {g.names.map((n) => (
-              <div key={n} className="rounded-panel border border-border bg-surface p-3">
+              <div key={n} className="rounded-panel bg-surface p-3">
                 <div
                   className="h-10 w-full rounded-control border border-border"
                   style={{ backgroundColor: `var(--color-${n})` }}
@@ -102,7 +102,7 @@ export function Colour() {
       ))}
       <div className="mt-8">
         <Snippet
-          code={`<div className="bg-surface-raised border border-border text-text-dim" />`}
+          code={`<div className="bg-surface-raised text-text-dim" />`}
         />
       </div>
     </>
@@ -150,7 +150,7 @@ export function Typography() {
         root so it still tracks user zoom. Noto Sans carries every step. Dank Mono is reserved for
         code.
       </p>
-      <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel border border-border bg-border">
+      <div className="mt-6 flex flex-col gap-1 overflow-hidden rounded-panel">
         {RAMP.map((r) => (
           <div key={r.cls} className="bg-surface p-4">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-caption text-text-mute">
@@ -169,7 +169,7 @@ export function Typography() {
         Regular, italic and bold, at the caption and body sizes. Italic is the reason this face is
         here.
       </p>
-      <pre className="styled-scrollbar mt-3 overflow-x-auto rounded-panel border border-border bg-chip p-4 text-body">
+      <pre className="styled-scrollbar mt-3 overflow-x-auto rounded-panel bg-chip p-4 text-body">
         <code className="font-mono">
           <span className="text-text-mute italic">{'// remediate the issue, or ask a human'}</span>
           {'\n'}
@@ -234,7 +234,7 @@ export function Spacing() {
         Every spacing utility is n x 4px. Reach for the WinUI grid values (4 / 8 / 12 / 16 / 24 /
         32) rather than odd numbers.
       </p>
-      <div className="mt-3 flex flex-col gap-2 rounded-panel border border-border bg-surface p-4">
+      <div className="mt-3 flex flex-col gap-2 rounded-panel bg-surface p-4">
         {STEPS.map((n) => (
           <div key={n} className="flex items-center gap-3">
             <span className="w-10 shrink-0 font-mono text-caption text-accent-blue">{n}</span>
@@ -253,7 +253,7 @@ export function Spacing() {
       </p>
       <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
         {RADII.map(([cls, token, px]) => (
-          <div key={cls} className="rounded-panel border border-border bg-surface p-3">
+          <div key={cls} className="rounded-panel bg-surface p-3">
             <div className={`h-12 w-full border border-accent bg-accent-fill/30 ${cls}`} />
             <div className="mt-2 font-mono text-caption text-text">{cls}</div>
             <div className="font-mono text-caption text-text-mute">
@@ -287,7 +287,7 @@ export function Spacing() {
 export function Identity({ children }: { children?: ReactNode }) {
   return (
     <>
-      <blockquote className="rounded-panel border border-border bg-surface p-4 text-body-large text-text">
+      <blockquote className="rounded-panel bg-surface p-4 text-body-large text-text">
         hoobi-design is a <strong>dark-mode-preference</strong> library using the{' '}
         <strong>Ayu Mirage</strong> colour scheme heavily, with components, fonts and spacing{' '}
         <strong>heavily influenced by WinUI 3 (Fluent 2)</strong>.{' '}
