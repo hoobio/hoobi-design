@@ -5,6 +5,7 @@ import { DestructiveRecipe, DetailRecipe, ListRecipe, StatesRecipe } from './rec
 import {
   AlertPage,
   BadgePage,
+  BannerPage,
   BreadcrumbsPage,
   ButtonPage,
   CardPage,
@@ -17,6 +18,7 @@ import {
   InputPage,
   MenuPage,
   ModalPage,
+  PageHeaderPage,
   PersonaPage,
   ProgressPage,
   SectionPage,
@@ -180,11 +182,25 @@ export const PAGES: Page[] = [
     render: () => <CardPage />,
   },
   {
+    id: 'page-header',
+    group: 'Layout',
+    title: 'Page Header',
+    caption: 'The head of a detail page: crumbs, a thumb, title and meta, actions.',
+    render: () => <PageHeaderPage />,
+  },
+  {
     id: 'alert',
     group: 'Notifications',
     title: 'Alert',
     caption: 'Four semantic tones, with the ARIA role picked for you.',
     render: () => <AlertPage />,
+  },
+  {
+    id: 'banner',
+    group: 'Notifications',
+    title: 'Banner',
+    caption: 'The one-look-answer card: headline, reasoning, dense facts, actions.',
+    render: () => <BannerPage />,
   },
   {
     id: 'input',

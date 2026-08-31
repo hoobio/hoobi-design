@@ -468,7 +468,7 @@ export function Mirage() {
       </div>
       <div className="relative isolate mt-3 overflow-hidden rounded-panel bg-bg">
         <div
-          className="mirage-hero"
+          className="mirage-hero absolute"
           style={{ '--mirage-image': `url(${posterUrl})` } as CSSProperties}
         />
         <div className="mirage-lift p-4">

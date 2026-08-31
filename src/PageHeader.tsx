@@ -1,0 +1,57 @@
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import { cx } from './cx.js';
+
+export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+  /** CSS image (a poster url(...)): renders the mirage-hero band behind the header. */
+  mirage?: string;
+  /** Typically an <img>; sized into a fixed 44x66 slot regardless of the child's own dimensions. */
+  thumb?: ReactNode;
+  title: ReactNode;
+  /** A text-caption text-text-dim line under the title. */
+  meta?: ReactNode;
+  /** Right-aligned, beside the title row. */
+  actions?: ReactNode;
+  /** Rendered above the title row - a Breadcrumbs trail. */
+  crumbs?: ReactNode;
+}
+
+/**
+ * The head of a detail page: optional mirage band, crumbs, a thumb/title/meta row
+ * and right-aligned actions. `.mirage-lift` on the text-bearing content lifts the
+ * muted tones so they stay readable over the mirage band; harmless when there is none.
+ */
+export function PageHeader({
+  mirage,
+  thumb,
+  title,
+  meta,
+  actions,
+  crumbs,
+  className,
+  ...rest
+}: PageHeaderProps) {
+  return (
+    <div {...rest} className={cx('flex flex-col gap-4', className)}>
+      {mirage ? (
+        <div
+          aria-hidden
+          className="mirage-hero"
+          style={{ '--mirage-image': mirage } as CSSProperties}
+        />
+      ) : null}
+      <div className="mirage-lift flex flex-col gap-4">
+        {crumbs}
+        <div className="flex flex-wrap items-center gap-4">
+          {thumb ? (
+            <div className="h-[66px] w-11 shrink-0 overflow-hidden rounded-control">{thumb}</div>
+          ) : null}
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <h2 className="text-subtitle break-words text-text">{title}</h2>
+            {meta ? <p className="text-caption text-text-dim">{meta}</p> : null}
+          </div>
+          {actions ? <span className="flex shrink-0 items-center gap-3">{actions}</span> : null}
+        </div>
+      </div>
+    </div>
+  );
+}

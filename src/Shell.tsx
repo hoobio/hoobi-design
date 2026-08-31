@@ -393,7 +393,9 @@ export function Shell({
             </div>
           ) : null}
 
-          <main className="styled-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto">
+          {/* relative + isolate so page-scoped backdrops (.mirage-hero) anchor to the content
+              area - full content width, never under the pane - and z-index -1 stays contained. */}
+          <main className="styled-scrollbar relative isolate min-h-0 min-w-0 flex-1 overflow-y-auto">
             <div
               className={cx(
                 'w-full px-4 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-10',

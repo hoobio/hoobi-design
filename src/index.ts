@@ -1,9 +1,10 @@
 export { cx, type ClassValue } from './cx.js';
 export { Alert, type AlertProps, type AlertTone } from './Alert.js';
 export { Badge, type BadgeProps, type BadgeTone } from './Badge.js';
+export { Banner, type BannerProps } from './Banner.js';
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from './Breadcrumbs.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';
-export { Card, type CardProps } from './Card.js';
+export { Card, type CardProps, type CardTone } from './Card.js';
 export { Divider, type DividerProps } from './Divider.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
@@ -22,6 +23,7 @@ export {
   type MenuProps,
 } from './Menu.js';
 export { Modal, type ModalProps } from './Modal.js';
+export { PageHeader, type PageHeaderProps } from './PageHeader.js';
 export { Persona, type PersonaProps, type PersonaTone } from './Persona.js';
 export { Progress, type ProgressProps } from './Progress.js';
 export { Section, type SectionProps } from './Section.js';
@@ -40,8 +42,12 @@ export {
 } from './Shell.js';
 export {
   Timeline,
+  type TimelineCommentProps,
+  type TimelineEventProps,
+  type TimelineFoldProps,
   type TimelineItemProps,
   type TimelineProps,
+  type TimelineStepProps,
   type TimelineTone,
 } from './Timeline.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';

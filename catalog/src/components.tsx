@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Alert,
   Badge,
+  Banner,
   Breadcrumbs,
   Button,
   Card,
@@ -13,6 +14,7 @@ import {
   Input,
   Menu,
   Modal,
+  PageHeader,
   Persona,
   Progress,
   Section,
@@ -22,6 +24,7 @@ import {
   Timeline,
   Tooltip,
   cx,
+  mirageImage,
 } from '@hoobi/design';
 import { useContext } from 'react';
 import {
@@ -838,6 +841,156 @@ export function CardPage() {
             'Solid tone tint for the whole card fill (bg-{tone}/15). Ignored when mirage is set.',
           ],
           ['...rest', 'HTMLAttributes<HTMLDivElement> (minus title)', '', 'id, onClick, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function PageHeaderPage() {
+  return (
+    <>
+      <Import names="PageHeader" />
+      <Demo
+        title="Anatomy"
+        note="Crumbs above the title row, a fixed thumb slot, title + meta, right-aligned actions."
+        stack
+        code={`<PageHeader
+  crumbs={<Breadcrumbs items={[{ label: 'issues', as: 'a', href: '#' }, { label: '#4' }]} />}
+  thumb={<img src="/poster.jpg" alt="" className="size-full object-cover" />}
+  title="Wrong audio track"
+  meta="issue #4 · opened by hoobi"
+  actions={<Button size="sm">Reanalyze</Button>}
+/>`}
+      >
+        <PageHeader
+          className="w-full"
+          crumbs={
+            <Breadcrumbs
+              items={[{ label: 'issues', as: 'a', href: '#' }, { label: '#4' }]}
+            />
+          }
+          thumb={<div className="size-full" style={{ backgroundImage: mirageImage() }} />}
+          title="Wrong audio track"
+          meta="issue #4 · opened by hoobi"
+          actions={<Button size="sm">Reanalyze</Button>}
+        />
+      </Demo>
+
+      <Demo
+        title="Mirage"
+        note="The report's own poster, as a hero band behind the header - mica confined to the top of the page rather than the whole viewport. mirage-lift keeps the crumbs and meta line readable over it."
+        stack
+        code={`<PageHeader
+  mirage="url(/poster.jpg)"
+  title="Wrong audio track"
+  meta="issue #4 · opened by hoobi"
+/>`}
+      >
+        <div className="relative isolate w-full overflow-hidden rounded-panel bg-bg p-4">
+          <PageHeader
+            mirage={mirageImage()}
+            title="Wrong audio track"
+            meta="issue #4 · opened by hoobi"
+            actions={<Button size="sm">Reanalyze</Button>}
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'mirage',
+            'string (CSS image)',
+            '',
+            'Renders .mirage-hero as the first child, anchored to the nearest positioned ancestor.',
+          ],
+          [
+            'thumb',
+            'ReactNode',
+            '',
+            'Sized into a fixed 44x66 slot regardless of the child - typically an <img>.',
+          ],
+          ['title', 'ReactNode', 'required', 'text-subtitle, breaks on long words.'],
+          ['meta', 'ReactNode', '', 'A text-caption text-text-dim line under the title.'],
+          ['actions', 'ReactNode', '', 'Right-aligned beside the title row.'],
+          ['crumbs', 'ReactNode', '', 'A row above the title - a Breadcrumbs trail.'],
+          ['...rest', 'HTMLAttributes<HTMLDivElement>', '', 'id, className, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function BannerPage() {
+  return (
+    <>
+      <Import names="Banner" />
+      <Demo
+        title="Anatomy"
+        note="Headline (the one-look answer) and an optional machine code on the same row, the reasoning as children, dense facts as chips, buttons as actions. Built on Card, so tone tints the whole surface."
+        stack
+        code={`<Banner
+  tone="success"
+  headline={<Badge appearance="text" tone="success">Imported</Badge>}
+  code="replace_with_release"
+  chips={<>
+    <span className="text-text-dim">audio <span className="text-text">en, ja</span></span>
+    <span className="text-text-dim">quality <span className="text-text">WEBDL-1080p</span></span>
+  </>}
+  actions={<Button size="sm">Close</Button>}
+>
+  <p className="text-body text-text-dim">
+    [TADA] Rockman EXE - 01-56 landed with English audio, as asked.
+  </p>
+</Banner>`}
+      >
+        <Banner
+          className="w-full"
+          tone="success"
+          headline={
+            <Badge appearance="text" tone="success">
+              Imported
+            </Badge>
+          }
+          code="replace_with_release"
+          chips={
+            <>
+              <span className="text-text-dim">
+                audio <span className="text-text">en, ja</span>
+              </span>
+              <span className="text-text-dim">
+                quality <span className="text-text">WEBDL-1080p</span>
+              </span>
+            </>
+          }
+          actions={<Button size="sm">Close</Button>}
+        >
+          <p className="text-body text-text-dim">
+            [TADA] Rockman EXE - 01-56 landed with English audio, as asked.
+          </p>
+        </Banner>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'tone',
+            "'info' | 'success' | 'warn' | 'danger'",
+            '',
+            'Forwarded to the underlying Card - a solid tint of the whole surface.',
+          ],
+          [
+            'headline',
+            'ReactNode',
+            'required',
+            'The one-look answer - typically a Badge appearance="text".',
+          ],
+          ['code', 'ReactNode', '', 'A raw machine string, right-aligned on the headline row.'],
+          ['children', 'ReactNode', '', 'The body: sentences, quotes.'],
+          ['chips', 'ReactNode', '', 'A row of dense facts under the body.'],
+          ['actions', 'ReactNode', '', 'A row of buttons under the chips.'],
+          ['className', 'string', '', ''],
         ]}
       />
     </>
@@ -2082,6 +2235,92 @@ export function TimelinePage() {
         </Timeline>
       </Demo>
 
+      <Demo
+        title="Comment"
+        note="A said-thing beat - a reporter or mendarr's own comment, set apart from machinery. author is caller-styled (a Persona, a name), the body is the surface fill."
+        stack
+        code={`<Timeline plain>
+  <Timeline.Comment author={<Persona name="hoobi" />} time="14:01:03">
+    Wrong audio track - can we get the dub?
+  </Timeline.Comment>
+  <Timeline.Comment author={<Persona name="mendarr" tone="accent" />} time="14:02:40" emphasis>
+    Grabbed [TADA] Rockman EXE - 01-56 with English audio, as asked.
+  </Timeline.Comment>
+</Timeline>`}
+      >
+        <Timeline plain className="w-full">
+          <Timeline.Comment author={<Persona name="hoobi" />} time="14:01:03">
+            Wrong audio track - can we get the dub?
+          </Timeline.Comment>
+          <Timeline.Comment
+            author={<Persona name="mendarr" tone="accent" />}
+            time="14:02:40"
+            emphasis
+          >
+            Grabbed [TADA] Rockman EXE - 01-56 with English audio, as asked.
+          </Timeline.Comment>
+        </Timeline>
+      </Demo>
+
+      <Demo
+        title="Machinery: Fold, Event, Step"
+        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. An Event is one dense transition line; a Step is one mono agent-tool line, nested a level deeper behind its own Fold."
+        stack
+        code={`<Timeline plain>
+  <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am - 11:28 am">
+    <Timeline.Event
+      time="10:50"
+      label={<Badge appearance="text" tone="info">analyzing</Badge>}
+    />
+    <Timeline.Event
+      time="10:52"
+      label={<Badge appearance="text" tone="warn">awaiting_approval</Badge>}
+      note="reporter is not the requester"
+    />
+    <Timeline.Fold summary="11 agent steps">
+      <Timeline.Step time="10:50" kind="call" label="get_media_info()" />
+      <Timeline.Step
+        time="10:50"
+        kind="result"
+        label="runtimeMismatch: false"
+        detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
+      />
+    </Timeline.Fold>
+  </Timeline.Fold>
+</Timeline>`}
+      >
+        <Timeline plain className="w-full">
+          <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am – 11:28 am">
+            <Timeline.Event
+              time="10:50"
+              label={
+                <Badge appearance="text" tone="info">
+                  analyzing
+                </Badge>
+              }
+            />
+            <Timeline.Event
+              time="10:52"
+              label={
+                <Badge appearance="text" tone="warn">
+                  awaiting_approval
+                </Badge>
+              }
+              note="reporter is not the requester"
+            />
+            <Timeline.Fold summary="11 agent steps">
+              <Timeline.Step time="10:50" kind="call" label="get_media_info()" />
+              <Timeline.Step
+                time="10:50"
+                kind="result"
+                label="runtimeMismatch: false"
+                detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
+              />
+            </Timeline.Fold>
+          </Timeline.Fold>
+        </Timeline>
+      </Demo>
+
       <Props
         rows={[
           ['children', 'ReactNode', 'required', 'Timeline.Item rows. The list is a real ol.'],
@@ -2110,6 +2349,34 @@ export function TimelinePage() {
             'Badges or labels beside the time. The row stacks below sm and is one baseline-aligned row from sm up.',
           ],
           ['className', 'string', '', 'On the ol, and on each li.'],
+          ['Timeline.Comment author', 'ReactNode', 'required', 'Caller-styled - a Persona, a name.'],
+          ['Timeline.Comment time', 'string', '', 'Mono caption beside the author.'],
+          [
+            'Timeline.Comment emphasis',
+            'boolean',
+            'false',
+            "text-text instead of text-dim - mendarr's own word over the reporter's.",
+          ],
+          ['Timeline.Fold summary', 'ReactNode', 'required', 'The collapsed line - a details/summary.'],
+          ['Timeline.Fold range', 'string', '', 'e.g. "10:50 am - 11:28 am", beside the summary.'],
+          ['Timeline.Fold defaultOpen', 'boolean', 'false', ''],
+          [
+            'Timeline.Event label',
+            'ReactNode',
+            'required',
+            'e.g. a Badge appearance="text" - the new status.',
+          ],
+          ['Timeline.Event time', 'string', '', 'Mono, first column.'],
+          ['Timeline.Event note', 'ReactNode', '', 'Dense caption, wraps to its own row below sm.'],
+          ['Timeline.Step label', 'ReactNode', 'required', 'Mono; caller colours it.'],
+          ['Timeline.Step time / kind', 'string', '', "Mono mute prefix - e.g. 'call' / 'result'."],
+          [
+            'Timeline.Step detail',
+            'ReactNode',
+            '',
+            'When present, the step line itself becomes the summary of a details - click it to reveal. Absent, the line renders plain (padded to keep marker alignment).',
+          ],
+          ['Timeline.Step children', 'ReactNode', '', 'Alternative plain-text body under the line.'],
         ]}
       />
     </>

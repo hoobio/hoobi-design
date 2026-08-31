@@ -44,18 +44,20 @@ export function Badge({
   ...rest
 }: BadgeProps) {
   if (appearance === 'text') {
+    // A plain inline run, NOT inline-flex: a flex container's reported baseline would be the
+    // dot's box, which makes the text ride high next to any baseline-aligned neighbour.
     return (
       <span
         {...tipAnchor(tooltip)}
-        className={cx(
-          'inline-flex items-center gap-1.5',
-          tooltip && 'tip-fixed',
-          TEXT_TONES[tone],
-          className,
-        )}
+        className={cx('inline', tooltip && 'tip-fixed', TEXT_TONES[tone], className)}
         {...rest}
       >
-        {dot ? <span className="size-1.5 shrink-0 rounded-full bg-current" /> : null}
+        {dot ? (
+          <span
+            aria-hidden
+            className="mr-1.5 inline-block size-1.5 rounded-full bg-current align-[0.06em]"
+          />
+        ) : null}
         {children}
       </span>
     );

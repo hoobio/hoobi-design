@@ -398,9 +398,12 @@
      clips and masks itself; the host (the page column) only needs relative + isolate.
      Content above it should usually take .mirage-lift. */
   .mirage-hero {
+    /* Anchored to the nearest positioned ancestor - the Shell's content area, which is
+       relative+isolate - so the band spans the content edge to edge and never runs under
+       the pane. It scrolls away with the page, like a printed header. */
     position: absolute;
     inset: 0 0 auto;
-    height: 320px;
+    height: 340px;
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
