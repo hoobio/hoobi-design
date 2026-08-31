@@ -338,7 +338,7 @@ export function Shell({
           <main className="styled-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto">
             <div
               className={cx(
-                'w-full px-4 pt-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10 md:pt-10',
+                'w-full px-4 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-10 md:pt-10',
                 pageWidth === 'default' && 'mx-auto max-w-[72rem]',
               )}
             >
