@@ -184,7 +184,8 @@ function useHashPage(): Page {
   useEffect(() => {
     const on = () => {
       setPage(read());
-      window.scrollTo(0, 0);
+      // The Shell scrolls its main column, not the window.
+      document.querySelector('main')?.scrollTo(0, 0);
     };
     addEventListener('hashchange', on);
     return () => removeEventListener('hashchange', on);
