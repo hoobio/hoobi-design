@@ -1,5 +1,7 @@
 import {
+  Children,
   createContext,
+  isValidElement,
   useContext,
   useEffect,
   useRef,
@@ -44,8 +46,30 @@ export interface MenuDividerProps {
 /** Set by an open Menu so its items can close it; a no-op for a row used on its own. */
 const MenuCloseContext = createContext<() => void>(() => undefined);
 
+/** True when a sibling row has an icon, so icon-less rows reserve the same gutter. */
+const MenuGutterContext = createContext(false);
+
+/** Does any descendant row carry an icon? Read once by Menu, off its own children. */
+function hasIconRow(children: ReactNode): boolean {
+  return Children.toArray(children).some((child) => {
+    if (!isValidElement(child)) return false;
+    const props = child.props as { icon?: ReactNode; children?: ReactNode };
+    return props.icon !== undefined || hasIconRow(props.children);
+  });
+}
+
+/**
+ * Decides the icon gutter for one group of rows. Menu wraps its panel in this; Shell's
+ * user flyout wraps its own, because those rows live outside a Menu.
+ */
+export function MenuGutter({ children }: { children: ReactNode }) {
+  return (
+    <MenuGutterContext.Provider value={hasIconRow(children)}>{children}</MenuGutterContext.Provider>
+  );
+}
+
 export function MenuItem({
-  icon,
+  icon: iconProp,
   tone = 'neutral',
   action,
   className,
@@ -54,6 +78,14 @@ export function MenuItem({
   ...rest
 }: MenuItemProps) {
   const close = useContext(MenuCloseContext);
+  const gutter = useContext(MenuGutterContext);
+  // A wrapped icon keeps every row's glyph on the same 20px cell.
+  const icon =
+    iconProp === undefined ? undefined : (
+      <span aria-hidden className="flex size-5 shrink-0 items-center justify-center">
+        {iconProp}
+      </span>
+    );
   const row = (
     <button
       type="button"
@@ -69,11 +101,7 @@ export function MenuItem({
       )}
       {...rest}
     >
-      {icon ? (
-        <span aria-hidden className="flex shrink-0 items-center">
-          {icon}
-        </span>
-      ) : null}
+      {icon ?? (gutter ? <span aria-hidden className="size-5 shrink-0" /> : null)}
       <span className="min-w-0 flex-1 truncate text-left">{children}</span>
     </button>
   );
@@ -109,7 +137,9 @@ export function MenuLabel({ children, className }: MenuLabelProps) {
 }
 
 export function MenuDivider({ className }: MenuDividerProps) {
-  return <div role="separator" className={cx('my-1 border-t border-bg', className)} />;
+  // -mx-1 cancels the panel's p-1: a hairline is a slice of page background through
+  // the whole surface, so an inset one reads as a drawn line instead.
+  return <div role="separator" className={cx('-mx-1 my-1 border-t border-bg', className)} />;
 }
 
 export function Menu({
@@ -204,7 +234,7 @@ export function Menu({
             setOpen(false);
           }}
         >
-          {children}
+          <MenuGutter>{children}</MenuGutter>
         </MenuCloseContext.Provider>
       </div>
     </div>

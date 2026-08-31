@@ -14,6 +14,7 @@ import {
 import { cx } from './cx.js';
 import {
   MenuDivider,
+  MenuGutter,
   MenuItem,
   MenuLabel,
   type MenuDividerProps,
@@ -574,7 +575,7 @@ function ShellGroup({ label, children }: ShellGroupProps) {
   return (
     <div>
       {railed ? (
-        <div className="mx-2 my-2 border-t border-bg" />
+        <div className="-mx-1 my-2 border-t border-bg" />
       ) : (
         <div className="px-3 pt-4 pb-1 text-caption whitespace-nowrap text-text-mute">{label}</div>
       )}
@@ -684,14 +685,14 @@ function ShellUser({
   // Sign-out is the library's affordance so it is red by default, everywhere.
   const menuContent =
     menu || onSignOut ? (
-      <>
+      <MenuGutter>
         {menu}
         {onSignOut ? (
           <MenuItem tone="danger" onClick={onSignOut}>
             Sign out
           </MenuItem>
         ) : null}
-      </>
+      </MenuGutter>
     ) : undefined;
 
   if (menuContent) {

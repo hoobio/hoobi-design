@@ -1526,6 +1526,21 @@ export function BreadcrumbsPage() {
   );
 }
 
+/** A one-off on the 20px Fluent grid at 1.5px, so the icon prop has something honest to show. */
+function KeyIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="size-5" aria-hidden fill="none">
+      <circle cx="7" cy="10" r="3.25" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M10.25 10H17M14.5 10v2.5M16.5 10v1.75"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function MenuPage() {
   return (
     <>
@@ -1586,7 +1601,9 @@ export function MenuPage() {
       >
         <Menu label="Account">
           <Menu.Label>Signed in as hoobi</Menu.Label>
-          <Menu.Item onClick={() => undefined}>Copy API key</Menu.Item>
+          <Menu.Item icon={<KeyIcon />} onClick={() => undefined}>
+            Copy API key
+          </Menu.Item>
           <Menu.Item
             onClick={() => undefined}
             action={

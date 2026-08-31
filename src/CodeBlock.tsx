@@ -24,7 +24,7 @@ export function CodeBlock({ code, html, className, ...rest }: CodeBlockProps) {
   return (
     <pre
       className={cx(
-        'code-block styled-scrollbar overflow-x-auto rounded-control bg-chip p-3 font-mono text-caption whitespace-pre text-text-dim',
+        'code-block styled-scrollbar overflow-x-auto rounded-control bg-chip p-3 font-mono text-caption whitespace-pre text-text',
         className,
       )}
       {...content}

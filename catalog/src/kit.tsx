@@ -4,12 +4,17 @@ import hljs from 'highlight.js/lib/core';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 import typescript from 'highlight.js/lib/languages/typescript';
+import xml from 'highlight.js/lib/languages/xml';
 import yaml from 'highlight.js/lib/languages/yaml';
 
 hljs.registerLanguage('json', json);
 hljs.registerLanguage('typescript', typescript);
 hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('yaml', yaml);
+// JSX is not part of the typescript grammar: hljs hands every element off to the xml
+// sublanguage, and an unregistered sublanguage silently emits plain text. Without this
+// the first element in a snippet highlights and everything after it does not.
+hljs.registerLanguage('xml', xml);
 
 /** Highlight through the shared registry; CodeBlock takes the html and the theme does the rest. */
 export function highlight(code: string, language = 'typescript'): string {
@@ -47,7 +52,7 @@ function fallbackCopy(text: string) {
   ta.remove();
 }
 
-export function Snippet({ code }: { code: string }) {
+export function Snippet({ code, flush = false }: { code: string; flush?: boolean }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (!copied) return;
@@ -56,7 +61,11 @@ export function Snippet({ code }: { code: string }) {
   }, [copied]);
   return (
     <div className="relative">
-      <CodeBlock code={code} html={highlight(code)} className="pr-20" />
+      <CodeBlock
+        code={code}
+        html={highlight(code)}
+        className={cx('pr-20', flush && 'rounded-none')}
+      />
       <Button
         size="sm"
         variant="ghost"
@@ -177,16 +186,16 @@ export function Demo({
     <div className="mt-8 first:mt-6">
       <h3 className="text-body-strong text-text">{title}</h3>
       {note ? <p className="mt-1 text-caption text-text-dim">{note}</p> : null}
-      <div
-        className={cx(
-          'mt-2 rounded-panel bg-surface p-4',
-          stack ? 'flex flex-col gap-4' : 'flex flex-wrap items-center gap-3',
-        )}
-      >
-        {children}
-      </div>
-      <div className="mt-2">
-        <Snippet code={code} />
+      <div className="mt-2 flex flex-col gap-px overflow-hidden rounded-panel">
+        <div
+          className={cx(
+            'bg-surface p-4',
+            stack ? 'flex flex-col gap-4' : 'flex flex-wrap items-center gap-3',
+          )}
+        >
+          {children}
+        </div>
+        <Snippet code={code} flush />
       </div>
     </div>
   );
