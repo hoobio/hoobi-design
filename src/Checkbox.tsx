@@ -41,7 +41,9 @@ export function Checkbox({
           ref={ref}
           type="checkbox"
           disabled={disabled}
-          className="peer size-5 min-h-0 appearance-none rounded-control border border-border bg-transparent checked:border-accent checked:bg-accent indeterminate:border-accent indeterminate:bg-accent"
+          // Filled, not transparent: an unchecked box on a mirage-backed surface had nothing
+          // but a 1px border to read against artwork, which is not a control you can find.
+          className="peer size-5 min-h-0 appearance-none rounded-control border border-border bg-chip checked:border-accent checked:bg-accent indeterminate:border-accent indeterminate:bg-accent"
           {...rest}
         />
         <svg

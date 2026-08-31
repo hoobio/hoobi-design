@@ -304,6 +304,15 @@
     color: var(--color-text-dim);
   }
 
+  /* Text over a mirage is reading against artwork, not a flat fill, so the two muted
+     tones lift a step wherever one is in play. Scoped rather than global: the palette is
+     right on plain chrome, and it is only the busy backdrop that eats the contrast. */
+  .mirage-scoped,
+  .mirage-lift {
+    --color-text-dim: #a6adb6;
+    --color-text-mute: #949daa;
+  }
+
   /* Mirage, scoped to one surface (a card): the same recipe as .mirage-layer but
      tinted towards surface-raised and clipped to the host, which must NOT paint its
      own opaque background - the layer IS the fill. Hover states go translucent. */

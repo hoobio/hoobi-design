@@ -251,7 +251,8 @@ export function Shell({
 
   return (
     <ShellContext.Provider value={{ collapsed, overlayOpen }}>
-      <div className="isolate flex h-dvh min-h-0 flex-col">
+      {/* With a page-wide mirage the muted tones are reading against artwork, so they lift. */}
+      <div className={cx('isolate flex h-dvh min-h-0 flex-col', mirage && 'mirage-lift')}>
         {mirage ? (
           <div
             aria-hidden
