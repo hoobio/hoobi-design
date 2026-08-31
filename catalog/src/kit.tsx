@@ -175,12 +175,15 @@ export function Demo({
   note,
   code,
   stack,
+  flush,
   children,
 }: {
   title: string;
   note?: string;
   code: string;
   stack?: boolean;
+  /** For a component that bleeds its own hairlines: the surface adds no padding. */
+  flush?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -190,7 +193,8 @@ export function Demo({
       <div className="mt-2 flex flex-col gap-px overflow-hidden rounded-panel">
         <div
           className={cx(
-            'bg-surface p-4',
+            'bg-surface',
+            flush ? 'py-2' : 'p-4',
             stack ? 'flex flex-col gap-4' : 'flex flex-wrap items-center gap-3',
           )}
         >

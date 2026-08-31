@@ -1981,7 +1981,7 @@ export function DescriptionListPage() {
   ]}
 />`}
       >
-        <div className="w-full max-w-[28rem] rounded-panel bg-surface-raised p-4">
+        <div className="w-full max-w-[28rem] overflow-hidden rounded-panel bg-surface-raised py-2">
           <DescriptionList items={FACTS} />
         </div>
       </Demo>
@@ -1992,7 +1992,7 @@ export function DescriptionListPage() {
         stack
         code={`<DescriptionList layout="inline" items={items} />`}
       >
-        <div className="w-full max-w-[36rem] rounded-panel bg-surface-raised p-4">
+        <div className="w-full max-w-[36rem] overflow-hidden rounded-panel bg-surface-raised py-2">
           <DescriptionList layout="inline" items={FACTS} />
         </div>
       </Demo>
