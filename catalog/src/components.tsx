@@ -14,12 +14,37 @@ import {
   Tooltip,
   cx,
 } from '@hoobi/design';
-import { Demo, Import, Label, Props, Snippet } from './kit.js';
+import { useContext } from 'react';
+import { Demo, Import, Label, Playground, Props, ShellDemoContext, Snippet } from './kit.js';
 
 export function ButtonPage() {
   return (
     <>
       <Import names="Button" />
+      <Playground
+        knobs={{
+          variant: {
+            kind: 'select',
+            options: ['primary', 'secondary', 'ghost', 'danger'],
+            init: 'primary',
+          },
+          size: { kind: 'select', options: ['md', 'sm'], init: 'md' },
+          disabled: { kind: 'boolean', init: false },
+          label: { kind: 'text', init: 'Approve' },
+        }}
+        render={(v) => (
+          <Button
+            variant={v.variant as 'primary'}
+            size={v.size as 'md'}
+            disabled={v.disabled as boolean}
+          >
+            {v.label as string}
+          </Button>
+        )}
+        code={(v) =>
+          `<Button variant="${String(v.variant)}" size="${String(v.size)}"${v.disabled ? ' disabled' : ''}>${String(v.label)}</Button>`
+        }
+      />
       <Demo
         title="Variants"
         note="Accent is spent on exactly one button per view. Everything else is neutral or semantic."
@@ -137,6 +162,30 @@ export function BadgePage() {
   return (
     <>
       <Import names="Badge" />
+      <Playground
+        knobs={{
+          tone: {
+            kind: 'select',
+            options: ['neutral', 'accent', 'success', 'warn', 'danger', 'info'],
+            init: 'warn',
+          },
+          dot: { kind: 'boolean', init: true },
+          tooltip: { kind: 'text', init: 'Waiting for an admin to approve the plan.' },
+          label: { kind: 'text', init: 'awaiting_approval' },
+        }}
+        render={(v) => (
+          <Badge
+            tone={v.tone as 'warn'}
+            dot={v.dot as boolean}
+            tooltip={(v.tooltip as string) || undefined}
+          >
+            {v.label as string}
+          </Badge>
+        )}
+        code={(v) =>
+          `<Badge tone="${String(v.tone)}"${v.dot ? ' dot' : ''}${v.tooltip ? ` tooltip="${String(v.tooltip)}"` : ''}>${String(v.label)}</Badge>`
+        }
+      />
       <Demo
         title="Tones"
         note="20px tall, chip surface, tone carried by the text colour only."
@@ -206,9 +255,40 @@ export function BadgePage() {
 }
 
 export function ShellPage() {
+  const demo = useContext(ShellDemoContext);
   return (
     <>
       <Import names="Shell" />
+      {demo ? (
+        <Demo
+          title="Try it"
+          note="These steer the real Shell around this page: the pane's three presentations, and the Fluent textures behind them."
+          code={`<Shell mode="side" collapsible texture="mica" textureImage="url(...)" />`}
+        >
+          <Select
+            aria-label="Nav type"
+            value={demo.navType}
+            onChange={(e) => {
+              demo.setNavType(e.target.value as typeof demo.navType);
+            }}
+          >
+            <option value="pinned">nav: side, pinned</option>
+            <option value="rail">nav: side, collapsible</option>
+            <option value="top">nav: top</option>
+          </Select>
+          <Select
+            aria-label="Texture"
+            value={demo.texture}
+            onChange={(e) => {
+              demo.setTexture(e.target.value as typeof demo.texture);
+            }}
+          >
+            <option value="none">texture: none</option>
+            <option value="mica">texture: mica</option>
+            <option value="acrylic">texture: acrylic</option>
+          </Select>
+        </Demo>
+      ) : null}
       <p className="text-body text-text-dim">
         The one page chrome, so every Hoobi app lays out the same way: a full-width 48px top bar
         with the brand mark in the top-left column (textura's arrangement) and the panel trigger
@@ -272,6 +352,24 @@ export function ShellPage() {
             'Collapsible pane, or items along the bar with groups as dropdowns.',
           ],
           [
+            'subtitle',
+            'ReactNode',
+            '',
+            'Line under the title in the pane header - a version, a tagline.',
+          ],
+          [
+            'divided',
+            'boolean',
+            'true',
+            'Chrome hairlines: under the bar and along the pane edge. false for seamless chrome.',
+          ],
+          [
+            'texture / textureImage',
+            `'mica' | 'acrylic', CSS image`,
+            '',
+            'Fluent texture: mica fixes the image behind the app, blurred and tinted back towards bg; acrylic adds translucent blurred chrome. Any CSS image works - url(...) or gradients. Try the top-bar selector.',
+          ],
+          [
             'Shell.Item',
             'as, icon, label, active, href|to...',
             '',
@@ -299,6 +397,26 @@ export function TooltipPage() {
   return (
     <>
       <Import names="Tooltip" />
+      <Playground
+        knobs={{
+          text: { kind: 'text', init: 'Radarr accepted the release and the download is running.' },
+          tone: {
+            kind: 'select',
+            options: ['neutral', 'accent', 'success', 'warn', 'danger', 'info'],
+            init: 'info',
+          },
+        }}
+        render={(v) => (
+          <Tooltip text={v.text as string}>
+            <Badge tone={v.tone as 'info'} dot>
+              hover me
+            </Badge>
+          </Tooltip>
+        )}
+        code={(v) => `<Tooltip text="${String(v.text)}">
+  <Badge tone="${String(v.tone)}" dot>hover me</Badge>
+</Tooltip>`}
+      />
       <p className="text-body text-text-dim">
         CSS-only: the styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so
         anything carrying that attribute grows a tooltip - no JS, no positioning library. It shows
@@ -356,6 +474,25 @@ export function CardPage() {
   return (
     <>
       <Import names="Card" />
+      <Playground
+        knobs={{
+          title: { kind: 'text', init: 'Sonarr' },
+          actions: { kind: 'boolean', init: false },
+          body: { kind: 'text', init: 'A raised surface, told apart by fill.' },
+        }}
+        render={(v) => (
+          <Card
+            title={(v.title as string) || undefined}
+            actions={v.actions ? <Button size="sm">Open</Button> : undefined}
+            className="w-full"
+          >
+            <p className="text-body text-text-dim">{v.body as string}</p>
+          </Card>
+        )}
+        code={(v) =>
+          `<Card${v.title ? ` title="${String(v.title)}"` : ''}${v.actions ? ' actions={<Button size="sm">Open</Button>}' : ''}>${String(v.body)}</Card>`
+        }
+      />
       <Demo
         title="Anatomy"
         stack
@@ -460,6 +597,25 @@ export function AlertPage() {
   return (
     <>
       <Import names="Alert" />
+      <Playground
+        knobs={{
+          tone: { kind: 'select', options: ['info', 'success', 'warn', 'danger'], init: 'info' },
+          title: { kind: 'text', init: 'Heads up' },
+          body: { kind: 'text', init: 'The whole surface takes the tint.' },
+        }}
+        render={(v) => (
+          <Alert
+            tone={v.tone as 'info'}
+            title={(v.title as string) || undefined}
+            className="w-full"
+          >
+            {(v.body as string) || null}
+          </Alert>
+        )}
+        code={(v) =>
+          `<Alert tone="${String(v.tone)}"${v.title ? ` title="${String(v.title)}"` : ''}>${String(v.body)}</Alert>`
+        }
+      />
       <Demo
         title="Tones"
         stack
@@ -516,6 +672,26 @@ export function InputPage() {
   return (
     <>
       <Import names="Input" />
+      <Playground
+        knobs={{
+          label: { kind: 'text', init: 'search' },
+          placeholder: { kind: 'text', init: 'title, id, action' },
+          hint: { kind: 'text', init: '' },
+          error: { kind: 'text', init: '' },
+        }}
+        render={(v) => (
+          <Input
+            label={(v.label as string) || undefined}
+            placeholder={v.placeholder as string}
+            hint={(v.hint as string) || undefined}
+            error={(v.error as string) || undefined}
+            className="w-64"
+          />
+        )}
+        code={(v) =>
+          `<Input${v.label ? ` label="${String(v.label)}"` : ''} placeholder="${String(v.placeholder)}"${v.hint ? ` hint="${String(v.hint)}"` : ''}${v.error ? ` error="${String(v.error)}"` : ''} />`
+        }
+      />
       <Demo
         title="Anatomy"
         note="32px field, label at caption, hint or error below. The label is wired to the input with a generated id when you do not pass one."
@@ -841,6 +1017,15 @@ export function ProgressPage() {
   return (
     <>
       <Import names="Progress" />
+      <Playground
+        knobs={{ value: { kind: 'select', options: ['12', '38', '64', '90', '100'], init: '64' } }}
+        render={(v) => (
+          <div className="w-full">
+            <Progress value={Number(v.value)} />
+          </div>
+        )}
+        code={(v) => `<Progress value={${String(v.value)}} />`}
+      />
       <Demo
         title="With and without a label"
         note="4px bar, the WinUI ProgressBar height. The track is border, the fill is accent."
@@ -901,6 +1086,11 @@ export function SpinnerPage() {
   return (
     <>
       <Import names="Spinner" />
+      <Playground
+        knobs={{ size: { kind: 'select', options: ['sm', 'md'], init: 'sm' } }}
+        render={(v) => <Spinner size={v.size as 'sm'} />}
+        code={(v) => `<Spinner size="${String(v.size)}" />`}
+      />
       <Demo
         title="Sizes"
         note="A bordered circle with an accent top arc. 16px and 24px, nothing else."

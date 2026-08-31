@@ -252,7 +252,7 @@ export function Spacing() {
       <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
         {RADII.map(([cls, token, px]) => (
           <div key={cls} className="rounded-panel bg-surface p-3">
-            <div className={`h-12 w-full border border-accent bg-accent-fill/30 ${cls}`} />
+            <div className={`h-12 w-full bg-accent-fill ${cls}`} />
             <div className="mt-2 font-mono text-caption text-text">{cls}</div>
             <div className="font-mono text-caption text-text-mute">
               {token} - {px}

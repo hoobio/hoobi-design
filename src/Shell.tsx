@@ -3,9 +3,11 @@ import {
   useContext,
   useEffect,
   useState,
+  type CSSProperties,
   type ElementType,
   type HTMLAttributes,
   type MouseEvent,
+  type PointerEvent,
   type ReactNode,
 } from 'react';
 import { cx } from './cx.js';
@@ -22,6 +24,7 @@ import { cx } from './cx.js';
 interface ShellState {
   collapsed: boolean;
   overlayOpen: boolean;
+  texture?: 'mica' | 'acrylic';
 }
 
 const ShellContext = createContext<ShellState>({ collapsed: false, overlayOpen: false });
@@ -33,8 +36,10 @@ const NavAreaContext = createContext<NavArea>('side');
 export interface ShellProps {
   /** Square mark in the top-left 48px column, ~24px. */
   brand?: ReactNode;
-  /** Wordmark / app name next to the mark. */
+  /** Wordmark / app name in the pane header. */
   title?: ReactNode;
+  /** Line under the title - a version, a tagline. */
+  subtitle?: ReactNode;
   /** Right side of the top bar. */
   actions?: ReactNode;
   /** 'side' (default) is the collapsible pane; 'top' lays items along the bar. */
@@ -49,6 +54,15 @@ export interface ShellProps {
   onCollapseChange?: (collapsed: boolean) => void;
   /** false pins the pane expanded on md+ (the trigger still opens the mobile overlay). */
   collapsible?: boolean;
+  /** Chrome hairlines - under the bar, along the pane edge. false for seamless chrome. */
+  divided?: boolean;
+  /**
+   * Fluent texture. 'mica': textureImage sits fixed behind the app, heavily blurred
+   * and tinted back towards bg. 'acrylic': mica plus translucent blurred chrome.
+   */
+  texture?: 'mica' | 'acrylic';
+  /** Any CSS image for the texture: url(...) or a stack of gradients. */
+  textureImage?: string;
   children: ReactNode;
 }
 
@@ -84,6 +98,7 @@ function TriggerIcon({ close }: { close: boolean }) {
 export function Shell({
   brand,
   title,
+  subtitle,
   actions,
   mode = 'side',
   nav,
@@ -92,6 +107,9 @@ export function Shell({
   collapsed: controlledCollapsed,
   onCollapseChange,
   collapsible = true,
+  divided = true,
+  texture,
+  textureImage,
   children,
 }: ShellProps) {
   const [uncontrolledCollapsed, setCollapsed] = useState(defaultCollapsed);
@@ -134,54 +152,121 @@ export function Shell({
     </NavAreaContext.Provider>
   );
 
-  // The overlay needs the icon shown outright - there is no hover on touch.
-  const forceIcon = overlayOpen;
-
   return (
-    <ShellContext.Provider value={{ collapsed, overlayOpen }}>
-      <div className="flex min-h-dvh flex-col">
-        {/* Full width, layered above the overlay scrim so the brand button stays reachable. */}
-        <header className="relative z-40 flex h-12 shrink-0 items-center bg-bg pr-3">
-          {/* THE LOGO IS THE COLLAPSE BUTTON: the brand mark sits in the top-left column and
-              swaps to the panel glyph on hover (a close cross while the overlay is up). Where
-              there is nothing to toggle on md+ (top mode, pinned pane) it is inert there and
-              shows the plain mark. */}
-          <button
-            type="button"
-            onClick={toggle}
-            aria-expanded={overlayOpen || !collapsed}
-            aria-label="Toggle navigation"
-            className={cx(
-              'group flex size-12 shrink-0 items-center justify-center rounded-control',
-              canToggleMd ? 'hover:bg-surface' : 'max-md:hover:bg-surface md:cursor-default',
-            )}
-          >
-            <span
-              aria-hidden
+    <ShellContext.Provider value={{ collapsed, overlayOpen, texture }}>
+      <div className="isolate flex min-h-dvh flex-col">
+        {texture && textureImage ? (
+          <div
+            aria-hidden
+            className="mica-layer"
+            style={{ '--texture-image': textureImage } as CSSProperties}
+          />
+        ) : null}
+        {/* Full width, layered above the overlay scrim so the brand button stays reachable.
+            The hairline under the bar anchors it - bg-on-bg chrome otherwise reads as page
+            whitespace above the content. */}
+        <header
+          className={cx(
+            'relative z-40 flex h-12 shrink-0 items-center pr-3',
+            divided && 'border-b border-border',
+            texture === 'acrylic' ? 'acrylic' : texture === 'mica' ? 'bg-bg/60' : 'bg-bg',
+          )}
+        >
+          {/* textura's pane header, lifted into the bar: a hairlined cell exactly as wide as
+              the pane, animating with it. Expanded it holds the wordmark block on the left and
+              the collapse trigger at its right edge; collapsed it is the 48px square showing
+              the brand mark, which reveals the expand glyph on hover. */}
+          {mode === 'side' ? (
+            <div
               className={cx(
-                'items-center justify-center',
-                forceIcon
-                  ? 'hidden'
-                  : cx('flex', canToggleMd ? 'group-hover:hidden' : 'max-md:group-hover:hidden'),
+                'hidden h-full shrink-0 items-center transition-[width] duration-250 ease-decelerate md:flex',
+                divided && 'border-r border-border',
+                collapsed ? 'w-12' : 'w-54',
               )}
             >
-              {brand ?? <TriggerIcon close={false} />}
+              {collapsed ? (
+                <button
+                  type="button"
+                  onClick={toggle}
+                  aria-expanded={false}
+                  aria-label="Expand navigation"
+                  className="group flex h-full w-12 items-center justify-center hover:bg-surface"
+                >
+                  <span aria-hidden className="flex items-center justify-center group-hover:hidden">
+                    {brand ?? <TriggerIcon close={false} />}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="hidden items-center justify-center text-text-dim group-hover:flex group-hover:text-text"
+                  >
+                    <TriggerIcon close={false} />
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <span className="flex min-w-0 flex-1 flex-col justify-center pl-3">
+                    <span className="truncate text-body-strong leading-5 text-text">{title}</span>
+                    {subtitle ? (
+                      <span className="truncate text-caption-small leading-4 text-text-mute">
+                        {subtitle}
+                      </span>
+                    ) : null}
+                  </span>
+                  {collapsible ? (
+                    <button
+                      type="button"
+                      onClick={toggle}
+                      aria-expanded
+                      aria-label="Collapse navigation"
+                      className="flex h-full w-12 shrink-0 items-center justify-center text-text-dim hover:bg-surface hover:text-text"
+                    >
+                      <TriggerIcon close={false} />
+                    </button>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
+          {/* Collapsed, the wordmark takes the window-title spot: centred across the bar. */}
+          {mode === 'side' && collapsed ? (
+            <span className="fade-in pointer-events-none absolute inset-x-0 hidden flex-col items-center justify-center text-center md:flex">
+              <span className="truncate text-body-strong leading-5 text-text">{title}</span>
+              {subtitle ? (
+                <span className="truncate text-caption-small leading-4 text-text-mute">
+                  {subtitle}
+                </span>
+              ) : null}
             </span>
-            <span
-              aria-hidden
+          ) : null}
+          {/* Below md (both modes) and top-mode desktops: mark, wordmark and the overlay trigger
+              sit statically in the flow. */}
+          <div className={cx('flex min-w-0 items-center', mode === 'side' && 'md:hidden')}>
+            {brand ? (
+              <span aria-hidden className="flex size-12 shrink-0 items-center justify-center">
+                {brand}
+              </span>
+            ) : null}
+            <span className={cx('flex min-w-0 flex-col justify-center', !brand && 'pl-3')}>
+              <span className="truncate text-body-strong leading-5 text-text">{title}</span>
+              {subtitle ? (
+                <span className="truncate text-caption-small leading-4 text-text-mute">
+                  {subtitle}
+                </span>
+              ) : null}
+            </span>
+            <button
+              type="button"
+              onClick={toggle}
+              aria-expanded={overlayOpen}
+              aria-label="Toggle navigation"
               className={cx(
-                'items-center justify-center text-text-dim group-hover:text-text',
-                forceIcon
-                  ? 'flex'
-                  : cx('hidden', canToggleMd ? 'group-hover:flex' : 'max-md:group-hover:flex'),
+                'ml-1 flex h-full w-12 shrink-0 items-center justify-center text-text-dim hover:bg-surface hover:text-text',
+                mode === 'top' && 'md:hidden',
               )}
             >
               <TriggerIcon close={overlayOpen} />
-            </span>
-          </button>
-          {title ? (
-            <span className="min-w-0 shrink-0 truncate text-body-strong text-text">{title}</span>
-          ) : null}
+            </button>
+          </div>
           {mode === 'top' ? (
             <NavAreaContext.Provider value="top">
               <nav
@@ -201,6 +286,7 @@ export function Shell({
               aria-label="Main"
               className={cx(
                 'hidden shrink-0 transition-[width] duration-250 ease-decelerate md:block',
+                divided && 'border-r border-border',
                 collapsed ? 'w-12' : 'w-54',
               )}
             >
@@ -219,7 +305,10 @@ export function Shell({
               <div aria-hidden className="fade-in absolute inset-0 bg-black/60" />
               <nav
                 aria-label="Main"
-                className="slide-in-left absolute inset-y-0 left-0 w-54 bg-surface pt-12"
+                className={cx(
+                  'slide-in-left absolute inset-y-0 left-0 w-54 pt-12',
+                  texture === 'acrylic' ? 'acrylic' : 'bg-surface',
+                )}
               >
                 {pane('overlay')}
               </nav>
@@ -240,6 +329,22 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
   label: string;
   active?: boolean;
   [key: string]: unknown;
+}
+
+/**
+ * The house tooltip, on the rail only: the pane is a scroll container, so the tip
+ * uses the fixed [data-tip].tip-fixed variant, placed beside the anchor on entry.
+ * Expanded rows carry no tip at all - the label is right there.
+ */
+function sideTip(label: string) {
+  return {
+    'data-tip': label,
+    onPointerEnter: (e: PointerEvent<HTMLElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      e.currentTarget.style.setProperty('--tip-x', `${String(rect.right + 8)}px`);
+      e.currentTarget.style.setProperty('--tip-y', `${String(rect.top + rect.height / 2)}px`);
+    },
+  };
 }
 
 function ShellItem({ as, icon, label, active = false, className, ...rest }: ShellItemProps) {
@@ -272,19 +377,17 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
     );
   }
 
-  // Native title, not data-tip: the pane is a scroll container, which clips a
-  // CSS ::after tooltip. The browser's own tooltip renders in the top layer.
-  // ponytail: upgrade to an anchored popover if the delay ever grates.
   return (
     <Comp
       aria-current={active ? 'page' : undefined}
-      title={railed ? label : undefined}
       className={cx(
         'relative flex h-10 items-center gap-3 overflow-hidden rounded-control whitespace-nowrap',
         active ? 'bg-surface text-text' : 'text-text-dim hover:bg-surface hover:text-text',
+        railed && 'tip-fixed',
         className,
       )}
       {...rest}
+      {...(railed ? sideTip(label) : null)}
     >
       {/* The WinUI selection pill: a 3px accent bar on the item's left edge. */}
       <span
@@ -328,17 +431,21 @@ const MARK_HUES = [
  */
 const assignedHues = new Map<string, number>();
 
-function InitialMark({ label }: { label: string }) {
+function hueFor(label: string): string {
   let slot = assignedHues.get(label);
   if (slot === undefined) {
     slot = assignedHues.size;
     assignedHues.set(label, slot);
   }
-  const hue = MARK_HUES[slot % MARK_HUES.length];
+  return MARK_HUES[slot % MARK_HUES.length] ?? 'accent-blue';
+}
+
+function InitialMark({ label }: { label: string }) {
+  const hue = hueFor(label);
   return (
     <span
       className="flex size-6 items-center justify-center rounded-control font-mono text-caption"
-      style={{ backgroundColor: `var(--color-${hue ?? 'accent-blue'})`, color: 'var(--color-bg)' }}
+      style={{ backgroundColor: `var(--color-${hue})`, color: 'var(--color-bg)' }}
     >
       {label.charAt(0).toUpperCase()}
     </span>
@@ -352,7 +459,7 @@ export interface ShellGroupProps {
 }
 
 function ShellGroup({ label, children }: ShellGroupProps) {
-  const { collapsed } = useContext(ShellContext);
+  const { collapsed, texture } = useContext(ShellContext);
   const area = useContext(NavAreaContext);
 
   if (area === 'top') {
@@ -385,7 +492,10 @@ function ShellGroup({ label, children }: ShellGroupProps) {
         </summary>
         <div
           data-shell-dropdown
-          className="fade-in fixed z-50 w-54 rounded-panel bg-surface-raised p-1"
+          className={cx(
+            'fade-in fixed z-50 w-54 rounded-panel p-1',
+            texture === 'acrylic' ? 'acrylic' : 'bg-surface-raised',
+          )}
           onClick={closeOnPick}
         >
           <NavAreaContext.Provider value="dropdown">{children}</NavAreaContext.Provider>
@@ -432,17 +542,21 @@ function ShellUser({ as, name, detail, avatar, className, ...rest }: ShellUserPr
     .toUpperCase();
   return (
     <Comp
-      title={railed ? name : undefined}
+      {...(railed ? sideTip(name) : null)}
       className={cx(
         'flex h-12 w-full items-center gap-3 overflow-hidden rounded-control whitespace-nowrap text-text',
         (rest.onClick !== undefined || as !== undefined) && 'hover:bg-surface',
+        railed && 'tip-fixed',
         className,
       )}
       {...rest}
     >
       <span aria-hidden className="flex w-10 shrink-0 items-center justify-center">
         {avatar ?? (
-          <span className="flex size-6 items-center justify-center rounded-full bg-surface-raised text-caption text-text-dim">
+          <span
+            className="flex size-6 items-center justify-center rounded-full font-mono text-caption-small"
+            style={{ backgroundColor: `var(--color-${hueFor(name)})`, color: 'var(--color-bg)' }}
+          >
             {initials}
           </span>
         )}

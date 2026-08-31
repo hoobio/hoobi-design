@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Section, Select, Shell } from '@hoobi/design';
+import { Section, Shell } from '@hoobi/design';
+import { ShellDemoContext } from './kit.js';
 import { Colour, Identity, Spacing, Typography } from './foundations.js';
 import {
   AlertPage,
@@ -184,12 +185,21 @@ function useHashPage(): Page {
 }
 
 type NavType = 'pinned' | 'rail' | 'top';
+type Texture = 'none' | 'mica' | 'acrylic';
+
+// A stand-in desktop: three Ayu hue blobs. Any CSS image works, including url(...).
+const DEMO_TEXTURE = [
+  'radial-gradient(40rem 30rem at 20% 10%, #409fffcc, transparent)',
+  'radial-gradient(50rem 35rem at 80% 20%, #d4bfffaa, transparent)',
+  'radial-gradient(45rem 40rem at 50% 90%, #95e6cb99, transparent)',
+].join(', ');
 
 export function App() {
   const page = useHashPage();
   // The chrome doubles as the Shell demo: this switches the real nav between
   // its three presentations so each can be experienced, not just read about.
   const [navType, setNavType] = useState<NavType>('rail');
+  const [texture, setTexture] = useState<Texture>('none');
   return (
     <Shell
       brand={
@@ -197,27 +207,12 @@ export function App() {
           h
         </span>
       }
-      title={
-        <>
-          <span className="font-mono">@hoobi/design</span>{' '}
-          <span className="font-mono text-caption text-text-mute">v{__LIB_VERSION__}</span>
-        </>
-      }
+      title={<span className="font-mono">@hoobi/design</span>}
+      subtitle={<span className="font-mono">v{__LIB_VERSION__}</span>}
       mode={navType === 'top' ? 'top' : 'side'}
       collapsible={navType === 'rail'}
-      actions={
-        <Select
-          aria-label="Nav type"
-          value={navType}
-          onChange={(e) => {
-            setNavType(e.target.value as NavType);
-          }}
-        >
-          <option value="pinned">nav: side, pinned</option>
-          <option value="rail">nav: side, collapsible</option>
-          <option value="top">nav: top</option>
-        </Select>
-      }
+      texture={texture === 'none' ? undefined : texture}
+      textureImage={DEMO_TEXTURE}
       nav={
         <>
           {GROUPS.map((g) => (
@@ -236,12 +231,14 @@ export function App() {
       }
       navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
     >
-      <div className="mx-auto max-w-[72rem] px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
-        {/* pt-2 seats the title level with the pane's first row, not below it. */}
-        <Section id={page.id} title={page.title} caption={page.caption} className="pt-2">
-          {page.render()}
-        </Section>
-      </div>
+      <ShellDemoContext.Provider value={{ navType, setNavType, texture, setTexture }}>
+        <div className="max-w-[72rem] px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
+          {/* Top padding mirrors the side padding, so the title sits square in the corner. */}
+          <Section id={page.id} title={page.title} caption={page.caption} className="pt-4 md:pt-10">
+            {page.render()}
+          </Section>
+        </div>
+      </ShellDemoContext.Provider>
     </Shell>
   );
 }

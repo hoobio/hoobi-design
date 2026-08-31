@@ -1,5 +1,14 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Button, cx } from '@hoobi/design';
+import { createContext, useEffect, useState, type ReactNode } from 'react';
+import { Button, Input, Select, cx } from '@hoobi/design';
+
+/** The Shell page steers the catalog's own chrome through this. */
+export interface ShellDemo {
+  navType: 'pinned' | 'rail' | 'top';
+  setNavType: (v: ShellDemo['navType']) => void;
+  texture: 'none' | 'mica' | 'acrylic';
+  setTexture: (v: ShellDemo['texture']) => void;
+}
+export const ShellDemoContext = createContext<ShellDemo | null>(null);
 
 function copy(text: string) {
   navigator.clipboard?.writeText(text).catch(() => fallbackCopy(text));
@@ -41,6 +50,95 @@ export function Snippet({ code }: { code: string }) {
       >
         {copied ? 'Copied' : 'Copy'}
       </Button>
+    </div>
+  );
+}
+
+export type KnobDef =
+  | { kind: 'select'; options: readonly string[]; init: string }
+  | { kind: 'boolean'; init: boolean }
+  | { kind: 'text'; init: string };
+
+export type KnobValues = Record<string, string | boolean>;
+
+/**
+ * Live component configuration: a row of knobs steering a real render, with the
+ * JSX for the current state below it. Every component page carries one.
+ */
+export function Playground({
+  knobs,
+  render,
+  code,
+}: {
+  knobs: Record<string, KnobDef>;
+  render: (values: KnobValues) => ReactNode;
+  code: (values: KnobValues) => string;
+}) {
+  const [values, setValues] = useState<KnobValues>(() =>
+    Object.fromEntries(Object.entries(knobs).map(([name, def]) => [name, def.init])),
+  );
+  const set = (name: string, value: string | boolean) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
+  };
+  return (
+    <div className="mt-6">
+      <h3 className="text-body-strong text-text">Playground</h3>
+      <div className="mt-2 rounded-panel bg-surface p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          {Object.entries(knobs).map(([name, def]) => {
+            if (def.kind === 'select') {
+              return (
+                <Select
+                  key={name}
+                  label={name}
+                  className="w-auto"
+                  value={values[name] as string}
+                  onChange={(e) => {
+                    set(name, e.target.value);
+                  }}
+                >
+                  {def.options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
+              );
+            }
+            if (def.kind === 'boolean') {
+              return (
+                <label key={name} className="flex h-8 items-center gap-1.5 text-body text-text-dim">
+                  <input
+                    type="checkbox"
+                    checked={values[name] as boolean}
+                    onChange={(e) => {
+                      set(name, e.target.checked);
+                    }}
+                  />
+                  {name}
+                </label>
+              );
+            }
+            return (
+              <Input
+                key={name}
+                label={name}
+                className="w-44"
+                value={values[name] as string}
+                onChange={(e) => {
+                  set(name, e.target.value);
+                }}
+              />
+            );
+          })}
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-bg pt-4">
+          {render(values)}
+        </div>
+      </div>
+      <div className="mt-2">
+        <Snippet code={code(values)} />
+      </div>
     </div>
   );
 }
