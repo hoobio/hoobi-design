@@ -241,10 +241,11 @@ export function App() {
           detail="design.hoobi.io"
           menu={
             <div className="p-2 text-caption text-text-dim">
-              The menu slot: a flyout beside the rail, an accordion here. Real vouch identity is
-              still to be wired.
+              The menu slot: a flyout beside the rail, a downward expander here. Real vouch identity
+              is still to be wired, so sign out below is a demo row.
             </div>
           }
+          onSignOut={() => undefined}
         />
       }
     >

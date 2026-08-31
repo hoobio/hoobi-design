@@ -391,9 +391,9 @@ export function ShellPage() {
           ],
           [
             'Shell.User',
-            'name, detail, avatar, menu, as, onClick',
+            'name, detail, avatar, menu, onSignOut, as, onClick',
             '',
-            'Bottom-docked identity row, avatar-only on the rail, initials hue-hashed from the name. menu renders as a flyout beside the rail when collapsed and an upward accordion when expanded - on a real button, so no summary focus-ring quirk.',
+            'Bottom-docked identity row, avatar-only on the rail, initials hue-hashed from the name. menu renders as a flyout beside the rail when collapsed and an upward accordion when expanded - on a real button, so no summary focus-ring quirk. onSignOut appends the standard danger sign-out row.',
           ],
         ]}
       />

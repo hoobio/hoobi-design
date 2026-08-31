@@ -558,14 +558,25 @@ export interface ShellUserProps extends HTMLAttributes<HTMLElement> {
   /**
    * Account actions. With this set the row becomes a real button (never a summary -
    * Chromium paints summaries' focus ring on mouse clicks) that opens the menu as a
-   * flyout beside the rail when collapsed, and an upward accordion when expanded.
+   * flyout beside the rail when collapsed, and a downward expander when expanded.
    */
   menu?: ReactNode;
+  /** Renders the standard danger sign-out row at the foot of the menu. */
+  onSignOut?: () => void;
   [key: string]: unknown;
 }
 
 /** textura's MainNav.User: bottom-docked identity row, avatar-only on the rail. */
-function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: ShellUserProps) {
+function ShellUser({
+  as,
+  name,
+  detail,
+  avatar,
+  menu,
+  onSignOut,
+  className,
+  ...rest
+}: ShellUserProps) {
   const { collapsed } = useContext(ShellContext);
   const area = useContext(NavAreaContext);
   const railed = area === 'side' && collapsed;
@@ -634,7 +645,24 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
     className,
   );
 
-  if (menu) {
+  // Sign-out is the library's affordance so it is red by default, everywhere.
+  const menuContent =
+    menu || onSignOut ? (
+      <>
+        {menu}
+        {onSignOut ? (
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="flex h-10 w-full items-center rounded-control px-3 text-body text-danger hover:bg-danger/15"
+          >
+            Sign out
+          </button>
+        ) : null}
+      </>
+    ) : undefined;
+
+  if (menuContent) {
     return (
       <div ref={rootRef}>
         <button
@@ -682,7 +710,7 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
           style={{ gridTemplateRows: open && !railed ? '1fr' : '0fr' }}
         >
           <div className="overflow-hidden">
-            <div className="border-t border-bg">{menu}</div>
+            <div className="border-t border-bg">{menuContent}</div>
           </div>
         </div>
         {/* Railed: a flyout beside the rail. */}
@@ -693,7 +721,7 @@ function ShellUser({ as, name, detail, avatar, menu, className, ...rest }: Shell
             open && railed ? 'fade-in' : 'hidden',
           )}
         >
-          {menu}
+          {menuContent}
         </div>
       </div>
     );
