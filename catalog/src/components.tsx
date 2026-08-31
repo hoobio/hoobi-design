@@ -205,11 +205,101 @@ export function BadgePage() {
   );
 }
 
+export function ShellPage() {
+  return (
+    <>
+      <Import names="Shell" />
+      <p className="text-body text-text-dim">
+        The one page chrome, so every Hoobi app lays out the same way: a full-width 48px top bar
+        with the brand mark in the top-left column (textura's arrangement) and the panel trigger
+        beside the wordmark. In side mode a pane below animates between a 48px icon rail and a 216px
+        pane on the Fluent decelerate curve - the mark and the rail icons share one 48px column. In
+        top mode the items lie along the bar and groups auto-convert to dropdowns. Below md both
+        modes become a slide-in overlay with a scrim, and the trigger swaps to a close cross while
+        it is up.
+      </p>
+      <p className="mt-3 text-body text-text-dim">
+        <strong className="text-text">This catalog is the live demo</strong> - the chrome around
+        this page is a Shell, and the selector in the top bar switches its presentation live.
+        Collapse the side pane and the labels fade out, the active pill stays, each rail icon grows
+        a tooltip, and items without an icon fall back to their initial.
+      </p>
+      <div className="mt-4">
+        <Snippet
+          code={`<Shell
+  brand={<Logo />}                    // ~24px square mark, top-left column
+  title="mendarr"
+  actions={<ThemePicker />}           // right side of the top bar
+  mode="side"                         // or "top": groups become dropdowns
+  nav={
+    <>
+      <Shell.Item as={NavLink} to="/issues" icon={<IssuesIcon />} label="issues" active />
+      <Shell.Group label="Admin">
+        <Shell.Item as={NavLink} to="/config" icon={<GearIcon />} label="config" />
+      </Shell.Group>
+    </>
+  }
+  navFooter={<Shell.User name="hoobi" detail="admin" onClick={openAccount} />}
+>
+  {routes}
+</Shell>`}
+        />
+      </div>
+      <Props
+        rows={[
+          ['brand', 'ReactNode', '', 'Square mark in the top bar, ~24px.'],
+          ['title', 'ReactNode', '', 'Wordmark / app name next to the mark.'],
+          ['actions', 'ReactNode', '', 'Right side of the top bar.'],
+          ['nav', 'ReactNode', 'required', 'Shell.Item and Shell.Group rows.'],
+          ['navFooter', 'ReactNode', '', 'Bottom-docked pane rows (the settings slot).'],
+          [
+            'collapsed / defaultCollapsed',
+            'boolean',
+            'false',
+            'Controlled / uncontrolled rail state.',
+          ],
+          [
+            'collapsible',
+            'boolean',
+            'true',
+            'false pins the pane expanded on md+ - this catalog does that, since initials alone do not tell 18 pages apart.',
+          ],
+          ['onCollapseChange', '(collapsed: boolean) => void', '', 'Fires on toggle (md+ only).'],
+          [
+            'mode',
+            `'side' | 'top'`,
+            `'side'`,
+            'Collapsible pane, or items along the bar with groups as dropdowns.',
+          ],
+          [
+            'Shell.Item',
+            'as, icon, label, active, href|to...',
+            '',
+            'One nav row. as swaps the element (router Link). Rail shows the icon or the initial, with the label as a tooltip; top mode renders a chip with an underline.',
+          ],
+          [
+            'Shell.Group',
+            'label, children',
+            '',
+            'Caption over its items; a hairline on the rail; a dropdown in top mode.',
+          ],
+          [
+            'Shell.User',
+            'name, detail, avatar, as, onClick',
+            '',
+            'Bottom-docked identity row, avatar-only on the rail. Initials fall out of the name.',
+          ],
+        ]}
+      />
+    </>
+  );
+}
+
 export function TooltipPage() {
   return (
     <>
       <Import names="Tooltip" />
-      <p className="max-w-prose text-body text-text-dim">
+      <p className="text-body text-text-dim">
         CSS-only: the styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so
         anything carrying that attribute grows a tooltip - no JS, no positioning library. It shows
         instantly on hover and on keyboard focus.
@@ -243,7 +333,10 @@ export function TooltipPage() {
         <Badge tone="warn" dot tooltip="Waiting for an admin to approve the plan.">
           awaiting_approval
         </Badge>
-        <Badge tone="accent" tooltip="Opened automatically by the unfilled-anime scan, not by a person.">
+        <Badge
+          tone="accent"
+          tooltip="Opened automatically by the unfilled-anime scan, not by a person."
+        >
           auto
         </Badge>
       </Demo>
@@ -848,7 +941,7 @@ export function SectionPage() {
   return (
     <>
       <Import names="Section" />
-      <p className="max-w-prose text-body text-text-dim">
+      <p className="text-body text-text-dim">
         Every heading on this page is a Section: a title at the top of the ramp, an optional muted
         caption, and an optional actions slot on the same baseline as the title.
       </p>
@@ -913,7 +1006,7 @@ export function CxPage() {
   return (
     <>
       <Import names="cx" />
-      <p className="max-w-prose text-body text-text-dim">
+      <p className="text-body text-text-dim">
         Six lines that join truthy class strings. There is no clsx, no tailwind-merge and no
         variant-authoring library in the dependency tree, because this covers every case the
         components have.

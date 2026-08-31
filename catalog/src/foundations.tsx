@@ -75,7 +75,7 @@ export function Colour() {
   const values = useResolved(ALL);
   return (
     <>
-      <p className="max-w-prose text-body text-text-dim">
+      <p className="text-body text-text-dim">
         Every colour is a Tailwind v4 <code className="text-accent-blue">@theme</code> token, so
         each name below is also a real utility: <code className="text-accent-blue">bg-surface</code>
         , <code className="text-accent-blue">text-text-dim</code>,{' '}
@@ -85,7 +85,7 @@ export function Colour() {
       {GROUPS.map((g) => (
         <div key={g.group} className="mt-8">
           <h3 className="text-body-strong text-text">{g.group}</h3>
-          <p className="mt-1 max-w-prose text-caption text-text-dim">{g.note}</p>
+          <p className="mt-1 text-caption text-text-dim">{g.note}</p>
           <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
             {g.names.map((n) => (
               <div key={n} className="rounded-panel bg-surface p-3">
@@ -101,9 +101,7 @@ export function Colour() {
         </div>
       ))}
       <div className="mt-8">
-        <Snippet
-          code={`<div className="bg-surface-raised text-text-dim" />`}
-        />
+        <Snippet code={`<div className="bg-surface-raised text-text-dim" />`} />
       </div>
     </>
   );
@@ -145,7 +143,7 @@ const RAMP: { cls: string; name: string; size: string; lh: string; use: string }
 export function Typography() {
   return (
     <>
-      <p className="max-w-prose text-body text-text-dim">
+      <p className="text-body text-text-dim">
         The WinUI 3 ramp shape with a YouTube-sized reading tier, expressed in rem against the 18px
         root so it still tracks user zoom. Noto Sans carries every step. Dank Mono is reserved for
         code.
@@ -165,7 +163,7 @@ export function Typography() {
       </div>
 
       <h3 className="mt-8 text-body-strong text-text">Dank Mono</h3>
-      <p className="mt-1 max-w-prose text-caption text-text-dim">
+      <p className="mt-1 text-caption text-text-dim">
         Regular, italic and bold, at the caption and body sizes. Italic is the reason this face is
         here.
       </p>
@@ -203,7 +201,7 @@ export function Typography() {
       </pre>
 
       <h3 className="mt-8 text-body-strong text-text">Root size</h3>
-      <p className="mt-1 max-w-prose text-caption text-text-dim">
+      <p className="mt-1 text-caption text-text-dim">
         18px, dropping to 16px under 40rem so the ramp stays comfortable on a phone. Spacing does
         not move with it: that is deliberate, see Spacing &amp; Radius.
       </p>
@@ -230,7 +228,7 @@ export function Spacing() {
       </Alert>
 
       <h3 className="mt-8 text-body-strong text-text">Scale</h3>
-      <p className="mt-1 max-w-prose text-caption text-text-dim">
+      <p className="mt-1 text-caption text-text-dim">
         Every spacing utility is n x 4px. Reach for the WinUI grid values (4 / 8 / 12 / 16 / 24 /
         32) rather than odd numbers.
       </p>
@@ -248,7 +246,7 @@ export function Spacing() {
       </div>
 
       <h3 className="mt-8 text-body-strong text-text">Radius</h3>
-      <p className="mt-1 max-w-prose text-caption text-text-dim">
+      <p className="mt-1 text-caption text-text-dim">
         The WinUI pair: 4px on controls, 8px on surfaces and overlays. Nothing else.
       </p>
       <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
@@ -293,7 +291,7 @@ export function Identity({ children }: { children?: ReactNode }) {
         <strong>heavily influenced by WinUI 3 (Fluent 2)</strong>.{' '}
         <strong>Minimalism heavy.</strong>
       </blockquote>
-      <p className="mt-4 max-w-prose text-body text-text-dim">
+      <p className="mt-4 text-body text-text-dim">
         Every token and component decision resolves against that statement. If a change makes the
         library less Ayu, less WinUI, or less minimal, it does not land.
       </p>

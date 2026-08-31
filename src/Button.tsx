@@ -25,7 +25,9 @@ export function Button({ variant = 'secondary', size = 'md', className, ...rest 
   return (
     <button
       className={cx(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-control font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50',
+        // A leading spinner/icon is round and optically light, so its side keeps the same
+        // 8px breathing room the ring gets vertically instead of the full text padding.
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-control font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&:has(>.animate-spin:first-child)]:pl-2',
         VARIANTS[variant],
         SIZES[size],
         className,

@@ -2,12 +2,16 @@
 
 ## Design identity (canonical)
 
-> hoobi-design is a **DARK-MODE-PREFERENCE** library using the **Ayu Mirage** colour scheme heavily,
-> with components, fonts and spacing **heavily influenced by WinUI 3 (Fluent 2)**. **Minimalism
-> heavy.**
+> hoobi-design is a **DARK-MODE-PREFERENCE** library: **Fluent Design 2**
+> (https://fluent2.microsoft.design - principles, iconography, layout, motion, as WinUI 3 ships it)
+> is the basis for everything, with **Ayu Mirage** as the colour scheme and the library's own
+> YouTube-sized type scale on top. **Minimalism heavy.**
 
 Every token and component decision resolves against that statement. If a change makes the library
-less Ayu, less WinUI, or less minimal, it does not land.
+less Fluent, less Ayu, or less minimal, it does not land. When a question has no house answer,
+Fluent 2's answer is the default: icons on the Fluent System 20px grid with 1.5px strokes, motion
+on the Fluent easing tokens (`--ease-decelerate` entering, `--ease-accelerate` leaving,
+`--ease-standard` in place; 150/250/300ms), layout on the 4px grid with 48px chrome heights.
 
 React component library and design tokens for Hoobi apps. Noto Sans for text, Dank Mono for code.
 Published to the ADO Artifacts `Hoobi` feed and consumed by mendarr (and whatever comes next).

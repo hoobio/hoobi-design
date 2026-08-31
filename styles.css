@@ -59,6 +59,13 @@
   --text-title--font-weight: 600;
   --text-title--letter-spacing: -0.01em;
 
+  /* Fluent 2 motion: decelerate for things entering/growing, accelerate for
+     leaving, standard for everything in place. Durations sit on Fluent's ramp
+     (fast 150 / normal 250 / gentle 300). */
+  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ease-accelerate: cubic-bezier(1, 0, 1, 1);
+  --ease-standard: cubic-bezier(0.33, 0, 0.67, 1);
+
   --font-sans:
     'Noto Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
     sans-serif;
@@ -209,6 +216,24 @@
   [data-tip]:focus-visible::after {
     opacity: 1;
     visibility: visible;
+  }
+
+  /* Fluent 2 pane entrance: slide from the left on the decelerate curve. */
+  .slide-in-left {
+    animation: slide-in-left 0.25s var(--ease-decelerate);
+  }
+  @keyframes slide-in-left {
+    from {
+      translate: -100% 0;
+    }
+  }
+  .fade-in {
+    animation: fade-in 0.15s var(--ease-standard);
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 
   .no-scrollbar {

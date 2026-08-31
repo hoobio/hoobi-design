@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Section, Select, cx } from '@hoobi/design';
+import { Section, Select, Shell } from '@hoobi/design';
 import { Colour, Identity, Spacing, Typography } from './foundations.js';
 import {
   AlertPage,
@@ -12,6 +12,7 @@ import {
   ProgressPage,
   SectionPage,
   SelectPage,
+  ShellPage,
   SpinnerPage,
   TabsPage,
   TooltipPage,
@@ -56,84 +57,91 @@ const PAGES: Page[] = [
   },
   {
     id: 'button',
-    group: 'Components',
+    group: 'Actions',
     title: 'Button',
     caption: 'Four variants, two sizes. Accent is spent once per view.',
     render: () => <ButtonPage />,
   },
   {
     id: 'badge',
-    group: 'Components',
+    group: 'Visual Elements',
     title: 'Badge',
     caption: 'Six tones, optional status dot. 20px tall.',
     render: () => <BadgePage />,
   },
   {
     id: 'card',
-    group: 'Components',
+    group: 'Layout',
     title: 'Card',
     caption: 'A raised surface with an optional header and actions.',
     render: () => <CardPage />,
   },
   {
     id: 'alert',
-    group: 'Components',
+    group: 'Notifications',
     title: 'Alert',
     caption: 'Four semantic tones, with the ARIA role picked for you.',
     render: () => <AlertPage />,
   },
   {
     id: 'input',
-    group: 'Components',
+    group: 'Inputs',
     title: 'Input',
     caption: 'A 32px field with label, hint and error slots.',
     render: () => <InputPage />,
   },
   {
     id: 'select',
-    group: 'Components',
+    group: 'Inputs',
     title: 'Select',
     caption: 'A native select, styled to match Input exactly.',
     render: () => <SelectPage />,
   },
   {
     id: 'modal',
-    group: 'Components',
+    group: 'Overlays',
     title: 'Modal',
     caption: 'A native dialog, so the platform does the hard parts.',
     render: () => <ModalPage />,
   },
   {
     id: 'tabs',
-    group: 'Components',
+    group: 'Navigation',
     title: 'Tabs',
     caption: 'Controlled, scrollable, no panel opinions.',
     render: () => <TabsPage />,
   },
   {
+    id: 'shell',
+    group: 'Navigation',
+    title: 'Shell',
+    caption: 'The one page chrome: top bar, collapsible side pane, Fluent motion.',
+    render: () => <ShellPage />,
+  },
+  {
     id: 'tooltip',
-    group: 'Components',
+    group: 'Overlays',
     title: 'Tooltip',
     caption: 'CSS-only, instant on hover and keyboard focus.',
     render: () => <TooltipPage />,
   },
   {
     id: 'progress',
-    group: 'Components',
+    group: 'Progress',
     title: 'Progress',
     caption: 'A 4px determinate bar with an optional label row.',
     render: () => <ProgressPage />,
   },
   {
     id: 'spinner',
-    group: 'Components',
+    group: 'Progress',
     title: 'Spinner',
     caption: 'Two sizes. Compose it, do not prop it into everything.',
     render: () => <SpinnerPage />,
   },
   {
     id: 'section',
-    group: 'Components',
+    group: 'Layout',
     title: 'Section',
     caption: 'The page heading used throughout this catalog.',
     render: () => <SectionPage />,
@@ -147,7 +155,19 @@ const PAGES: Page[] = [
   },
 ];
 
-const GROUPS = [...new Set(PAGES.map((p) => p.group))];
+// Textura's storybook taxonomy, minus the groups nothing lives in yet.
+const GROUPS = [
+  'Foundations',
+  'Actions',
+  'Inputs',
+  'Layout',
+  'Navigation',
+  'Notifications',
+  'Overlays',
+  'Progress',
+  'Visual Elements',
+  'Utilities',
+];
 
 function useHashPage(): Page {
   const read = () => PAGES.find((p) => p.id === location.hash.slice(1)) ?? PAGES[0]!;
@@ -163,68 +183,64 @@ function useHashPage(): Page {
   return page;
 }
 
+type NavType = 'pinned' | 'rail' | 'top';
+
 export function App() {
   const page = useHashPage();
+  // The chrome doubles as the Shell demo: this switches the real nav between
+  // its three presentations so each can be experienced, not just read about.
+  const [navType, setNavType] = useState<NavType>('pinned');
   return (
-    <div className="mx-auto flex max-w-[80rem] flex-col md:flex-row">
-      <header className="sticky top-0 z-10 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur md:hidden">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="font-mono text-body text-text">@hoobi/design</span>
-          <span className="font-mono text-caption text-text-mute">v0.2.1</span>
-        </div>
+    <Shell
+      brand={
+        <span className="flex size-6 items-center justify-center rounded-control bg-accent font-mono text-caption text-on-accent">
+          h
+        </span>
+      }
+      title={
+        <>
+          <span className="font-mono">@hoobi/design</span>{' '}
+          <span className="font-mono text-caption text-text-mute">v{__LIB_VERSION__}</span>
+        </>
+      }
+      mode={navType === 'top' ? 'top' : 'side'}
+      collapsible={navType === 'rail'}
+      actions={
         <Select
-          aria-label="Page"
-          className="mt-2"
-          value={page.id}
+          aria-label="Nav type"
+          value={navType}
           onChange={(e) => {
-            location.hash = e.target.value;
+            setNavType(e.target.value as NavType);
           }}
         >
-          {GROUPS.map((g) => (
-            <optgroup key={g} label={g}>
-              {PAGES.filter((p) => p.group === g).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.title}
-                </option>
-              ))}
-            </optgroup>
-          ))}
+          <option value="pinned">nav: side, pinned</option>
+          <option value="rail">nav: side, collapsible</option>
+          <option value="top">nav: top</option>
         </Select>
-      </header>
-
-      <nav className="styled-scrollbar sticky top-0 hidden h-dvh w-56 shrink-0 overflow-y-auto border-r border-border px-4 py-6 md:block">
-        <div className="font-mono text-body text-text">@hoobi/design</div>
-        <div className="font-mono text-caption text-text-mute">v0.2.1</div>
-        {GROUPS.map((g) => (
-          <div key={g} className="mt-6">
-            <div className="text-caption text-text-mute">{g}</div>
-            <ul className="mt-1">
+      }
+      nav={
+        <>
+          {GROUPS.map((g) => (
+            <Shell.Group key={g} label={g}>
               {PAGES.filter((p) => p.group === g).map((p) => (
-                <li key={p.id}>
-                  <a
-                    href={`#${p.id}`}
-                    aria-current={p.id === page.id ? 'page' : undefined}
-                    className={cx(
-                      '-mx-2 block rounded-control px-2 py-1 text-body',
-                      p.id === page.id
-                        ? 'bg-surface text-text'
-                        : 'text-text-dim hover:bg-surface hover:text-text',
-                    )}
-                  >
-                    {p.title}
-                  </a>
-                </li>
+                <Shell.Item
+                  key={p.id}
+                  href={`#${p.id}`}
+                  label={p.title}
+                  active={p.id === page.id}
+                />
               ))}
-            </ul>
-          </div>
-        ))}
-      </nav>
-
-      <main className="min-w-0 flex-1 px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
-        <Section id={page.id} title={page.title} caption={page.caption} className="pt-6 md:pt-10">
+            </Shell.Group>
+          ))}
+        </>
+      }
+      navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
+    >
+      <div className="mx-auto max-w-[72rem] px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
+        <Section id={page.id} title={page.title} caption={page.caption} className="pt-4 md:pt-6">
           {page.render()}
         </Section>
-      </main>
-    </div>
+      </div>
+    </Shell>
   );
 }
