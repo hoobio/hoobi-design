@@ -9,7 +9,9 @@
 
 Every token and component decision resolves against that statement. If a change makes the library
 less Fluent, less Ayu, or less minimal, it does not land. When a question has no house answer,
-Fluent 2's answer is the default: icons on the Fluent System 20px grid with 1.5px strokes, motion
+Fluent 2's answer is the default: icons are Fluent System Icons - consumers install
+`@fluentui/react-icons` (20px/Regular variants) and pass them as ReactNodes, the library itself
+stays zero-dependency; one-off glyphs drawn by hand follow the 20px grid with 1.5px strokes. Motion
 on the Fluent easing tokens (`--ease-decelerate` entering, `--ease-accelerate` leaving,
 `--ease-standard` in place; 150/250/300ms), layout on the 4px grid with 48px chrome heights.
 

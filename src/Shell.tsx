@@ -291,9 +291,7 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
         )}
       />
       <span aria-hidden className="flex w-10 shrink-0 items-center justify-center">
-        {icon ?? (
-          <span className="text-body-strong text-text-dim">{label.charAt(0).toUpperCase()}</span>
-        )}
+        {icon ?? <InitialMark label={label} />}
       </span>
       <span
         className={cx(
@@ -304,6 +302,37 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
         {label}
       </span>
     </Comp>
+  );
+}
+
+/** The Ayu hue wheel for initial fallbacks; hues, never chrome colours. */
+const MARK_HUES = [
+  'accent-blue',
+  'accent-cyan',
+  'accent-green',
+  'accent-yellow',
+  'accent-orange',
+  'accent-red',
+  'accent-purple',
+];
+
+/**
+ * Icon-less items get a brand-mark-styled square with the label's initial, coloured
+ * by hashing the whole label onto the hue wheel - stable per label, and spread out
+ * so runs of neighbours rarely match. ponytail: a hash can still collide on
+ * adjacent items; give the item a real icon if that offends.
+ */
+function InitialMark({ label }: { label: string }) {
+  let hash = 7;
+  for (const ch of label) hash = (hash * 31 + ch.charCodeAt(0)) | 0;
+  const hue = MARK_HUES[Math.abs(hash) % MARK_HUES.length];
+  return (
+    <span
+      className="flex size-6 items-center justify-center rounded-control font-mono text-caption"
+      style={{ backgroundColor: `var(--color-${hue ?? 'accent-blue'})`, color: 'var(--color-bg)' }}
+    >
+      {label.charAt(0).toUpperCase()}
+    </span>
   );
 }
 
