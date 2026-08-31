@@ -405,20 +405,16 @@ export function Mirage() {
         The default hues, then a movie poster - raw and as mirage. The blur melts a 500px poster
         into the backdrop an app would sit on while showing that film.
       </p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="mt-3 flex flex-wrap gap-3">
         <div
-          className="relative h-40 overflow-hidden rounded-panel"
-          style={{
-            backgroundImage: `url(${posterUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 20%',
-          }}
+          className="relative aspect-2/3 w-44 overflow-hidden rounded-panel"
+          style={{ backgroundImage: `url(${posterUrl})`, backgroundSize: 'cover' }}
         >
           <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
             poster, raw
           </span>
         </div>
-        <div className="relative h-40 overflow-hidden rounded-panel">
+        <div className="relative aspect-2/3 w-44 overflow-hidden rounded-panel">
           <div
             className="absolute inset-0 scale-110 blur-2xl saturate-150"
             style={{
