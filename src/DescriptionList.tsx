@@ -8,8 +8,10 @@ export interface DescriptionItem {
 
 export interface DescriptionListProps {
   items: DescriptionItem[];
-  /** 'stack' is label above value; 'inline' is a two-column grid from sm up. */
+  /** 'stack' is label above value; 'inline' is a two-column grid from sm up. Ignored when `plain`. */
   layout?: 'stack' | 'inline';
+  /** Unboxed: no hairlines, no bleed, no padding assumptions - a plain label-over-value stack that drops into any container. */
+  plain?: boolean;
   className?: string;
 }
 
@@ -19,7 +21,24 @@ export interface DescriptionListProps {
  * parent would inset every hairline and turn a slice into a drawn line - so drop it into
  * an unpadded surface (`<Card className="p-0">`), not one that pads its children.
  */
-export function DescriptionList({ items, layout = 'stack', className }: DescriptionListProps) {
+export function DescriptionList({
+  items,
+  layout = 'stack',
+  plain = false,
+  className,
+}: DescriptionListProps) {
+  if (plain) {
+    return (
+      <dl className={cx('flex min-w-0 flex-col gap-3', className)}>
+        {items.map((item, i) => (
+          <div key={i} className="flex min-w-0 flex-col gap-1">
+            <dt className="text-caption text-text-mute">{item.label}</dt>
+            <dd className="min-w-0 text-body break-words text-text">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
   return (
     <dl className={cx('min-w-0', className)}>
       {items.map((item, i) => (

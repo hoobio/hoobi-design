@@ -448,6 +448,37 @@ export function Mirage() {
           <p className="text-caption text-text-dim">Audio issue - wrong language</p>
         </div>
       </div>
+
+      <h3 className="mt-8 text-body-strong text-text">Hero, for a page head</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        The fourth strength: <code className="text-accent-blue">.mirage-hero</code> is an absolutely
+        positioned band behind the top of a page, fading down into flat{' '}
+        <code className="text-accent-blue">bg</code> before the reading starts. The host page column
+        takes <code className="text-accent-blue">relative isolate</code>; header content over it
+        usually takes <code className="text-accent-blue">.mirage-lift</code>.
+      </p>
+      <div className="mt-3">
+        <Snippet
+          code={`<div className="relative isolate">
+  <div className="mirage-hero" style={{ '--mirage-image': 'url(/poster.jpg)' }} />
+  <div className="mirage-lift">breadcrumbs, header...</div>
+  ...flat content below...
+</div>`}
+        />
+      </div>
+      <div className="relative isolate mt-3 overflow-hidden rounded-panel bg-bg">
+        <div
+          className="mirage-hero"
+          style={{ '--mirage-image': `url(${posterUrl})` } as CSSProperties}
+        />
+        <div className="mirage-lift p-4">
+          <p className="text-subtitle text-text">Rockman.EXE: The Program of Light and Darkness</p>
+          <p className="text-caption text-text-dim">Missing file, wants alternatives</p>
+        </div>
+        <div className="h-40 p-4 text-caption text-text-mute">
+          The page reads on flat background from here down.
+        </div>
+      </div>
     </>
   );
 }

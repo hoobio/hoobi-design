@@ -6,6 +6,8 @@ export type TimelineTone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' 
 export interface TimelineProps {
   children: ReactNode;
   className?: string;
+  /** A bare neutral rail with no Timeline.Item chrome - for a feed whose beats already carry their own layout. */
+  plain?: boolean;
 }
 
 export interface TimelineItemProps {
@@ -28,7 +30,14 @@ const RAILS: Record<TimelineTone, string> = {
   info: 'border-info',
 };
 
-export function Timeline({ children, className }: TimelineProps) {
+export function Timeline({ children, className, plain = false }: TimelineProps) {
+  if (plain) {
+    return (
+      <div className={cx('flex min-w-0 flex-col gap-4 border-l-2 border-surface-raised pl-4', className)}>
+        {children}
+      </div>
+    );
+  }
   return <ol className={cx('flex min-w-0 flex-col gap-3', className)}>{children}</ol>;
 }
 

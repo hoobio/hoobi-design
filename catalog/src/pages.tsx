@@ -17,6 +17,7 @@ import {
   InputPage,
   MenuPage,
   ModalPage,
+  PersonaPage,
   ProgressPage,
   SectionPage,
   SelectPage,
@@ -163,6 +164,13 @@ export const PAGES: Page[] = [
     title: 'Badge',
     caption: 'Six tones, optional status dot. 20px tall.',
     render: () => <BadgePage />,
+  },
+  {
+    id: 'persona',
+    group: 'Visual Elements',
+    title: 'Persona',
+    caption: 'An inline identity chip: an initial in a circle, then the name.',
+    render: () => <PersonaPage />,
   },
   {
     id: 'card',

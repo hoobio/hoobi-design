@@ -13,6 +13,7 @@ import {
   Input,
   Menu,
   Modal,
+  Persona,
   Progress,
   Section,
   Select,
@@ -261,6 +262,20 @@ export function BadgePage() {
         </Card>
       </Demo>
 
+      <Demo
+        title="Text appearance"
+        note="No fill, no padding, no chip radius - just tone-coloured text, for a banner headline or a label beside other text. className merges after the tone colour, so a larger type class (text-body-strong) wins."
+        code={`<Badge appearance="text" tone="danger" dot>3 issues need approval</Badge>
+<Badge appearance="text" tone="success" className="text-body-strong">Imported</Badge>`}
+      >
+        <Badge appearance="text" tone="danger" dot>
+          3 issues need approval
+        </Badge>
+        <Badge appearance="text" tone="success" className="text-body-strong">
+          Imported
+        </Badge>
+      </Demo>
+
       <Props
         rows={[
           [
@@ -269,12 +284,64 @@ export function BadgePage() {
             `'neutral'`,
             'Text and dot colour.',
           ],
+          [
+            'appearance',
+            `'chip' | 'text'`,
+            `'chip'`,
+            "'chip' is the filled pill. 'text' drops the fill/padding/radius for an inline run of tone-coloured text.",
+          ],
           ['dot', 'boolean', 'false', 'Leading 6px status dot in the tone colour.'],
           [
             'tooltip',
             'string',
             '',
             'Explains the badge on hover and keyboard focus. Also its accessible description.',
+          ],
+          ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'title, aria-*, onClick.'],
+        ]}
+      />
+    </>
+  );
+}
+
+const PERSONA_TONES = ['accent', 'neutral'] as const;
+
+export function PersonaPage() {
+  return (
+    <>
+      <Import names="Persona" />
+      <Demo
+        title="Tones"
+        note="An inline identity chip: the name's first letter in a small circle, then the name. Accent for the current user or the model; neutral for everyone else."
+        code={`<Persona name="hoobi" tone="accent" />
+<Persona name="mendarr" tone="neutral" />`}
+      >
+        {PERSONA_TONES.map((t) => (
+          <Persona key={t} name={t === 'accent' ? 'hoobi' : 'mendarr'} tone={t} />
+        ))}
+      </Demo>
+
+      <Demo
+        title="In context"
+        code={`<div className="flex items-center gap-2">
+  <Persona name="hoobi" tone="accent" />
+  <span className="text-body text-text-dim">approved the plan</span>
+</div>`}
+      >
+        <div className="flex items-center gap-2">
+          <Persona name="hoobi" tone="accent" />
+          <span className="text-body text-text-dim">approved the plan</span>
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['name', 'string', 'required', "Shown in full; its first character (uppercased) fills the avatar circle."],
+          [
+            'tone',
+            `'accent' | 'neutral'`,
+            `'neutral'`,
+            'accent tints blue for the current user or the model; neutral is everyone else.',
           ],
           ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'title, aria-*, onClick.'],
         ]}
@@ -2000,9 +2067,30 @@ export function TimelinePage() {
         </Timeline>
       </Demo>
 
+      <Demo
+        title="Plain"
+        note="A bare neutral rail with no Timeline.Item chrome - children render as-is, for a feed whose beats already carry their own layout."
+        stack
+        code={`<Timeline plain>
+  <p className="text-body text-text">Issue 1042 opened by hoobi.</p>
+  <p className="text-body text-text">Reanalyzed after a steer.</p>
+</Timeline>`}
+      >
+        <Timeline plain className="w-full">
+          <p className="text-body text-text">Issue 1042 opened by hoobi: wrong audio track.</p>
+          <p className="text-body text-text">Reanalyzed after a steer: reporter asked for dual audio.</p>
+        </Timeline>
+      </Demo>
+
       <Props
         rows={[
           ['children', 'ReactNode', 'required', 'Timeline.Item rows. The list is a real ol.'],
+          [
+            'plain',
+            'boolean',
+            'false',
+            'A bare neutral rail with no Timeline.Item chrome - children render as-is.',
+          ],
           [
             'Timeline.Item tone',
             `'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info'`,
@@ -2124,6 +2212,17 @@ export function DescriptionListPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Plain"
+        note="Unboxed: no hairlines, no bleed, no padding assumptions - a plain label-over-value stack that drops into any container. layout is ignored when plain."
+        stack
+        code={`<DescriptionList plain items={items} />`}
+      >
+        <div className="w-full max-w-[28rem]">
+          <DescriptionList plain items={FACTS} />
+        </div>
+      </Demo>
+
       <Props
         rows={[
           ['items', 'DescriptionItem[]', 'required', 'label and value pairs, both ReactNode.'],
@@ -2131,7 +2230,13 @@ export function DescriptionListPage() {
             'layout',
             `'stack' | 'inline'`,
             `'stack'`,
-            'Label above value, or a two-column grid from sm up.',
+            'Label above value, or a two-column grid from sm up. Ignored when plain.',
+          ],
+          [
+            'plain',
+            'boolean',
+            'false',
+            'Unboxed label-over-value stack with no hairlines, bleed or padding assumptions.',
           ],
           ['className', 'string', '', 'On the dl.'],
         ]}

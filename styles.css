@@ -350,8 +350,10 @@
   }
 
   /* Mirage, as an edge accent on a list row: unlike .mirage-scoped the art is a hint at
-     the row's edge, not the fill - the host paints its OWN bg/surface and a masked strip
-     of artwork sits at the left, fading out before it reaches the text. */
+     the row's edge, not the fill - the host paints its OWN bg/surface and a mica bleed of
+     the artwork's colour sits at the left, fading out before it reaches the text. Same
+     material as every other mirage: blurred past legibility, never raw art. The strip is
+     inset negative so the blur has no transparent edge inside the row. */
   .mirage-edge {
     position: relative;
     isolation: isolate;
@@ -360,16 +362,75 @@
   .mirage-edge::before {
     content: '';
     position: absolute;
-    inset-block: 0;
-    left: 0;
-    width: 200px;
+    inset: -40px auto -40px -40px;
+    width: 340px;
     z-index: -1;
-    background-image: var(--mirage-image);
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--color-surface) 55%, transparent),
+        color-mix(in srgb, var(--color-surface) 55%, transparent)
+      ),
+      var(--mirage-image);
     background-size: cover;
     background-position: center;
-    filter: saturate(1.2);
-    mask-image: linear-gradient(to right, rgb(0 0 0 / 45%), transparent 90%);
-    -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 45%), transparent 90%);
+    filter: blur(28px) saturate(1.4);
+    /* Stops approximate an ease-out, so the colour trails away instead of hitting a wall. */
+    mask-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 55%) 12%,
+      rgb(0 0 0 / 34%) 40%,
+      rgb(0 0 0 / 16%) 65%,
+      rgb(0 0 0 / 5%) 85%,
+      transparent 98%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 55%) 12%,
+      rgb(0 0 0 / 34%) 40%,
+      rgb(0 0 0 / 16%) 65%,
+      rgb(0 0 0 / 5%) 85%,
+      transparent 98%
+    );
+  }
+
+  /* Mirage, as a hero band: the poster's colour behind the top of a page, fading down
+     into flat bg - mica confined to the header instead of the whole viewport. The band
+     clips and masks itself; the host (the page column) only needs relative + isolate.
+     Content above it should usually take .mirage-lift. */
+  .mirage-hero {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 320px;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    /* Gone before the reading starts: the banner and everything below sit on flat bg. */
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 85%),
+      rgb(0 0 0 / 40%) 45%,
+      rgb(0 0 0 / 12%) 70%,
+      transparent 90%
+    );
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 85%),
+      rgb(0 0 0 / 40%) 45%,
+      rgb(0 0 0 / 12%) 70%,
+      transparent 90%
+    );
+  }
+  .mirage-hero::before {
+    content: '';
+    position: absolute;
+    inset: -70px;
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--color-bg) 75%, transparent),
+        color-mix(in srgb, var(--color-bg) 90%, transparent)
+      ),
+      var(--mirage-image);
+    background-size: cover;
+    background-position: center 25%;
+    filter: blur(64px) saturate(1.3);
   }
 
   /* Fluent 2 pane entrance: slide from the left on the decelerate curve. */

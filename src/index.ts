@@ -22,6 +22,7 @@ export {
   type MenuProps,
 } from './Menu.js';
 export { Modal, type ModalProps } from './Modal.js';
+export { Persona, type PersonaProps, type PersonaTone } from './Persona.js';
 export { Progress, type ProgressProps } from './Progress.js';
 export { Section, type SectionProps } from './Section.js';
 export { Select, type SelectProps } from './Select.js';

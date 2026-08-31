@@ -73,6 +73,12 @@ export interface ShellProps {
   /** Chrome hairlines - under the bar, along the pane edge. false for seamless chrome. */
   divided?: boolean;
   /**
+   * 'seamless' (default) leaves the pane on the page background. 'contrast' fills it with the
+   * darker chip surface, so contrast does the separating instead of a hairline - pair it with
+   * divided={false}; a hairline on top of contrast is saying the same thing twice.
+   */
+  paneSurface?: 'seamless' | 'contrast';
+  /**
    * Mirage, the house material: any CSS image - a url(...) photo or gradients -
    * fixed behind the app, blurred by the layer itself and tinted back towards bg.
    */
@@ -147,6 +153,7 @@ export function Shell({
   onCollapseChange,
   collapsible = true,
   divided = true,
+  paneSurface = 'seamless',
   mirage,
   pageWidth = 'default',
   children,
@@ -283,6 +290,7 @@ export function Shell({
               className={cx(
                 'hidden h-full shrink-0 items-center transition-[width] duration-250 ease-decelerate md:flex',
                 divided && 'border-r border-border',
+                paneSurface === 'contrast' && 'bg-chip',
                 collapsed ? 'w-12' : 'w-54',
               )}
             >
@@ -349,6 +357,7 @@ export function Shell({
               className={cx(
                 'hidden shrink-0 flex-col transition-[width] duration-250 ease-decelerate md:flex',
                 divided && 'border-r border-border',
+                paneSurface === 'contrast' && 'bg-chip',
                 collapsed ? 'w-12' : 'w-54',
               )}
             >
@@ -452,7 +461,8 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
       aria-current={active ? 'page' : undefined}
       className={cx(
         'relative flex h-10 items-center gap-3 overflow-hidden rounded-control whitespace-nowrap',
-        active ? 'bg-surface text-text' : 'text-text-dim hover:bg-surface hover:text-text',
+        // surface-raised, not surface: the pill has to read on the contrast (chip) pane too.
+        active ? 'bg-surface-raised text-text' : 'text-text-dim hover:bg-surface hover:text-text',
         railed && 'tip-fixed',
         className,
       )}
