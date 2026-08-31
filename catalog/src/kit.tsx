@@ -5,8 +5,8 @@ import { Button, Input, Select, cx, mirageImage } from '@hoobi/design';
 export interface ShellDemo {
   navType: 'pinned' | 'rail' | 'top';
   setNavType: (v: ShellDemo['navType']) => void;
-  mirage: boolean;
-  setMirage: (v: boolean) => void;
+  mirage: 'off' | 'hues' | 'poster';
+  setMirage: (v: ShellDemo['mirage']) => void;
 }
 export const ShellDemoContext = createContext<ShellDemo | null>(null);
 

@@ -276,16 +276,18 @@ export function ShellPage() {
             <option value="rail">nav: side, collapsible</option>
             <option value="top">nav: top</option>
           </Select>
-          <label className="flex h-8 items-center gap-1.5 text-body text-text-dim">
-            <input
-              type="checkbox"
-              checked={demo.mirage}
-              onChange={(e) => {
-                demo.setMirage(e.target.checked);
-              }}
-            />
-            mirage
-          </label>
+          <Select
+            aria-label="Mirage source"
+            className="w-auto"
+            value={demo.mirage}
+            onChange={(e) => {
+              demo.setMirage(e.target.value as typeof demo.mirage);
+            }}
+          >
+            <option value="off">mirage: off</option>
+            <option value="hues">mirage: hues</option>
+            <option value="poster">mirage: poster</option>
+          </Select>
         </Demo>
       ) : null}
       <p className="text-body text-text-dim">

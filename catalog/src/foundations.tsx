@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState, type ReactNode } from 'react';
 import { Alert, Badge, Card, Select } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
+import posterUrl from './poster.jpg';
 
 const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
@@ -365,16 +366,19 @@ export function Mirage() {
 
       {demo ? (
         <div className="mt-6 rounded-panel bg-surface p-4">
-          <label className="flex items-center gap-2 text-body text-text-dim">
-            <input
-              type="checkbox"
-              checked={demo.mirage}
-              onChange={(e) => {
-                demo.setMirage(e.target.checked);
-              }}
-            />
-            mirage on this catalog, live
-          </label>
+          <Select
+            aria-label="Mirage source"
+            className="w-auto"
+            label="mirage on this catalog, live"
+            value={demo.mirage}
+            onChange={(e) => {
+              demo.setMirage(e.target.value as typeof demo.mirage);
+            }}
+          >
+            <option value="off">off</option>
+            <option value="hues">default hues</option>
+            <option value="poster">the poster below</option>
+          </Select>
         </div>
       ) : null}
 
@@ -397,7 +401,36 @@ export function Mirage() {
       </div>
 
       <h3 className="mt-8 text-body-strong text-text">In miniature</h3>
-      <p className="mt-1 text-caption text-text-dim">The default hues, raw and as mirage.</p>
+      <p className="mt-1 text-caption text-text-dim">
+        The default hues, then a movie poster - raw and as mirage. The blur melts a 500px poster
+        into the backdrop an app would sit on while showing that film.
+      </p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div
+          className="relative h-40 overflow-hidden rounded-panel"
+          style={{
+            backgroundImage: `url(${posterUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 20%',
+          }}
+        >
+          <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
+            poster, raw
+          </span>
+        </div>
+        <div className="relative h-40 overflow-hidden rounded-panel">
+          <div
+            className="absolute inset-0 scale-110 blur-2xl saturate-150"
+            style={{
+              backgroundImage: `linear-gradient(color-mix(in srgb, var(--color-bg) 72%, transparent), color-mix(in srgb, var(--color-bg) 72%, transparent)), url(${posterUrl})`,
+              backgroundSize: 'cover',
+            }}
+          />
+          <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
+            poster, mirage
+          </span>
+        </div>
+      </div>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <div
           className="relative h-40 overflow-hidden rounded-panel"

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Section, Shell } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext } from './kit.js';
+import posterUrl from './poster.jpg';
 import { Colour, Identity, Mirage, Spacing, Typography } from './foundations.js';
 import {
   AlertPage,
@@ -198,7 +199,7 @@ export function App() {
   // The chrome doubles as the Shell demo: this switches the real nav between
   // its three presentations so each can be experienced, not just read about.
   const [navType, setNavType] = useState<NavType>('rail');
-  const [mirageOn, setMirageOn] = useState(false);
+  const [mirageSrc, setMirageSrc] = useState<'off' | 'hues' | 'poster'>('off');
   return (
     <Shell
       brand={
@@ -210,7 +211,13 @@ export function App() {
       subtitle={<span className="font-mono">v{__LIB_VERSION__}</span>}
       mode={navType === 'top' ? 'top' : 'side'}
       collapsible={navType === 'rail'}
-      mirage={mirageOn ? DEMO_TEXTURE : undefined}
+      mirage={
+        mirageSrc === 'off'
+          ? undefined
+          : mirageSrc === 'poster'
+            ? `url(${posterUrl})`
+            : DEMO_TEXTURE
+      }
       nav={
         <>
           {GROUPS.map((g) => (
@@ -230,7 +237,7 @@ export function App() {
       navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
     >
       <ShellDemoContext.Provider
-        value={{ navType, setNavType, mirage: mirageOn, setMirage: setMirageOn }}
+        value={{ navType, setNavType, mirage: mirageSrc, setMirage: setMirageSrc }}
       >
         <Section id={page.id} title={page.title} caption={page.caption}>
           {page.render()}
