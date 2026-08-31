@@ -1,14 +1,17 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { Button, Input, Select, cx } from '@hoobi/design';
+import { Button, Input, Select, cx, mirageImage } from '@hoobi/design';
 
 /** The Shell page steers the catalog's own chrome through this. */
 export interface ShellDemo {
   navType: 'pinned' | 'rail' | 'top';
   setNavType: (v: ShellDemo['navType']) => void;
-  texture: 'none' | 'mica' | 'acrylic';
-  setTexture: (v: ShellDemo['texture']) => void;
+  mirage: boolean;
+  setMirage: (v: boolean) => void;
 }
 export const ShellDemoContext = createContext<ShellDemo | null>(null);
+
+/** The library's default hues, as a stand-in desktop. Any CSS image works too. */
+export const DEMO_TEXTURE = mirageImage();
 
 function copy(text: string) {
   navigator.clipboard?.writeText(text).catch(() => fallbackCopy(text));

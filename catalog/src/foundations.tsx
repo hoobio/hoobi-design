@@ -1,6 +1,6 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Alert, Badge, Card } from '@hoobi/design';
-import { Snippet } from './kit.js';
+import { useContext, useEffect, useState, type ReactNode } from 'react';
+import { Alert, Badge, Card, Select } from '@hoobi/design';
+import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
 
 const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
@@ -344,6 +344,82 @@ export function Identity({ children }: { children?: ReactNode }) {
         </Card>
       </div>
       {children}
+    </>
+  );
+}
+
+export function Mirage() {
+  const demo = useContext(ShellDemoContext);
+  return (
+    <>
+      <p className="text-body text-text-dim">
+        The house material - Fluent mica, named for Ayu Mirage. Hand it{' '}
+        <strong className="text-text">any CSS image</strong> and it is fixed behind the whole app,
+        heavily blurred by the layer itself and tinted back towards{' '}
+        <code className="text-accent-blue">bg</code>. The blur is the point: a low-res photo, a
+        movie poster, a stack of gradients - all melt into the same soft colour wash, so an app can
+        derive its backdrop from whatever it is showing. With no artwork,{' '}
+        <code className="text-accent-blue">mirageImage(colors?)</code> builds one from a few hues -
+        the Ayu trio by default.
+      </p>
+
+      {demo ? (
+        <div className="mt-6 rounded-panel bg-surface p-4">
+          <label className="flex items-center gap-2 text-body text-text-dim">
+            <input
+              type="checkbox"
+              checked={demo.mirage}
+              onChange={(e) => {
+                demo.setMirage(e.target.checked);
+              }}
+            />
+            mirage on this catalog, live
+          </label>
+        </div>
+      ) : null}
+
+      <h3 className="mt-8 text-body-strong text-text">The pieces</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        Shell wires it from one prop. Outside a Shell,{' '}
+        <code className="text-accent-blue">.mirage-layer</code> is the fixed backdrop reading{' '}
+        <code className="text-accent-blue">--mirage-image</code>. With hairlines on (
+        <code className="text-accent-blue">divided</code>) the chrome stays transparent over it;
+        seamless chrome takes a bg fill instead.
+      </p>
+      <div className="mt-3">
+        <Snippet
+          code={`<Shell mirage="url(/poster.jpg)" ... />
+<Shell mirage={mirageImage(['#409fff', '#f28779'])} ... />
+
+// or by hand:
+<div className="mirage-layer" style={{ '--mirage-image': 'url(/poster.jpg)' }} />`}
+        />
+      </div>
+
+      <h3 className="mt-8 text-body-strong text-text">In miniature</h3>
+      <p className="mt-1 text-caption text-text-dim">The default hues, raw and as mirage.</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div
+          className="relative h-40 overflow-hidden rounded-panel"
+          style={{ backgroundImage: DEMO_TEXTURE, backgroundSize: 'cover' }}
+        >
+          <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
+            raw
+          </span>
+        </div>
+        <div className="relative h-40 overflow-hidden rounded-panel">
+          <div
+            className="absolute inset-0 scale-110 blur-2xl saturate-150"
+            style={{
+              backgroundImage: `linear-gradient(color-mix(in srgb, var(--color-bg) 72%, transparent), color-mix(in srgb, var(--color-bg) 72%, transparent)), ${DEMO_TEXTURE}`,
+              backgroundSize: 'cover',
+            }}
+          />
+          <span className="absolute bottom-3 left-3 rounded-control bg-chip px-2 py-1 text-caption text-text">
+            mirage
+          </span>
+        </div>
+      </div>
     </>
   );
 }

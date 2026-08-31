@@ -230,27 +230,23 @@
     translate: 0 -50%;
   }
 
-  /* Fluent texture. Mica: an opaque, heavily blurred backdrop image tinted back
-     towards bg, fixed behind the whole app. Acrylic chrome sits above it as a
-     translucent blur. --texture-image takes any CSS image: url(...) or gradients. */
-  .mica-layer {
+  /* Mirage: the house material (Fluent's mica, named for Ayu Mirage). An image -
+     any CSS image, url(...) or gradients - fixed behind the whole app, heavily
+     blurred by the layer itself and tinted back towards bg. Calm, opaque chrome
+     sits above it. */
+  .mirage-layer {
     position: fixed;
     inset: 0;
     z-index: -1;
     background-image: linear-gradient(
-        color-mix(in srgb, var(--color-bg) 60%, transparent),
-        color-mix(in srgb, var(--color-bg) 60%, transparent)
+        color-mix(in srgb, var(--color-bg) 72%, transparent),
+        color-mix(in srgb, var(--color-bg) 72%, transparent)
       ),
-      var(--texture-image);
+      var(--mirage-image);
     background-size: cover;
     background-position: center;
     filter: blur(48px) saturate(1.4);
     scale: 1.1; /* keeps the blur's edge bleed off-screen */
-  }
-  .acrylic {
-    background-color: color-mix(in srgb, var(--color-surface) 65%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.5);
-    backdrop-filter: blur(24px) saturate(1.5);
   }
 
   /* Fluent 2 pane entrance: slide from the left on the decelerate curve. */

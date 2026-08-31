@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Section, Shell } from '@hoobi/design';
-import { ShellDemoContext } from './kit.js';
-import { Colour, Identity, Spacing, Typography } from './foundations.js';
+import { DEMO_TEXTURE, ShellDemoContext } from './kit.js';
+import { Colour, Identity, Mirage, Spacing, Typography } from './foundations.js';
 import {
   AlertPage,
   BadgePage,
@@ -55,6 +55,13 @@ const PAGES: Page[] = [
     title: 'Spacing & Radius',
     caption: 'A 4px pixel grid, two radii, one control height.',
     render: () => <Spacing />,
+  },
+  {
+    id: 'mirage',
+    group: 'Foundations',
+    title: 'Mirage',
+    caption: 'The house material: any image, blurred into the backdrop.',
+    render: () => <Mirage />,
   },
   {
     id: 'button',
@@ -185,21 +192,13 @@ function useHashPage(): Page {
 }
 
 type NavType = 'pinned' | 'rail' | 'top';
-type Texture = 'none' | 'mica' | 'acrylic';
-
-// A stand-in desktop: three Ayu hue blobs. Any CSS image works, including url(...).
-const DEMO_TEXTURE = [
-  'radial-gradient(40rem 30rem at 20% 10%, #409fffcc, transparent)',
-  'radial-gradient(50rem 35rem at 80% 20%, #d4bfffaa, transparent)',
-  'radial-gradient(45rem 40rem at 50% 90%, #95e6cb99, transparent)',
-].join(', ');
 
 export function App() {
   const page = useHashPage();
   // The chrome doubles as the Shell demo: this switches the real nav between
   // its three presentations so each can be experienced, not just read about.
   const [navType, setNavType] = useState<NavType>('rail');
-  const [texture, setTexture] = useState<Texture>('none');
+  const [mirageOn, setMirageOn] = useState(false);
   return (
     <Shell
       brand={
@@ -211,8 +210,7 @@ export function App() {
       subtitle={<span className="font-mono">v{__LIB_VERSION__}</span>}
       mode={navType === 'top' ? 'top' : 'side'}
       collapsible={navType === 'rail'}
-      texture={texture === 'none' ? undefined : texture}
-      textureImage={DEMO_TEXTURE}
+      mirage={mirageOn ? DEMO_TEXTURE : undefined}
       nav={
         <>
           {GROUPS.map((g) => (
@@ -231,13 +229,12 @@ export function App() {
       }
       navFooter={<Shell.User name="hoobi" detail="design.hoobi.io" />}
     >
-      <ShellDemoContext.Provider value={{ navType, setNavType, texture, setTexture }}>
-        <div className="max-w-[72rem] px-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10">
-          {/* Top padding mirrors the side padding, so the title sits square in the corner. */}
-          <Section id={page.id} title={page.title} caption={page.caption} className="pt-4 md:pt-10">
-            {page.render()}
-          </Section>
-        </div>
+      <ShellDemoContext.Provider
+        value={{ navType, setNavType, mirage: mirageOn, setMirage: setMirageOn }}
+      >
+        <Section id={page.id} title={page.title} caption={page.caption}>
+          {page.render()}
+        </Section>
       </ShellDemoContext.Provider>
     </Shell>
   );

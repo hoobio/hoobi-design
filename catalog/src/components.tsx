@@ -262,8 +262,8 @@ export function ShellPage() {
       {demo ? (
         <Demo
           title="Try it"
-          note="These steer the real Shell around this page: the pane's three presentations, and the Fluent textures behind them."
-          code={`<Shell mode="side" collapsible texture="mica" textureImage="url(...)" />`}
+          note="These steer the real Shell around this page: the pane's three presentations, and the mirage behind them."
+          code={`<Shell mode="side" collapsible mirage="url(...)" />`}
         >
           <Select
             aria-label="Nav type"
@@ -276,17 +276,16 @@ export function ShellPage() {
             <option value="rail">nav: side, collapsible</option>
             <option value="top">nav: top</option>
           </Select>
-          <Select
-            aria-label="Texture"
-            value={demo.texture}
-            onChange={(e) => {
-              demo.setTexture(e.target.value as typeof demo.texture);
-            }}
-          >
-            <option value="none">texture: none</option>
-            <option value="mica">texture: mica</option>
-            <option value="acrylic">texture: acrylic</option>
-          </Select>
+          <label className="flex h-8 items-center gap-1.5 text-body text-text-dim">
+            <input
+              type="checkbox"
+              checked={demo.mirage}
+              onChange={(e) => {
+                demo.setMirage(e.target.checked);
+              }}
+            />
+            mirage
+          </label>
         </Demo>
       ) : null}
       <p className="text-body text-text-dim">
@@ -364,10 +363,16 @@ export function ShellPage() {
             'Chrome hairlines: under the bar and along the pane edge. false for seamless chrome.',
           ],
           [
-            'texture / textureImage',
-            `'mica' | 'acrylic', CSS image`,
+            'pageWidth',
+            "'default' | 'full'",
+            "'default'",
+            'The Shell owns the content column: default centres a max-width column that breathes with the pane, full runs fluid. Children need no wrapper.',
+          ],
+          [
+            'mirage',
+            'string (CSS image)',
             '',
-            'Fluent texture: mica fixes the image behind the app, blurred and tinted back towards bg; acrylic adds translucent blurred chrome. Any CSS image works - url(...) or gradients. Try the top-bar selector.',
+            'The house material: fixed behind the app, blurred by the layer itself and tinted back towards bg. A low-res poster works - the blur erases resolution. See Foundations > Mirage.',
           ],
           [
             'Shell.Item',

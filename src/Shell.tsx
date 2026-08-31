@@ -24,7 +24,6 @@ import { cx } from './cx.js';
 interface ShellState {
   collapsed: boolean;
   overlayOpen: boolean;
-  texture?: 'mica' | 'acrylic';
 }
 
 const ShellContext = createContext<ShellState>({ collapsed: false, overlayOpen: false });
@@ -57,13 +56,34 @@ export interface ShellProps {
   /** Chrome hairlines - under the bar, along the pane edge. false for seamless chrome. */
   divided?: boolean;
   /**
-   * Fluent texture. 'mica': textureImage sits fixed behind the app, heavily blurred
-   * and tinted back towards bg. 'acrylic': mica plus translucent blurred chrome.
+   * Mirage, the house material: any CSS image - a url(...) photo or gradients -
+   * fixed behind the app, blurred by the layer itself and tinted back towards bg.
    */
-  texture?: 'mica' | 'acrylic';
-  /** Any CSS image for the texture: url(...) or a stack of gradients. */
-  textureImage?: string;
+  mirage?: string;
+  /**
+   * textura's PageLayout contract: 'default' centres the content in a max-width
+   * column that breathes with the pane; 'full' lets it run fluid. The Shell owns
+   * the content paddings either way - children need no wrapper of their own.
+   */
+  pageWidth?: 'default' | 'full';
   children: ReactNode;
+}
+
+/**
+ * Builds a mirage image from a few hues - the default backdrop when there is no
+ * artwork to derive one from. Colours are 6-digit hex; each becomes a soft blob.
+ */
+export function mirageImage(colors: string[] = ['#409fff', '#d4bfff', '#95e6cb']): string {
+  const spots = [
+    '40rem 30rem at 20% 10%',
+    '50rem 35rem at 80% 20%',
+    '45rem 40rem at 50% 90%',
+    '38rem 30rem at 10% 70%',
+  ];
+  return colors
+    .slice(0, spots.length)
+    .map((color, i) => `radial-gradient(${spots[i] ?? ''}, ${color}cc, transparent)`)
+    .join(', ');
 }
 
 /** Auto-changing trigger: the Fluent panel-left icon, a close cross while the overlay is up. */
@@ -108,8 +128,8 @@ export function Shell({
   onCollapseChange,
   collapsible = true,
   divided = true,
-  texture,
-  textureImage,
+  mirage,
+  pageWidth = 'default',
   children,
 }: ShellProps) {
   const [uncontrolledCollapsed, setCollapsed] = useState(defaultCollapsed);
@@ -153,13 +173,13 @@ export function Shell({
   );
 
   return (
-    <ShellContext.Provider value={{ collapsed, overlayOpen, texture }}>
+    <ShellContext.Provider value={{ collapsed, overlayOpen }}>
       <div className="isolate flex min-h-dvh flex-col">
-        {texture && textureImage ? (
+        {mirage ? (
           <div
             aria-hidden
-            className="mica-layer"
-            style={{ '--texture-image': textureImage } as CSSProperties}
+            className="mirage-layer"
+            style={{ '--mirage-image': mirage } as CSSProperties}
           />
         ) : null}
         {/* Full width, layered above the overlay scrim so the brand button stays reachable.
@@ -169,7 +189,9 @@ export function Shell({
           className={cx(
             'relative z-40 flex h-12 shrink-0 items-center pr-3',
             divided && 'border-b border-border',
-            texture === 'acrylic' ? 'acrylic' : texture === 'mica' ? 'bg-bg/60' : 'bg-bg',
+            // Sliced chrome stays transparent over the mirage; only seamless chrome
+            // takes a fill to tell itself apart.
+            mirage ? (divided ? undefined : 'bg-bg/85') : 'bg-bg',
           )}
         >
           {/* textura's pane header, lifted into the bar: a hairlined cell exactly as wide as
@@ -305,17 +327,23 @@ export function Shell({
               <div aria-hidden className="fade-in absolute inset-0 bg-black/60" />
               <nav
                 aria-label="Main"
-                className={cx(
-                  'slide-in-left absolute inset-y-0 left-0 w-54 pt-12',
-                  texture === 'acrylic' ? 'acrylic' : 'bg-surface',
-                )}
+                className="slide-in-left absolute inset-y-0 left-0 w-54 bg-surface pt-12"
               >
                 {pane('overlay')}
               </nav>
             </div>
           ) : null}
 
-          <main className="min-w-0 flex-1">{children}</main>
+          <main className="min-w-0 flex-1">
+            <div
+              className={cx(
+                'w-full px-4 pt-4 pb-[max(4rem,env(safe-area-inset-bottom))] md:px-10 md:pt-10',
+                pageWidth === 'default' && 'mx-auto max-w-[72rem]',
+              )}
+            >
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </ShellContext.Provider>
@@ -459,27 +487,32 @@ export interface ShellGroupProps {
 }
 
 function ShellGroup({ label, children }: ShellGroupProps) {
-  const { collapsed, texture } = useContext(ShellContext);
+  const { collapsed } = useContext(ShellContext);
   const area = useContext(NavAreaContext);
 
   if (area === 'top') {
-    // Auto-converted dropdown: a native disclosure, items rendered as full rows.
-    const closeOnPick = (e: MouseEvent<HTMLDivElement>) => {
-      e.currentTarget.closest('details')?.removeAttribute('open');
-    };
-    // The strip is a scroll container, which would clip an absolute panel, so the
-    // panel is fixed and placed from the summary's rect when the disclosure opens.
-    const place = (e: MouseEvent<HTMLDetailsElement>) => {
-      const details = e.currentTarget;
-      const panel = details.querySelector<HTMLDivElement>('[data-shell-dropdown]');
+    // Auto-converted dropdown, hover-triggered (focus-within covers keyboard). The
+    // wrapper fills the bar's height so pointer travel to the panel never leaves it,
+    // and the panel is fixed - the strip is a scroll container that would clip it -
+    // placed from the wrapper's rect as the pointer or focus arrives.
+    const place = (e: { currentTarget: HTMLDivElement }) => {
+      const wrapper = e.currentTarget;
+      const panel = wrapper.querySelector<HTMLDivElement>('[data-shell-dropdown]');
       if (!panel) return;
-      const rect = details.getBoundingClientRect();
+      const rect = wrapper.getBoundingClientRect();
       panel.style.left = `${String(Math.min(rect.left, window.innerWidth - 224))}px`;
-      panel.style.top = `${String(rect.bottom + 4)}px`;
+      panel.style.top = `${String(rect.bottom)}px`;
     };
     return (
-      <details className="shrink-0" onClick={place}>
-        <summary className="flex h-8 cursor-default list-none items-center gap-1.5 rounded-control px-3 text-body whitespace-nowrap text-text-dim select-none hover:bg-surface hover:text-text [&::-webkit-details-marker]:hidden">
+      <div
+        className="group flex h-full shrink-0 items-center"
+        onPointerEnter={place}
+        onFocusCapture={place}
+      >
+        <span
+          tabIndex={0}
+          className="flex h-8 items-center gap-1.5 rounded-control px-3 text-body whitespace-nowrap text-text-dim select-none group-focus-within:bg-surface group-focus-within:text-text group-hover:bg-surface group-hover:text-text"
+        >
           {label}
           <svg viewBox="0 0 12 12" className="size-3" aria-hidden fill="none">
             <path
@@ -489,18 +522,14 @@ function ShellGroup({ label, children }: ShellGroupProps) {
               strokeLinecap="round"
             />
           </svg>
-        </summary>
+        </span>
         <div
           data-shell-dropdown
-          className={cx(
-            'fade-in fixed z-50 w-54 rounded-panel p-1',
-            texture === 'acrylic' ? 'acrylic' : 'bg-surface-raised',
-          )}
-          onClick={closeOnPick}
+          className="invisible fixed z-50 w-54 rounded-panel bg-surface-raised p-1 opacity-0 transition-opacity duration-150 ease-standard group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
         >
           <NavAreaContext.Provider value="dropdown">{children}</NavAreaContext.Provider>
         </div>
-      </details>
+      </div>
     );
   }
 
