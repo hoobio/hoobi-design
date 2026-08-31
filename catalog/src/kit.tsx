@@ -93,7 +93,7 @@ export function Props({ rows }: { rows: PropRow[] }) {
         </thead>
         <tbody>
           {rows.map(([name, type, def, description]) => (
-            <tr key={name} className="border-t-2 border-bg align-top">
+            <tr key={name} className="border-t border-bg align-top">
               <td className="px-3 py-2 font-mono text-caption text-accent-blue">{name}</td>
               <td className="px-3 py-2 font-mono text-caption text-text-dim">{type}</td>
               <td className="px-3 py-2 font-mono text-caption text-text-mute">{def || '-'}</td>

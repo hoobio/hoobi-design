@@ -251,14 +251,14 @@ export function CardPage() {
 
       <Demo
         title="Sliced"
-        note="Segmented information is cut by a 4px slice of page background, never ruled by a border. The container rounds and clips; each segment is its own fill."
+        note="Segmented information is cut by a 1px hairline of page background, never ruled by a border. The container rounds and clips; each segment is its own fill."
         stack
-        code={`<div className="flex flex-col gap-1 overflow-hidden rounded-panel">
+        code={`<div className="flex flex-col gap-px overflow-hidden rounded-panel">
   <div className="bg-surface-raised p-4">...</div>
   <div className="bg-surface-raised p-4">...</div>
 </div>`}
       >
-        <div className="flex w-full flex-col gap-1 overflow-hidden rounded-panel">
+        <div className="flex w-full flex-col gap-px overflow-hidden rounded-panel">
           <div className="bg-surface-raised p-4">
             <p className="text-body-strong text-text">Comms</p>
             <p className="text-caption text-text-dim">Elgato Virtual Audio</p>
@@ -274,12 +274,12 @@ export function CardPage() {
         title="Toned"
         note="A state tints the whole surface - the WinUI critical-background treatment. The tone lives in the fill, not on a border."
         stack
-        code={`<div className="flex flex-col gap-1 overflow-hidden rounded-panel">
+        code={`<div className="flex flex-col gap-px overflow-hidden rounded-panel">
   <div className="bg-danger/15 p-4">...</div>
   <div className="bg-danger/15 p-4">...</div>
 </div>`}
       >
-        <div className="flex w-full flex-col gap-1 overflow-hidden rounded-panel">
+        <div className="flex w-full flex-col gap-px overflow-hidden rounded-panel">
           <div className="bg-danger/15 p-4">
             <p className="text-body-strong text-text">Microphone Mix</p>
             <p className="text-caption text-text-dim">Muted</p>

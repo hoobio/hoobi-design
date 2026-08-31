@@ -35,7 +35,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       )}
     >
       <div className="flex max-h-[inherit] flex-col">
-        <header className="flex items-start justify-between gap-3 border-b-4 border-bg px-4 py-3">
+        <header className="flex items-start justify-between gap-3 border-b border-bg px-4 py-3">
           <h2 className="min-w-0 text-subtitle break-words text-text">{title}</h2>
           <button
             type="button"

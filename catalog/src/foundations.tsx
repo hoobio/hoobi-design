@@ -5,7 +5,7 @@ import { Snippet } from './kit.js';
 const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
     group: 'Surfaces',
-    note: 'Ayu Mirage backgrounds, stacked darkest to lightest. Separation comes from the fills themselves - no borders, no shadows; segmented surfaces are sliced by a 4px gap of bg.',
+    note: 'Ayu Mirage backgrounds, stacked darkest to lightest. Separation comes from the fills themselves - no borders, no shadows; segmented surfaces are sliced by a 1px hairline of bg.',
     names: ['bg', 'surface', 'surface-raised', 'border', 'chip'],
   },
   {
@@ -150,7 +150,7 @@ export function Typography() {
         root so it still tracks user zoom. Noto Sans carries every step. Dank Mono is reserved for
         code.
       </p>
-      <div className="mt-6 flex flex-col gap-1 overflow-hidden rounded-panel">
+      <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel">
         {RAMP.map((r) => (
           <div key={r.cls} className="bg-surface p-4">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-caption text-text-mute">
