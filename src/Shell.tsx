@@ -745,7 +745,14 @@ function ShellUser({
             e.preventDefault();
           }}
           {...(railed ? sideTip(name) : null)}
-          className={cx(rowClasses, 'hover:bg-surface')}
+          className={cx(
+            rowClasses,
+            // Open, the row IS the expander's head: it takes the panel's fill and squares its
+            // bottom corners so row and menu read as one raised surface.
+            open && !railed
+              ? 'rounded-t-panel rounded-b-none bg-surface-raised'
+              : 'hover:bg-surface',
+          )}
         >
           {row}
           {!railed ? (
@@ -780,9 +787,10 @@ function ShellUser({
           style={{ gridTemplateRows: open && !railed ? '1fr' : '0fr' }}
         >
           <div className="overflow-hidden">
-            {/* A distinct raised panel, not a hairlined continuation of the pane:
-                surfaces are told apart by fill. The same look as the railed flyout. */}
-            <div className="mt-1 rounded-panel bg-surface-raised p-1">{menuContent}</div>
+            {/* A distinct raised panel, not a hairlined continuation of the pane: surfaces are
+                told apart by fill. Joined to the open row above - one shape, so only the
+                bottom corners round. */}
+            <div className="rounded-b-panel bg-surface-raised p-1">{menuContent}</div>
           </div>
         </div>
         {/* Railed: a flyout beside the rail. */}

@@ -94,9 +94,11 @@ export function MenuItem({
         onClick?.(e);
       }}
       className={cx(
-        'flex h-10 w-full items-center gap-3 rounded-control px-3 text-body',
+        // caption, not body: a flyout is a 216px pane and its rows are controls, not reading.
+        'flex h-10 w-full items-center gap-3 rounded-control px-3 text-caption',
         tone === 'danger' ? 'text-danger hover:bg-danger/15' : 'text-text hover:bg-surface',
-        action ? 'pr-12' : undefined,
+        // Clears a ghost sm action ("unlink") so a long label truncates instead of colliding.
+        action ? 'pr-16' : undefined,
         className,
       )}
       {...rest}
