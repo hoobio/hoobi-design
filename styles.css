@@ -208,17 +208,15 @@
     font-weight: 400;
     white-space: normal;
     text-align: left;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.1s ease,
-      visibility 0.1s;
+    /* display, not visibility: a hidden-but-laid-out box still contributes
+       scrollable overflow, and an 18rem tip on an anchor near the right edge of a
+       scroll container puts a horizontal scrollbar on it while nothing is hovered. */
+    display: none;
     pointer-events: none;
   }
   [data-tip]:hover::after,
   [data-tip]:focus-visible::after {
-    opacity: 1;
-    visibility: visible;
+    display: block;
   }
   /* Fixed variant for anchors inside scroll containers (a rail item): the box escapes
      ancestor clipping, placed from --tip-x/--tip-y set by the anchor on pointerenter. */
@@ -238,7 +236,8 @@
     position: fixed;
     inset: 0;
     z-index: -1;
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         color-mix(in srgb, var(--color-bg) 72%, transparent),
         color-mix(in srgb, var(--color-bg) 72%, transparent)
       ),
@@ -313,7 +312,8 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         color-mix(in srgb, var(--color-surface-raised) 75%, transparent),
         color-mix(in srgb, var(--color-surface-raised) 75%, transparent)
       ),
