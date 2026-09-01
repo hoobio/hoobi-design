@@ -48,3 +48,20 @@ Hoobi-shaped UI from the real components, rules and tokens.
   do not skip the delete or the stale card lingers in the pane.
 - Never wholesale-replace the project by deleting everything first; the plan is always
   the minimal diff.
+
+## Auth recovery (when write_files refuses)
+
+The design authorization is per-session-ish state: a crashed or headless session loses it, and
+the failure mode is asymmetric - `list_files`/`get_file`/`finalize_plan` may still WORK while
+`write_files` errors with "DesignSync needs design-system authorization". `/design-consent` can
+also 403 when the claude.ai login itself is stale.
+
+- The fix is `/design-login`, and it ONLY runs in an interactive Claude Code session - not in
+  print mode, not via a driven TUI (there is no CLI subcommand for it either).
+- It must run under the account that owns the design projects: **user@example.com**, i.e. with
+  `CLAUDE_CONFIG_DIR=C:\Users\<user>\.claude-personal`. The work config's login
+  cannot see these projects; a 403 from /design-consent is usually this.
+- Hoobi runs it themselves in their own terminal. Do NOT try to type into their windows with
+  SendKeys - it lands in whatever has focus (it has typed into their browser).
+- After the login, the sync itself needs no re-run of anything else: re-issue finalize_plan +
+  write_files and the hash diff carries on where it stopped.
