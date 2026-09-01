@@ -214,6 +214,9 @@ Claude generates Hoobi-shaped UI from the real components, the real rules, and t
 
 ## Publishing
 
+The end-to-end ritual (verify -> version -> tag push -> pipeline to green -> design-sync
+decision -> consumer repin) is the **`release` skill** (`.claude/skills/release/`). Mechanics:
+
 ```bash
 npm version patch      # or minor/major
 git push --follow-tags
