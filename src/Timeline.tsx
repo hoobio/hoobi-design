@@ -70,7 +70,12 @@ const RAILS: Record<TimelineTone, string> = {
 export function Timeline({ children, className, plain = false }: TimelineProps) {
   if (plain) {
     return (
-      <div className={cx('flex min-w-0 flex-col gap-4 border-l-2 border-surface-raised pl-4', className)}>
+      <div
+        className={cx(
+          'flex min-w-0 flex-col gap-4 border-l-2 border-surface-raised pl-4',
+          className,
+        )}
+      >
         {children}
       </div>
     );
@@ -111,19 +116,46 @@ function TimelineComment({ author, time, emphasis = false, children }: TimelineC
   );
 }
 
+/** Our own chevron, not the browser's ::marker: that box has no fixed width and no rotation. */
+function Chevron() {
+  return (
+    <span aria-hidden className="flex shrink-0 items-center self-stretch">
+      <svg
+        viewBox="0 0 12 12"
+        fill="none"
+        className="size-3 transition-transform duration-150 ease-standard group-open:rotate-90"
+      >
+        <path
+          d="M4.5 2.5L8 6l-3.5 3.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
+// display:flex on a summary drops the ::marker in every engine but WebKit, which keeps its own.
+const SUMMARY = 'flex cursor-pointer items-baseline gap-x-2 [&::-webkit-details-marker]:hidden';
+
 function TimelineFold({ summary, range, defaultOpen, children }: TimelineFoldProps) {
   return (
-    <details className="min-w-0" open={defaultOpen}>
-      <summary className="cursor-pointer text-caption text-text-mute">
-        {summary}
-        {range ? (
-          <>
-            <span className="px-1.5">·</span>
-            <span className="font-mono">{range}</span>
-          </>
-        ) : null}
+    <details className="group min-w-0" open={defaultOpen}>
+      <summary className={cx(SUMMARY, 'text-caption text-text-mute')}>
+        <Chevron />
+        <span className="min-w-0">
+          {summary}
+          {range ? (
+            <>
+              <span className="px-1.5">·</span>
+              <span className="font-mono">{range}</span>
+            </>
+          ) : null}
+        </span>
       </summary>
-      <div className="mt-2 flex flex-col gap-1.5">{children}</div>
+      {/* Indented under the chevron: what a fold hides is a level below what names it. */}
+      <div className="mt-2 flex flex-col gap-1.5 pl-5">{children}</div>
     </details>
   );
 }
@@ -135,7 +167,8 @@ function TimelineEvent({ time, label, note }: TimelineEventProps) {
     // label and the sans note reading as one line of text.
     <div className="grid grid-cols-[3.5rem_auto_minmax(0,1fr)] items-baseline gap-x-2.5 gap-y-0.5 max-sm:grid-cols-[3.5rem_minmax(0,1fr)]">
       <span className="font-mono text-caption-small whitespace-nowrap text-text-mute">{time}</span>
-      {label}
+      {/* Sized here, not by the consumer: an Event is one dense line, whatever label it gets. */}
+      <span className="min-w-0 text-caption-small">{label}</span>
       {note ? (
         <span className="text-caption-small text-text-dim break-words max-sm:col-start-2">
           {note}
@@ -146,22 +179,25 @@ function TimelineEvent({ time, label, note }: TimelineEventProps) {
 }
 
 function TimelineStep({ time, kind, label, detail, children }: TimelineStepProps) {
-  const line = (
-    <span className="flex flex-wrap items-baseline gap-x-2 font-mono text-caption-small">
+  // The chevron sits beside the thing it expands - after the time and kind, before the label -
+  // so the line's left edge stays on the same column as a Step with nothing to expand.
+  const line = (chevron: boolean) => (
+    <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 font-mono text-caption-small">
       {time ? <span className="text-text-mute">{time}</span> : null}
       {kind ? <span className="text-text-mute">{kind}</span> : null}
+      {chevron ? <Chevron /> : null}
       {label}
     </span>
   );
   return (
     <div className="flex flex-col gap-1">
       {detail ? (
-        <details className="min-w-0">
-          <summary className="cursor-pointer">{line}</summary>
+        <details className="group min-w-0">
+          <summary className={cx(SUMMARY, 'gap-x-0')}>{line(true)}</summary>
           <div className="mt-1 text-caption-small text-text-dim">{detail}</div>
         </details>
       ) : (
-        <div className="pl-3.5">{line}</div>
+        line(false)
       )}
       {children ? <div className="text-caption-small text-text-dim">{children}</div> : null}
     </div>
