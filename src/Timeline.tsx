@@ -36,6 +36,11 @@ export interface TimelineFoldProps {
   /** e.g. "10:50 am - 11:28 am". */
   range?: string;
   defaultOpen?: boolean;
+  /** Controlled open state; pair with onOpenChange. A permalink can then reopen this fold. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** A static, unique name for the fold, so its state has an address. */
+  id?: string;
   children?: ReactNode;
 }
 
@@ -54,6 +59,11 @@ export interface TimelineStepProps {
   label: ReactNode;
   /** Folded behind a nested "detail" <details> when present. */
   detail?: ReactNode;
+  /** Controlled open state of the detail; pair with onOpenChange. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** A static, unique name for the step, so its state has an address. */
+  id?: string;
   /** Alternative body under the line, plain caption-small dim text. */
   children?: ReactNode;
 }
@@ -139,9 +149,22 @@ function Chevron() {
 // display:flex on a summary drops the ::marker in every engine but WebKit, which keeps its own.
 const SUMMARY = 'flex cursor-pointer items-baseline gap-x-2 [&::-webkit-details-marker]:hidden';
 
-function TimelineFold({ summary, range, defaultOpen, children }: TimelineFoldProps) {
+function TimelineFold({
+  summary,
+  range,
+  defaultOpen,
+  open,
+  onOpenChange,
+  id,
+  children,
+}: TimelineFoldProps) {
   return (
-    <details className="group min-w-0" open={defaultOpen}>
+    <details
+      id={id}
+      className="group min-w-0"
+      open={open ?? defaultOpen}
+      onToggle={(e) => onOpenChange?.(e.currentTarget.open)}
+    >
       <summary className={cx(SUMMARY, 'text-caption text-text-mute')}>
         <Chevron />
         <span className="min-w-0">
@@ -162,11 +185,13 @@ function TimelineFold({ summary, range, defaultOpen, children }: TimelineFoldPro
 
 function TimelineEvent({ time, label, note }: TimelineEventProps) {
   return (
-    // The time column is fixed so events align across rows (each Event is its own grid), sized
-    // snug to "12:58 pm" at caption-small mono; baseline alignment keeps the mono time, the
-    // label and the sans note reading as one line of text.
-    <div className="grid grid-cols-[3.5rem_auto_minmax(0,1fr)] items-baseline gap-x-2.5 gap-y-0.5 max-sm:grid-cols-[3.5rem_minmax(0,1fr)]">
-      <span className="font-mono text-caption-small whitespace-nowrap text-text-mute">{time}</span>
+    // Each Event is its own grid, so the time cell carries the column width itself: 8ch of its
+    // own mono, exactly "12:58 pm", which aligns every row with no slack. Baseline alignment
+    // keeps the mono time, the label and the sans note reading as one line of text.
+    <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-baseline gap-x-2 gap-y-0.5 max-sm:grid-cols-[auto_minmax(0,1fr)]">
+      <span className="min-w-[8ch] font-mono text-caption-small whitespace-nowrap text-text-mute">
+        {time}
+      </span>
       {/* Sized here, not by the consumer: an Event is one dense line, whatever label it gets. */}
       <span className="min-w-0 text-caption-small">{label}</span>
       {note ? (
@@ -178,12 +203,22 @@ function TimelineEvent({ time, label, note }: TimelineEventProps) {
   );
 }
 
-function TimelineStep({ time, kind, label, detail, children }: TimelineStepProps) {
+function TimelineStep({
+  time,
+  kind,
+  label,
+  detail,
+  open,
+  onOpenChange,
+  id,
+  children,
+}: TimelineStepProps) {
   // The chevron sits beside the thing it expands - after the time and kind, before the label -
   // so the line's left edge stays on the same column as a Step with nothing to expand.
   const line = (chevron: boolean) => (
     <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 font-mono text-caption-small">
-      {time ? <span className="text-text-mute">{time}</span> : null}
+      {/* The same 8ch column as an Event's time, so the two kinds of row share it. */}
+      {time ? <span className="min-w-[8ch] text-text-mute">{time}</span> : null}
       {kind ? <span className="text-text-mute">{kind}</span> : null}
       {chevron ? <Chevron /> : null}
       {label}
@@ -192,14 +227,20 @@ function TimelineStep({ time, kind, label, detail, children }: TimelineStepProps
   return (
     <div className="flex flex-col gap-1">
       {detail ? (
-        <details className="group min-w-0">
+        <details
+          id={id}
+          className="group min-w-0"
+          open={open}
+          onToggle={(e) => onOpenChange?.(e.currentTarget.open)}
+        >
           <summary className={cx(SUMMARY, 'gap-x-0')}>{line(true)}</summary>
-          <div className="mt-1 text-caption-small text-text-dim">{detail}</div>
+          {/* A tier in from the line: a stamped payload must not read as the next event. */}
+          <div className="mt-1 pl-5 text-caption-small text-text-dim">{detail}</div>
         </details>
       ) : (
         line(false)
       )}
-      {children ? <div className="text-caption-small text-text-dim">{children}</div> : null}
+      {children ? <div className="pl-5 text-caption-small text-text-dim">{children}</div> : null}
     </div>
   );
 }
