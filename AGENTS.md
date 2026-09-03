@@ -152,10 +152,14 @@ commit and lands together with the consumer updates.
 
 ## Build and verify
 
+pnpm workspace: the root is the library, `catalog/` is the one workspace package and links the
+library through `workspace:*`. One `pnpm install` at the root installs both; the only lockfile is
+`pnpm-lock.yaml` at the root.
+
 ```bash
-npm ci
-npm run typecheck
-npm run build
+pnpm install --frozen-lockfile
+pnpm run typecheck
+pnpm run build
 npm pack --dry-run     # must list dist/, styles.css, fonts/ and nothing else
 ```
 
@@ -163,14 +167,14 @@ npm pack --dry-run     # must list dist/, styles.css, fonts/ and nothing else
 gets looked at in the catalog dev server with the browser - not reasoned about, looked at:
 
 ```bash
-npm run build                  # catalog consumes ../ via file:, so library dist first
-cd catalog && npm run dev      # Vite on :5173
+pnpm run build                  # catalog consumes ../ via workspace:*, so library dist first
+pnpm -C catalog dev      # Vite on :5173
 ```
 
 Open each changed page, check spacing/alignment/tones at desktop width and at 360px, and only then
 commit. A component that was never rendered is not verified.
 
-`npm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
+`pnpm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
 literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
 lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
 in `catalog/src/pages.tsx`. A rule that is only prose is a rule that drifts.
@@ -178,7 +182,7 @@ in `catalog/src/pages.tsx`. A rule that is only prose is a rule that drifts.
 Sanity-check token to utility generation after touching `styles.css`:
 
 ```bash
-npx -y @tailwindcss/cli@4.3.3 -i styles.css -o ./.tw-check.css   # gitignored
+pnpm dlx @tailwindcss/cli@4.3.3 -i styles.css -o ./.tw-check.css   # gitignored
 ```
 
 ## Catalog
@@ -191,9 +195,9 @@ Deliberately **not** Storybook. Plain anchors, one flat `pages.tsx`, no addons, 
 doc-extraction pipeline. Prop tables are hand-written.
 
 ```bash
-npm run build            # the library first: catalog consumes ../ via file:
-cd catalog && npm install && npm run dev
-npm run build            # -> catalog/dist/index.html, one self-contained file, fonts inlined
+pnpm run build            # the library first: catalog consumes ../ via workspace:*
+pnpm -C catalog dev
+pnpm -C catalog build     # -> catalog/dist/index.html, one self-contained file, fonts inlined
 ```
 
 `vite-plugin-singlefile` plus `assetsInlineLimit` inlines the JS, the CSS and the four woff2 fonts,
@@ -208,14 +212,14 @@ Claude generates Hoobi-shaped UI from the real components, the real rules, and t
   so a component cannot be in one and missing from the other. `check.mjs` enforces that every
   library export has a page. Foundations include Rules (do/don't pairs) and Motion; Recipes are
   page-shaped compositions - both exist chiefly for the design system's benefit.
-- `cd catalog && npm run build:ds` renders every page to static HTML in `catalog/design-system/`
+- `pnpm -C catalog build:ds` renders every page to static HTML in `catalog/design-system/`
   (gitignored): one standalone card per page with the compiled stylesheet and fonts inlined, a
   `<!-- @dsCard group="..." -->` marker for the Design System pane, plus `tokens.json` (the parsed
   `@theme` block) and `_hashes.json`. Static SSR on purpose: cards are readable markup, not a
   React bundle. Overlay pages (`dsOpen`) export with their panel revealed.
 - **Sync runs at release time, not per commit** - the design system should show what consumers
-  can `npm install`, and every card is stamped with the library version. After
-  `npm version && git push --follow-tags`, run `/design-sync` (the repo skill at
+  can `pnpm add`, and every card is stamped with the library version. After
+  `pnpm version && git push --follow-tags`, run `/design-sync` (the repo skill at
   `.claude/skills/design-sync/` carries the project id and the exact procedure): it diffs the
   remote `_hashes.json` against the local one and uploads only what changed (re-running is a
   no-op). This cannot run in the pipeline: DesignSync needs an interactive claude.ai login.
@@ -226,12 +230,12 @@ The end-to-end ritual (verify -> version -> tag push -> pipeline to green -> des
 decision -> consumer repin) is the **`release` skill** (`.claude/skills/release/`). Mechanics:
 
 ```bash
-npm version patch      # or minor/major
+pnpm version patch      # or minor/major
 git push --follow-tags
 ```
 
 The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`, definition 23, Home
-Lab pool): npmAuthenticate -> npm ci -> typecheck -> build -> guard that the tag matches
+Lab pool): npmAuthenticate -> pnpm install --frozen-lockfile -> typecheck -> build -> guard that the tag matches
 `package.json` version -> publish, skipped when that version is already on the feed.
 
 ADO feed versions are immutable: a wrong publish burns the version number permanently, which is what
@@ -253,5 +257,6 @@ lines.
 
 ## Known noise
 
-npm 11 warns `Unknown project config "always-auth"` on every command. `always-auth` is kept because
-Azure Artifacts' own docs and `npmAuthenticate@0` still expect it. Harmless.
+pnpm ignores `always-auth` silently; npm 11 (which still does the `npm publish` in the pipeline)
+warns `Unknown project config "always-auth"`. It is kept because Azure Artifacts' own docs and
+`npmAuthenticate@0` still expect it. Harmless.

@@ -1,6 +1,6 @@
 ---
 name: design-sync
-description: Sync the hoobi-design catalog to the "Hoobi Design" Claude Design project (claude.ai/design) via the DesignSync tool. Run after a library release (npm version + tag push), or when asked to "sync the design system", "update Claude Design", or "push the catalog to claude.ai". Diffs by hash manifest, so re-running is a no-op.
+description: Sync the hoobi-design catalog to the "Hoobi Design" Claude Design project (claude.ai/design) via the DesignSync tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system", "update Claude Design", or "push the catalog to claude.ai". Diffs by hash manifest, so re-running is a no-op.
 ---
 
 # design-sync
@@ -9,8 +9,8 @@ Push the static design-system bundle to the Claude Design project so Claude gene
 Hoobi-shaped UI from the real components, rules and tokens.
 
 - **Project:** "Hoobi Design", projectId `<project-id>`.
-- **When:** after a release (`npm version` + `git push --follow-tags`), once the publish
-  pipeline is green. The design system shows what consumers can `npm install`, so never
+- **When:** after a release (`pnpm version` + `git push --follow-tags`), once the publish
+  pipeline is green. The design system shows what consumers can `pnpm add`, so never
   sync unreleased `main` unless explicitly asked to preview.
 - **Auth:** DesignSync needs an interactive claude.ai login (`/design-login`). If it errors
   on auth, ask the user to run that — it cannot happen headless, which is why this is a
@@ -18,10 +18,10 @@ Hoobi-shaped UI from the real components, rules and tokens.
 
 ## Procedure
 
-1. Build the bundle (library dist first — the catalog consumes `../` via `file:`):
+1. Build the bundle (library dist first — the catalog consumes `../` via `workspace:*`):
 
    ```bash
-   npm run build && cd catalog && npm run build:ds
+   pnpm run build && pnpm -C catalog build:ds
    ```
 
    Output: `catalog/design-system/` — one standalone HTML card per page from

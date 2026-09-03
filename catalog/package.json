@@ -12,7 +12,7 @@
     "build:ds": "vite build && node ds.mjs"
   },
   "dependencies": {
-    "@hoobi/design": "file:..",
+    "@hoobi/design": "workspace:*",
     "highlight.js": "11.12.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

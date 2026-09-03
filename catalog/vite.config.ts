@@ -12,7 +12,7 @@ const libVersion = (JSON.parse(readFileSync('../package.json', 'utf8')) as { ver
 export default defineConfig({
   define: { __LIB_VERSION__: JSON.stringify(libVersion) },
   plugins: [react(), tailwindcss(), viteSingleFile()],
-  // @hoobi/design is a file: symlink to the repo root, which has its own react
+  // @hoobi/design is a workspace symlink to the repo root, which has its own react
   // devDependency. Without dedupe the page loads two Reacts and every hook is null.
   resolve: { dedupe: ['react', 'react-dom'] },
   // @hoobi/design resolves to ../, so its fonts/ sits outside the dev server's root and

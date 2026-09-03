@@ -17,7 +17,7 @@ save-exact=true
 ```
 
 ```bash
-npm install @hoobi/design
+pnpm add @hoobi/design
 ```
 
 ```css
@@ -71,11 +71,11 @@ Everything is a Tailwind v4 `@theme` token in `styles.css`, so `bg-surface`, `te
 component variant, tone, size and state, with copyable JSX for each.
 
 ```bash
-npm run build
-cd catalog && npm install && npm run dev
+pnpm run build
+pnpm -C catalog dev
 ```
 
-`npm run build` in `catalog/` emits a single self-contained `dist/index.html` with the CSS, JS and
+`pnpm -C catalog build` emits a single self-contained `dist/index.html` with the CSS, JS and
 all four woff2 fonts inlined.
 
 ## Mobile
@@ -87,7 +87,7 @@ content reaches the bottom edge.
 ## Publishing
 
 ```bash
-npm version minor
+pnpm version minor
 git push --follow-tags
 ```
 

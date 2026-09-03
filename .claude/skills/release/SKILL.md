@@ -11,11 +11,11 @@ description: Release @hoobi/design to the ADO feed - verify, version bump, tag p
 The feed is immutable: a wrong publish burns the version number permanently. Verify before the
 tag exists.
 
-1. **Verify**: `npm run typecheck` (runs check.mjs) and `npm run build` pass; every changed
-   component was LOOKED at in the catalog (`npm run build` then `cd catalog && npm run dev`) -
+1. **Verify**: `pnpm run typecheck` (runs check.mjs) and `pnpm run build` pass; every changed
+   component was LOOKED at in the catalog (`pnpm run build` then `pnpm -C catalog dev`) -
    a component that was never rendered is not verified.
 2. **Commit** on main (conventional-commit + gitmoji, no AI-attribution trailers).
-3. **Version + tag**: `npm version patch|minor` (additive props/components -> minor; visual or
+3. **Version + tag**: `pnpm version patch|minor` (additive props/components -> minor; visual or
    behavioural fixes -> patch), then `git push origin main --follow-tags`.
 4. **Monitor pipeline 23** for the `refs/tags/v<ver>` run to `succeeded` (background poll ~30s):
    `az pipelines runs list --org https://dev.azure.com/Hoobi --project Hoobi --pipeline-ids 23
