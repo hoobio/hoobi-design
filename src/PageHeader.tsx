@@ -45,7 +45,9 @@ export function PageHeader({
           {thumb ? (
             <div className="h-[66px] w-11 shrink-0 overflow-hidden rounded-control">{thumb}</div>
           ) : null}
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
+          {/* A real basis, not flex-1: with basis 0 the title block never asks for width, so on a
+              phone it squeezes to a few words beside the actions instead of wrapping them below. */}
+          <div className="flex min-w-0 grow basis-60 flex-col gap-1">
             <h2 className="text-subtitle break-words text-text">{title}</h2>
             {meta ? <p className="text-caption text-text-dim">{meta}</p> : null}
           </div>
