@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Section, Shell } from '@hoobi/design';
+import { Section, Shell } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext } from './kit.js';
 import posterUrl from './poster.jpg';
 import { GROUPS, PAGES, type Page } from './pages.js';
@@ -67,24 +67,28 @@ export function App() {
         <Shell.User
           name="hoobi"
           detail="design.hoobi.io"
+          // The catalog's own menu carries the catalog's own rows: where this version came
+          // from. Account-shaped rows (linked accounts, Sign out) are a consumer's to compose;
+          // the Shell page renders that composition as a demo.
           menu={
             <>
-              <Shell.MenuLabel>Signed in as hoobi</Shell.MenuLabel>
-              <Shell.MenuItem onClick={() => undefined}>Copy API key</Shell.MenuItem>
+              <Shell.MenuLabel>@hoobi/design v{__LIB_VERSION__}</Shell.MenuLabel>
               <Shell.MenuItem
-                onClick={() => undefined}
-                action={
-                  <Button size="sm" variant="ghost" onClick={() => undefined}>
-                    Unlink
-                  </Button>
-                }
+                onClick={() => {
+                  open('https://dev.azure.com/Hoobi/Hoobi/_git/hoobi-design', '_blank');
+                }}
               >
-                user@example.com
+                Repository
               </Shell.MenuItem>
-              <Shell.MenuDivider />
+              <Shell.MenuItem
+                onClick={() => {
+                  open('https://dev.azure.com/Hoobi/Hoobi/_artifacts/feed/Hoobi', '_blank');
+                }}
+              >
+                Package feed
+              </Shell.MenuItem>
             </>
           }
-          onSignOut={() => undefined}
         />
       }
     >

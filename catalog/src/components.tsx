@@ -19,6 +19,7 @@ import {
   Progress,
   Section,
   Select,
+  Shell,
   Spinner,
   Tabs,
   Timeline,
@@ -339,7 +340,12 @@ export function PersonaPage() {
 
       <Props
         rows={[
-          ['name', 'string', 'required', "Shown in full; its first character (uppercased) fills the avatar circle."],
+          [
+            'name',
+            'string',
+            'required',
+            'Shown in full; its first character (uppercased) fills the avatar circle.',
+          ],
           [
             'tone',
             `'accent' | 'neutral'`,
@@ -446,27 +452,47 @@ export function ShellPage() {
       </Demo>
       <Demo
         title="The user menu"
-        note="Live in the pane's bottom row - click hoobi. Expanded it grows downward as a distinct raised panel; collapse the pane and the same rows become a flyout beside the rail. The rows are Menu.Item / Label / Divider re-exported as Shell.MenuItem / MenuLabel / MenuDivider, so a consumer's row and the built-in Sign out row are one implementation, and onSignOut appends that danger row for you."
+        note="Every row is the consumer's, composed from Shell.MenuItem / MenuLabel / MenuDivider (Menu's rows, one implementation), so nothing about accounts is baked in. onSignOut alone appends the danger row and the hairline above it, so a menu never needs to end in a divider of its own. Expanded it grows downward as a distinct raised panel; on the rail the same rows become a flyout; below md it opens inside the overlay pane. The pane's own bottom row is the live one, carrying the catalog's rows."
         stack
         code={`<Shell.User
   name="hoobi"
-  detail="design.hoobi.io"
+  detail="admin"
   menu={
     <>
-      <Shell.MenuLabel>Signed in as hoobi</Shell.MenuLabel>
-      <Shell.MenuItem onClick={copyKey}>Copy API key</Shell.MenuItem>
+      <Shell.MenuLabel>linked accounts</Shell.MenuLabel>
       <Shell.MenuItem
-        onClick={relink}
-        action={<Button size="sm" variant="ghost" onClick={unlink}>Unlink</Button>}
+        action={<Button size="sm" variant="ghost" onClick={unlink}>unlink</Button>}
       >
         user@example.com
       </Shell.MenuItem>
-      <Shell.MenuDivider />
+      <Shell.MenuItem onClick={link}>Link Microsoft account</Shell.MenuItem>
     </>
   }
   onSignOut={signOut}
 />`}
       >
+        <div className="w-54 rounded-panel bg-chip p-1">
+          <Shell.User
+            name="hoobi"
+            detail="admin"
+            menu={
+              <>
+                <Shell.MenuLabel>linked accounts</Shell.MenuLabel>
+                <Shell.MenuItem
+                  action={
+                    <Button size="sm" variant="ghost" onClick={() => undefined}>
+                      unlink
+                    </Button>
+                  }
+                >
+                  user@example.com
+                </Shell.MenuItem>
+                <Shell.MenuItem onClick={() => undefined}>Link Microsoft account</Shell.MenuItem>
+              </>
+            }
+            onSignOut={() => undefined}
+          />
+        </div>
         <p className="text-caption text-text-dim">
           A real button, not a details/summary: Chromium paints a summary's focus ring on mouse
           clicks. Outside pointerdown and Escape close it, and the flyout is fixed and placed off
@@ -866,9 +892,7 @@ export function PageHeaderPage() {
         <PageHeader
           className="w-full"
           crumbs={
-            <Breadcrumbs
-              items={[{ label: 'issues', as: 'a', href: '#' }, { label: '#4' }]}
-            />
+            <Breadcrumbs items={[{ label: 'issues', as: 'a', href: '#' }, { label: '#4' }]} />
           }
           thumb={<div className="size-full" style={{ backgroundImage: mirageImage() }} />}
           title="Wrong audio track"
@@ -2231,7 +2255,9 @@ export function TimelinePage() {
       >
         <Timeline plain className="w-full">
           <p className="text-body text-text">Issue 1042 opened by hoobi: wrong audio track.</p>
-          <p className="text-body text-text">Reanalyzed after a steer: reporter asked for dual audio.</p>
+          <p className="text-body text-text">
+            Reanalyzed after a steer: reporter asked for dual audio.
+          </p>
         </Timeline>
       </Demo>
 
@@ -2269,18 +2295,18 @@ export function TimelinePage() {
         code={`<Timeline plain>
   <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am - 11:28 am">
     <Timeline.Event
-      time="10:50"
+      time="10:50 am"
       label={<Badge appearance="text" tone="info">analyzing</Badge>}
     />
     <Timeline.Event
-      time="10:52"
+      time="10:52 am"
       label={<Badge appearance="text" tone="warn">awaiting_approval</Badge>}
       note="reporter is not the requester"
     />
     <Timeline.Fold summary="11 agent steps">
-      <Timeline.Step time="10:50" kind="call" label="get_media_info()" />
+      <Timeline.Step time="10:50 am" kind="call" label="get_media_info()" />
       <Timeline.Step
-        time="10:50"
+        time="10:50 am"
         kind="result"
         label="runtimeMismatch: false"
         detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
@@ -2292,7 +2318,7 @@ export function TimelinePage() {
         <Timeline plain className="w-full">
           <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am – 11:28 am">
             <Timeline.Event
-              time="10:50"
+              time="10:50 am"
               label={
                 <Badge appearance="text" tone="info">
                   analyzing
@@ -2300,7 +2326,7 @@ export function TimelinePage() {
               }
             />
             <Timeline.Event
-              time="10:52"
+              time="10:52 am"
               label={
                 <Badge appearance="text" tone="warn">
                   awaiting_approval
@@ -2309,9 +2335,9 @@ export function TimelinePage() {
               note="reporter is not the requester"
             />
             <Timeline.Fold summary="11 agent steps">
-              <Timeline.Step time="10:50" kind="call" label="get_media_info()" />
+              <Timeline.Step time="10:50 am" kind="call" label="get_media_info()" />
               <Timeline.Step
-                time="10:50"
+                time="10:50 am"
                 kind="result"
                 label="runtimeMismatch: false"
                 detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
@@ -2349,7 +2375,12 @@ export function TimelinePage() {
             'Badges or labels beside the time. The row stacks below sm and is one baseline-aligned row from sm up.',
           ],
           ['className', 'string', '', 'On the ol, and on each li.'],
-          ['Timeline.Comment author', 'ReactNode', 'required', 'Caller-styled - a Persona, a name.'],
+          [
+            'Timeline.Comment author',
+            'ReactNode',
+            'required',
+            'Caller-styled - a Persona, a name.',
+          ],
           ['Timeline.Comment time', 'string', '', 'Mono caption beside the author.'],
           [
             'Timeline.Comment emphasis',
@@ -2357,7 +2388,12 @@ export function TimelinePage() {
             'false',
             "text-text instead of text-dim - mendarr's own word over the reporter's.",
           ],
-          ['Timeline.Fold summary', 'ReactNode', 'required', 'The collapsed line - a details/summary.'],
+          [
+            'Timeline.Fold summary',
+            'ReactNode',
+            'required',
+            'The collapsed line - a details/summary.',
+          ],
           ['Timeline.Fold range', 'string', '', 'e.g. "10:50 am - 11:28 am", beside the summary.'],
           ['Timeline.Fold defaultOpen', 'boolean', 'false', ''],
           [
@@ -2376,7 +2412,12 @@ export function TimelinePage() {
             '',
             'When present, the step line itself becomes the summary of a details - click it to reveal. Absent, the line renders plain (padded to keep marker alignment).',
           ],
-          ['Timeline.Step children', 'ReactNode', '', 'Alternative plain-text body under the line.'],
+          [
+            'Timeline.Step children',
+            'ReactNode',
+            '',
+            'Alternative plain-text body under the line.',
+          ],
         ]}
       />
     </>

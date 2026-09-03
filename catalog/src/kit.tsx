@@ -66,18 +66,20 @@ export function Snippet({ code, flush = false }: { code: string; flush?: boolean
         html={highlight(code)}
         className={cx('pr-20', flush ? 'rounded-t-none rounded-b-panel' : undefined)}
       />
-      <Button
-        size="sm"
-        variant="ghost"
-        // The code scrolls under this, so the button needs the surface's own fill to sit on.
-        className="absolute top-1.5 right-1.5 bg-chip"
-        onClick={() => {
-          copy(code);
-          setCopied(true);
-        }}
-      >
-        {copied ? 'Copied' : 'Copy'}
-      </Button>
+      {/* The code scrolls under this, so it sits on the surface's own fill. A wrapper, not a
+          className on the Button: the ghost variant's transparent fill wins in stylesheet order. */}
+      <span className="absolute top-1.5 right-1.5 rounded-control bg-chip">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            copy(code);
+            setCopied(true);
+          }}
+        >
+          {copied ? 'Copied' : 'Copy'}
+        </Button>
+      </span>
     </div>
   );
 }
