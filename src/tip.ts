@@ -9,7 +9,17 @@ import type { PointerEvent, FocusEvent } from 'react';
  * Still no positioning library and no state: two lines of measurement, and the CSS in
  * the base layer does the rest.
  */
-export function tipAnchor(text: string | undefined, placement: 'above' | 'right' = 'above') {
+export function tipAnchor(
+  text: string | undefined,
+  placement: 'above' | 'right' = 'above',
+  /**
+   * false leaves the anchor out of the tab order and off the accessibility tree: the tip is
+   * hover-only decoration, and its words reach assistive tech another way (an `id` the
+   * control points `aria-describedby` at). An (i) that steals a tab stop between two fields
+   * is a keyboard regression dressed up as help.
+   */
+  focusable = true,
+) {
   if (!text) return {};
   const place = (el: HTMLElement) => {
     const r = el.getBoundingClientRect();
@@ -18,14 +28,18 @@ export function tipAnchor(text: string | undefined, placement: 'above' | 'right'
     el.style.setProperty('--tip-x', `${String(x)}px`);
     el.style.setProperty('--tip-y', `${String(y)}px`);
   };
-  return {
+  const base = {
     'data-tip': text,
-    'aria-description': text,
-    tabIndex: 0,
     'data-tip-place': placement,
     onPointerEnter: (e: PointerEvent<HTMLElement>) => {
       place(e.currentTarget);
     },
+  };
+  if (!focusable) return { ...base, tabIndex: -1 };
+  return {
+    ...base,
+    'aria-description': text,
+    tabIndex: 0,
     onFocus: (e: FocusEvent<HTMLElement>) => {
       place(e.currentTarget);
     },

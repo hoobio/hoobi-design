@@ -1,10 +1,29 @@
 export { cx, type ClassValue } from './cx.js';
 export { Alert, type AlertProps, type AlertTone } from './Alert.js';
-export { Badge, type BadgeProps, type BadgeTone } from './Badge.js';
+export { Badge, type BadgeProps, type BadgeSize, type BadgeTone } from './Badge.js';
 export { Banner, type BannerProps } from './Banner.js';
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from './Breadcrumbs.js';
+export { ActionButton, type ActionButtonProps, type ActionButtonState } from './ActionButton.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';
 export { Card, type CardProps, type CardTone } from './Card.js';
+export { ActionDialog, type ActionDialogProps, type DialogTone } from './ActionDialog.js';
+export { FormDialog, type FormDialogProps } from './FormDialog.js';
+export {
+  ConnectionCard,
+  type ConnectionCardProps,
+  type ConnectionHealth,
+  type ConnectionRow,
+} from './ConnectionCard.js';
+export { CopyField, type CopyFieldProps } from './CopyField.js';
+export {
+  cronRuns,
+  formatCronRelative,
+  formatCronRun,
+  parseCronField,
+  type CronResult,
+} from './cron.js';
+export { CronInput, type CronInputProps, type CronPreset } from './CronInput.js';
+export { DurationInput, type DurationInputProps, type DurationUnit } from './DurationInput.js';
 export { Divider, type DividerProps } from './Divider.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
@@ -14,6 +33,7 @@ export {
   type DescriptionItem,
   type DescriptionListProps,
 } from './DescriptionList.js';
+export { FieldLabel, type FieldLabelProps } from './FieldLabel.js';
 export { Input, type InputProps } from './Input.js';
 export {
   Menu,
@@ -27,8 +47,18 @@ export { PageHeader, type PageHeaderProps } from './PageHeader.js';
 export { Persona, type PersonaProps, type PersonaTone } from './Persona.js';
 export { Progress, type ProgressProps } from './Progress.js';
 export { Section, type SectionProps } from './Section.js';
+export { SectionNav, type SectionNavItem, type SectionNavProps } from './SectionNav.js';
+export {
+  SecretField,
+  type SecretFieldLabels,
+  type SecretFieldProps,
+  type SecretFieldVariant,
+} from './SecretField.js';
 export { Select, type SelectProps } from './Select.js';
+export { Slider, type SliderProps } from './Slider.js';
 export { Spinner, type SpinnerProps } from './Spinner.js';
+export { Steps, type Step, type StepsProps } from './Steps.js';
+export { Switch, type SwitchProps } from './Switch.js';
 export { Tabs, type TabItem, type TabsProps } from './Tabs.js';
 export {
   Shell,
@@ -51,4 +81,5 @@ export {
   type TimelineTone,
 } from './Timeline.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';
+export { UnsavedBar, type UnsavedBarProps } from './UnsavedBar.js';
 export { tipAnchor } from './tip.js';

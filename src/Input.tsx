@@ -1,27 +1,53 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cx } from './cx.js';
+import { FieldLabel } from './FieldLabel.js';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode;
+  /** What this field means, on an (i) beside the label. Shown on hover and keyboard focus. */
+  info?: string;
+  /**
+   * @deprecated Use `info`. Explanations are tooltips, not captions: a sentence under every
+   * field is a sentence nobody reads, and it pushes the form apart. Still renders, so 0.19.0
+   * consumers keep working.
+   */
   hint?: ReactNode;
+  /** Validation failure. The one thing that belongs under the control. */
   error?: ReactNode;
+  /** For a url, an id, a key - anything read character by character. */
+  mono?: boolean;
+  /** Right-aligned in the label row: a badge, a readout, a small action. */
+  aside?: ReactNode;
 }
 
-export function Input({ label, hint, error, className, id, ...rest }: InputProps) {
+export function Input({
+  label,
+  info,
+  hint,
+  error,
+  mono = false,
+  aside,
+  className,
+  id,
+  ...rest
+}: InputProps) {
   const fallbackId = useId();
   const inputId = id ?? fallbackId;
+  const infoId = `${inputId}-info`;
   return (
     <div className={cx('flex min-w-0 flex-col gap-1', className)}>
-      {label ? (
-        <label htmlFor={inputId} className="text-caption text-text-dim">
+      {label || aside ? (
+        <FieldLabel htmlFor={inputId} info={info} infoId={infoId} aside={aside}>
           {label}
-        </label>
+        </FieldLabel>
       ) : null}
       <input
         id={inputId}
         aria-invalid={error ? true : undefined}
+        aria-describedby={info ? infoId : undefined}
         className={cx(
           'h-8 w-full min-w-0 rounded-control border bg-surface px-2.5 text-body text-text placeholder:text-text-mute',
+          mono && 'font-mono',
           error ? 'border-danger' : 'border-border',
         )}
         {...rest}

@@ -32,7 +32,16 @@ for (const f of src) {
 
 // Every exported component has a catalog page; the design system cannot lag the library.
 // Type re-exports and non-visual helpers are the carve-outs.
-const NON_VISUAL = new Set(['cx', 'mirageImage', 'markFavicon', 'tipAnchor']);
+const NON_VISUAL = new Set([
+  'cx',
+  'mirageImage',
+  'markFavicon',
+  'tipAnchor',
+  'cronRuns',
+  'parseCronField',
+  'formatCronRun',
+  'formatCronRelative',
+]);
 const index = readFileSync('src/index.ts', 'utf8');
 const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]
   .flatMap(([, names]) => names.split(','))

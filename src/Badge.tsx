@@ -4,11 +4,14 @@ import { tipAnchor } from './tip.js';
 
 export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info';
 export type BadgeAppearance = 'chip' | 'text';
+export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: BadgeTone;
   /** 'chip' (default) is the filled pill. 'text' drops the fill/padding/radius for an inline run of tone-coloured text - for a banner headline or a label beside other text. */
   appearance?: BadgeAppearance;
+  /** 'sm' is the 18px inline marker that sits inside a field label; 'md' is the standalone chip. */
+  size?: BadgeSize;
   dot?: boolean;
   /** Tooltip shown on hover and keyboard focus, explaining what the badge means. */
   tooltip?: string;
@@ -34,9 +37,15 @@ const TEXT_TONES: Record<BadgeTone, string> = {
   info: 'text-info',
 };
 
+const SIZES: Record<BadgeSize, { chip: string; dot: string }> = {
+  sm: { chip: 'h-4.5 gap-1 px-1.5 text-caption-small', dot: 'size-1.25' },
+  md: { chip: 'h-5 gap-1.5 px-2 text-caption', dot: 'size-1.5' },
+};
+
 export function Badge({
   tone = 'neutral',
   appearance = 'chip',
+  size = 'md',
   dot = false,
   tooltip,
   className,
@@ -67,14 +76,15 @@ export function Badge({
     <span
       {...tipAnchor(tooltip)}
       className={cx(
-        'inline-flex h-5 items-center gap-1.5 rounded-chip bg-chip px-2 text-caption whitespace-nowrap',
+        'inline-flex items-center rounded-chip bg-chip whitespace-nowrap',
+        SIZES[size].chip,
         tooltip && 'tip-fixed',
         t.text,
         className,
       )}
       {...rest}
     >
-      {dot ? <span className={cx('size-1.5 shrink-0 rounded-full', t.dot)} /> : null}
+      {dot ? <span className={cx('shrink-0 rounded-full', SIZES[size].dot, t.dot)} /> : null}
       {children}
     </span>
   );

@@ -1,12 +1,20 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, RefAttributes } from 'react';
 import { cx } from './cx.js';
+import { Spinner } from './Spinner.js';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>, RefAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  /**
+   * The work this button started is running: it locks and a spinner leads the label. The
+   * LABEL STAYS - a button that empties itself into a spinner has stopped saying what it
+   * is doing at exactly the moment someone is waiting to find out.
+   */
+  busy?: boolean;
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
@@ -21,9 +29,19 @@ const SIZES: Record<ButtonSize, string> = {
   md: 'h-8 px-3 text-body',
 };
 
-export function Button({ variant = 'secondary', size = 'md', className, ...rest }: ButtonProps) {
+export function Button({
+  variant = 'secondary',
+  size = 'md',
+  busy = false,
+  disabled,
+  className,
+  children,
+  ...rest
+}: ButtonProps) {
   return (
     <button
+      disabled={disabled ?? busy}
+      aria-busy={busy || undefined}
       className={cx(
         // A leading spinner/icon is round and optically light, so its side keeps the same
         // 8px breathing room the ring gets vertically instead of the full text padding.
@@ -33,6 +51,9 @@ export function Button({ variant = 'secondary', size = 'md', className, ...rest 
         className,
       )}
       {...rest}
-    />
+    >
+      {busy ? <Spinner /> : null}
+      {children}
+    </button>
   );
 }

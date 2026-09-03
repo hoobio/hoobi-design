@@ -11,7 +11,14 @@ export interface ConfirmButtonProps extends Omit<ButtonProps, 'onClick' | 'varia
   onConfirm: () => void;
 }
 
-/** Arm-then-confirm for a destructive action: one click switches it to danger, a second fires. */
+/**
+ * Arm-then-confirm: one click switches it to danger, a second fires.
+ *
+ * @deprecated Use ActionDialog. Anything destructive, irrecoverable, or with a byproduct
+ * needs its consequence STATED before the second click, and a strip that disarms itself
+ * after four seconds states nothing. Kept for trivial, reversible actions and for 0.19.0
+ * consumers.
+ */
 export function ConfirmButton({
   variant = 'secondary',
   confirmLabel,

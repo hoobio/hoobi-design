@@ -63,10 +63,15 @@ Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout
 (optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
 `html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar lands
 Ayu Mirage), Modal, Tabs (controlled), Breadcrumbs, Timeline (`Timeline.Item`), DescriptionList,
-Section, Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
+Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
-Select, Checkbox, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
-scrolling or clipping ancestor can cut it off), plus `cx`, `mirageImage` and `markFavicon`.
+Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
+Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
+scrolling or clipping ancestor can cut it off), ActionDialog, Steps (chevrons wide, a stacked
+list narrow), SectionNav, UnsavedBar, ConnectionCard, and the settings field set - FieldLabel
+(the one label row: the `(i)` and the right-hand slot), SecretField, DurationInput, CronInput
+(with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
+`mirageImage` and `markFavicon`.
 
 Mirage comes in three strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
 own fill (or `Card mirage="..."`), and `.mirage-edge` as a masked strip at a list row's left edge -
@@ -87,6 +92,40 @@ Checkbox is the native input given the house look, which is what the absence alr
 
 **Components are only added when a consumer actually needs one.** No speculative components, no
 props added "for later". A consumer wanting Table is the trigger to write Table.
+
+### Rules the API enforces, not just this file
+
+- **A control explains itself; a paragraph beside it does not.** State is shown by the control -
+  a badge, a lock, an icon, a tone - and an explanation lives on the `(i)` in `FieldLabel`'s
+  `info`, on hover and keyboard focus. The line under a field is reserved for a validation
+  `error` and for a live readout the value demands (CronInput's next runs). `Input.hint` is
+  **@deprecated - use `info`**; no new component takes a `hint`/`helper`/`description` prop.
+- **Anything destructive, irrecoverable, or with a byproduct confirms through `ActionDialog`**,
+  which states the consequence before the second click. `ConfirmButton` is **@deprecated** for
+  that job and stays only for trivial, reversible actions. A component that _causes_ such an
+  action (SecretField's clear/regenerate/rotate) fires the callback bare and holds no arm state -
+  the consumer owns the dialog, because only the consumer knows the byproduct.
+- **Wording overrides are for translation, never for helper copy.** `SecretField` takes a
+  `labels` object and nothing else; there is no slot for a sentence.
+- **An async button is an `ActionButton`; a plain `Button` with an async `onClick` does not
+  land.** A button that starts work reports it: busy, then a moment of success or a longer
+  moment of failure with the error on its tooltip. `Button` takes `busy` for the cases the
+  consumer already tracks. A silent button is the bug the rule exists to prevent.
+- **The (i) is never a tab stop.** `InfoTip` is a `role="img"` span with `tabIndex={-1}`,
+  hover-only; its words reach assistive tech through a hidden span the control names in
+  `aria-describedby`, wired for you by every field in the library. Tab from one field must
+  land on the next, not on an explanation.
+
+`ActionDialog` is yes-or-no; `FormDialog` is the one with fields, and its submit is gated on
+the browser's own `checkValidity()`. Neither **ever closes itself** - the consumer flips
+`open` once the work succeeded. `onAction`/`onSubmit` may return a promise, which the dialog
+runs: busy while pending, the rejection's message in a danger line, still open.
+`tone="danger"` is only for discarding something irrecoverable.
+
+**The button names the action.** `actionLabel` and `submitLabel` are REQUIRED and say what
+happens - "Rotate", "Regenerate", "Clear", "Set password". A dialog button reading "Confirm"
+is the anti-pattern the required prop exists to prevent; "confirm" was never the concept,
+which is why the component is `ActionDialog`.
 
 ## Design rules
 
@@ -114,22 +153,23 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 
 ### WinUI 3 conventions this library follows
 
-| Convention      | How it is encoded                                                                                                                                                                                                                                          |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Corner radius   | `--radius-control`/`--radius-chip` **4px** (controls), `--radius-panel` **8px** (surfaces, overlays)                                                                                                                                                       |
-| Type ramp       | `text-caption` 14 / `text-body` 16 / `text-body-strong` 16@500 / `text-body-large` 18 / `text-subtitle` 20@600 / `text-title` 28@600, expressed in rem against the 18px root. Reading tier sized like YouTube's grid (title 16/22, metadata 14/20); caption is de-emphasised by colour, never by dropping below 14px |
-| Control density | 32px standard (`h-8`) for Button md, Input, Select, Tabs; 28px (`h-7`) for Button sm                                                                                                                                                                       |
-| Spacing         | `--spacing: 4px` - **px, not rem.** WinUI works in device-independent pixels, so `p-4` is a real 16px at any root size. Text stays rem so it still tracks user zoom.                                                                                       |
+| Convention      | How it is encoded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Corner radius   | `--radius-control`/`--radius-chip` **4px** (controls), `--radius-panel` **8px** (surfaces, overlays)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Type ramp       | `text-caption` 14 / `text-body` 16 / `text-body-strong` 16@500 / `text-body-large` 18 / `text-subtitle` 20@600 / `text-title` 28@600, expressed in rem against the 18px root. Reading tier sized like YouTube's grid (title 16/22, metadata 14/20); caption is de-emphasised by colour, never by dropping below 14px                                                                                                                                                                                                                                                                                                                                     |
+| Control density | 32px standard (`h-8`) for Button md, Input, Select, Tabs; 28px (`h-7`) for Button sm                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Spacing         | `--spacing: 4px` - **px, not rem.** WinUI works in device-independent pixels, so `p-4` is a real 16px at any root size. Text stays rem so it still tracks user zoom.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Depth           | Fills, not strokes, never shadows. Surfaces are told apart by background alone (`bg` / `surface` / `surface-raised` / `chip`); cards, pills and alerts carry no border. Segmented cards are **sliced**: a 1px hairline of page background between full-bleed sections (`gap-px` in a clipped `rounded-panel`, or `border-t border-bg`), the earmark card treatment (its section divider is literally `Height="1"`). A stateful tone tints the whole surface (`bg-danger/15`), never a border. Borders remain only on interactive controls (secondary/danger Button, Input, Select) and the Tabs underline. The only overlay scrim is the Modal backdrop. |
-| Accent          | Restrained. `--color-accent` is for the one primary action, the Tabs selection indicator, Progress fill, Spinner arc and the focus ring. Everything else is neutral: secondary and ghost buttons hover on `bg-surface`/`bg-surface-raised`, not on accent. |
-| Focus           | One language everywhere: the global `:focus-visible` 2px outer ring at 2px offset. Components must **not** set `focus:outline-none` or re-style their own focus border.                                                                                    |
-| Links           | Colour shift on hover (`accent-blue` -> `accent-cyan`), **never an underline** - WinUI hyperlinks shift shade. A button-shaped link (nav item, sidebar entry) highlights its own surface on hover (`hover:bg-surface`), not its text.                       |
+| Accent          | Restrained. `--color-accent` is for the one primary action, the Tabs selection indicator, Progress fill, Spinner arc and the focus ring. Everything else is neutral: secondary and ghost buttons hover on `bg-surface`/`bg-surface-raised`, not on accent.                                                                                                                                                                                                                                                                                                                                                                                               |
+| Focus           | One language everywhere: the global `:focus-visible` 2px outer ring at 2px offset. Components must **not** set `focus:outline-none` or re-style their own focus border.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Links           | Colour shift on hover (`accent-blue` -> `accent-cyan`), **never an underline** - WinUI hyperlinks shift shade. A button-shaped link (nav item, sidebar entry) highlights its own surface on hover (`hover:bg-surface`), not its text.                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 `--spacing: 4px` means every Tailwind spacing utility is `n * 4px`. Reach for the WinUI grid values
 (4 / 8 / 12 / 16 / 24 / 32) rather than odd numbers.
 
 Minimalism: a component gets no decoration it does not need. No gradients, no shadows, no
 double-signalling a state that the border or the ring already carries.
+
 - A stateful tone tints the **whole surface** as a solid `/15` fill (`bg-warn/15`) - never a
   gradient fade, never a border.
 - Tone semantics: `warn` (yellow) = paused, a person must act; `success` (green) = done, the fix
