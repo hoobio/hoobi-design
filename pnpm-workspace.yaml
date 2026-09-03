@@ -1,2 +1,5 @@
 packages:
   - catalog
+# pnpm refuses to run dependency build scripts unless allowlisted, and in CI that refusal is fatal.
+onlyBuiltDependencies:
+  - esbuild
