@@ -103,6 +103,12 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 - Modal is a native `<dialog>` with `showModal()`: Escape, focus trap and inert backdrop come free.
   Backdrop clicks work via `e.target === dialogRef.current`, which requires `p-0` on the dialog.
 - Respect `prefers-reduced-motion` (handled globally in the base layer).
+- **Every state a person can reach is reachable by URL.** A page is a real path (`/timeline`,
+  never `#timeline`); a filter, a tab, a knob, an expanded fold or step lives in the query string;
+  and anything expandable carries a static, unique `id`, so the state has an address a link can
+  name. Components stay controlled and dependency-free (`open` + `onOpenChange` + `id`) and the
+  consumer's router owns the URL. Transient controls are the exception, not the loophole: an
+  armed destructive button or a flyout that closes on the next click is not view state.
 
 ### WinUI 3 conventions this library follows
 

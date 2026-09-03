@@ -37,6 +37,7 @@ import {
   ShellDemoContext,
   Snippet,
   highlight,
+  useFold,
 } from './kit.js';
 import posterUrl from './poster.jpg';
 
@@ -1717,6 +1718,14 @@ hljs.registerLanguage('json', json);
 <CodeBlock code={src} html={hljs.highlight(src, { language: 'json' }).value} />`}
         />
       </div>
+      <Demo
+        title="copy"
+        note="A Copy button on the block's own fill, in the top-right; the first line clears it and the rest scrolls under. Falls back to execCommand where the Clipboard API is sandboxed away."
+        code={`<CodeBlock code={src} html={html} copy />`}
+        stack
+      >
+        <CodeBlock code={'{ "runTime": "24m", "probed": "24m 03s" }'} copy className="w-full" />
+      </Demo>
       {CODE_SAMPLES.map((sample) => (
         <Demo
           key={sample.language}
@@ -1735,6 +1744,12 @@ hljs.registerLanguage('json', json);
       <Props
         rows={[
           ['code', 'string', 'required', 'The source; rendered as plain text when html is absent.'],
+          [
+            'copy',
+            'boolean',
+            'false',
+            'A Copy button in the top-right, putting code on the clipboard.',
+          ],
           [
             'html',
             'string',
@@ -2163,7 +2178,31 @@ export function ConfirmButtonPage() {
   );
 }
 
+/** Demo-only: what mendarr renders behind a merged call+result Step. */
+function ToolIo({ input, output }: { input: [string, string]; output: [string, string] }) {
+  return (
+    <div className="flex flex-col gap-1">
+      {[
+        ['input', ...input],
+        ['output', ...output],
+      ].map(([name, at, body]) => (
+        <div key={name} className="flex flex-col gap-0.5">
+          <span className="font-mono text-text-mute">
+            {name} · {at}
+          </span>
+          <CodeBlock code={body} copy />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TimelinePage() {
+  // ?open=timeline-run,timeline-probe - the demo's own folds are permalinkable, as the rule says.
+  const run = useFold('timeline-run');
+  const probe = useFold('timeline-probe');
+  const search = useFold('timeline-search');
+
   return (
     <>
       <Import names="Timeline" />
@@ -2290,39 +2329,76 @@ export function TimelinePage() {
 
       <Demo
         title="Machinery: Fold, Event, Step"
-        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. An Event is one dense transition line; a Step is one mono agent-tool line, nested a level deeper behind its own Fold."
+        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. Opened, it reads forward in one stream: an Event is a dense transition line, a Step is a mono agent-tool line, in the order they happened. A call and its result are one Step - the tool and what came back on the line, the input and output behind its chevron."
         stack
         code={`<Timeline plain>
-  <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am - 11:28 am">
-    <Timeline.Event
+  <Timeline.Fold summary="2 status changes and 2 agent steps" range="10:50 am - 10:52 am" id="run-1" open={open} onOpenChange={setOpen}>
+    <Timeline.Event time="10:50 am" label={<Badge appearance="text" tone="info">analyzing</Badge>} />
+    <Timeline.Step
       time="10:50 am"
-      label={<Badge appearance="text" tone="info">analyzing</Badge>}
+      kind="tool call"
+      label={<><span className="text-accent-cyan">get_media_info()</span> runtimeMismatch: false</>}
+      detail={<ToolIo input={['10:50:03 am', '{ "episodeNumber": 1 }']} output={[...]} />}
     />
+    <Timeline.Step time="10:51 am" kind="tool call" label={...} detail={...} />
     <Timeline.Event
       time="10:52 am"
       label={<Badge appearance="text" tone="warn">awaiting_approval</Badge>}
       note="reporter is not the requester"
     />
-    <Timeline.Fold summary="11 agent steps">
-      <Timeline.Step time="10:50 am" kind="call" label="get_media_info()" />
-      <Timeline.Step
-        time="10:50 am"
-        kind="result"
-        label="runtimeMismatch: false"
-        detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
-      />
-    </Timeline.Fold>
   </Timeline.Fold>
 </Timeline>`}
       >
         <Timeline plain className="w-full">
-          <Timeline.Fold summary="7 status changes and 11 agent steps" range="10:50 am – 11:28 am">
+          <Timeline.Fold
+            summary="2 status changes and 2 agent steps"
+            range="10:50 am – 10:52 am"
+            {...run}
+          >
             <Timeline.Event
               time="10:50 am"
               label={
                 <Badge appearance="text" tone="info">
                   analyzing
                 </Badge>
+              }
+            />
+            <Timeline.Step
+              {...probe}
+              time="10:50 am"
+              kind="tool call"
+              label={
+                <>
+                  <span className="text-accent-cyan">get_media_info()</span> runtimeMismatch: false
+                </>
+              }
+              detail={
+                <ToolIo
+                  input={['10:50:03 am', '{ "episodeNumber": 1 }']}
+                  output={['10:50:04 am', '{ "runTime": "24m", "probed": "24m 03s" }']}
+                />
+              }
+            />
+            <Timeline.Step
+              {...search}
+              time="10:51 am"
+              kind="tool call"
+              label={
+                <>
+                  <span className="text-accent-cyan">search_releases()</span> 3 candidates
+                </>
+              }
+              detail={
+                <ToolIo
+                  input={['10:51:10 am', '{ "wholeSeason": true }']}
+                  output={[
+                    '10:51:31 am',
+                    '1. [TADA] Rockman EXE 01-56 (dual audio)NL2. [blkqi] Rockman.EXE S01NL3. Rockman EXE Complete (JP)'.replaceAll(
+                      'NL',
+                      String.fromCharCode(10),
+                    ),
+                  ]}
+                />
               }
             />
             <Timeline.Event
@@ -2334,15 +2410,6 @@ export function TimelinePage() {
               }
               note="reporter is not the requester"
             />
-            <Timeline.Fold summary="11 agent steps">
-              <Timeline.Step time="10:50 am" kind="call" label="get_media_info()" />
-              <Timeline.Step
-                time="10:50 am"
-                kind="result"
-                label="runtimeMismatch: false"
-                detail={<span>{'{ "runTime": "24m", "probed": "24m 03s" }'}</span>}
-              />
-            </Timeline.Fold>
           </Timeline.Fold>
         </Timeline>
       </Demo>

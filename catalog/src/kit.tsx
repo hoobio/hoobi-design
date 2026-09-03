@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useSyncExternalStore, type ReactNode } from 'react';
 import { Button, Checkbox, CodeBlock, Input, Select, cx, mirageImage } from '@hoobi/design';
 import hljs from 'highlight.js/lib/core';
 import bash from 'highlight.js/lib/languages/bash';
@@ -32,55 +32,75 @@ export interface ShellDemo {
 }
 export const ShellDemoContext = createContext<ShellDemo | null>(null);
 
+/**
+ * The URL is the state. Pages are paths, everything else a person can change - a knob, an
+ * expanded fold, the Shell's presentation - is a query parameter, so any state has a link.
+ * Defaults are never written; a parameter appears only while it says something.
+ */
+const listeners = new Set<() => void>();
+function notify() {
+  for (const listener of listeners) listener();
+}
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  addEventListener('popstate', listener);
+  return () => {
+    listeners.delete(listener);
+    removeEventListener('popstate', listener);
+  };
+}
+export function useUrl(): URL {
+  // The third snapshot is for the design-system export, which renders pages in Node.
+  return new URL(
+    useSyncExternalStore(
+      subscribe,
+      () => location.href,
+      () => 'http://ds/',
+    ),
+  );
+}
+export function navigateTo(path: string) {
+  history.pushState(null, '', path);
+  notify();
+}
+export function setQuery(name: string, value: string | null) {
+  const url = new URL(location.href);
+  if (value === null) url.searchParams.delete(name);
+  else url.searchParams.set(name, value);
+  history.replaceState(null, '', url);
+  notify();
+}
+/** `?open=a&open=b` - the expanded folds and steps, by their static ids. */
+export function useFold(id: string) {
+  const open = useUrl().searchParams.getAll('open');
+  const isOpen = open.includes(id);
+  return {
+    id,
+    open: isOpen,
+    onOpenChange: (next: boolean) => {
+      // <details> fires toggle on mount too; only a real change touches the URL.
+      if (next === isOpen) return;
+      const url = new URL(location.href);
+      url.searchParams.delete('open');
+      for (const o of open.filter((o) => o !== id)) url.searchParams.append('open', o);
+      if (next) url.searchParams.append('open', id);
+      history.replaceState(null, '', url);
+      notify();
+    },
+  };
+}
+
 /** The library's default hues, as a stand-in desktop. Any CSS image works too. */
 export const DEMO_TEXTURE = mirageImage();
 
-function copy(text: string) {
-  navigator.clipboard?.writeText(text).catch(() => fallbackCopy(text));
-  if (!navigator.clipboard) fallbackCopy(text);
-}
-
-// Clipboard API is unavailable in a sandboxed iframe, which is where this page usually lives.
-function fallbackCopy(text: string) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.append(ta);
-  ta.select();
-  document.execCommand('copy');
-  ta.remove();
-}
-
 export function Snippet({ code, flush = false }: { code: string; flush?: boolean }) {
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 1400);
-    return () => clearTimeout(t);
-  }, [copied]);
   return (
-    <div className="relative">
-      <CodeBlock
-        code={code}
-        html={highlight(code)}
-        className={cx('pr-20', flush ? 'rounded-t-none rounded-b-panel' : undefined)}
-      />
-      {/* The code scrolls under this, so it sits on the surface's own fill. A wrapper, not a
-          className on the Button: the ghost variant's transparent fill wins in stylesheet order. */}
-      <span className="absolute top-1.5 right-1.5 rounded-control bg-chip">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            copy(code);
-            setCopied(true);
-          }}
-        >
-          {copied ? 'Copied' : 'Copy'}
-        </Button>
-      </span>
-    </div>
+    <CodeBlock
+      code={code}
+      html={highlight(code)}
+      copy
+      className={flush ? 'rounded-t-none rounded-b-panel' : undefined}
+    />
   );
 }
 
@@ -104,11 +124,17 @@ export function Playground({
   render: (values: KnobValues) => ReactNode;
   code: (values: KnobValues) => string;
 }) {
-  const [values, setValues] = useState<KnobValues>(() =>
-    Object.fromEntries(Object.entries(knobs).map(([name, def]) => [name, def.init])),
+  // One Playground per page, so a knob's own name is its parameter: ?variant=primary.
+  const params = useUrl().searchParams;
+  const values: KnobValues = Object.fromEntries(
+    Object.entries(knobs).map(([name, def]) => {
+      const raw = params.get(name);
+      if (raw === null) return [name, def.init];
+      return [name, def.kind === 'boolean' ? raw === 'true' : raw];
+    }),
   );
   const set = (name: string, value: string | boolean) => {
-    setValues((prev) => ({ ...prev, [name]: value }));
+    setQuery(name, value === knobs[name]?.init ? null : String(value));
   };
   return (
     <div className="mt-6">

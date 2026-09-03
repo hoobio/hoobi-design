@@ -1,33 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useEffect, type MouseEvent } from 'react';
 import { Section, Shell } from '@hoobi/design';
-import { DEMO_TEXTURE, ShellDemoContext } from './kit.js';
+import { DEMO_TEXTURE, ShellDemoContext, navigateTo, setQuery, useUrl } from './kit.js';
 import posterUrl from './poster.jpg';
 import { GROUPS, PAGES, type Page } from './pages.js';
 
-function useHashPage(): Page {
-  const read = () => PAGES.find((p) => p.id === location.hash.slice(1)) ?? PAGES[0]!;
-  const [page, setPage] = useState(read);
-  useEffect(() => {
-    const on = () => {
-      setPage(read());
-      // The Shell scrolls its main column, not the window.
-      document.querySelector('main')?.scrollTo(0, 0);
-    };
-    addEventListener('hashchange', on);
-    return () => removeEventListener('hashchange', on);
-  }, []);
-  return page;
+type NavType = 'pinned' | 'rail' | 'top';
+type MirageSrc = 'off' | 'hues' | 'poster';
+
+// Old links named pages by hash; they still land on the page, now at its path.
+const legacy = PAGES.find((p) => p.id === location.hash.slice(1));
+if (legacy && location.pathname === '/') history.replaceState(null, '', `/${legacy.id}`);
+
+function pick<T extends string>(raw: string | null, allowed: readonly T[], fallback: T): T {
+  return (allowed as readonly string[]).includes(raw ?? '') ? (raw as T) : fallback;
 }
 
-type NavType = 'pinned' | 'rail' | 'top';
-
 export function App() {
-  const page = useHashPage();
-  // The chrome doubles as the Shell demo: this switches the real nav between
-  // its three presentations so each can be experienced, not just read about.
-  const [navType, setNavType] = useState<NavType>('rail');
-  const [mirageSrc, setMirageSrc] = useState<'off' | 'hues' | 'poster'>('off');
-  const [bar, setBar] = useState(true);
+  const url = useUrl();
+  const page: Page = PAGES.find((p) => p.id === url.pathname.slice(1)) ?? PAGES[0]!;
+  useEffect(() => {
+    // The Shell scrolls its main column, not the window.
+    document.querySelector('main')?.scrollTo(0, 0);
+  }, [page.id]);
+
+  // The chrome doubles as the Shell demo: ?nav, ?mirage and ?bar switch the real nav between
+  // its presentations so each can be experienced, not just read about - and linked to.
+  const navType = pick<NavType>(url.searchParams.get('nav'), ['pinned', 'rail', 'top'], 'rail');
+  const mirageSrc = pick<MirageSrc>(
+    url.searchParams.get('mirage'),
+    ['off', 'hues', 'poster'],
+    'off',
+  );
+  const bar = url.searchParams.get('bar') !== 'off';
+  const setNavType = (v: NavType) => {
+    setQuery('nav', v === 'rail' ? null : v);
+  };
+  const setMirageSrc = (v: MirageSrc) => {
+    setQuery('mirage', v === 'off' ? null : v);
+  };
+  const setBar = (v: boolean) => {
+    setQuery('bar', v ? null : 'off');
+  };
   return (
     <Shell
       brand={
@@ -54,9 +67,13 @@ export function App() {
               {PAGES.filter((p) => p.group === g).map((p) => (
                 <Shell.Item
                   key={p.id}
-                  href={`#${p.id}`}
+                  href={`/${p.id}`}
                   label={p.title}
                   active={p.id === page.id}
+                  onClick={(e: MouseEvent) => {
+                    e.preventDefault();
+                    navigateTo(`/${p.id}`);
+                  }}
                 />
               ))}
             </Shell.Group>
