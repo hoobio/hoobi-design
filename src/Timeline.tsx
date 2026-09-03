@@ -133,7 +133,9 @@ function Chevron() {
       <svg
         viewBox="0 0 12 12"
         fill="none"
-        className="size-3 transition-transform duration-150 ease-standard group-open:rotate-90"
+        // Not group-open: that matches a descendant of ANY open .group, so a collapsed step under an
+        // open fold rotated too. Only the summary of the chevron's own open details counts.
+        className="size-3 transition-transform duration-150 ease-standard [details[open]>summary_&]:rotate-90"
       >
         <path
           d="M4.5 2.5L8 6l-3.5 3.5"
@@ -161,7 +163,7 @@ function TimelineFold({
   return (
     <details
       id={id}
-      className="group min-w-0"
+      className="min-w-0"
       open={open ?? defaultOpen}
       onToggle={(e) => onOpenChange?.(e.currentTarget.open)}
     >
@@ -229,7 +231,7 @@ function TimelineStep({
       {detail ? (
         <details
           id={id}
-          className="group min-w-0"
+          className="min-w-0"
           open={open}
           onToggle={(e) => onOpenChange?.(e.currentTarget.open)}
         >
