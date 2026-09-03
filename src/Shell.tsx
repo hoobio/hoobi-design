@@ -35,9 +35,15 @@ import {
 interface ShellState {
   collapsed: boolean;
   overlayOpen: boolean;
+  /** Dismisses the below-md overlay pane; a no-op outside one. */
+  closeOverlay: () => void;
 }
 
-const ShellContext = createContext<ShellState>({ collapsed: false, overlayOpen: false });
+const ShellContext = createContext<ShellState>({
+  collapsed: false,
+  overlayOpen: false,
+  closeOverlay: () => undefined,
+});
 
 /** Which presentation a nav row is being rendered into. */
 type NavArea = 'side' | 'overlay' | 'top' | 'dropdown';
@@ -251,14 +257,39 @@ export function Shell({
   const pane = (area: NavArea) => (
     <NavAreaContext.Provider value={area}>
       <div className="flex h-full min-h-0 flex-col overflow-x-hidden">
-        <div className="styled-scrollbar min-h-0 flex-1 overflow-y-auto px-1 py-1">{nav}</div>
+        <div
+          className={cx(
+            'scroll-hints min-h-0 flex-1 overflow-y-auto px-1 py-1',
+            // The rail is 48px: an 8px scrollbar inside it shoves every mark off-centre.
+            // Wheel and touch still scroll a hidden one, and the tips still name the rows.
+            area === 'side' && collapsed ? 'no-scrollbar' : 'styled-scrollbar',
+          )}
+          style={
+            {
+              '--scroll-edge': `var(--color-${area === 'overlay' ? 'surface' : paneSurface === 'contrast' ? 'chip' : 'bg'})`,
+            } as CSSProperties
+          }
+        >
+          {/* Scroll cues, so a hidden scrollbar still says there is more above or below. */}
+          <div aria-hidden className="scroll-hint-top" />
+          {nav}
+          <div aria-hidden className="scroll-hint-bottom" />
+        </div>
         {navFooter ? <div className="px-1 py-1">{navFooter}</div> : null}
       </div>
     </NavAreaContext.Provider>
   );
 
   return (
-    <ShellContext.Provider value={{ collapsed, overlayOpen }}>
+    <ShellContext.Provider
+      value={{
+        collapsed,
+        overlayOpen,
+        closeOverlay: () => {
+          setOverlayOpen(false);
+        },
+      }}
+    >
       {/* With a page-wide mirage the muted tones are reading against artwork, so they lift. */}
       <div className={cx('isolate flex h-dvh min-h-0 flex-col', mirage && 'mirage-lift')}>
         {mirage ? (
@@ -377,13 +408,16 @@ export function Shell({
 
           {/* below md: overlay pane + scrim, WinUI LeftMinimal, whatever the mode. */}
           {overlayOpen ? (
-            <div
-              className="fixed inset-0 z-30 md:hidden"
-              onClick={() => {
-                setOverlayOpen(false);
-              }}
-            >
-              <div aria-hidden className="fade-in absolute inset-0 bg-black/60" />
+            <div className="fixed inset-0 z-30 md:hidden">
+              {/* The scrim dismisses, not the wrapper: a click inside the pane (the user menu
+                  expanding) is not a dismissal. Items close it themselves on navigation. */}
+              <div
+                aria-hidden
+                className="fade-in absolute inset-0 bg-black/60"
+                onClick={() => {
+                  setOverlayOpen(false);
+                }}
+              />
               <nav
                 aria-label="Main"
                 className="slide-in-left absolute inset-y-0 left-0 w-54 bg-surface pt-12"
@@ -428,11 +462,24 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
  */
 const sideTip = (label: string) => tipAnchor(label, 'right');
 
-function ShellItem({ as, icon, label, active = false, className, ...rest }: ShellItemProps) {
-  const { collapsed } = useContext(ShellContext);
+function ShellItem({
+  as,
+  icon,
+  label,
+  active = false,
+  className,
+  onClick,
+  ...rest
+}: ShellItemProps) {
+  const { collapsed, closeOverlay } = useContext(ShellContext);
   const area = useContext(NavAreaContext);
   const railed = area === 'side' && collapsed;
   const Comp: ElementType = as ?? 'a';
+  // Picking a destination is what finishes with the overlay; nothing else in the pane is.
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    onClick?.(e);
+    if (area === 'overlay') closeOverlay();
+  };
 
   if (area === 'top') {
     // WinUI top nav: compact chip, selection carried by an underline.
@@ -444,6 +491,7 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
           active ? 'text-text' : 'text-text-dim hover:bg-surface hover:text-text',
           className,
         )}
+        onClick={handleClick}
         {...rest}
       >
         {label}
@@ -468,6 +516,7 @@ function ShellItem({ as, icon, label, active = false, className, ...rest }: Shel
         railed && 'tip-fixed',
         className,
       )}
+      onClick={handleClick}
       {...rest}
       {...(railed ? sideTip(label) : null)}
     >

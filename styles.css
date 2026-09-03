@@ -160,6 +160,12 @@
     outline-offset: 2px;
   }
 
+  /* Two hairlines with nothing between them are one hairline drawn twice - a consumer's
+     trailing Divider meeting a component's own. The second never paints. */
+  [role='separator'] + [role='separator'] {
+    display: none;
+  }
+
   @media (pointer: coarse) {
     button,
     [role='tab'],
@@ -454,6 +460,41 @@
     }
   }
 
+  /* Scroll cues for a container with no scrollbar: a 16px fade into the pane surface at whichever
+     edge still has content beyond it, driven by the browser's own scroll-state query rather than
+     a scroll listener. Where the query is unsupported, the cues simply never show. */
+  .scroll-hints {
+    container-type: scroll-state;
+  }
+  .scroll-hint-top,
+  .scroll-hint-bottom {
+    position: sticky;
+    z-index: 1;
+    height: 16px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s var(--ease-standard);
+  }
+  .scroll-hint-top {
+    top: 0;
+    margin-bottom: -16px;
+    background: linear-gradient(var(--scroll-edge, var(--color-bg)), transparent);
+  }
+  .scroll-hint-bottom {
+    bottom: 0;
+    margin-top: -16px;
+    background: linear-gradient(transparent, var(--scroll-edge, var(--color-bg)));
+  }
+  @container scroll-state(scrollable: top) {
+    .scroll-hint-top {
+      opacity: 1;
+    }
+  }
+  @container scroll-state(scrollable: bottom) {
+    .scroll-hint-bottom {
+      opacity: 1;
+    }
+  }
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;
