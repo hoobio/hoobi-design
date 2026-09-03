@@ -15,7 +15,7 @@ stays zero-dependency; one-off glyphs drawn by hand follow the 20px grid with 1.
 on the Fluent easing tokens (`--ease-decelerate` entering, `--ease-accelerate` leaving,
 `--ease-standard` in place; 150/250/300ms), layout on the 4px grid with 48px chrome heights.
 
-React component library and design tokens for Hoobi apps. Noto Sans for text, Dank Mono for code.
+React component library and design tokens for Hoobi apps. Hanken Grotesk for text, Dank Mono for code.
 Published to the ADO Artifacts `Hoobi` feed and consumed by mendarr (and whatever comes next).
 
 Zero runtime dependencies. Peer deps only: react >=19, react-dom >=19, tailwindcss >=4.3.
@@ -24,7 +24,7 @@ Zero runtime dependencies. Peer deps only: react >=19, react-dom >=19, tailwindc
 
 ```
 styles.css                       # tokens (@theme static), @font-face, base layer, utilities
-fonts/                           # Noto Sans latin variable + Dank Mono (woff2)
+fonts/                           # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2)
 src/*.tsx                        # one component per file, re-exported from src/index.ts
 catalog/                         # hand-rolled Vite reference page (see below)
 operations/pipelines/publish.yaml
@@ -94,7 +94,9 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
   opacity modifiers (`bg-warn/10`) cannot decompose a nested `var()`.
-- Root font-size 18px, 16px under 40rem. Noto Sans everywhere; Dank Mono only for code.
+- Root font-size 18px, 16px under 40rem. Hanken Grotesk everywhere; Dank Mono only for code.
+  The sans is the latin subset copied out of `@fontsource-variable/hanken-grotesk` (a devDependency,
+  so the provenance and the upgrade path are in the lockfile), never fetched at runtime.
 
 - **Mobile first, always.** Every component has to survive a 360px viewport: `min-w-0` on flex
   children, wrapping headers, horizontally scrollable tab strips, `dvh`-capped scrollable modals,

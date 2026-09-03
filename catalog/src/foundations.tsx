@@ -113,7 +113,7 @@ export function Typography() {
     <>
       <p className="text-body text-text-dim">
         The WinUI 3 ramp shape with a YouTube-sized reading tier, expressed in rem against the 18px
-        root so it still tracks user zoom. Noto Sans carries every step. Dank Mono is reserved for
+        root so it still tracks user zoom. Hanken Grotesk carries every step. Dank Mono is reserved for
         code.
       </p>
       <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel">

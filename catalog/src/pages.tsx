@@ -79,7 +79,7 @@ export const PAGES: Page[] = [
     id: 'typography',
     group: 'Foundations',
     title: 'Typography',
-    caption: 'The WinUI 3 type ramp in Noto Sans, plus Dank Mono for code.',
+    caption: 'The WinUI 3 type ramp in Hanken Grotesk, plus Dank Mono for code.',
     render: () => <Typography />,
   },
   {
