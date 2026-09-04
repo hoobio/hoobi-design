@@ -126,6 +126,7 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
   that finished, a webhook that arrived - is `toast()`. The result of a press belongs on the
   control that was pressed, which is `ActionButton`. A toast for something the person is
   already watching a button for says it twice, in the wrong corner of the screen.
+- **Every tooltip is `Tooltip`.** A native `title=` on a DOM element is the browser's own box: late, unstyled, absent on touch. `check.mjs` fails the build on one in the library; consumers wrap the element in `Tooltip` (a relative time, a badge, a truncated value) instead.
 - **The (i) is never a tab stop.** `InfoTip` is a `role="img"` span with `tabIndex={-1}`,
   hover-only; its words reach assistive tech through a hidden span the control names in
   `aria-describedby`, wired for you by every field in the library. Tab from one field must

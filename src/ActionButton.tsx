@@ -92,7 +92,6 @@ export function ActionButton({
     <Button
       {...rest}
       {...(state === 'failure' ? tipAnchor(message) : {})}
-      title={state === 'failure' ? message : undefined}
       onClick={run}
       busy={busy || state === 'busy'}
       disabled={disabled}

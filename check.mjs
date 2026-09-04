@@ -60,6 +60,17 @@ for (const name of exported) {
   }
 }
 
+// Every tooltip is the Tooltip component (or tipAnchor): a native title= on a DOM element is
+// the browser's own yellow box, late, unstyled and invisible to touch. Component props named
+// title (Alert, Section, PageHeader) are headings, not tooltips, and are not matched here.
+for (const file of [...readdirSync('src').map((f) => `src/${f}`), ...readdirSync('catalog/src').map((f) => `catalog/src/${f}`)]) {
+  if (!file.endsWith('.tsx')) continue;
+  const text = readFileSync(file, 'utf8');
+  for (const m of text.matchAll(/<([a-z][a-z0-9]*)[^>]*?title=/gs)) {
+    errors.push(`${file}: native title= on <${m[1]}> - use Tooltip`);
+  }
+}
+
 if (errors.length) {
   console.error(errors.join('\n'));
   console.error(`\n${errors.length} design-rule violation(s).`);
