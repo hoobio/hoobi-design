@@ -17,6 +17,7 @@ import {
   SliderPage,
   StepsPage,
   SwitchPage,
+  ToasterPage,
   UnsavedBarPage,
 } from './settings.js';
 import {
@@ -403,6 +404,13 @@ export const PAGES: Page[] = [
     title: 'Section Nav',
     caption: 'Sticky rail on desktop, wrapping chips on a phone, warn dots for unsaved.',
     render: () => <SectionNavPage />,
+  },
+  {
+    id: 'toast',
+    group: 'Notifications',
+    title: 'Toast',
+    caption: 'News you did not ask for: a background outcome, bottom-right, three at most.',
+    render: () => <ToasterPage />,
   },
   {
     id: 'unsaved-bar',

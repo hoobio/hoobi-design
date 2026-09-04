@@ -1,5 +1,5 @@
 import { useEffect, type MouseEvent } from 'react';
-import { Section, Shell } from '@hoobi/design';
+import { Section, Shell, Toaster } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, navigateTo, setQuery, useUrl } from './kit.js';
 import posterUrl from './poster.jpg';
 import { GROUPS, PAGES, type Page } from './pages.js';
@@ -116,6 +116,8 @@ export function App() {
           {page.render()}
         </Section>
       </ShellDemoContext.Provider>
+      {/* One Toaster for the whole app, mounted at the root. Every toast() lands here. */}
+      <Toaster />
     </Shell>
   );
 }

@@ -66,6 +66,8 @@ Ayu Mirage), Modal, Tabs (controlled), Breadcrumbs, Timeline (`Timeline.Item`), 
 Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
 Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
+Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no context, because
+the caller is usually a poll or a socket, not a component),
 Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
 scrolling or clipping ancestor can cut it off), ActionDialog, Steps (chevrons wide, a stacked
 list narrow), SectionNav, UnsavedBar, ConnectionCard, and the settings field set - FieldLabel
@@ -87,7 +89,7 @@ bleeds its own hairlines (DescriptionList, a full-width list) can actually reach
 injects a `markFavicon` tab icon - the InitialMark's hue and initial - when the document declares
 no icon of its own.
 
-Deliberately absent: Table, Toast, Skeleton. Toggle came off that list rather than onto this one:
+Deliberately absent: Table, Skeleton. Toggle came off that list rather than onto this one:
 Checkbox is the native input given the house look, which is what the absence already recommended.
 
 **Components are only added when a consumer actually needs one.** No speculative components, no
@@ -111,6 +113,11 @@ props added "for later". A consumer wanting Table is the trigger to write Table.
   land.** A button that starts work reports it: busy, then a moment of success or a longer
   moment of failure with the error on its tooltip. `Button` takes `busy` for the cases the
   consumer already tracks. A silent button is the bug the rule exists to prevent.
+- **News you did not ask for is a toast; the outcome of a button you pressed is on the
+  button.** A background outcome nobody clicked for - an auto-correction that landed, a job
+  that finished, a webhook that arrived - is `toast()`. The result of a press belongs on the
+  control that was pressed, which is `ActionButton`. A toast for something the person is
+  already watching a button for says it twice, in the wrong corner of the screen.
 - **The (i) is never a tab stop.** `InfoTip` is a `role="img"` span with `tabIndex={-1}`,
   hover-only; its words reach assistive tech through a hidden span the control names in
   `aria-describedby`, wired for you by every field in the library. Tab from one field must

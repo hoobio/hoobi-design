@@ -41,6 +41,8 @@ const NON_VISUAL = new Set([
   'parseCronField',
   'formatCronRun',
   'formatCronRelative',
+  'toast',
+  'dismissAllToasts',
 ]);
 const index = readFileSync('src/index.ts', 'utf8');
 const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]

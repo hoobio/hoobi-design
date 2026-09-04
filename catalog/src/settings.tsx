@@ -19,8 +19,11 @@ import {
   Slider,
   Steps,
   Switch,
+  Toaster,
   UnsavedBar,
   cronRuns,
+  dismissAllToasts,
+  toast,
 } from '@hoobi/design';
 import { Demo, DoDont, Import, Playground, Props, Snippet } from './kit.js';
 
@@ -965,13 +968,14 @@ export function CopyFieldPage() {
 
 export function ConnectionCardPage() {
   const [editing, setEditing] = useState(false);
+  const [failSave, setFailSave] = useState(true);
   const [probe, setProbe] = useState<Record<string, string>>({});
   return (
     <>
       <Import names="ConnectionCard" />
       <Demo
         title="A grid of upstreams"
-        note="Full height, so a responsive grid lines up whatever each card holds. No description in the header: six paragraphs of prose in a grid is a wall. Press Test on prowlarr and on bazarr - the button reports the CALL (busy, tick, or the error on its tooltip) and the result line reports the FINDING."
+        note="Full height, so a responsive grid lines up whatever each card holds. No description in the header: six paragraphs of prose in a grid is a wall. Press Test on prowlarr and on bazarr - the button reports the CALL (busy, tick, or the error on its tooltip) and the result line reports the FINDING. Press edit on sonarr: an editing card with onSave ends in cancel + Save, and the first Save fails so you can see it stay open."
         stack
         code={`<ConnectionCard
   name="sonarr"
@@ -998,6 +1002,13 @@ export function ConnectionCardPage() {
             onTest={() => undefined}
             editing={editing}
             onEditingChange={setEditing}
+            onSave={async () => {
+              await wait(900);
+              if (failSave) {
+                setFailSave(false);
+                throw new Error('Sonarr rejected the api key');
+              }
+            }}
           >
             <Input label="base url" mono defaultValue="http://sonarr:8989" />
             <SecretField label="api key" set />
@@ -1066,6 +1077,12 @@ export function ConnectionCardPage() {
             'boolean / (v) => void',
             '',
             'Controlled. Omit the handler to drop the edit button.',
+          ],
+          [
+            'onSave',
+            '() => void | Promise<unknown>',
+            '',
+            'Turns the editing footer into cancel + Save. Resolving leaves edit mode; rejecting stays.',
           ],
           [
             'result / resultTone',
@@ -1822,6 +1839,168 @@ export function FormDialogPage() {
             'Enter or the button. A promise drives busy and the inline error. Never closes itself.',
           ],
           ['tone', "'default' | 'danger'", "'default'", 'A form is almost never danger.'],
+        ]}
+      />
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ Toast */
+
+export function ToasterPage() {
+  return (
+    <>
+      <Import names="Toaster, toast" />
+      <Demo
+        title="Mount one Toaster, then call toast()"
+        note="A module-level store, so a poll callback or a socket message can raise one without a component to hang a hook off. Three at most, newest at the bottom, bottom-right here and full width along the bottom edge on a phone."
+        code={`// once, near the root
+<Toaster />
+
+// anywhere at all
+toast({ title: 'Issue 12 resolved', description: 'The replacement imported cleanly.' });`}
+      >
+        <Button
+          onClick={() => {
+            toast({
+              title: 'Issue 12 resolved',
+              description: 'The replacement imported cleanly.',
+            });
+          }}
+        >
+          default
+        </Button>
+        <Button
+          onClick={() => {
+            toast({
+              tone: 'success',
+              title: 'Sweep finished',
+              description: '18 issues analysed, 2 plans waiting.',
+            });
+          }}
+        >
+          success
+        </Button>
+        <Button
+          onClick={() => {
+            toast({
+              tone: 'warn',
+              title: 'Telegram is not configured',
+              description: 'Approvals can only come from the API until a bot token is set.',
+            });
+          }}
+        >
+          warn
+        </Button>
+        <Button
+          onClick={() => {
+            toast({
+              tone: 'danger',
+              title: 'Seerr is unreachable',
+              description: 'connect ECONNREFUSED seerr:5057',
+            });
+          }}
+        >
+          danger
+        </Button>
+      </Demo>
+
+      <Demo
+        title="Action, and sticky"
+        note="An action dismisses the toast when pressed. duration 0 makes it sticky - for a job that will take its own toast down when it finishes, through the handle toast() returns."
+        code={`toast({
+  tone: 'success',
+  title: 'Plan reverted',
+  action: { label: 'Undo', onClick: () => api.reapply() },
+});
+
+const t = toast({ title: 'Scanning…', duration: 0 });
+// later
+t.dismiss();`}
+      >
+        <Button
+          onClick={() => {
+            toast({
+              tone: 'success',
+              title: 'Plan reverted',
+              description: 'The blocklisted release was restored.',
+              action: {
+                label: 'Undo',
+                onClick: () => {
+                  toast({ title: 'Re-applied' });
+                },
+              },
+            });
+          }}
+        >
+          with an action
+        </Button>
+        <Button
+          onClick={() => {
+            const handle = toast({
+              title: 'Scanning the library…',
+              description: 'This one is sticky; it takes itself down when the job ends.',
+              duration: 0,
+            });
+            setTimeout(() => {
+              handle.dismiss();
+              toast({ tone: 'success', title: 'Scan finished', description: '3 gaps found.' });
+            }, 2500);
+          }}
+        >
+          sticky, then replaced
+        </Button>
+        <Button
+          onClick={() => {
+            dismissAllToasts();
+          }}
+        >
+          dismiss all
+        </Button>
+      </Demo>
+
+      <DoDont
+        rule="A toast is news you did not ask for"
+        why="A background outcome nobody clicked for - a job that finished, an auto-correction that landed - is a toast. The result of a button someone pressed belongs on that button, where they are already looking."
+        doLabel="toast() for the sweep that finished on its own."
+        dontLabel="A toast for the Save the person is watching."
+      >
+        <Button
+          onClick={() => {
+            toast({ tone: 'success', title: 'Sweep finished', description: '2 plans waiting.' });
+          }}
+        >
+          Simulate a background job
+        </Button>
+        <ActionButton
+          variant="primary"
+          successLabel="Saved"
+          action={async () => {
+            await wait(800);
+          }}
+        >
+          Save
+        </ActionButton>
+      </DoDont>
+
+      <Props
+        rows={[
+          ['title', 'string', '', 'One line. The whole point of the toast.'],
+          ['description', 'string', '', 'A second line of detail. Optional.'],
+          [
+            'tone',
+            "'default' | 'success' | 'warn' | 'danger'",
+            "'default'",
+            '15% tint and a leading dot. danger takes role="alert", the rest role="status".',
+          ],
+          ['duration', 'number', '4000', '0 is sticky. The timer pauses on hover and on focus.'],
+          [
+            'action',
+            '{ label, onClick }',
+            '',
+            'One thing to do about it. Dismisses the toast when pressed.',
+          ],
+          ['-> returns', 'ToastHandle', '', '{ id, dismiss } - take your own toast down.'],
         ]}
       />
     </>

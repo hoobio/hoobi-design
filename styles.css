@@ -467,6 +467,27 @@
     }
   }
 
+  /* Toast: in on the decelerate curve, out on accelerate - Fluent's rule that a thing
+     arriving settles and a thing leaving gets out of the way. */
+  .toast-in {
+    animation: toast-in 0.25s var(--ease-decelerate);
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
+  }
+  .toast-out {
+    animation: toast-out 0.15s var(--ease-accelerate) forwards;
+  }
+  @keyframes toast-out {
+    to {
+      opacity: 0;
+      translate: 0 8px;
+    }
+  }
+
   /* Scroll cues for a container with no scrollbar: a 16px fade into the pane surface at whichever
      edge still has content beyond it, driven by the browser's own scroll-state query rather than
      a scroll listener. Where the query is unsupported, the cues simply never show. */

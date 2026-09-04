@@ -49,6 +49,13 @@ export interface ConnectionCardProps {
    * the button says whether the call finished, the line says what it found.
    */
   onTest?: () => void | Promise<unknown>;
+  /**
+   * Commits the edit. With one, the editing footer becomes cancel + Save and the card
+   * leaves edit mode ITSELF once the promise resolves; a rejection keeps it open with the
+   * error on the button, because dropping someone out of a form that did not save is how
+   * edits get lost. Without one the footer keeps the plain edit/done toggle.
+   */
+  onSave?: () => void | Promise<unknown>;
   className?: string;
 }
 
@@ -77,8 +84,10 @@ export function ConnectionCard({
   resultTone = 'neutral',
   testing = false,
   onTest,
+  onSave,
   className,
 }: ConnectionCardProps) {
+  const saving = editing && onSave !== undefined;
   const tone: BadgeTone = health ? (health.ok ? 'success' : 'danger') : 'neutral';
   const healthLabel =
     health?.label ??
@@ -98,7 +107,7 @@ export function ConnectionCard({
             onEditingChange(!editing);
           }}
         >
-          {editing ? 'done' : 'edit'}
+          {saving ? 'cancel' : editing ? 'done' : 'edit'}
         </Button>
       ) : null}
       {onTest ? (
@@ -110,6 +119,19 @@ export function ConnectionCard({
           }}
         >
           Test
+        </ActionButton>
+      ) : null}
+      {saving ? (
+        <ActionButton
+          size="sm"
+          variant="primary"
+          successLabel="Saved"
+          action={async () => {
+            await onSave();
+            onEditingChange?.(false);
+          }}
+        >
+          Save
         </ActionButton>
       ) : null}
     </div>
