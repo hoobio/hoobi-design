@@ -59,6 +59,13 @@ export { Slider, type SliderProps } from './Slider.js';
 export { Spinner, type SpinnerProps } from './Spinner.js';
 export { Steps, type Step, type StepsProps } from './Steps.js';
 export { Switch, type SwitchProps } from './Switch.js';
+export {
+  Table,
+  type SortDirection,
+  type TableColumn,
+  type TableProps,
+  type TableSort,
+} from './Table.js';
 export { Tabs, type TabItem, type TabsProps } from './Tabs.js';
 export {
   Shell,

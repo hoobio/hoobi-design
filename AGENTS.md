@@ -62,7 +62,8 @@ Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout
 `Menu.Label` / `Menu.Divider`), Badge (tone + optional dot + tooltip, covers status dots), Card
 (optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
 `html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar lands
-Ayu Mirage), Modal, Tabs (controlled), Breadcrumbs, Timeline (`Timeline.Item`), DescriptionList,
+Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, controlled sort), Breadcrumbs,
+Timeline (`Timeline.Item`), DescriptionList,
 Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
 Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
@@ -89,7 +90,14 @@ bleeds its own hairlines (DescriptionList, a full-width list) can actually reach
 injects a `markFavicon` tab icon - the InitialMark's hue and initial - when the document declares
 no icon of its own.
 
-Deliberately absent: Table, Skeleton. Toggle came off that list rather than onto this one:
+`Table` is a real `<table>` from `@2xl` (container query) up and a stack of row cards below, one
+markup path. Columns are data (`id`, `header`, `cell`, optional `sortValue`); the sort is
+**controlled** (`sort` + `onSortChange`, so the consumer keeps it in the URL) and applied by the
+table itself, which lets the consumer keep its rows in stored order. Undefined sort values sink to
+the bottom in either direction. `primary` marks the row's title column, `rowAction` the trailing
+control. Came off the deliberately-absent list when mendarr's release picker needed sortable columns.
+
+Deliberately absent: Skeleton. Toggle came off that list rather than onto this one:
 Checkbox is the native input given the house look, which is what the absence already recommended.
 
 **Components are only added when a consumer actually needs one.** No speculative components, no

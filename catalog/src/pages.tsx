@@ -43,6 +43,7 @@ import {
   SelectPage,
   ShellPage,
   SpinnerPage,
+  TablePage,
   TabsPage,
   TimelinePage,
   TooltipPage,
@@ -304,6 +305,13 @@ export const PAGES: Page[] = [
     title: 'Description List',
     caption: 'Label and value pairs, as a real dl.',
     render: () => <DescriptionListPage />,
+  },
+  {
+    id: 'table',
+    group: 'Layout',
+    title: 'Table',
+    caption: 'Sortable columns wide, a stack of row cards narrow. One markup path.',
+    render: () => <TablePage />,
   },
   {
     id: 'timeline',

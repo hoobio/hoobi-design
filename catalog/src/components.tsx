@@ -21,6 +21,8 @@ import {
   Select,
   Shell,
   Spinner,
+  Table,
+  type TableSort,
   Tabs,
   Timeline,
   Tooltip,
@@ -1336,6 +1338,167 @@ export function ModalPage() {
           ['title', 'ReactNode', '', 'Subtitle-sized h2 in the header.'],
           ['children', 'ReactNode', 'required', 'Scrollable body.'],
           ['className', 'string', '', 'Merged onto the dialog. Keep p-0 for backdrop clicks.'],
+        ]}
+      />
+    </>
+  );
+}
+
+interface Release {
+  title: string;
+  score?: number;
+  quality: string;
+  sizeGb: number;
+  indexer: string;
+  ok: boolean;
+}
+
+const RELEASES: Release[] = [
+  {
+    title: 'Show.S01E09.1080p.NF.WEB-DL.AAC2.0.H.264-VARYG',
+    score: 301,
+    quality: 'WEBDL-1080p',
+    sizeGb: 1.0,
+    indexer: 'DrunkenSlug',
+    ok: true,
+  },
+  {
+    title: '[Erai-raws] Show - 09 [1080p][MultiSub]',
+    score: 351,
+    quality: 'WEBDL-1080p',
+    sizeGb: 1.4,
+    indexer: 'NZBFinder',
+    ok: true,
+  },
+  {
+    title: 'Show.S01E09.REPACK.1080p.WEB.MSubs-GROUP',
+    score: 1,
+    quality: 'WEBDL-1080p',
+    sizeGb: 0.9,
+    indexer: 'DrunkenSlug',
+    ok: false,
+  },
+  {
+    title: '[Judas] Show 09 (720p) [A1B2C3D4]',
+    quality: 'HDTV-720p',
+    sizeGb: 0.5,
+    indexer: 'AnimeBytes',
+    ok: true,
+  },
+];
+
+export function TablePage() {
+  const [sort, setSort] = useState<TableSort>({ column: 'score', direction: 'desc' });
+  return (
+    <>
+      <Import names="Table" />
+      <Demo
+        title="Sortable, controlled"
+        note="The table applies the sort; you hold it, usually in the URL. Click a header again to flip. A row with no value sinks to the bottom either way. Narrow the window: the same markup stacks into row cards with each column's label beside its value."
+        stack
+        code={`const [sort, setSort] = useState<TableSort>({ column: 'score', direction: 'desc' });
+
+<Table
+  rows={releases}
+  rowKey={(r) => r.title}
+  sort={sort}
+  onSortChange={setSort}
+  columns={[
+    { id: 'title', header: 'release', primary: true, cell: (r) => <span className="font-mono text-caption break-all">{r.title}</span> },
+    { id: 'score', header: 'score', align: 'end', defaultDirection: 'desc', sortValue: (r) => r.score, cell: (r) => r.score ?? '-' },
+    { id: 'quality', header: 'quality', sortValue: (r) => r.quality, cell: (r) => <Badge>{r.quality}</Badge> },
+    { id: 'size', header: 'size', align: 'end', sortValue: (r) => r.sizeGb, cell: (r) => \`\${r.sizeGb.toFixed(1)} GB\` },
+  ]}
+  rowAction={(r) => <Button size="sm" variant="secondary">Grab</Button>}
+/>`}
+      >
+        <div className="w-full">
+          <Table
+            label="Release candidates"
+            rows={RELEASES}
+            rowKey={(r) => r.title}
+            sort={sort}
+            onSortChange={setSort}
+            columns={[
+              {
+                id: 'title',
+                header: 'release',
+                primary: true,
+                cell: (r) => (
+                  <span className="flex flex-col gap-1">
+                    <span className="font-mono text-caption break-all">{r.title}</span>
+                    <Badge tone={r.ok ? 'success' : 'danger'} dot className="self-start">
+                      {r.ok ? 'grabbable' : 'rejected'}
+                    </Badge>
+                  </span>
+                ),
+              },
+              {
+                id: 'score',
+                header: 'score',
+                align: 'end',
+                defaultDirection: 'desc',
+                sortValue: (r) => r.score,
+                cell: (r) =>
+                  r.score === undefined ? '-' : `${r.score > 0 ? '+' : ''}${String(r.score)}`,
+              },
+              {
+                id: 'quality',
+                header: 'quality',
+                sortValue: (r) => r.quality,
+                cell: (r) => <Badge>{r.quality}</Badge>,
+              },
+              {
+                id: 'size',
+                header: 'size',
+                align: 'end',
+                sortValue: (r) => r.sizeGb,
+                cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
+              },
+              {
+                id: 'indexer',
+                header: 'indexer',
+                sortValue: (r) => r.indexer,
+                cell: (r) => r.indexer,
+              },
+            ]}
+            rowAction={() => (
+              <Button size="sm" variant="secondary">
+                Grab
+              </Button>
+            )}
+          />
+        </div>
+      </Demo>
+      <Props
+        rows={[
+          [
+            'columns',
+            'TableColumn<T>[]',
+            '-',
+            'id, header, cell; sortValue makes a column sortable; align, primary, defaultDirection, className.',
+          ],
+          ['rows', 'T[]', '-', 'In stored order. The table sorts a copy for display.'],
+          ['rowKey', '(row: T) => string', '-', 'Stable key per row.'],
+          [
+            'sort',
+            'TableSort',
+            'undefined',
+            'Controlled: { column, direction }. Absent renders stored order.',
+          ],
+          [
+            'onSortChange',
+            '(sort: TableSort) => void',
+            'undefined',
+            'Headers are plain text without it.',
+          ],
+          [
+            'rowAction',
+            '(row: T) => ReactNode',
+            'undefined',
+            'Trailing control: right-aligned wide, below the cells stacked.',
+          ],
+          ['label', 'string', 'undefined', 'aria-label for the table.'],
         ]}
       />
     </>
