@@ -76,7 +76,7 @@ export function DurationInput({
             if (Number.isNaN(n)) return;
             onChange(Math.max(min, max === undefined ? n : Math.min(max, n)));
           }}
-          className="h-full min-w-0 flex-1 border-0 bg-transparent px-2.5 font-mono text-body text-text"
+          className="h-full min-w-0 flex-1 border-0 bg-transparent px-2.5 text-body text-text tabular-nums"
         />
         <span className="flex h-full shrink-0 items-center bg-chip px-2.5 text-caption text-text-dim">
           {unit}

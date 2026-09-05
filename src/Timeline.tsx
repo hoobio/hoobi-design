@@ -53,9 +53,9 @@ export interface TimelineEventProps {
 
 export interface TimelineStepProps {
   time?: string;
-  /** e.g. 'call' / 'result' - mono, muted. */
+  /** e.g. 'call' / 'result' - muted. */
   kind?: string;
-  /** Mono; caller colours it. */
+  /** Caller colours it; wrap a tool name in <code> if it is one. */
   label: ReactNode;
   /** Folded behind a nested "detail" <details> when present. */
   detail?: ReactNode;
@@ -98,7 +98,7 @@ function TimelineItem({ tone = 'neutral', time, head, children, className }: Tim
     <li className={cx('min-w-0 border-l-2 pl-3', RAILS[tone], className)}>
       {time || head ? (
         <div className="flex flex-col gap-x-3 gap-y-1 sm:flex-row sm:flex-wrap sm:items-baseline">
-          {time ? <span className="font-mono text-caption text-text-mute">{time}</span> : null}
+          {time ? <span className="text-caption text-text-mute tabular-nums">{time}</span> : null}
           {head}
         </div>
       ) : null}
@@ -112,7 +112,7 @@ function TimelineComment({ author, time, emphasis = false, children }: TimelineC
     <div className="flex min-w-0 flex-col gap-1.5">
       <span className="flex flex-wrap items-baseline gap-x-2">
         {author}
-        {time ? <span className="font-mono text-caption text-text-mute">{time}</span> : null}
+        {time ? <span className="text-caption text-text-mute tabular-nums">{time}</span> : null}
       </span>
       <div
         className={cx(
@@ -174,7 +174,7 @@ function TimelineFold({
           {range ? (
             <>
               <span className="px-1.5">·</span>
-              <span className="font-mono">{range}</span>
+              <span className="tabular-nums">{range}</span>
             </>
           ) : null}
         </span>
@@ -188,10 +188,10 @@ function TimelineFold({
 function TimelineEvent({ time, label, note }: TimelineEventProps) {
   return (
     // Each Event is its own grid, so the time cell carries the column width itself: 8ch of its
-    // own mono, exactly "12:58 pm", which aligns every row with no slack. Baseline alignment
-    // keeps the mono time, the label and the sans note reading as one line of text.
+    // own tabular figures, exactly "12:58 pm", which aligns every row with no slack. Baseline alignment
+    // keeps the time, the label and the note reading as one line of text.
     <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-baseline gap-x-2 gap-y-0.5 max-sm:grid-cols-[auto_minmax(0,1fr)]">
-      <span className="min-w-[8ch] font-mono text-caption-small whitespace-nowrap text-text-mute">
+      <span className="min-w-[8ch] text-caption-small whitespace-nowrap text-text-mute tabular-nums">
         {time}
       </span>
       {/* Sized here, not by the consumer: an Event is one dense line, whatever label it gets. */}
@@ -218,9 +218,9 @@ function TimelineStep({
   // The chevron sits beside the thing it expands - after the time and kind, before the label -
   // so the line's left edge stays on the same column as a Step with nothing to expand.
   const line = (chevron: boolean) => (
-    <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 font-mono text-caption-small">
+    <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 text-caption-small">
       {/* The same 8ch column as an Event's time, so the two kinds of row share it. */}
-      {time ? <span className="min-w-[8ch] text-text-mute">{time}</span> : null}
+      {time ? <span className="min-w-[8ch] text-text-mute tabular-nums">{time}</span> : null}
       {kind ? <span className="text-text-mute">{kind}</span> : null}
       {chevron ? <Chevron /> : null}
       {label}

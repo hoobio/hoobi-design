@@ -144,7 +144,7 @@ export function MenuItem({
 
 export function MenuLabel({ children, className }: MenuLabelProps) {
   return (
-    <div className={cx('px-3 pt-2 pb-1 font-mono text-caption text-text-mute', className)}>
+    <div className={cx('px-3 pt-2 pb-1 text-caption text-text-mute', className)}>
       {children}
     </div>
   );

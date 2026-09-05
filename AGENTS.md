@@ -149,7 +149,14 @@ which is why the component is `ActionDialog`.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
   opacity modifiers (`bg-warn/10`) cannot decompose a nested `var()`.
-- Root font-size 18px, 16px under 40rem. Hanken Grotesk everywhere; Dank Mono only for code.
+- Root font-size 18px, 16px under 40rem. Hanken Grotesk everywhere; Dank Mono only for a
+  **machine string**: something a person copies, pastes, types exactly or compares character by
+  character (a url, a key, a path, a release name, a cron expression, JSON, code). A name, a
+  label, a heading, a timestamp, a status word or a count is sans - digits that must line up get
+  `tabular-nums`, never a typeface change. In the library `font-mono` lives only in CodeBlock,
+  CopyField, SecretField, CronInput's expression, Banner's `code`, and the `mono` opt-in on Input
+  and ConnectionCard rows; `check.mjs` fails it anywhere else. Consumers reach mono through
+  `<code>` (the base layer styles it) or those props, never through the class.
   The sans is the latin subset copied out of `@fontsource-variable/hanken-grotesk` (a devDependency,
   so the provenance and the upgrade path are in the lockfile), never fetched at runtime.
 

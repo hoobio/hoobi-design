@@ -22,7 +22,7 @@ export interface ConnectionRow {
 }
 
 export interface ConnectionCardProps {
-  /** The service, mono - it is a hostname, not a title. */
+  /** The service name. */
   name: string;
   /** Marks a connection the app runs fine without. */
   optional?: boolean;
@@ -141,7 +141,7 @@ export function ConnectionCard({
     <div className={cx('flex h-full flex-col rounded-panel bg-surface-raised', className)}>
       <header className="flex items-center justify-between gap-2 px-4 py-3">
         <span className="flex h-7 min-w-0 items-center gap-2">
-          <span className="truncate font-mono text-body text-text">{name}</span>
+          <span className="truncate text-body text-text">{name}</span>
           {optional ? <span className="shrink-0 text-caption text-text-mute">optional</span> : null}
         </span>
         <Badge tone={tone} dot={health !== undefined}>

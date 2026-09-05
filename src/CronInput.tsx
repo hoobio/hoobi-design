@@ -146,7 +146,7 @@ export function CronInput({
           </span>
           {result.runs?.map((run) => (
             <span key={run.getTime()} className="flex flex-wrap gap-3 text-caption">
-              <span className="font-mono text-text">{formatCronRun(run)}</span>
+              <span className="text-text tabular-nums">{formatCronRun(run)}</span>
               <span className="text-text-dim">{formatCronRelative(run)}</span>
             </span>
           ))}

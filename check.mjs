@@ -6,6 +6,15 @@ import { readFileSync, readdirSync } from 'node:fs';
  * design system silently the day it is.
  */
 const errors = [];
+const MONO_SITES = new Set([
+  'Banner.tsx',
+  'CodeBlock.tsx',
+  'ConnectionCard.tsx',
+  'CopyField.tsx',
+  'CronInput.tsx',
+  'Input.tsx',
+  'SecretField.tsx',
+]);
 const src = readdirSync('src').filter((f) => f.endsWith('.tsx'));
 
 for (const f of src) {
@@ -26,6 +35,10 @@ for (const f of src) {
     // Depth is fill, never shadow. The Modal backdrop scrim is bg-black/60, not a shadow.
     if (/shadow-(sm|md|lg|xl|2xl)\b/.test(line)) {
       errors.push(`${at}: box shadow - depth is fill, never shadow`);
+    }
+    // Mono is for machine strings only; a label, a name, a time or a count is sans.
+    if (/font-mono/.test(line) && !MONO_SITES.has(f)) {
+      errors.push(`${at}: font-mono outside a machine-string site - sans, or tabular-nums for digits`);
     }
   });
 }

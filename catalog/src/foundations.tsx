@@ -114,7 +114,10 @@ export function Typography() {
       <p className="text-body text-text-dim">
         The WinUI 3 ramp shape with a YouTube-sized reading tier, expressed in rem against the 18px
         root so it still tracks user zoom. Hanken Grotesk carries every step. Dank Mono is reserved for
-        code.
+        machine strings: something a person copies, pastes, types exactly or compares character by
+        character - a url, a key, a path, a release name, a cron expression, JSON, code. A name, a
+        label, a timestamp or a count is sans; digits that have to line up get{' '}
+        <code>tabular-nums</code>, not a typeface change.
       </p>
       <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel">
         {RAMP.map((r) => (

@@ -6,7 +6,7 @@ export interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   label?: ReactNode;
   /** What the range means, on an (i) beside the label. */
   info?: string;
-  /** The live value, mono, at the right of the label row. Format it yourself. */
+  /** The live value at the right of the label row. Format it yourself. */
   valueLabel?: ReactNode;
 }
 
@@ -25,7 +25,7 @@ export function Slider({ label, info, valueLabel, className, id, ...rest }: Slid
           htmlFor={inputId}
           info={info}
           infoId={infoId}
-          aside={valueLabel ? <span className="font-mono text-text">{valueLabel}</span> : null}
+          aside={valueLabel ? <span className="text-text tabular-nums">{valueLabel}</span> : null}
         >
           {label}
         </FieldLabel>

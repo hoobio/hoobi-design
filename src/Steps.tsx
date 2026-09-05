@@ -70,7 +70,7 @@ export function Steps({ steps, current, onSelect, label = 'Progress', className 
               <span
                 aria-hidden
                 className={cx(
-                  'flex size-4.5 shrink-0 items-center justify-center rounded-full font-mono text-caption-small',
+                  'flex size-4.5 shrink-0 items-center justify-center rounded-full text-caption-small tabular-nums',
                   active
                     ? 'bg-accent text-on-accent'
                     : done

@@ -44,7 +44,7 @@ export function App() {
   return (
     <Shell
       brand={
-        <span className="flex size-6 items-center justify-center rounded-control bg-accent font-mono text-caption text-on-accent">
+        <span className="flex size-6 items-center justify-center rounded-control bg-accent text-caption text-on-accent">
           h
         </span>
       }

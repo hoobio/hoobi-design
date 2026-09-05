@@ -50,7 +50,7 @@ export function DescriptionList({
               'sm:grid sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] sm:items-baseline sm:gap-x-4',
           )}
         >
-          <dt className="font-mono text-caption text-text-mute">{item.label}</dt>
+          <dt className="text-caption text-text-mute">{item.label}</dt>
           <dd className="min-w-0 text-body break-words text-text">{item.value}</dd>
         </div>
       ))}

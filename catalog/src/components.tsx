@@ -2288,7 +2288,7 @@ export function ConfirmButtonPage() {
             Delete file
           </ConfirmButton>
           <span className="text-caption text-text-dim">
-            confirmed <span className="font-mono text-accent-blue">{count}</span> times
+            confirmed <span className="text-accent-blue tabular-nums">{count}</span> times
           </span>
         </div>
       </Demo>
@@ -2350,7 +2350,7 @@ function ToolIo({ input, output }: { input: [string, string]; output: [string, s
         ['output', ...output],
       ].map(([name, at, body]) => (
         <div key={name} className="flex flex-col gap-0.5">
-          <span className="font-mono text-text-mute">
+          <span className="text-text-mute">
             {name} · {at}
           </span>
           <CodeBlock code={body} copy />
@@ -2371,7 +2371,7 @@ export function TimelinePage() {
       <Import names="Timeline" />
       <Demo
         title="Default"
-        note="The rail is one of the border exceptions the design rules allow. Tone carries the outcome; time is dense metadata in mono, head takes badges or labels beside it."
+        note="The rail is one of the border exceptions the design rules allow. Tone carries the outcome; time is dense metadata in tabular figures, head takes badges or labels beside it."
         stack
         code={`<Timeline>
   <Timeline.Item tone="accent" time="14:02:11" head={<Badge tone="accent">plan</Badge>}>
@@ -2492,7 +2492,7 @@ export function TimelinePage() {
 
       <Demo
         title="Machinery: Fold, Event, Step"
-        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. Opened, it reads forward in one stream: an Event is a dense transition line, a Step is a mono agent-tool line, in the order they happened. A call and its result are one Step - the tool and what came back on the line, the input and output behind its chevron."
+        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. Opened, it reads forward in one stream: an Event is a dense transition line, a Step is a dense agent-tool line, in the order they happened. A call and its result are one Step - the tool and what came back on the line, the input and output behind its chevron."
         stack
         code={`<Timeline plain>
   <Timeline.Fold summary="2 status changes and 2 agent steps" range="10:50 am - 10:52 am" id="run-1" open={open} onOpenChange={setOpen}>
@@ -2596,7 +2596,7 @@ export function TimelinePage() {
             'Timeline.Item time',
             'ReactNode',
             '',
-            'Dense metadata on the head row - a timestamp, in mono caption.',
+            'Dense metadata on the head row - a timestamp, in muted caption.',
           ],
           [
             'Timeline.Item head',
@@ -2611,7 +2611,7 @@ export function TimelinePage() {
             'required',
             'Caller-styled - a Persona, a name.',
           ],
-          ['Timeline.Comment time', 'string', '', 'Mono caption beside the author.'],
+          ['Timeline.Comment time', 'string', '', 'Muted caption beside the author.'],
           [
             'Timeline.Comment emphasis',
             'boolean',
@@ -2632,10 +2632,10 @@ export function TimelinePage() {
             'required',
             'e.g. a Badge appearance="text" - the new status.',
           ],
-          ['Timeline.Event time', 'string', '', 'Mono, first column.'],
+          ['Timeline.Event time', 'string', '', 'First column, tabular figures.'],
           ['Timeline.Event note', 'ReactNode', '', 'Dense caption, wraps to its own row below sm.'],
-          ['Timeline.Step label', 'ReactNode', 'required', 'Mono; caller colours it.'],
-          ['Timeline.Step time / kind', 'string', '', "Mono mute prefix - e.g. 'call' / 'result'."],
+          ['Timeline.Step label', 'ReactNode', 'required', 'Caller colours it; a tool name goes in <code>.'],
+          ['Timeline.Step time / kind', 'string', '', "Muted prefix - e.g. 'call' / 'result'."],
           [
             'Timeline.Step detail',
             'ReactNode',

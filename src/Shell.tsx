@@ -588,7 +588,7 @@ export function markFavicon(label: string, hue?: string): string {
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">` +
     `<rect width="32" height="32" rx="7" fill="${fill}"/>` +
-    `<text x="16" y="16" fill="${ink}" font-family="ui-monospace,monospace" font-size="19"` +
+    `<text x="16" y="16" fill="${ink}" font-family="system-ui,sans-serif" font-size="19"` +
     ` text-anchor="middle" dominant-baseline="central">${initial}</text></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -597,7 +597,7 @@ function InitialMark({ label }: { label: string }) {
   const hue = hueFor(label);
   return (
     <span
-      className="flex size-6 items-center justify-center rounded-control font-mono text-caption"
+      className="flex size-6 items-center justify-center rounded-control text-caption"
       style={{ backgroundColor: `var(--color-${hue})`, color: 'var(--color-bg)' }}
     >
       {label.charAt(0)}
@@ -743,7 +743,7 @@ function ShellUser({
       <span aria-hidden className="flex w-10 shrink-0 items-center justify-center">
         {avatar ?? (
           <span
-            className="flex size-6 items-center justify-center rounded-full font-mono text-caption-small"
+            className="flex size-6 items-center justify-center rounded-full text-caption-small"
             style={{ backgroundColor: `var(--color-${hueFor(name)})`, color: 'var(--color-bg)' }}
           >
             {initials}
