@@ -253,7 +253,7 @@ export function LogViewer({
         <div
           ref={listRef}
           onScroll={onScroll}
-          className="mono styled-scrollbar h-full min-h-64 overflow-auto rounded-panel bg-chip py-3 text-caption leading-[22px] text-text"
+          className="mono styled-scrollbar @container h-full min-h-64 overflow-auto rounded-panel bg-chip py-3 text-caption leading-[22px] text-text"
         >
           {loading && lines.length === 0 ? (
             <p className="px-4 font-sans text-text-mute">Loading…</p>
@@ -267,7 +267,9 @@ export function LogViewer({
                 <div
                   key={i}
                   className={cx(
-                    'grid min-w-140 grid-cols-[150px_76px_auto_1fr] items-start gap-x-3 px-4 hover:bg-surface',
+                    // One markup path: a wrapping line of time · tag · [ctx] with the message under it when
+                    // narrow, the four-column grid from @xl (rem at the 18px root: 648px) up.
+                    'flex flex-wrap items-start gap-x-3 px-4 hover:bg-surface @xl:grid @xl:grid-cols-[150px_76px_auto_1fr]',
                     level.get(l.tag)?.raised && 'bg-surface',
                   )}
                 >
@@ -285,9 +287,9 @@ export function LogViewer({
                       [{l.ctx}]
                     </button>
                   ) : (
-                    <span />
+                    <span className="hidden @xl:block" />
                   )}
-                  <span className="min-w-0 break-words whitespace-pre-wrap">
+                  <span className="min-w-0 basis-full break-words whitespace-pre-wrap @xl:basis-auto">
                     {highlight(l.message, marker)}
                     {folded ? (
                       <button
