@@ -1,6 +1,6 @@
 {
   "name": "@hoobi/design",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "Ayu Mirage dark-only React components and design tokens for Hoobi apps.",
   "type": "module",
   "license": "UNLICENSED",
