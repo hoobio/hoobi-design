@@ -267,7 +267,7 @@ export function LogViewer({
                 <div
                   key={i}
                   className={cx(
-                    'grid grid-cols-[150px_76px_auto_1fr] items-start gap-x-3 px-4 hover:bg-surface',
+                    'grid min-w-140 grid-cols-[150px_76px_auto_1fr] items-start gap-x-3 px-4 hover:bg-surface',
                     level.get(l.tag)?.raised && 'bg-surface',
                   )}
                 >

@@ -72,22 +72,22 @@ export function SettingRow({
 }: SettingRowProps) {
   return (
     <div className={cx('flex min-w-0 flex-col gap-3 bg-surface px-4 py-3.5', className)}>
-      <div className="flex min-w-0 items-center gap-4">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
         {leading ? <span className="flex shrink-0 items-center">{leading}</span> : null}
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
           <span className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-0.5">
             <span id={id} className={cx('text-body text-text', meta !== undefined && 'min-w-24')}>
               {label}
             </span>
             {meta ? (
-              <span className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-0.5 text-caption text-text-dim">
+              <span className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-0.5 text-caption wrap-anywhere text-text-dim">
                 {meta}
               </span>
             ) : null}
           </span>
           {description ? <span className="text-caption text-text-dim">{description}</span> : null}
         </div>
-        {control ? <div className="flex shrink-0 items-center gap-3">{control}</div> : null}
+        {control ? <div className="ml-auto flex shrink-0 items-center gap-3">{control}</div> : null}
       </div>
       {children}
     </div>
