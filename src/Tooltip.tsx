@@ -14,7 +14,7 @@ export interface TooltipProps extends HTMLAttributes<HTMLSpanElement> {
  */
 export function Tooltip({ text, children, className, ...rest }: TooltipProps) {
   return (
-    <span {...tipAnchor(text)} className={cx('tip-fixed inline-flex', className)} {...rest}>
+    <span {...tipAnchor(text)} className={cx('tip-fixed inline-flex gap-1', className)} {...rest}>
       {children}
     </span>
   );

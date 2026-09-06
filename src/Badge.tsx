@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx.js';
 import { tipAnchor } from './tip.js';
 
@@ -13,6 +13,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   /** 'sm' is the 18px inline marker that sits inside a field label; 'md' is the standalone chip. */
   size?: BadgeSize;
   dot?: boolean;
+  /** A mute word before the value: `confidence high`, `webhook registered`. Text appearance only. */
+  label?: ReactNode;
   /** The dot breathes: something is in progress right now. */
   pulse?: boolean;
   /** Tooltip shown on hover and keyboard focus, explaining what the badge means. */
@@ -50,6 +52,7 @@ export function Badge({
   size = 'md',
   dot = false,
   pulse = false,
+  label,
   tooltip,
   className,
   children,
@@ -64,6 +67,7 @@ export function Badge({
         className={cx('inline', tooltip && 'tip-fixed', TEXT_TONES[tone], className)}
         {...rest}
       >
+        {label != null ? <span className="text-text-mute">{label} </span> : null}
         {dot ? (
           <span
             aria-hidden

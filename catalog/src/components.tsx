@@ -299,6 +299,12 @@ export function BadgePage() {
           ],
           ['dot', 'boolean', 'false', 'Leading 6px status dot in the tone colour.'],
           [
+            'label',
+            'ReactNode',
+            '',
+            "Text appearance: a mute word before the value - 'confidence high', 'webhook registered'. The pair never loses its space, whatever container it sits in.",
+          ],
+          [
             'tooltip',
             'string',
             '',
