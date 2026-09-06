@@ -163,6 +163,9 @@ which is why the component is `ActionDialog`.
   Fields inside a row fill with `bg-chip` and no border (the danger border on `error` stays) and
   take `hideLabel`, because the row is the label. `bg-surface-raised` is for things that float: a
   menu, the unsaved bar, the hover on a secondary button, the "new lines" pill.
+- **A free-text field carries an example placeholder.** `http://sonarr:8989`, `*/15 * * * *`,
+  `-1001234567890`: the cheapest hint there is, and an empty field has nothing else to say what
+  shape it wants. Numbers show their default; a secret's placeholder is SecretField's own.
 - Dark only. `color-scheme: dark`, no light-mode variants, no `dark:` prefixes.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
