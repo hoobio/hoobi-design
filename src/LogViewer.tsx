@@ -267,7 +267,7 @@ export function LogViewer({
                 <div
                   key={i}
                   className={cx(
-                    'grid grid-cols-[150px_76px_minmax(0,auto)_1fr] gap-x-3 px-4 hover:bg-surface',
+                    'grid grid-cols-[150px_76px_auto_1fr] items-start gap-x-3 px-4 hover:bg-surface',
                     level.get(l.tag)?.raised && 'bg-surface',
                   )}
                 >
@@ -280,7 +280,7 @@ export function LogViewer({
                         setCtx(l.ctx ?? null);
                       }}
                       {...tipAnchor('Filter to this context')}
-                      className="tip-fixed text-left text-accent-purple hover:text-accent-cyan"
+                      className="tip-fixed text-left whitespace-nowrap text-accent-purple hover:text-accent-cyan"
                     >
                       [{l.ctx}]
                     </button>
