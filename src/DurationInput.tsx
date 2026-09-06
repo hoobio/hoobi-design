@@ -18,6 +18,8 @@ export interface DurationInputProps {
   info?: string;
   error?: ReactNode;
   disabled?: boolean;
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow. */
+  hideLabel?: boolean;
   id?: string;
   className?: string;
 }
@@ -37,6 +39,7 @@ export function DurationInput({
   info,
   error,
   disabled = false,
+  hideLabel = false,
   id,
   className,
 }: DurationInputProps) {
@@ -45,13 +48,18 @@ export function DurationInput({
   const infoId = `${inputId}-info`;
   return (
     <div className={cx('flex min-w-0 flex-col gap-1', className)}>
-      <FieldLabel htmlFor={inputId} info={info} infoId={infoId}>
+      <FieldLabel
+        htmlFor={inputId}
+        info={info}
+        infoId={infoId}
+        className={hideLabel ? 'sr-only' : undefined}
+      >
         {label}
       </FieldLabel>
       <span
         className={cx(
-          'flex h-8 items-center overflow-hidden rounded-control border bg-surface pointer-coarse:h-11',
-          error ? 'border-danger' : 'border-border',
+          'flex h-8 items-center overflow-hidden rounded-control border bg-chip pointer-coarse:h-11',
+          error ? 'border-danger' : 'border-transparent',
           disabled && 'opacity-50',
         )}
       >
@@ -78,7 +86,7 @@ export function DurationInput({
           }}
           className="h-full min-w-0 flex-1 border-0 bg-transparent px-2.5 text-body text-text tabular-nums"
         />
-        <span className="flex h-full shrink-0 items-center bg-chip px-2.5 text-caption text-text-dim">
+        <span className="flex h-full shrink-0 items-center bg-surface-raised px-2.5 text-caption text-text-dim">
           {unit}
         </span>
       </span>

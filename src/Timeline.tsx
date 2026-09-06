@@ -53,9 +53,9 @@ export interface TimelineEventProps {
 
 export interface TimelineStepProps {
   time?: string;
-  /** e.g. 'call' / 'result' - muted. */
+  /** A muted word before the label saying what sort of step this is. */
   kind?: string;
-  /** Caller colours it; wrap a tool name in <code> if it is one. */
+  /** The line itself. Caller colours it; a machine string in it goes in <code>. */
   label: ReactNode;
   /** Folded behind a nested "detail" <details> when present. */
   detail?: ReactNode;

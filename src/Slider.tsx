@@ -8,13 +8,23 @@ export interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   info?: string;
   /** The live value at the right of the label row. Format it yourself. */
   valueLabel?: ReactNode;
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow. The readout stays. */
+  hideLabel?: boolean;
 }
 
 /**
  * The native range input in house clothes. The readout is not decoration: a slider with
  * no number is a control you cannot set deliberately or describe to anyone else.
  */
-export function Slider({ label, info, valueLabel, className, id, ...rest }: SliderProps) {
+export function Slider({
+  label,
+  info,
+  valueLabel,
+  hideLabel = false,
+  className,
+  id,
+  ...rest
+}: SliderProps) {
   const fallbackId = useId();
   const inputId = id ?? fallbackId;
   const infoId = `${inputId}-info`;
@@ -27,7 +37,7 @@ export function Slider({ label, info, valueLabel, className, id, ...rest }: Slid
           infoId={infoId}
           aside={valueLabel ? <span className="text-text tabular-nums">{valueLabel}</span> : null}
         >
-          {label}
+          <span className={hideLabel ? 'sr-only' : undefined}>{label}</span>
         </FieldLabel>
       ) : null}
       <input

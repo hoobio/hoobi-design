@@ -46,7 +46,7 @@ const ShellContext = createContext<ShellState>({
 });
 
 /** Which presentation a nav row is being rendered into. */
-type NavArea = 'side' | 'overlay' | 'top' | 'dropdown';
+type NavArea = 'side' | 'overlay' | 'top' | 'dropdown' | 'nested';
 const NavAreaContext = createContext<NavArea>('side');
 
 export interface ShellProps {
@@ -452,6 +452,8 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
   icon?: ReactNode;
   label: string;
   active?: boolean;
+  /** Sub-items (Shell.Item without icons), an accordion under this row while it is active. Not rendered on the collapsed rail or in top mode. */
+  children?: ReactNode;
   [key: string]: unknown;
 }
 
@@ -467,6 +469,7 @@ function ShellItem({
   icon,
   label,
   active = false,
+  children,
   className,
   onClick,
   ...rest
@@ -480,6 +483,30 @@ function ShellItem({
     onClick?.(e);
     if (area === 'overlay') closeOverlay();
   };
+
+  if (area === 'nested') {
+    return (
+      <Comp
+        aria-current={active ? 'page' : undefined}
+        className={cx(
+          'relative flex h-8 items-center rounded-control px-3 text-[0.8333rem] whitespace-nowrap',
+          active ? 'bg-surface text-text' : 'text-text-dim hover:bg-surface hover:text-text',
+          className,
+        )}
+        onClick={handleClick}
+        {...rest}
+      >
+        <span
+          aria-hidden
+          className={cx(
+            'absolute left-0 h-4 w-0.75 rounded-full bg-accent transition-opacity',
+            active ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+        {label}
+      </Comp>
+    );
+  }
 
   if (area === 'top') {
     // WinUI top nav: compact chip, selection carried by an underline.
@@ -506,7 +533,7 @@ function ShellItem({
     );
   }
 
-  return (
+  const row = (
     <Comp
       aria-current={active ? 'page' : undefined}
       className={cx(
@@ -540,6 +567,15 @@ function ShellItem({
         {label}
       </span>
     </Comp>
+  );
+  if (!children || !active || railed) return row;
+  return (
+    <div className="flex flex-col">
+      {row}
+      <NavAreaContext.Provider value="nested">
+        <div className="flex flex-col gap-0.5 py-1 pl-4">{children}</div>
+      </NavAreaContext.Provider>
+    </div>
   );
 }
 

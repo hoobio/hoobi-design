@@ -9,7 +9,6 @@ const errors = [];
 const MONO_SITES = new Set([
   'Banner.tsx',
   'CodeBlock.tsx',
-  'ConnectionCard.tsx',
   'CopyField.tsx',
   'CronInput.tsx',
   'Input.tsx',
@@ -38,7 +37,9 @@ for (const f of src) {
     }
     // Mono is for machine strings only; a label, a name, a time or a count is sans.
     if (/font-mono/.test(line) && !MONO_SITES.has(f)) {
-      errors.push(`${at}: font-mono outside a machine-string site - sans, or tabular-nums for digits`);
+      errors.push(
+        `${at}: font-mono outside a machine-string site - sans, or tabular-nums for digits`,
+      );
     }
   });
 }
@@ -56,6 +57,7 @@ const NON_VISUAL = new Set([
   'formatCronRelative',
   'toast',
   'dismissAllToasts',
+  'LOG_LEVELS',
 ]);
 const index = readFileSync('src/index.ts', 'utf8');
 const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]
@@ -63,7 +65,10 @@ const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]
   .map((n) => n.trim())
   .filter((n) => n && !n.startsWith('type ') && !NON_VISUAL.has(n));
 const pages = readFileSync('catalog/src/pages.tsx', 'utf8');
-for (const name of exported) {
+// Parts of one component share its page: SettingGroup and SettingList are SettingRow's.
+const PARTS = { SettingGroup: 'SettingRow', SettingList: 'SettingRow' };
+for (const exportedName of exported) {
+  const name = PARTS[exportedName] ?? exportedName;
   // Subcomponents (Menu.Item) live on their parent's page; only top-level exports need one.
   if (
     !new RegExp(`title: '${name}[ ']|<${name}Page`).test(pages) &&
@@ -76,7 +81,10 @@ for (const name of exported) {
 // Every tooltip is the Tooltip component (or tipAnchor): a native title= on a DOM element is
 // the browser's own yellow box, late, unstyled and invisible to touch. Component props named
 // title (Alert, Section, PageHeader) are headings, not tooltips, and are not matched here.
-for (const file of [...readdirSync('src').map((f) => `src/${f}`), ...readdirSync('catalog/src').map((f) => `catalog/src/${f}`)]) {
+for (const file of [
+  ...readdirSync('src').map((f) => `src/${f}`),
+  ...readdirSync('catalog/src').map((f) => `catalog/src/${f}`),
+]) {
   if (!file.endsWith('.tsx')) continue;
   const text = readFileSync(file, 'utf8');
   for (const m of text.matchAll(/<([a-z][a-z0-9]*)[^>]*?title=/gs)) {

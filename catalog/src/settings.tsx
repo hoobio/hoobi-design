@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   ActionButton,
   Badge,
   Button,
   ActionDialog,
-  ConnectionCard,
   CopyField,
   CronInput,
   Divider,
   DurationInput,
+  LogViewer,
   FormDialog,
   FieldLabel,
   Input,
@@ -16,6 +16,9 @@ import {
   Section,
   SectionNav,
   Select,
+  SettingGroup,
+  SettingList,
+  SettingRow,
   Slider,
   Steps,
   Switch,
@@ -23,9 +26,11 @@ import {
   UnsavedBar,
   cronRuns,
   dismissAllToasts,
+  formatCronRelative,
   toast,
+  type LogLine,
 } from '@hoobi/design';
-import { Demo, DoDont, Import, Playground, Props, Snippet } from './kit.js';
+import { Demo, DoDont, Import, Playground, Props, Recipe, Snippet } from './kit.js';
 
 /* ------------------------------------------------------------------ FieldLabel */
 
@@ -964,145 +969,6 @@ export function CopyFieldPage() {
   );
 }
 
-/* ------------------------------------------------------------------ ConnectionCard */
-
-export function ConnectionCardPage() {
-  const [editing, setEditing] = useState(false);
-  const [failSave, setFailSave] = useState(true);
-  const [probe, setProbe] = useState<Record<string, string>>({});
-  return (
-    <>
-      <Import names="ConnectionCard" />
-      <Demo
-        title="A grid of upstreams"
-        note="Full height, so a responsive grid lines up whatever each card holds. No description in the header: six paragraphs of prose in a grid is a wall. Press Test on prowlarr and on bazarr - the button reports the CALL (busy, tick, or the error on its tooltip) and the result line reports the FINDING. Press edit on sonarr: an editing card with onSave ends in cancel + Save, and the first Save fails so you can see it stay open."
-        stack
-        code={`<ConnectionCard
-  name="sonarr"
-  health={{ ok: true, ms: 18 }}
-  rows={[
-    { label: 'url', value: 'http://sonarr:8989', mono: true },
-    { label: 'api key', value: 'set', tone: 'success' },
-  ]}
-  result="reachable · 18 ms · just now"
-  onTest={test}
-  editing={editing}
-  onEditingChange={setEditing}
-/>`}
-      >
-        <div className="grid w-full gap-3 sm:grid-cols-2">
-          <ConnectionCard
-            name="sonarr"
-            health={{ ok: true, ms: 18 }}
-            rows={[
-              { label: 'url', value: 'http://sonarr:8989', mono: true },
-              { label: 'api key', value: 'set', tone: 'success' },
-            ]}
-            result="reachable · 18 ms · just now"
-            onTest={() => undefined}
-            editing={editing}
-            onEditingChange={setEditing}
-            onSave={async () => {
-              await wait(900);
-              if (failSave) {
-                setFailSave(false);
-                throw new Error('Sonarr rejected the api key');
-              }
-            }}
-          >
-            <Input label="base url" mono defaultValue="http://sonarr:8989" />
-            <SecretField label="api key" set />
-          </ConnectionCard>
-          <ConnectionCard
-            name="seerr"
-            health={{ ok: false }}
-            rows={[
-              { label: 'url', value: 'http://seerr:5057', mono: true },
-              { label: 'api key', value: 'set', tone: 'success' },
-              { label: 'bot user', value: 'could not resolve', tone: 'danger' },
-            ]}
-            result="connect ECONNREFUSED seerr:5057"
-            resultTone="danger"
-            onTest={() => undefined}
-            onEditingChange={() => undefined}
-          />
-          <ConnectionCard
-            name="prowlarr"
-            optional
-            health={{ ok: true, ms: 64 }}
-            rows={[
-              { label: 'url', value: 'http://prowlarr:9696', mono: true },
-              { label: 'api key', value: 'set', tone: 'success' },
-            ]}
-            result={probe.prowlarr}
-            onTest={async () => {
-              await wait(900);
-              setProbe((p) => ({ ...p, prowlarr: 'reachable · 61 ms · just now' }));
-            }}
-            onEditingChange={() => undefined}
-          />
-          <ConnectionCard
-            name="bazarr"
-            optional
-            rows={[
-              { label: 'url', value: 'not set', tone: 'dim' },
-              { label: 'api key', value: 'not set', tone: 'mute' },
-            ]}
-            result={probe.bazarr}
-            resultTone="danger"
-            onTest={async () => {
-              await wait(900);
-              setProbe((p) => ({ ...p, bazarr: 'no base url' }));
-              throw new Error('no base url configured for bazarr');
-            }}
-            onEditingChange={() => undefined}
-          />
-        </div>
-      </Demo>
-
-      <Props
-        rows={[
-          ['name', 'string', '', 'The service, mono: it is a hostname, not a title.'],
-          ['optional', 'boolean', 'false', 'The app runs without it.'],
-          [
-            'health',
-            'ConnectionHealth',
-            '',
-            "{ ok, ms?, label? }. Omitted reads 'not configured'.",
-          ],
-          ['rows', 'ConnectionRow[]', '', '{ label, value, tone?, mono? } - the static view.'],
-          ['children', 'ReactNode', '', 'The form, swapped in while editing.'],
-          [
-            'editing / onEditingChange',
-            'boolean / (v) => void',
-            '',
-            'Controlled. Omit the handler to drop the edit button.',
-          ],
-          [
-            'onSave',
-            '() => void | Promise<unknown>',
-            '',
-            'Turns the editing footer into cancel + Save. Resolving leaves edit mode; rejecting stays.',
-          ],
-          [
-            'result / resultTone',
-            "ReactNode / 'neutral' | 'danger'",
-            "'neutral'",
-            'The last test outcome.',
-          ],
-          [
-            'onTest',
-            '() => void | Promise<unknown>',
-            '',
-            'A promise makes Test an ActionButton: busy, tick, or the error on its tooltip. Omit to drop the button.',
-          ],
-          ['testing', 'boolean', 'false', 'Deprecated. Forces busy; return a promise instead.'],
-        ]}
-      />
-    </>
-  );
-}
-
 /* ------------------------------------------------------------------ SectionNav */
 
 const NAV_ITEMS = [
@@ -1259,252 +1125,686 @@ export function UnsavedBarPage() {
   );
 }
 
+/* ------------------------------------------------------------------ SettingRow */
+
+export function SettingRowPage() {
+  const [on, setOn] = useState(true);
+  const [wait2, setWait] = useState<number | ''>(30);
+  return (
+    <>
+      <Import names="SettingGroup, SettingList, SettingRow" />
+      <Demo
+        title="Label, description, one control"
+        note="A settings page is rows on ONE surface: bg-surface each, a 1px seam of page background between them, never a surface inside a surface. The label is body-sized, the description caption and dim and only there when the label cannot say it alone. Field components take hideLabel, because the row already carries the words."
+        stack
+        flush
+        code={`<SettingGroup title="Automation">
+  <SettingRow
+    label="Auto-approve when the reporter is the requester"
+    description="Never applies to a reanalysis."
+    control={<Switch stateLabel aria-label="Auto-approve" checked={on} onCheckedChange={setOn} />}
+  />
+  <SettingRow
+    label="Wait for Jellyfin after an import"
+    description="Needs a Jellyfin api key."
+    control={<DurationInput hideLabel label="Wait for Jellyfin" unit="min" min={1} value={wait} onChange={setWait} />}
+  />
+  <SettingRow label="Public url" description="Where Seerr reaches mendarr.">
+    <Input hideLabel label="Public url" mono defaultValue="https://mendarr.example.net" />
+  </SettingRow>
+</SettingGroup>`}
+      >
+        <div className="w-full max-w-160 px-4">
+          <SettingGroup title="Automation">
+            <SettingRow
+              label="Auto-approve when the reporter is the requester"
+              description="Never applies to a reanalysis."
+              control={
+                <Switch stateLabel aria-label="Auto-approve" checked={on} onCheckedChange={setOn} />
+              }
+            />
+            <SettingRow
+              label="Wait for Jellyfin after an import"
+              description="Needs a Jellyfin api key."
+              control={
+                <DurationInput
+                  hideLabel
+                  label="Wait for Jellyfin after an import"
+                  unit="min"
+                  min={1}
+                  className="w-28"
+                  value={wait2}
+                  onChange={setWait}
+                />
+              }
+            />
+            <SettingRow label="Public url" description="Where Seerr reaches mendarr.">
+              <Input hideLabel label="Public url" mono defaultValue="https://mendarr.example.net" />
+            </SettingRow>
+          </SettingGroup>
+        </div>
+      </Demo>
+
+      <Demo
+        title="Three fills, each with one job"
+        note="bg is the page and the seam between rows; surface is every row and is never nested in another surface; chip is what a field sits INTO, not on top of. surface-raised is reserved for things that float: the unsaved bar, a menu, the hover on a secondary button."
+        stack
+        code={`<SettingList>
+  <SettingRow label="Model">
+    <Input hideLabel label="Model" mono defaultValue="qwen3-30b-a3b" />
+  </SettingRow>
+</SettingList>`}
+      >
+        <div className="grid w-full max-w-160 gap-4 sm:grid-cols-3">
+          {(
+            [
+              ['bg', 'bg-bg', 'the page, and the 1px seam between rows'],
+              ['surface', 'bg-surface', 'every row; never nested in another surface'],
+              ['chip', 'bg-chip', 'a field sits into the row, not on top of it'],
+            ] as const
+          ).map(([name, cls, what]) => (
+            <div key={name} className="flex flex-col gap-2">
+              <div className={`h-12 rounded-panel ${cls}`} />
+              <span className="text-caption text-text-dim">
+                <span className="font-medium text-text">{name}</span> {what}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['label', 'ReactNode', '', 'Body-sized, sentence case.'],
+          [
+            'description',
+            'ReactNode',
+            '',
+            'Caption, dim. Only when the label cannot say it alone; never a value a control on the page already shows.',
+          ],
+          [
+            'control',
+            'ReactNode',
+            '',
+            'Flush right: a Switch, a DurationInput, a Select, with hideLabel.',
+          ],
+          [
+            'children',
+            'ReactNode',
+            '',
+            'Full-width under the label row: a url, a secret, a copy field.',
+          ],
+          [
+            'SettingGroup.title',
+            'ReactNode',
+            '',
+            'Caption-weight text above the list. Text, never a box.',
+          ],
+          ['SettingList', '', '', 'The bare list: rows with the seam, no title.'],
+        ]}
+      />
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ Task row recipe */
+
+type TaskState = 'idle' | 'running' | 'failed';
+const TASK_TONE: Record<TaskState, 'success' | 'info' | 'danger'> = {
+  idle: 'success',
+  running: 'info',
+  failed: 'danger',
+};
+
+function TaskRowDemo({
+  name,
+  detail,
+  state = 'idle',
+  onRun,
+}: {
+  name: string;
+  detail: string;
+  state?: TaskState;
+  onRun: () => Promise<unknown>;
+}) {
+  return (
+    <SettingRow
+      label={name}
+      meta={
+        state === 'failed' ? (
+          <Badge appearance="text" tone="danger">
+            {detail}
+          </Badge>
+        ) : (
+          detail
+        )
+      }
+      control={
+        <>
+          <Badge appearance="text" dot pulse={state === 'running'} tone={TASK_TONE[state]}>
+            {state}
+          </Badge>
+          <ActionButton
+            size="sm"
+            disabled={state === 'running'}
+            action={onRun}
+            successLabel="Started"
+          >
+            {state === 'failed' ? 'Retry' : 'Run now'}
+          </ActionButton>
+        </>
+      }
+    />
+  );
+}
+
+export function TaskRowRecipe() {
+  const [sweep, setSweep] = useState<TaskState>('failed');
+  return (
+    <Recipe
+      note="A scheduled job is not a component: it is a SettingRow with the last outcome in `meta`, a text Badge for the state (dot, tone, pulse while running) and an ActionButton in `control` that reports the start call. The consumer owns the words and the state machine; the library owns the row. Press Retry on Sweep."
+      code={`<SettingGroup title="Schedule">
+  <SettingRow
+    label="Monitor tick"
+    meta="last run 4 min ago · 12 issues checked"
+    control={
+      <>
+        <Badge appearance="text" dot tone="success">idle</Badge>
+        <ActionButton size="sm" action={run} successLabel="Started">Run now</ActionButton>
+      </>
+    }
+  />
+  <SettingRow
+    label="Sweep"
+    meta={<Badge appearance="text" tone="danger">failed 1 h ago · Sonarr unreachable</Badge>}
+    control={
+      <>
+        <Badge appearance="text" dot tone="danger">failed</Badge>
+        <ActionButton size="sm" action={run} successLabel="Started">Retry</ActionButton>
+      </>
+    }
+  />
+</SettingGroup>`}
+    >
+      <div className="max-w-160">
+        <SettingGroup title="Schedule">
+          <TaskRowDemo
+            name="Monitor tick"
+            detail="last run 4 min ago · 12 issues checked"
+            onRun={() => wait(600)}
+          />
+          <TaskRowDemo
+            name="Sweep"
+            detail={
+              sweep === 'failed'
+                ? 'failed 1 h ago · Sonarr unreachable'
+                : sweep === 'running'
+                  ? 'running · 2 s'
+                  : 'last run just now'
+            }
+            state={sweep}
+            onRun={async () => {
+              setSweep('running');
+              await wait(1500);
+              setSweep('idle');
+            }}
+          />
+        </SettingGroup>
+      </div>
+    </Recipe>
+  );
+}
+
+/* ------------------------------------------------------------------ Connection row recipe */
+
+function ConnectionRowDemo({
+  name,
+  optional = false,
+  configured = true,
+  ok = true,
+  status,
+  statusTone = 'neutral',
+  url,
+  facts,
+  editing = false,
+  onEditingChange,
+  onTest,
+  onSave,
+  children,
+}: {
+  name: string;
+  optional?: boolean;
+  configured?: boolean;
+  ok?: boolean;
+  status?: string;
+  statusTone?: 'neutral' | 'danger';
+  url?: string;
+  facts?: ReactNode;
+  editing?: boolean;
+  onEditingChange?: (v: boolean) => void;
+  onTest?: () => Promise<unknown>;
+  onSave?: () => Promise<unknown>;
+  children?: ReactNode;
+}) {
+  return (
+    <SettingRow
+      leading={
+        <Badge appearance="text" dot tone={!configured ? 'neutral' : ok ? 'success' : 'danger'} />
+      }
+      label={
+        <span className={configured ? undefined : 'text-text-dim'}>
+          {name}
+          {optional ? <span className="ml-2 text-caption text-text-mute">optional</span> : null}
+        </span>
+      }
+      meta={
+        configured ? (
+          <>
+            <code>{url}</code>
+            {facts}
+          </>
+        ) : (
+          'Not configured'
+        )
+      }
+      control={
+        <>
+          {status ? (
+            <Badge appearance="text" tone={statusTone === 'danger' ? 'danger' : 'neutral'}>
+              {status}
+            </Badge>
+          ) : null}
+          {configured && onTest ? (
+            <ActionButton size="sm" variant="ghost" action={onTest}>
+              Test
+            </ActionButton>
+          ) : null}
+          {onEditingChange ? (
+            <Button
+              size="sm"
+              variant={editing ? 'secondary' : 'ghost'}
+              onClick={() => {
+                onEditingChange(!editing);
+              }}
+            >
+              {editing ? 'Cancel' : configured ? 'Edit' : 'Set up'}
+            </Button>
+          ) : null}
+        </>
+      }
+    >
+      {editing ? (
+        <div className="grid gap-x-6 gap-y-4 pb-1 sm:grid-cols-2 md:pl-6">
+          {children}
+          {onSave ? (
+            <div className="flex items-center gap-3 sm:col-span-2">
+              <span className="text-caption text-text-mute">Test before saving.</span>
+              <ActionButton
+                className="ml-auto"
+                variant="primary"
+                successLabel="Saved"
+                action={async () => {
+                  await onSave();
+                  onEditingChange?.(false);
+                }}
+              >
+                Save
+              </ActionButton>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </SettingRow>
+  );
+}
+
+export function ConnectionRowRecipe() {
+  const [editing, setEditing] = useState(false);
+  const [failSave, setFailSave] = useState(true);
+  const [probe, setProbe] = useState<string | undefined>(undefined);
+  return (
+    <Recipe
+      note="An upstream service is a SettingRow too: a text Badge dot in `leading`, the name as the label, the url as a <code> in `meta` with any fact a person acts on beside it, the latency or the last test result as a text Badge in `control` ahead of the Test and Edit buttons, and the form as `children` while editing - opened under the same row, no second surface. Press Edit on Sonarr: the first Save fails and the row stays open."
+      code={`<SettingRow
+  leading={<Badge appearance="text" dot tone="success" />}
+  label="Sonarr"
+  meta={<><code>http://sonarr:8989</code><span>webhook <Badge appearance="text" tone="success">registered</Badge></span></>}
+  control={
+    <>
+      <Badge appearance="text">18 ms</Badge>
+      <ActionButton size="sm" variant="ghost" action={test}>Test</ActionButton>
+      <Button size="sm" variant="ghost" onClick={edit}>Edit</Button>
+    </>
+  }
+>
+  {editing ? (
+    <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
+      <Input label="Base url" mono value={url} onChange={…} />
+      <SecretField label="Api key" set />
+      <ActionButton className="ml-auto sm:col-span-2" variant="primary" action={save} successLabel="Saved">Save</ActionButton>
+    </div>
+  ) : null}
+</SettingRow>`}
+    >
+      <div className="max-w-200">
+        <SettingList>
+          <ConnectionRowDemo
+            name="Seerr"
+            url="http://seerr:5055"
+            status="21 ms"
+            facts={
+              <span>
+                webhook{' '}
+                <Badge appearance="text" tone="success">
+                  registered
+                </Badge>
+              </span>
+            }
+            onTest={() => wait(600)}
+            onEditingChange={() => undefined}
+          />
+          <ConnectionRowDemo
+            name="Sonarr"
+            ok={false}
+            url="http://sonarr:8989"
+            status="HTTP 401 · api key rejected"
+            statusTone="danger"
+            editing={editing}
+            onEditingChange={setEditing}
+            onTest={() => wait(600)}
+            onSave={async () => {
+              await wait(900);
+              if (failSave) {
+                setFailSave(false);
+                throw new Error('Sonarr rejected the api key');
+              }
+            }}
+          >
+            <Input label="Base url" mono defaultValue="http://sonarr:8989" />
+            <SecretField label="Api key" set />
+          </ConnectionRowDemo>
+          <ConnectionRowDemo
+            name="Jellyfin"
+            url="http://jellyfin:8096"
+            status="44 ms"
+            facts={
+              <span>
+                live{' '}
+                <Badge appearance="text" tone="success">
+                  connected
+                </Badge>
+              </span>
+            }
+            onTest={() => wait(600)}
+            onEditingChange={() => undefined}
+          />
+          <ConnectionRowDemo
+            name="Prowlarr"
+            optional
+            url="http://prowlarr:9696"
+            status={probe ?? 'not checked'}
+            onTest={async () => {
+              await wait(900);
+              setProbe('v2.3 · 61 ms');
+            }}
+            onEditingChange={() => undefined}
+          />
+          <ConnectionRowDemo
+            name="Bazarr"
+            optional
+            configured={false}
+            onEditingChange={() => undefined}
+          />
+        </SettingList>
+      </div>
+    </Recipe>
+  );
+}
+
+/* ------------------------------------------------------------------ LogViewer */
+
+const LOG_SAMPLE: LogLine[] = (() => {
+  const t0 = Date.now() - 20 * 60_000;
+  const at = (s: number) => new Date(t0 + s * 1000).toISOString();
+  return [
+    {
+      ts: at(0),
+      tag: 'VERBOSE',
+      ctx: 'issue-1042',
+      message: 'GET sonarr/api/v3/series/812 -> 200 in 41 ms',
+    },
+    {
+      ts: at(1),
+      tag: 'INFO',
+      ctx: 'issue-1042',
+      message: 'Plan: episode S02E07 has a file Sonarr refuses to import (sample match)',
+    },
+    {
+      ts: at(2),
+      tag: 'INFO',
+      ctx: 'issue-1042',
+      message: 'Awaiting approval · sent to Telegram chat -1001',
+    },
+    { ts: at(217), tag: 'VERBOSE', ctx: 'issue-1042', message: 'Approved by hoobi via Telegram' },
+    {
+      ts: at(218),
+      tag: 'VERBOSE',
+      ctx: 'issue-1042',
+      message: 'POST sonarr/api/v3/command {"name":"ManualImport", …} -> 201 in 88 ms',
+    },
+    {
+      ts: at(219),
+      tag: 'ERROR',
+      ctx: 'issue-1042',
+      message: 'Sonarr rejected the import: quality cutoff already met',
+      extra: [
+        '    at ArrClient.command (services/arr/client.ts:212:11)',
+        '    at ImportStep.run (services/agent/steps/import.ts:58:20)',
+        '    at Agent.execute (services/agent/service.ts:301:9)',
+      ],
+    },
+    { ts: at(220), tag: 'WARNING', ctx: 'issue-1042', message: 'Falling back to metadata refresh' },
+    {
+      ts: at(223),
+      tag: 'SUCCESS',
+      ctx: 'issue-1042',
+      message: 'S02E07 imported · commented on Seerr issue #1042',
+    },
+    {
+      ts: at(780),
+      tag: 'INFO',
+      ctx: 'MONITOR',
+      message: 'Tick · 12 open issues · sonarr queue 3 · radarr queue 0',
+    },
+    {
+      ts: at(781),
+      tag: 'DEBUG',
+      ctx: 'MONITOR',
+      message: 'GET sonarr/api/v3/queue?page=1 -> 200 in 12 ms',
+    },
+    {
+      ts: at(781),
+      tag: 'VERBOSE',
+      ctx: 'SWEEP',
+      message: 'Held download 7f3a… on sonarr: import mapping applied',
+    },
+    { ts: at(1080), tag: 'WARNING', ctx: 'HEALTH', message: 'sonarr: HTTP 401 · api key rejected' },
+  ];
+})();
+
+export function LogViewerPage() {
+  const [lines, setLines] = useState<LogLine[]>(LOG_SAMPLE);
+  return (
+    <>
+      <Import names="LogViewer, type LogLine" />
+      <Demo
+        title="The log file, in the browser"
+        note="A filter bar over a mono list on the chip fill. Search is a substring or a /regex/i, with the hit count beside it; one chip per level with a count, off is struck through and debug starts off; a context is a click away from being a pinned filter. Follow keeps the list at the bottom as lines arrive, scrolling up turns it off, and the pill says how many landed meanwhile. Press Append to see it."
+        stack
+        code={`<LogViewer lines={lines} loading={loading} onLoadOlder={loadOlder} />`}
+      >
+        <div className="flex w-full flex-col gap-3">
+          <div className="flex h-96 w-full flex-col">
+            <LogViewer lines={lines} />
+          </div>
+          <div>
+            <Button
+              size="sm"
+              onClick={() => {
+                setLines((l) => [
+                  ...l,
+                  {
+                    ts: new Date().toISOString(),
+                    tag: 'INFO',
+                    ctx: 'MONITOR',
+                    message: `Tick · ${String(l.length)} lines so far`,
+                  },
+                ]);
+              }}
+            >
+              Append a line
+            </Button>
+          </div>
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'lines',
+            'LogLine[]',
+            '',
+            '{ ts, tag, ctx?, message, extra? }, oldest first. Filtering is client-side over these.',
+          ],
+          [
+            'levels',
+            'LogLevel[]',
+            'LOG_LEVELS',
+            '{ tag, tone, off?, raised? } in chip order. The syslog-shaped default has debug off and error raised.',
+          ],
+          ['loading', 'boolean', 'false', 'Placeholder while empty and still loading.'],
+          ['onLoadOlder', '() => void', '', 'Fired when the list is scrolled to the top.'],
+        ]}
+      />
+    </>
+  );
+}
+
 /* ------------------------------------------------------------------ Settings recipe */
 
 export function SettingsRecipe() {
-  const [temp, setTemp] = useState(0.1);
-  const [thinking, setThinking] = useState(true);
-  const [expr, setExpr] = useState('*/5 * * * *');
-  const [hours, setHours] = useState<number | ''>(48);
-  const [scanner, setScanner] = useState(false);
-  const [autoApprove, setAutoApprove] = useState(true);
+  const [auto, setAuto] = useState(true);
+  const [held, setHeld] = useState(false);
+  const [minutes, setMinutes] = useState<number | ''>(30);
+  const [expr, setExpr] = useState('*/15 * * * *');
   const [dirty, setDirty] = useState<string[]>([]);
-  const touch = (s: string) => {
-    setDirty((d) => (d.includes(s) ? d : [...d, s]));
+  const touch = () => {
+    setDirty(['Behaviour']);
   };
-  const NAV = [
-    { id: 'recipe-connections', label: 'Connections', dirty: dirty.includes('Connections') },
-    { id: 'recipe-llm', label: 'LLM', dirty: dirty.includes('LLM') },
-    { id: 'recipe-notify', label: 'Notifications' },
-    { id: 'recipe-behaviour', label: 'Behaviour', dirty: dirty.includes('Behaviour') },
-    {
-      id: 'recipe-scanner',
-      label: 'Request scanner',
-      dirty: dirty.includes('Request scanner'),
-    },
-    { id: 'recipe-webhook', label: 'Webhook' },
-    { id: 'recipe-security', label: 'Security' },
-  ];
-
+  const next = cronRuns(expr, 1);
   return (
     <>
       <p className="text-body text-text-dim">
-        The whole page: a jump list, panel sections, and a bar that only exists while something is
-        unsaved. Every explanation is on an (i); the only sentences on screen are one line per
-        section and the cron readout.
+        One settings page: a title, groups as caption titles, rows on one surface, a task row under
+        the schedule that drives it, and a bar that only exists while something is unsaved. Nothing
+        below caption, no box inside a box, accent spent once on Save.
       </p>
-      <div className="styled-scrollbar mt-4 h-160 overflow-y-auto rounded-panel bg-bg p-4">
-        <div className="flex items-start gap-6">
-          <SectionNav items={NAV} onSelect={() => undefined} className="!top-0" />
-          <div className="flex min-w-0 flex-1 flex-col gap-4">
-            <SectionNav items={NAV} onSelect={() => undefined} variant="chips" />
-            <main className="flex min-w-0 flex-1 flex-col gap-4">
-              <Section
-                id="recipe-connections"
-                title="Connections"
-                caption="Health is checked every minute."
-                panel
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <ConnectionCard
-                    name="sonarr"
-                    health={{ ok: true, ms: 18 }}
-                    rows={[
-                      { label: 'url', value: 'http://sonarr:8989', mono: true },
-                      { label: 'api key', value: 'set', tone: 'success' },
-                    ]}
-                    onTest={() => {
-                      touch('Connections');
-                    }}
-                    onEditingChange={() => undefined}
-                  />
-                  <ConnectionCard
-                    name="radarr"
-                    health={{ ok: true, ms: 22 }}
-                    rows={[
-                      { label: 'url', value: 'http://radarr:7878', mono: true },
-                      { label: 'api key', value: 'set', tone: 'success' },
-                    ]}
-                    onTest={() => undefined}
-                    onEditingChange={() => undefined}
-                  />
-                </div>
-              </Section>
-
-              <Section id="recipe-llm" title="LLM" caption="OpenAI-compatible endpoint." panel>
-                <div className="grid gap-4 rounded-panel bg-surface-raised p-4 sm:grid-cols-2">
-                  <Input label="base url" mono defaultValue="http://llama-swap:8080/v1" />
-                  <Input
-                    label="model"
-                    mono
-                    defaultValue="qwen3-30b-a3b"
-                    info="Any model the endpoint serves."
-                  />
-                  <SecretField
-                    label="api key"
-                    set
-                    onChange={() => {
-                      touch('LLM');
-                    }}
-                  />
-                  <Slider
-                    label="temperature"
-                    info="Lower is more deterministic."
-                    valueLabel={temp.toFixed(2)}
-                    min={0}
-                    max={2}
-                    step={0.05}
-                    value={temp}
-                    onChange={(e) => {
-                      setTemp(Number(e.target.value));
-                      touch('LLM');
-                    }}
-                  />
-                  <Select
-                    label="reasoning"
-                    info="Required for Qwen reasoning models."
-                    defaultValue="off"
-                  >
-                    <option value="off">off</option>
-                    <option value="on">on</option>
-                  </Select>
-                  <Switch
-                    checked={thinking}
-                    onCheckedChange={(v) => {
-                      setThinking(v);
-                      touch('LLM');
-                    }}
-                    label="disable thinking"
-                    info="Required for Qwen reasoning models."
-                  />
-                </div>
-              </Section>
-
-              <Section id="recipe-notify" title="Notifications &amp; sign-in" panel>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <ConnectionCard
-                    name="telegram"
-                    health={{ ok: true, label: 'on' }}
-                    rows={[
-                      { label: 'bot token', value: 'set', tone: 'success' },
-                      { label: 'chat id', value: '-1001987654321', mono: true },
-                    ]}
-                  />
-                  <ConnectionCard
-                    name="microsoft entra"
-                    optional
-                    rows={[
-                      { label: 'tenant id', value: 'not set', tone: 'mute' },
-                      { label: 'client id', value: 'not set', tone: 'mute' },
-                    ]}
-                  />
-                </div>
-              </Section>
-
-              <Section id="recipe-behaviour" title="Behaviour" panel>
-                <div className="flex flex-col gap-4 rounded-panel bg-surface-raised p-4">
-                  <Switch
-                    align="between"
-                    checked={autoApprove}
-                    onCheckedChange={(v) => {
-                      setAutoApprove(v);
-                      touch('Behaviour');
-                    }}
-                    label="Auto-approve when the reporter is the requester"
-                    info="Executes the plan immediately when the reporter also requested the media."
-                  />
-                  <CronInput
-                    label="Monitor schedule"
-                    info="How often to poll Sonarr and Radarr."
-                    value={expr}
-                    onChange={(v) => {
-                      setExpr(v);
-                      touch('Behaviour');
-                    }}
-                  />
-                </div>
-              </Section>
-
-              <Section
-                id="recipe-scanner"
-                title="Unfilled request scanner"
-                caption="Opens Seerr issues for requests that were never filled."
-                panel
-                actions={
-                  <Switch
-                    checked={scanner}
-                    onCheckedChange={(v) => {
-                      setScanner(v);
-                      touch('Request scanner');
-                    }}
-                    aria-label="Unfilled request scanner"
-                  />
-                }
-              >
-                {scanner ? (
-                  <div className="grid gap-4 rounded-panel bg-surface-raised p-4 sm:grid-cols-2">
-                    <DurationInput
-                      label="request age threshold"
-                      unit="hours"
-                      value={hours}
-                      onChange={(v) => {
-                        setHours(v);
-                        touch('Request scanner');
-                      }}
-                      info="Minimum age of an unfilled request. 0 disables the scanner."
-                    />
-                    <DurationInput
-                      label="ignore items added more than"
-                      unit="days ago"
-                      value={365}
-                      onChange={() => undefined}
-                      info="Skips items added before this. 0 removes the limit."
-                    />
-                  </div>
-                ) : null}
-              </Section>
-
-              <Section id="recipe-webhook" title="Webhook" panel>
-                <div className="flex flex-col gap-4 rounded-panel bg-surface-raised p-4">
-                  <CopyField
-                    label="endpoint"
-                    info="Derived from the public url. Register this in Seerr."
-                    value="http://mendarr:3144/webhook/seerr"
-                  />
-                  <SecretField label="shared secret" set />
-                </div>
-              </Section>
-
-              <Section id="recipe-security" title="Security" panel>
-                <div className="flex flex-col gap-4 rounded-panel bg-surface-raised p-4">
-                  <SecretField
-                    variant="reveal"
-                    label="mendarr API key"
-                    set
-                    revealedValue="mnd_4f9c1e7b2a8d43c0b6e5f1a2d9c8b7a6"
-                    onRegenerate={() => undefined}
-                  />
-                  <Divider />
-                  <SecretField
-                    variant="hidden"
-                    label="Cookie secret"
-                    set
-                    onRotate={() => undefined}
-                  />
-                </div>
-              </Section>
-
-              <UnsavedBar
-                sections={dirty}
-                onSave={() => {
-                  setDirty([]);
-                }}
-                onDiscard={() => {
-                  setDirty([]);
-                }}
-              />
-            </main>
-          </div>
+      <div className="styled-scrollbar mt-4 h-160 overflow-y-auto rounded-panel bg-bg p-6">
+        <div className="flex max-w-220 flex-col gap-7">
+          <h1 className="text-title text-text">Behaviour</h1>
+          <SettingGroup title="Automation">
+            <SettingRow
+              label="Auto-approve when the reporter is the requester"
+              description="Never applies to a reanalysis."
+              control={
+                <Switch
+                  stateLabel
+                  aria-label="Auto-approve when the reporter is the requester"
+                  checked={auto}
+                  onCheckedChange={(v) => {
+                    setAuto(v);
+                    touch();
+                  }}
+                />
+              }
+            />
+            <SettingRow
+              label="Unstick downloads Sonarr and Radarr will not import"
+              description="Refreshes stale metadata or applies the arr's own import mapping. Anything else is left for a person."
+              control={
+                <Switch
+                  stateLabel
+                  aria-label="Unstick held downloads"
+                  checked={held}
+                  onCheckedChange={(v) => {
+                    setHeld(v);
+                    touch();
+                  }}
+                />
+              }
+            />
+            <SettingRow
+              label="Wait for Jellyfin after an import"
+              description="Needs a Jellyfin api key."
+              control={
+                <DurationInput
+                  hideLabel
+                  label="Wait for Jellyfin after an import"
+                  unit="min"
+                  min={1}
+                  className="w-28"
+                  value={minutes}
+                  onChange={(v) => {
+                    setMinutes(v);
+                    touch();
+                  }}
+                />
+              }
+            />
+          </SettingGroup>
+          <SettingGroup title="Schedule">
+            <SettingRow
+              label="Monitor schedule"
+              description={
+                next.error ??
+                `Next run ${formatCronRelative(next.runs?.[0] ?? new Date())}. The sweep runs on the same tick.`
+              }
+              control={
+                <Input
+                  hideLabel
+                  label="Monitor schedule"
+                  mono
+                  className="w-40"
+                  value={expr}
+                  error={next.error ? ' ' : undefined}
+                  onChange={(e) => {
+                    setExpr(e.target.value);
+                    touch();
+                  }}
+                />
+              }
+            />
+            <TaskRowDemo
+              name="Monitor tick"
+              detail="last run 4 min ago · 12 issues checked"
+              onRun={() => wait(600)}
+            />
+            <TaskRowDemo
+              name="Sweep"
+              detail="running · 38 s"
+              state="running"
+              onRun={() => wait(600)}
+            />
+          </SettingGroup>
+          <UnsavedBar
+            sections={dirty}
+            onSave={() => {
+              setDirty([]);
+            }}
+            onDiscard={() => {
+              setDirty([]);
+            }}
+          />
         </div>
       </div>
     </>

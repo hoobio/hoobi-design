@@ -78,3 +78,12 @@ export function ChevronIcon(props: SVGProps<SVGSVGElement>) {
     </Glyph>
   );
 }
+
+export function SearchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <circle cx="8.75" cy="8.75" r="5" />
+      <path d="M12.5 12.5l4 4" />
+    </Glyph>
+  );
+}

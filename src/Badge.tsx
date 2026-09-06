@@ -13,6 +13,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   /** 'sm' is the 18px inline marker that sits inside a field label; 'md' is the standalone chip. */
   size?: BadgeSize;
   dot?: boolean;
+  /** The dot breathes: something is in progress right now. */
+  pulse?: boolean;
   /** Tooltip shown on hover and keyboard focus, explaining what the badge means. */
   tooltip?: string;
 }
@@ -47,6 +49,7 @@ export function Badge({
   appearance = 'chip',
   size = 'md',
   dot = false,
+  pulse = false,
   tooltip,
   className,
   children,
@@ -64,7 +67,11 @@ export function Badge({
         {dot ? (
           <span
             aria-hidden
-            className="mr-1.5 inline-block size-1.5 rounded-full bg-current align-[0.06em]"
+            className={cx(
+              'inline-block size-1.5 rounded-full bg-current align-[0.06em]',
+              children != null && 'mr-1.5',
+              pulse && 'animate-pulse',
+            )}
           />
         ) : null}
         {children}
@@ -84,7 +91,11 @@ export function Badge({
       )}
       {...rest}
     >
-      {dot ? <span className={cx('shrink-0 rounded-full', SIZES[size].dot, t.dot)} /> : null}
+      {dot ? (
+        <span
+          className={cx('shrink-0 rounded-full', SIZES[size].dot, t.dot, pulse && 'animate-pulse')}
+        />
+      ) : null}
       {children}
     </span>
   );

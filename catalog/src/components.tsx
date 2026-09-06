@@ -429,9 +429,10 @@ export function ShellPage() {
   nav={
     <>
       <Shell.Item as={NavLink} to="/issues" icon={<IssuesIcon />} label="issues" active />
-      <Shell.Group label="Admin">
-        <Shell.Item as={NavLink} to="/config" icon={<GearIcon />} label="config" />
-      </Shell.Group>
+      <Shell.Item as={NavLink} to="/settings" icon={<GearIcon />} label="settings">
+        <Shell.Item as={NavLink} to="/settings/connections" label="Connections" active />
+        <Shell.Item as={NavLink} to="/settings/logs" label="Logs" />
+      </Shell.Item>
     </>
   }
   navFooter={<Shell.User name="hoobi" detail="admin" onClick={openAccount} />}
@@ -2634,7 +2635,12 @@ export function TimelinePage() {
           ],
           ['Timeline.Event time', 'string', '', 'First column, tabular figures.'],
           ['Timeline.Event note', 'ReactNode', '', 'Dense caption, wraps to its own row below sm.'],
-          ['Timeline.Step label', 'ReactNode', 'required', 'Caller colours it; a tool name goes in <code>.'],
+          [
+            'Timeline.Step label',
+            'ReactNode',
+            'required',
+            'Caller colours it; a tool name goes in <code>.',
+          ],
           ['Timeline.Step time / kind', 'string', '', "Muted prefix - e.g. 'call' / 'result'."],
           [
             'Timeline.Step detail',

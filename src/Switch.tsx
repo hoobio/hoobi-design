@@ -23,6 +23,8 @@ export interface SwitchProps extends Omit<
    *             sentence-long hit target that also has to hold an (i) is not one button.
    */
   align?: 'start' | 'between';
+  /** Prints On / Off before the track, the WinUI ToggleSwitch content. For a switch whose row says what it does but not which way it is. */
+  stateLabel?: boolean;
 }
 
 /**
@@ -38,6 +40,7 @@ export function Switch({
   label,
   info,
   align = 'start',
+  stateLabel = false,
   className,
   disabled,
   onClick,
@@ -85,10 +88,16 @@ export function Switch({
       className={cx(
         'inline-flex min-w-0 items-start gap-2.5 border-0 bg-transparent p-0 text-left text-body text-text disabled:pointer-events-none disabled:opacity-50',
         between ? 'mt-0.5 shrink-0' : label ? 'py-1.5' : 'h-5',
+        stateLabel && 'items-center',
         !between && !tip && className,
       )}
       {...rest}
     >
+      {stateLabel ? (
+        <span className="text-caption text-text-dim" aria-hidden>
+          {checked ? 'On' : 'Off'}
+        </span>
+      ) : null}
       {track}
       {!between && label ? <span className="min-w-0">{label}</span> : null}
     </button>

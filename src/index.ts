@@ -9,11 +9,22 @@ export { Card, type CardProps, type CardTone } from './Card.js';
 export { ActionDialog, type ActionDialogProps, type DialogTone } from './ActionDialog.js';
 export { FormDialog, type FormDialogProps } from './FormDialog.js';
 export {
-  ConnectionCard,
-  type ConnectionCardProps,
-  type ConnectionHealth,
-  type ConnectionRow,
-} from './ConnectionCard.js';
+  LOG_LEVELS,
+  LogViewer,
+  type LogLevel,
+  type LogLine,
+  type LogTag,
+  type LogTone,
+  type LogViewerProps,
+} from './LogViewer.js';
+export {
+  SettingGroup,
+  SettingList,
+  SettingRow,
+  type SettingGroupProps,
+  type SettingListProps,
+  type SettingRowProps,
+} from './SettingRow.js';
 export { CopyField, type CopyFieldProps } from './CopyField.js';
 export {
   cronRuns,

@@ -18,6 +18,8 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   mono?: boolean;
   /** Right-aligned in the label row: a badge, a readout, a small action. */
   aside?: ReactNode;
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow, where the row carries the words. */
+  hideLabel?: boolean;
 }
 
 export function Input({
@@ -27,6 +29,7 @@ export function Input({
   error,
   mono = false,
   aside,
+  hideLabel = false,
   className,
   id,
   ...rest
@@ -37,7 +40,13 @@ export function Input({
   return (
     <div className={cx('flex min-w-0 flex-col gap-1', className)}>
       {label || aside ? (
-        <FieldLabel htmlFor={inputId} info={info} infoId={infoId} aside={aside}>
+        <FieldLabel
+          htmlFor={inputId}
+          info={info}
+          infoId={infoId}
+          aside={aside}
+          className={hideLabel ? 'sr-only' : undefined}
+        >
           {label}
         </FieldLabel>
       ) : null}
@@ -46,9 +55,9 @@ export function Input({
         aria-invalid={error ? true : undefined}
         aria-describedby={info ? infoId : undefined}
         className={cx(
-          'h-8 w-full min-w-0 rounded-control border bg-surface px-2.5 text-body text-text placeholder:text-text-mute',
+          'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 text-body text-text placeholder:text-text-mute',
           mono && 'font-mono',
-          error ? 'border-danger' : 'border-border',
+          error ? 'border-danger' : 'border-transparent',
         )}
         {...rest}
       />

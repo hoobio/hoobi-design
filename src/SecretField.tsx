@@ -69,6 +69,8 @@ export interface SecretFieldProps {
   /** Wording overrides for translation. Not a slot for helper copy. */
   labels?: Partial<SecretFieldLabels>;
   disabled?: boolean;
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow. */
+  hideLabel?: boolean;
   id?: string;
   className?: string;
 }
@@ -99,6 +101,7 @@ export function SecretField({
   note,
   labels,
   disabled = false,
+  hideLabel = false,
   id,
   className,
 }: SecretFieldProps) {
@@ -133,9 +136,11 @@ export function SecretField({
   if (variant === 'reveal') {
     return (
       <div className={cx('flex min-w-0 flex-col gap-2', className)}>
-        <FieldLabel aside={setBadge}>{label}</FieldLabel>
+        <FieldLabel aside={setBadge} className={hideLabel ? 'sr-only' : undefined}>
+          {label}
+        </FieldLabel>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-8 min-w-60 flex-1 items-center overflow-hidden rounded-control border border-border bg-surface pointer-coarse:h-11">
+          <div className="flex h-8 min-w-60 flex-1 items-center overflow-hidden rounded-control border border-transparent bg-chip pointer-coarse:h-11">
             <code
               className={cx(
                 'min-w-0 flex-1 truncate px-2.5 font-mono text-body text-text',
@@ -151,7 +156,7 @@ export function SecretField({
               }}
               aria-pressed={revealed}
               aria-label={revealed ? t.hide : t.reveal}
-              className="flex h-full w-8 shrink-0 items-center justify-center border-0 border-l border-border bg-transparent text-text-dim hover:bg-surface-raised hover:text-text"
+              className="flex h-full w-8 shrink-0 items-center justify-center border-0 border-l border-bg bg-transparent text-text-dim hover:bg-surface-raised hover:text-text"
             >
               {revealed ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
             </button>
@@ -181,7 +186,7 @@ export function SecretField({
       <div className={cx('flex min-w-0 flex-wrap items-center justify-between gap-3', className)}>
         <span className="flex min-w-0 items-center gap-2 text-body text-text">
           {lock}
-          <span className="min-w-0 truncate">{label}</span>
+          <span className={cx('min-w-0 truncate', hideLabel && 'sr-only')}>{label}</span>
           {setBadge}
         </span>
         {onRotate ? (
@@ -214,12 +219,12 @@ export function SecretField({
           </span>
         }
       >
-        {label}
+        <span className={hideLabel ? 'sr-only' : undefined}>{label}</span>
       </FieldLabel>
       <div
         className={cx(
-          'flex h-8 items-center rounded-control border bg-surface pointer-coarse:h-11',
-          error ? 'border-danger' : 'border-border',
+          'flex h-8 items-center rounded-control border bg-chip pointer-coarse:h-11',
+          error ? 'border-danger' : 'border-transparent',
         )}
       >
         <span className="flex h-full shrink-0 items-center pl-2.5">{lock}</span>

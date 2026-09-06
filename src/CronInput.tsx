@@ -22,6 +22,8 @@ export interface CronInputProps {
   onAdvancedChange?: (open: boolean) => void;
   /** How many firings to show. */
   runs?: number;
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow. */
+  hideLabel?: boolean;
   id?: string;
   className?: string;
 }
@@ -48,6 +50,7 @@ export function CronInput({
   advanced,
   onAdvancedChange,
   runs = 3,
+  hideLabel = false,
   id,
   className,
 }: CronInputProps) {
@@ -66,7 +69,9 @@ export function CronInput({
 
   return (
     <div className={cx('flex min-w-0 flex-col gap-2.5', className)}>
-      <FieldLabel info={info}>{label}</FieldLabel>
+      <FieldLabel info={info} className={hideLabel ? 'sr-only' : undefined}>
+        {label}
+      </FieldLabel>
 
       <div className="flex flex-wrap gap-1.5">
         {presets.map((preset) => {
@@ -125,8 +130,8 @@ export function CronInput({
               onChange(e.target.value);
             }}
             className={cx(
-              'h-8 w-full min-w-0 rounded-control border bg-surface px-2.5 font-mono text-body text-text pointer-coarse:h-11',
-              result.error ? 'border-danger' : 'border-border',
+              'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 font-mono text-body text-text pointer-coarse:h-11',
+              result.error ? 'border-danger' : 'border-transparent',
             )}
           />
         </div>

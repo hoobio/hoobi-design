@@ -1,4 +1,14 @@
-import { Alert, Badge, Button, Card, Divider } from '@hoobi/design';
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Divider,
+  Input,
+  SettingList,
+  SettingRow,
+  Switch,
+} from '@hoobi/design';
 import { DoDont, Snippet } from './kit.js';
 
 /**
@@ -139,6 +149,73 @@ export function Rules() {
           <Badge tone="success">imported</Badge>
           <Badge tone="info">monitoring</Badge>
         </div>
+      </DoDont>
+
+      <DoDont
+        rule="Settings are one surface level"
+        why="Rows are bg-surface with a 1px seam of bg between them, and a group is a caption title, not a box. A row inside a panel inside a section is three fills saying the same thing, and the reader has to work out which one is the setting. surface-raised is for things that float: a menu, the unsaved bar."
+        doLabel="SettingList: rows and a seam."
+        dontLabel="A surface inside a surface."
+      >
+        <SettingList className="w-72">
+          <SettingRow
+            label="Auto-approve"
+            description="Never applies to a reanalysis."
+            control={
+              <Switch
+                stateLabel
+                aria-label="Auto-approve"
+                checked
+                onCheckedChange={() => undefined}
+              />
+            }
+          />
+          <SettingRow
+            label="Unstick held downloads"
+            control={
+              <Switch
+                stateLabel
+                aria-label="Unstick"
+                checked={false}
+                onCheckedChange={() => undefined}
+              />
+            }
+          />
+        </SettingList>
+        <div className="w-72 rounded-panel bg-surface p-3">
+          <div className="flex flex-col gap-3 rounded-panel bg-surface-raised p-3">
+            <Switch
+              align="between"
+              label="Auto-approve"
+              checked
+              onCheckedChange={() => undefined}
+            />
+            <Switch
+              align="between"
+              label="Unstick held downloads"
+              checked={false}
+              onCheckedChange={() => undefined}
+            />
+          </div>
+        </div>
+      </DoDont>
+
+      <DoDont
+        rule="A field sits into the row, and the row is its label"
+        why="Inside a SettingRow the words are already there at body size, so the field draws no label of its own (hideLabel keeps it for screen readers) and fills with chip rather than standing on the surface with a border. A second, caption-sized label under the first is the same words twice, smaller."
+        doLabel="hideLabel, chip fill, the row says what it is."
+        dontLabel="A labelled field: the words twice."
+      >
+        <SettingList className="w-72">
+          <SettingRow label="Public url" description="Where Seerr reaches mendarr.">
+            <Input hideLabel label="Public url" mono defaultValue="http://mendarr:3144" />
+          </SettingRow>
+        </SettingList>
+        <SettingList className="w-72">
+          <SettingRow label="Public url" description="Where Seerr reaches mendarr.">
+            <Input label="public url" mono defaultValue="http://mendarr:3144" />
+          </SettingRow>
+        </SettingList>
       </DoDont>
 
       <h3 className="mt-10 text-body-strong text-text">Changes land here, not in the consumer</h3>

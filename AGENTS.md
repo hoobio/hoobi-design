@@ -64,14 +64,19 @@ Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout
 `html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar lands
 Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, controlled sort), Breadcrumbs,
 Timeline (`Timeline.Item`), DescriptionList,
-Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, and `Shell.MenuItem` /
+Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, a `Shell.Item` with `children` is an accordion of icon-less sub-items shown while it is active, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
 Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
 Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no context, because
 the caller is usually a poll or a socket, not a component),
 Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
 scrolling or clipping ancestor can cut it off), ActionDialog, Steps (chevrons wide, a stacked
-list narrow), SectionNav, UnsavedBar, ConnectionCard, and the settings field set - FieldLabel
+list narrow), SectionNav, UnsavedBar (`sections` or a free `message`), the list-row primitive -
+SettingRow / SettingGroup / SettingList (one surface level: rows on `bg-surface`, a 1px seam of
+`bg-bg` between, a group title is text and never a box; slots `leading`, `label`, `meta`,
+`description`, `control`, `children`) - LogViewer (level chips with counts, substring or /regex/
+search, a pinned context, Follow; the level set is the consumer's), and the settings field
+set - FieldLabel
 (the one label row: the `(i)` and the right-hand slot), SecretField, DurationInput, CronInput
 (with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
 `mirageImage` and `markFavicon`.
@@ -102,6 +107,12 @@ Checkbox is the native input given the house look, which is what the absence alr
 
 **Components are only added when a consumer actually needs one.** No speculative components, no
 props added "for later". A consumer wanting Table is the trigger to write Table.
+
+**And a component is a primitive with slots, never a product concept.** A scheduled task, an
+upstream connection, a wizard step are compositions of SettingRow + Badge + ActionButton in the
+consumer, shown here as Recipes; ConnectionCard and TaskRow were both taken back out for wearing
+mendarr's words (`Test`, `Run now`, `health`). If a consumer pattern needs something the primitives
+cannot express, the fix is a slot on the primitive, not a new component named after the screen.
 
 ### Rules the API enforces, not just this file
 
@@ -145,6 +156,13 @@ which is why the component is `ActionDialog`.
 
 ## Design rules
 
+- **Settings are one surface level.** Rows are `bg-surface` separated by a 1px seam of `bg-bg`
+  (`SettingList`), a group title is caption text, never a box, and nothing on a settings page sits
+  below caption (14px): label `text-body`, description `text-caption text-text-dim`, only when the
+  label cannot say it alone and never restating a value a control on the page already shows.
+  Fields inside a row fill with `bg-chip` and no border (the danger border on `error` stays) and
+  take `hideLabel`, because the row is the label. `bg-surface-raised` is for things that float: a
+  menu, the unsaved bar, the hover on a secondary button, the "new lines" pill.
 - Dark only. `color-scheme: dark`, no light-mode variants, no `dark:` prefixes.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
@@ -154,9 +172,10 @@ which is why the component is `ActionDialog`.
   character (a url, a key, a path, a release name, a cron expression, JSON, code). A name, a
   label, a heading, a timestamp, a status word or a count is sans - digits that must line up get
   `tabular-nums`, never a typeface change. In the library `font-mono` lives only in CodeBlock,
-  CopyField, SecretField, CronInput's expression, Banner's `code`, and the `mono` opt-in on Input
-  and ConnectionCard rows; `check.mjs` fails it anywhere else. Consumers reach mono through
-  `<code>` (the base layer styles it) or those props, never through the class.
+  CopyField, SecretField, CronInput's expression, Banner's `code`, and the `mono` opt-in on Input;
+  `check.mjs` fails it anywhere else. ConnectionRow's url and LogViewer's lines are `<code>` /
+  `.mono`, which the base layer styles. Consumers reach mono through `<code>` or those props, never
+  through the class.
   The sans is the latin subset copied out of `@fontsource-variable/hanken-grotesk` (a devDependency,
   so the provenance and the upgrade path are in the lockfile), never fetched at runtime.
 
