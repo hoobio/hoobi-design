@@ -24,6 +24,7 @@ import {
   Table,
   type TableSort,
   Tabs,
+  TimeAxis,
   Timeline,
   Tooltip,
   cx,
@@ -1506,6 +1507,81 @@ export function TablePage() {
             'Trailing control: right-aligned wide, below the cells stacked.',
           ],
           ['label', 'string', 'undefined', 'aria-label for the table.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function TimeAxisPage() {
+  const from = new Date();
+  from.setSeconds(0, 0);
+  const to = new Date(from.getTime() + 60 * 60 * 1000);
+  const ticks = Array.from({ length: 5 }, (_, i) => new Date(from.getTime() + i * 15 * 60 * 1000));
+  const every5min = (count: number) =>
+    Array.from({ length: count }, (_, i) => ({ at: new Date(from.getTime() + i * 5 * 60 * 1000) }));
+
+  return (
+    <>
+      <Import names="TimeAxis" />
+      <Demo
+        title="A schedule, three jobs and a single firing"
+        note="One lane per row, marks positioned by fraction of the window. now draws an accent line; a mark defaults to neutral and can pulse for work in progress."
+        stack
+        code={`<TimeAxis
+  from={from}
+  to={to}
+  now={new Date()}
+  ticks={ticks}
+  rows={[
+    { id: 'monitor', label: 'monitor', marks: every5min.map((at, i) => ({ at, tone: i === 0 ? 'info' : undefined, pulse: i === 0 })) },
+    { id: 'backfill', label: 'backfill', marks: every5min },
+    { id: 'watchdog', label: 'watchdog', marks: [...every5min, { tone: 'danger' }] },
+    { id: 'scan', label: 'scan', marks: [{ at: nextHour }] },
+  ]}
+/>`}
+      >
+        <div className="w-full">
+          <TimeAxis
+            label="Scheduled jobs"
+            from={from}
+            to={to}
+            now={new Date(from.getTime() + 22 * 60 * 1000)}
+            ticks={ticks}
+            rows={[
+              {
+                id: 'monitor',
+                label: 'monitor',
+                marks: every5min(12).map((m, i) =>
+                  i === 0 ? { ...m, tone: 'info' as const, pulse: true, tooltip: 'running now' } : m,
+                ),
+              },
+              { id: 'backfill', label: 'backfill', marks: every5min(12) },
+              {
+                id: 'watchdog',
+                label: 'watchdog',
+                marks: [...every5min(12), { at: new Date(from.getTime() + 47 * 60 * 1000), tone: 'danger' as const, tooltip: 'failed' }],
+              },
+              { id: 'scan', label: 'scan', marks: [{ at: new Date(from.getTime() + 60 * 60 * 1000) }] },
+            ]}
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['from', 'Date', '', 'Start of the window.'],
+          ['to', 'Date', '', 'End of the window.'],
+          ['rows', 'TimeAxisRow[]', '', 'One lane each: id, label, marks.'],
+          ['now', 'Date', 'undefined', 'A vertical accent line at this instant.'],
+          ['ticks', 'Date[]', '[]', 'Labelled gridlines.'],
+          [
+            'formatTick',
+            '(d: Date) => string',
+            'HH:mm',
+            'Intl.DateTimeFormat hour/minute 2-digit in the viewer’s locale.',
+          ],
+          ['label', 'string', 'undefined', 'Names the figure for assistive tech.'],
         ]}
       />
     </>

@@ -48,6 +48,7 @@ import {
   SpinnerPage,
   TablePage,
   TabsPage,
+  TimeAxisPage,
   TimelinePage,
   TooltipPage,
 } from './components.js';
@@ -330,6 +331,13 @@ export const PAGES: Page[] = [
     title: 'Table',
     caption: 'Sortable columns wide, a stack of row cards narrow. One markup path.',
     render: () => <TablePage />,
+  },
+  {
+    id: 'time-axis',
+    group: 'Layout',
+    title: 'Time Axis',
+    caption: 'Events on a shared time window, one lane per row: a schedule, a set of firings.',
+    render: () => <TimeAxisPage />,
   },
   {
     id: 'timeline',

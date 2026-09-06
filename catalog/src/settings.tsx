@@ -1215,6 +1215,26 @@ export function SettingRowPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Highlighted by a link"
+        note="A scrollIntoView from a link calls out the row it lands on: the accent tint replaces bg-surface, never a border. scroll-mt-4 keeps it clear of the viewport edge."
+        stack
+        flush
+        code={`<SettingList>
+  <SettingRow label="Model" />
+  <SettingRow label="Wait for Jellyfin after an import" highlight />
+  <SettingRow label="Public url" />
+</SettingList>`}
+      >
+        <div className="w-full max-w-160 px-4">
+          <SettingList>
+            <SettingRow label="Model" />
+            <SettingRow label="Wait for Jellyfin after an import" highlight />
+            <SettingRow label="Public url" />
+          </SettingList>
+        </div>
+      </Demo>
+
       <Props
         rows={[
           ['label', 'ReactNode', '', 'Body-sized, sentence case.'],
@@ -1243,6 +1263,12 @@ export function SettingRowPage() {
             'Caption-weight text above the list. Text, never a box.',
           ],
           ['SettingList', '', '', 'The bare list: rows with the seam, no title.'],
+          [
+            'highlight',
+            'boolean',
+            'false',
+            "Called out by a link: the row's surface takes the accent tint instead of bg-surface.",
+          ],
         ]}
       />
     </>

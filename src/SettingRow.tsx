@@ -52,6 +52,8 @@ export interface SettingRowProps {
   children?: ReactNode;
   /** Id for the label span, for a control's aria-labelledby. */
   id?: string;
+  /** Called out by a link: the surface takes the accent tint. Nothing else changes. */
+  highlight?: boolean;
   className?: string;
 }
 
@@ -68,10 +70,17 @@ export function SettingRow({
   control,
   children,
   id,
+  highlight,
   className,
 }: SettingRowProps) {
   return (
-    <div className={cx('flex min-w-0 flex-col gap-3 bg-surface px-4 py-3.5', className)}>
+    <div
+      className={cx(
+        'flex min-w-0 flex-col gap-3 px-4 py-3.5 scroll-mt-4',
+        highlight ? 'bg-accent/15' : 'bg-surface',
+        className,
+      )}
+    >
       <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
         {leading ? <span className="flex shrink-0 items-center">{leading}</span> : null}
         <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">

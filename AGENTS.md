@@ -74,9 +74,11 @@ scrolling or clipping ancestor can cut it off), ActionDialog, Steps (chevrons wi
 list narrow), SectionNav, UnsavedBar (`sections` or a free `message`), the list-row primitive -
 SettingRow / SettingGroup / SettingList (one surface level: rows on `bg-surface`, a 1px seam of
 `bg-bg` between, a group title is text and never a box; slots `leading`, `label`, `meta`,
-`description`, `control`, `children`) - LogViewer (level chips with counts, substring or /regex/
-search, a pinned context, Follow; the level set is the consumer's), and the settings field
-set - FieldLabel
+`description`, `control`, `children`; `highlight` swaps the row's fill for the accent tint when a
+link calls it out) - LogViewer (level chips with counts, substring or /regex/
+search, a pinned context, Follow; the level set is the consumer's), TimeAxis (events on a shared
+time window, one lane per row - a cron schedule, a set of firings - not a chart library), and the
+settings field set - FieldLabel
 (the one label row: the `(i)` and the right-hand slot), SecretField, DurationInput, CronInput
 (with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
 `mirageImage` and `markFavicon`.

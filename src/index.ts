@@ -88,6 +88,7 @@ export {
   type ShellMenuLabelProps,
   type ShellProps,
 } from './Shell.js';
+export { TimeAxis, type TimeAxisMark, type TimeAxisProps, type TimeAxisRow } from './TimeAxis.js';
 export {
   Timeline,
   type TimelineCommentProps,
