@@ -1680,7 +1680,7 @@ export function LogViewerPage() {
             'levels',
             'LogLevel[]',
             'LOG_LEVELS',
-            '{ tag, tone, off?, raised? } in chip order. The syslog-shaped default has debug off and error raised.',
+            '{ tag, tone, off?, raised? } in chip order. The default: debug (cyan, off), verbose (dim), info (plain text), success, warning, error (raised).',
           ],
           ['loading', 'boolean', 'false', 'Placeholder while empty and still loading.'],
           ['onLoadOlder', '() => void', '', 'Fired when the list is scrolled to the top.'],

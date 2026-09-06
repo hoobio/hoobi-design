@@ -5,7 +5,7 @@ import { Switch } from './Switch.js';
 import { tipAnchor } from './tip.js';
 
 export type LogTag = 'DEBUG' | 'VERBOSE' | 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';
-export type LogTone = 'mute' | 'dim' | 'accent' | 'success' | 'warn' | 'danger';
+export type LogTone = 'text' | 'mute' | 'dim' | 'accent' | 'success' | 'warn' | 'danger';
 
 export interface LogLevel {
   tag: string;
@@ -18,9 +18,9 @@ export interface LogLevel {
 
 /** The syslog-shaped default. Pass `levels` for any other set. */
 export const LOG_LEVELS: LogLevel[] = [
-  { tag: 'DEBUG', tone: 'mute', off: true },
+  { tag: 'DEBUG', tone: 'accent', off: true },
   { tag: 'VERBOSE', tone: 'dim' },
-  { tag: 'INFO', tone: 'accent' },
+  { tag: 'INFO', tone: 'text' },
   { tag: 'SUCCESS', tone: 'success' },
   { tag: 'WARNING', tone: 'warn' },
   { tag: 'ERROR', tone: 'danger', raised: true },
@@ -50,6 +50,7 @@ export interface LogViewerProps {
 }
 
 const TONE: Record<LogTone, string> = {
+  text: 'text-text',
   mute: 'text-text-mute',
   dim: 'text-text-dim',
   accent: 'text-accent-cyan',
@@ -95,11 +96,15 @@ function highlight(text: string, re: RegExp | null): ReactNode {
 }
 
 /** 2026-09-06T14:02:11.204Z -> 09-06 14:02:11.204, local time. */
-function shortTs(iso: string): string {
+/** Local time as `09-06` and `14:02:11.204`; the date is dropped when the line is condensed. */
+function shortTs(iso: string): [string, string] {
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
+  if (Number.isNaN(d.getTime())) return ['', iso];
   const p = (n: number, w = 2) => String(n).padStart(w, '0');
-  return `${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`;
+  return [
+    `${p(d.getMonth() + 1)}-${p(d.getDate())}`,
+    `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`,
+  ];
 }
 
 /**
@@ -249,16 +254,18 @@ export function LogViewer({
         </span>
       </div>
 
-      <div className="relative min-h-0 flex-1">
+      <div className="@container relative min-h-0 flex-1">
         <div
           ref={listRef}
           onScroll={onScroll}
-          className="mono styled-scrollbar @container h-full min-h-64 overflow-auto rounded-panel bg-chip py-3 text-caption leading-[22px] text-text"
+          // One grid for the whole list from @xl (rem at the 18px root: 648px), each row a subgrid, so the
+          // time, tag and context columns are sized by content ONCE and line up down the file.
+          className="mono styled-scrollbar h-full min-h-64 overflow-auto rounded-panel bg-chip py-3 text-caption leading-[22px] text-text @xl:grid @xl:grid-cols-[auto_auto_auto_1fr] @xl:content-start @xl:gap-x-3"
         >
           {loading && lines.length === 0 ? (
-            <p className="px-4 font-sans text-text-mute">Loading…</p>
+            <p className="px-4 font-sans text-text-mute @xl:col-span-4">Loading…</p>
           ) : shown.length === 0 ? (
-            <p className="px-4 font-sans text-text-mute">Nothing matches.</p>
+            <p className="px-4 font-sans text-text-mute @xl:col-span-4">Nothing matches.</p>
           ) : (
             shown.map(([l, i]) => {
               const folded = l.extra !== undefined && l.extra.length > 0;
@@ -267,14 +274,17 @@ export function LogViewer({
                 <div
                   key={i}
                   className={cx(
-                    // One markup path: a wrapping line of time · tag · [ctx] with the message under it when
-                    // narrow, the four-column grid from @xl (rem at the 18px root: 648px) up.
-                    'flex flex-wrap items-start gap-x-3 px-4 hover:bg-surface @xl:grid @xl:grid-cols-[150px_76px_auto_1fr]',
+                    'flex flex-wrap items-start gap-x-3 px-4 hover:bg-surface @xl:col-span-4 @xl:grid @xl:grid-cols-subgrid',
                     level.get(l.tag)?.raised && 'bg-surface',
                   )}
                 >
-                  <span className="text-text-mute tabular-nums">{shortTs(l.ts)}</span>
-                  <span className={TONE[level.get(l.tag)?.tone ?? 'dim']}>{l.tag}</span>
+                  <span className="whitespace-nowrap text-text-mute tabular-nums">
+                    <span className="hidden @xl:inline">{shortTs(l.ts)[0]} </span>
+                    {shortTs(l.ts)[1]}
+                  </span>
+                  <span className={cx('whitespace-nowrap', TONE[level.get(l.tag)?.tone ?? 'dim'])}>
+                    {l.tag}
+                  </span>
                   {l.ctx ? (
                     <button
                       type="button"
@@ -282,7 +292,7 @@ export function LogViewer({
                         setCtx(l.ctx ?? null);
                       }}
                       {...tipAnchor('Filter to this context')}
-                      className="tip-fixed text-left whitespace-nowrap text-accent-purple hover:text-accent-cyan"
+                      className="tip-fixed justify-self-start text-left whitespace-nowrap text-accent-purple hover:text-accent-cyan"
                     >
                       [{l.ctx}]
                     </button>
