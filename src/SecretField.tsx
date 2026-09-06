@@ -199,27 +199,31 @@ export function SecretField({
     );
   }
 
+  const aside = (
+    <span className="flex shrink-0 items-center gap-2">
+      {setBadge}
+      {set && onClear ? (
+        <button
+          type="button"
+          onClick={onClear}
+          disabled={disabled}
+          className="h-4.5 rounded-control border-0 bg-transparent px-1 text-caption text-text-dim hover:text-danger disabled:pointer-events-none disabled:opacity-50"
+        >
+          {t.clear}
+        </button>
+      ) : null}
+    </span>
+  );
+
+  // With the label hidden there is no label row to hold the badge and clear, so they ride inside the field: an empty row above the input read as a layout bug.
   return (
     <div className={cx('flex min-w-0 flex-col gap-1', className)}>
       <FieldLabel
         htmlFor={inputId}
-        aside={
-          <span className="flex shrink-0 items-center gap-2">
-            {setBadge}
-            {set && onClear ? (
-              <button
-                type="button"
-                onClick={onClear}
-                disabled={disabled}
-                className="h-4.5 rounded-control border-0 bg-transparent px-1 text-caption text-text-dim hover:text-danger disabled:pointer-events-none disabled:opacity-50"
-              >
-                {t.clear}
-              </button>
-            ) : null}
-          </span>
-        }
+        aside={hideLabel ? undefined : aside}
+        className={hideLabel ? 'sr-only' : undefined}
       >
-        <span className={hideLabel ? 'sr-only' : undefined}>{label}</span>
+        {label}
       </FieldLabel>
       <div
         className={cx(
@@ -244,6 +248,7 @@ export function SecretField({
             set && 'placeholder:tracking-widest',
           )}
         />
+        {hideLabel ? <span className="flex h-full items-center pr-2">{aside}</span> : null}
       </div>
       {set && value ? <p className="text-caption text-warn">{t.replaces}</p> : null}
       {under}

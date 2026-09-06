@@ -375,6 +375,7 @@ export function SecretFieldPage() {
             init: 'write-only',
           },
           set: { kind: 'boolean', init: true },
+          hideLabel: { kind: 'boolean', init: false },
         }}
         render={(v) => (
           <SecretField
@@ -382,6 +383,7 @@ export function SecretFieldPage() {
             variant={v.variant as 'write-only' | 'reveal' | 'hidden'}
             label="api key"
             set={v.set as boolean}
+            hideLabel={v.hideLabel as boolean}
             value={draft}
             onChange={setDraft}
             onClear={() => undefined}
