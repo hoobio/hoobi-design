@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from 'react';
 import { cx } from './cx.js';
+import { ChevronIcon } from './icons.js';
 import { tipAnchor } from './tip.js';
 import {
   MenuDivider,
@@ -452,7 +453,7 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
   icon?: ReactNode;
   label: string;
   active?: boolean;
-  /** Sub-items (Shell.Item without icons), an accordion under this row while it is active. Not rendered on the collapsed rail or in top mode. */
+  /** Sub-items (Shell.Item without icons): an accordion under this row, open while the item is active and togglable from its chevron. Not rendered on the collapsed rail or in top mode. */
   children?: ReactNode;
   [key: string]: unknown;
 }
@@ -478,6 +479,12 @@ function ShellItem({
   const area = useContext(NavAreaContext);
   const railed = area === 'side' && collapsed;
   const Comp: ElementType = as ?? 'a';
+  // Arriving on the item opens it; a chevron press is remembered until the next arrival.
+  const [toggled, setToggled] = useState<boolean | null>(null);
+  useEffect(() => {
+    setToggled(null);
+  }, [active]);
+  const open = toggled ?? active;
   // Picking a destination is what finishes with the overlay; nothing else in the pane is.
   const handleClick = (e: MouseEvent<HTMLElement>) => {
     onClick?.(e);
@@ -568,13 +575,30 @@ function ShellItem({
       </span>
     </Comp>
   );
-  if (!children || !active || railed) return row;
+  if (!children || railed) return row;
   return (
     <div className="flex flex-col">
-      {row}
-      <NavAreaContext.Provider value="nested">
-        <div className="flex flex-col gap-0.5 py-1 pl-4">{children}</div>
-      </NavAreaContext.Provider>
+      <div className="relative">
+        {row}
+        <button
+          type="button"
+          aria-label={open ? `Collapse ${label}` : `Expand ${label}`}
+          aria-expanded={open}
+          onClick={() => {
+            setToggled(!open);
+          }}
+          className="absolute top-1/2 right-1 flex size-8 -translate-y-1/2 items-center justify-center rounded-control text-text-mute hover:bg-surface-raised hover:text-text"
+        >
+          <ChevronIcon
+            className={cx('size-4 transition-transform duration-150', open && 'rotate-90')}
+          />
+        </button>
+      </div>
+      {open ? (
+        <NavAreaContext.Provider value="nested">
+          <div className="flex flex-col gap-0.5 py-1 pl-4">{children}</div>
+        </NavAreaContext.Provider>
+      ) : null}
     </div>
   );
 }
