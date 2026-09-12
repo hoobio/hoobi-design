@@ -339,7 +339,17 @@
 
   /* Mirage, scoped to one surface (a card): the same recipe as .mirage-layer but
      tinted towards surface-raised and clipped to the host, which must NOT paint its
-     own opaque background - the layer IS the fill. Hover states go translucent. */
+     own opaque background - the layer IS the fill. Hover states go translucent.
+
+     The tint is only part opaque, so this assumes an opaque page background BEHIND
+     the host. It is for a card sitting on a page, not for a box floating over a
+     canvas, photo or video: there the content beneath reads through and the result
+     looks merely transparent rather than filled. Give such a host its own opaque
+     base and put the mirage on a child.
+
+     It also sets position:relative and overflow:hidden, which beat a consumer's
+     `absolute` or `overflow-y-auto` on the same element - an overflowing panel goes
+     silently unscrollable. Placement and scrolling belong on wrapper elements. */
   .mirage-scoped {
     position: relative;
     isolation: isolate;

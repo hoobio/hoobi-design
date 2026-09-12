@@ -87,6 +87,14 @@ Mirage comes in three strengths: `.mirage-layer` behind a whole app, `.mirage-sc
 own fill (or `Card mirage="..."`), and `.mirage-edge` as a masked strip at a list row's left edge -
 for rows/lists where a full-bleed mirage per row would be too busy.
 
+Every strength tints at part opacity, so mirage assumes an **opaque page background beneath it**.
+A box floating over a canvas, photo or video has none, and the content underneath reads through it:
+the result looks transparent rather than filled, which is not a mirage that needs tuning but the
+wrong tool. Such a surface wants its own opaque fill, with mirage on a child if it is wanted at all.
+`.mirage-scoped` also sets `position: relative` and `overflow: hidden`, which beat a consumer's
+`absolute` or `overflow-y-auto` on the same element and can leave an overflowing panel silently
+unscrollable - placement and scrolling belong on wrappers.
+
 `Divider` is the house hairline as a component: 1px of page background, and it **bleeds to the
 surface's edges by default** by cancelling whatever padding the container published as `--pad`
 (a Card sets it), so nothing has to be told a magic inset. `padded` opts out. A consumer writing
