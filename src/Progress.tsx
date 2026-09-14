@@ -1,14 +1,24 @@
 import type { ReactNode } from 'react';
 import { cx } from './cx.js';
 
+export type ProgressTone = 'accent' | 'success' | 'warn' | 'danger';
+
 export interface ProgressProps {
   value: number;
   max?: number;
   label?: ReactNode;
+  tone?: ProgressTone;
   className?: string;
 }
 
-export function Progress({ value, max = 100, label, className }: ProgressProps) {
+const FILLS: Record<ProgressTone, string> = {
+  accent: 'bg-accent',
+  success: 'bg-success',
+  warn: 'bg-warn',
+  danger: 'bg-danger',
+};
+
+export function Progress({ value, max = 100, label, tone = 'accent', className }: ProgressProps) {
   const pct = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0;
   return (
     <div className={className}>
@@ -26,7 +36,7 @@ export function Progress({ value, max = 100, label, className }: ProgressProps) 
         className="h-1 overflow-hidden rounded-full bg-border"
       >
         <div
-          className="h-full rounded-full bg-accent transition-[width] duration-500"
+          className={cx('h-full rounded-full transition-[width] duration-500', FILLS[tone])}
           style={{ width: `${pct}%` }}
         />
       </div>

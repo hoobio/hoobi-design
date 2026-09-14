@@ -1268,6 +1268,7 @@ export function SelectPage() {
 export function ModalPage() {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState(false);
+  const [lg, setLg] = useState(false);
   return (
     <>
       <Import names="Modal" />
@@ -1325,8 +1326,8 @@ export function ModalPage() {
 
       <Demo
         title="Sizing"
-        note="Capped at 38rem wide and 85dvh tall, with the body scrolling and a safe-area pad at the bottom edge. Override the width with className."
-        code={`<Modal open={open} onClose={close} title="Wide" className="w-[min(60rem,calc(100vw-1.5rem))]">
+        note="md is capped at 38rem wide, lg at 54rem, both 85dvh tall with the body scrolling and a safe-area pad at the bottom edge. Override the width with className."
+        code={`<Modal open={open} onClose={close} title="Wide" size="lg">
   ...
 </Modal>`}
       >
@@ -1334,6 +1335,34 @@ export function ModalPage() {
           Open &quot;Long content&quot; above to see the scroll and the sticky header.
         </p>
       </Demo>
+
+      <Demo
+        title="lg size"
+        note="For a modal with more content per row - a wider table, a two-column form."
+        code={`<Modal open={open} onClose={close} title="Sonarr queue" size="lg">
+  ...
+</Modal>`}
+      >
+        <Button variant="secondary" onClick={() => setLg(true)}>
+          Open lg
+        </Button>
+      </Demo>
+
+      <Modal open={lg} onClose={() => setLg(false)} title="Sonarr queue" size="lg">
+        <div className="flex flex-col gap-2">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between gap-3 text-body text-text-dim"
+            >
+              <span className="min-w-0 truncate">Episode {i + 1} - 1080p WEB-DL</span>
+              <Badge tone={i % 3 === 0 ? 'success' : 'neutral'} dot>
+                {i % 3 === 0 ? 'done' : 'queued'}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </Modal>
 
       <Props
         rows={[
@@ -1346,6 +1375,7 @@ export function ModalPage() {
           ],
           ['title', 'ReactNode', '', 'Subtitle-sized h2 in the header.'],
           ['children', 'ReactNode', 'required', 'Scrollable body.'],
+          ['size', "'md' | 'lg'", 'md', '38rem wide, or 54rem for lg.'],
           ['className', 'string', '', 'Merged onto the dialog. Keep p-0 for backdrop clicks.'],
         ]}
       />
@@ -1746,11 +1776,27 @@ export function ProgressPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Tone"
+        note="Fill colour only, for when the bar itself should carry the state rather than a badge beside it."
+        stack
+        code={`<Progress value={64} label="Downloading" tone="accent" />
+<Progress value={100} label="Imported" tone="success" />
+<Progress value={64} label="Paused" tone="warn" />
+<Progress value={22} label="Failed" tone="danger" />`}
+      >
+        <Progress value={64} label="Downloading" tone="accent" className="w-full" />
+        <Progress value={100} label="Imported" tone="success" className="w-full" />
+        <Progress value={64} label="Paused" tone="warn" className="w-full" />
+        <Progress value={22} label="Failed" tone="danger" className="w-full" />
+      </Demo>
+
       <Props
         rows={[
           ['value', 'number', 'required', 'Clamped against max.'],
           ['max', 'number', '100', 'Denominator. A max of 0 renders 0%.'],
           ['label', 'ReactNode', '', 'Caption row above the bar, with a % readout.'],
+          ['tone', "'accent' | 'success' | 'warn' | 'danger'", 'accent', 'Fill colour.'],
           ['className', 'string', '', 'Applied to the wrapper. Set the width here.'],
         ]}
       />

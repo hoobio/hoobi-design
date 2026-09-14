@@ -6,10 +6,16 @@ export interface ModalProps {
   onClose: () => void;
   title?: ReactNode;
   children: ReactNode;
+  size?: 'md' | 'lg';
   className?: string;
 }
 
-export function Modal({ open, onClose, title, children, className }: ModalProps) {
+const SIZES = {
+  md: 'w-[min(38rem,calc(100vw-1.5rem))]',
+  lg: 'w-[min(54rem,calc(100vw-1.5rem))]',
+};
+
+export function Modal({ open, onClose, title, children, size = 'md', className }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -30,7 +36,8 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       onCancel={onClose}
       onClick={onBackdrop}
       className={cx(
-        'm-auto w-[min(38rem,calc(100vw-1.5rem))] max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-black/60',
+        'm-auto max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-black/60',
+        SIZES[size],
         className,
       )}
     >
