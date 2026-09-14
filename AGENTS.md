@@ -195,7 +195,9 @@ which is why the component is `ActionDialog`.
 - **Mobile first, always.** Every component has to survive a 360px viewport: `min-w-0` on flex
   children, wrapping headers, horizontally scrollable tab strips, `dvh`-capped scrollable modals,
   44px touch targets under `pointer: coarse`, `env(safe-area-inset-*)` where content reaches the
-  bottom edge.
+  bottom edge. The base layer's `button`/`select`/`input`/`[role="tab"]` rule covers native
+  controls; a row built on a non-native element (`Shell.Item`'s anchor) needs its own
+  `pointer-coarse:min-h-11`.
 - Modal is a native `<dialog>` with `showModal()`: Escape, focus trap and inert backdrop come free.
   Backdrop clicks work via `e.target === dialogRef.current`, which requires `p-0` on the dialog.
 - Respect `prefers-reduced-motion` (handled globally in the base layer).

@@ -453,6 +453,8 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
   icon?: ReactNode;
   label: string;
   active?: boolean;
+  /** Right-aligned after the label - a Badge, a count. Hidden on the collapsed rail like the label. */
+  meta?: ReactNode;
   /** Sub-items (Shell.Item without icons): an accordion under this row, open while the item is active and togglable from its chevron. Not rendered on the collapsed rail or in top mode. */
   children?: ReactNode;
   [key: string]: unknown;
@@ -470,6 +472,7 @@ function ShellItem({
   icon,
   label,
   active = false,
+  meta,
   children,
   className,
   onClick,
@@ -496,7 +499,7 @@ function ShellItem({
       <Comp
         aria-current={active ? 'page' : undefined}
         className={cx(
-          'relative flex h-8 items-center rounded-control px-3 text-[0.8333rem] whitespace-nowrap',
+          'relative flex h-8 items-center rounded-control px-3 text-[0.8333rem] whitespace-nowrap pointer-coarse:min-h-11',
           active ? 'bg-surface text-text' : 'text-text-dim hover:bg-surface hover:text-text',
           className,
         )}
@@ -521,7 +524,7 @@ function ShellItem({
       <Comp
         aria-current={active ? 'page' : undefined}
         className={cx(
-          'relative flex h-8 shrink-0 items-center gap-1.5 rounded-control px-3 text-body whitespace-nowrap',
+          'relative flex h-8 shrink-0 items-center gap-1.5 rounded-control px-3 text-body whitespace-nowrap pointer-coarse:min-h-11',
           active ? 'text-text' : 'text-text-dim hover:bg-surface hover:text-text',
           className,
         )}
@@ -544,7 +547,7 @@ function ShellItem({
     <Comp
       aria-current={active ? 'page' : undefined}
       className={cx(
-        'relative flex h-10 items-center gap-3 overflow-hidden rounded-control whitespace-nowrap',
+        'relative flex h-10 items-center gap-3 overflow-hidden rounded-control whitespace-nowrap pointer-coarse:min-h-11',
         // surface-raised, not surface: the pill has to read on the contrast (chip) pane too.
         active ? 'bg-surface-raised text-text' : 'text-text-dim hover:bg-surface hover:text-text',
         railed && 'tip-fixed',
@@ -567,12 +570,22 @@ function ShellItem({
       </span>
       <span
         className={cx(
-          'min-w-0 truncate text-body transition-opacity',
+          'min-w-0 flex-1 truncate text-body transition-opacity',
           railed ? 'opacity-0' : 'opacity-100',
         )}
       >
         {label}
       </span>
+      {meta ? (
+        <span
+          className={cx(
+            'mr-3 flex shrink-0 items-center transition-opacity',
+            railed ? 'opacity-0' : 'opacity-100',
+          )}
+        >
+          {meta}
+        </span>
+      ) : null}
     </Comp>
   );
   if (!children || railed) return row;

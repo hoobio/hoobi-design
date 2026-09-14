@@ -436,6 +436,7 @@ export function ShellPage() {
   nav={
     <>
       <Shell.Item as={NavLink} to="/issues" icon={<IssuesIcon />} label="issues" active />
+      <Shell.Item as={NavLink} to="/automations" icon={<GearIcon />} label="automations" meta={<Badge tone="info">soon</Badge>} />
       <Shell.Item as={NavLink} to="/settings" icon={<GearIcon />} label="settings">
         <Shell.Item as={NavLink} to="/settings/connections" label="Connections" active />
         <Shell.Item as={NavLink} to="/settings/logs" label="Logs" />
@@ -573,9 +574,9 @@ export function ShellPage() {
           ],
           [
             'Shell.Item',
-            'as, icon, label, active, href|to...',
+            'as, icon, label, active, meta, href|to...',
             '',
-            'One nav row. as swaps the element (router Link). Rail shows the icon or the initial, with the label as a tooltip; top mode renders a chip with an underline.',
+            'One nav row. as swaps the element (router Link). Rail shows the icon or the initial, with the label as a tooltip; top mode renders a chip with an underline. meta is a right-aligned trailing slot (a Badge, a count), hidden on the collapsed rail like the label.',
           ],
           [
             'Shell.Group',
