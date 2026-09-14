@@ -77,10 +77,34 @@ function Chevron({ up }: { up: boolean }) {
 
 // Every class is written out in full: Tailwind reads the compiled file for utilities to emit, and a
 // name assembled at runtime is one it never sees.
-const CELL = '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:align-top @2xl:text-body';
-const TABLE_WIDE = '@2xl:table @2xl:overflow-hidden @2xl:rounded-panel @2xl:bg-surface-raised';
-const ROW_WIDE = '@2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0';
-const NARROW_COLUMN = '@2xl:w-px @2xl:whitespace-nowrap';
+const QUERY_WIDE = {
+  table: '@2xl:table @2xl:overflow-hidden @2xl:rounded-panel @2xl:bg-surface-raised',
+  head: '@2xl:table-header-group',
+  body: '@2xl:table-row-group',
+  row: '@2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0',
+  cell: '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:align-top @2xl:text-body',
+  narrow: '@2xl:w-px @2xl:whitespace-nowrap',
+  end: '@2xl:text-right',
+  action: '@2xl:text-right @2xl:whitespace-nowrap',
+  label: '@2xl:hidden',
+  nowrap: '',
+  fluid: '',
+};
+const MEASURED_WIDE = {
+  table: 'table overflow-hidden rounded-panel bg-surface-raised',
+  head: 'table-header-group',
+  body: 'table-row-group',
+  row: 'table-row rounded-none border-t border-bg p-0',
+  cell: 'table-cell px-3 py-2 align-top text-body',
+  narrow: 'w-px whitespace-nowrap',
+  end: 'text-right',
+  action: 'text-right whitespace-nowrap',
+  label: 'hidden',
+  nowrap: 'whitespace-nowrap',
+  fluid: 'w-full max-w-0 truncate',
+};
+// The primary column truncates, so it has no natural width: this is the room it must keep or stack.
+const PRIMARY_MIN = 320;
 
 /**
  * One markup path: a real <table> from `@2xl` (a container query, so it keys off its own column,
@@ -88,9 +112,11 @@ const NARROW_COLUMN = '@2xl:w-px @2xl:whitespace-nowrap';
  * front of them. The sort is applied here so the consumer can keep its rows in whatever order they
  * are stored, and held by the consumer so it has a URL.
  *
- * Columns give way in order as the container narrows: anything with `compact` switches to its
- * narrow rendering, then the lowest `priority` columns drop one at a time behind a "+N" menu, and
- * only when the primary column plus the must-show band still overflows does the table stack.
+ * A column carrying `priority` or `compact` turns that on: cells stop wrapping, the natural width
+ * is measured against the wrapper, and columns give way in order as the container narrows - anything
+ * with `compact` switches to its narrow rendering, then the lowest `priority` columns drop one at a
+ * time behind a "+N" menu, and only when the primary column plus the must-show band no longer fits
+ * does the table stack. Such a table stacks on that measurement rather than on the container query.
  */
 export function Table<T>({
   columns,
@@ -107,6 +133,10 @@ export function Table<T>({
     .filter(({ column }) => !column.primary && (column.priority ?? 0) < 100)
     .sort((a, b) => (a.column.priority ?? 0) - (b.column.priority ?? 0) || b.index - a.index)
     .map(({ column }) => column.id);
+  const progressive = columns.some(
+    (column) => column.compact !== undefined || column.priority !== undefined,
+  );
+  const wide = progressive ? MEASURED_WIDE : QUERY_WIDE;
   const compactAt = columns.some((column) => column.compact) ? 1 : 0;
   const lastStep = compactAt + hideable.length;
   const [step, setStep] = useState(0);
@@ -121,30 +151,49 @@ export function Table<T>({
     hideable.slice(0, Math.min(Math.max(step - compactAt, 0), hideable.length)),
   );
   const overflowCell = !stacked && hidden.size > 0;
+  const shown = stacked ? columns : columns.filter((column) => !hidden.has(column.id));
+
+  const measure = useRef<(() => void) | null>(null);
+  measure.current = () => {
+    const root = rootRef.current;
+    const table = tableRef.current;
+    const head = headRef.current;
+    if (!root || !table || !head || !progressive || step > lastStep) return;
+    if (head.clientHeight === 0) return;
+    const primaryIndex = shown.findIndex((column) => column.primary);
+    const widths: number[] = [];
+    for (const row of Array.from(table.rows)) {
+      Array.from(row.cells).forEach((cell, index) => {
+        if (index === primaryIndex) return;
+        widths[index] = Math.max(widths[index] ?? 0, cell.scrollWidth);
+      });
+    }
+    const needed =
+      widths.reduce((total, width) => total + width, 0) + (primaryIndex >= 0 ? PRIMARY_MIN : 0);
+    if (needed > root.clientWidth) setStep(step + 1);
+  };
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    // Only a container that grew can un-hide a column, so a narrowing drag never re-runs the cascade.
+    let frame = 0;
     const observer = new ResizeObserver(([entry]) => {
       const width = entry?.contentRect.width ?? 0;
-      if (width > widthRef.current) setStep(0);
+      const grew = width > widthRef.current;
       widthRef.current = width;
+      cancelAnimationFrame(frame);
+      // A container that grew runs the cascade again from the full set; a narrowing one carries on.
+      frame = requestAnimationFrame(() => (grew ? setStep(0) : measure.current?.()));
     });
     observer.observe(root);
     return () => {
+      cancelAnimationFrame(frame);
       observer.disconnect();
     };
   }, []);
 
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    const table = tableRef.current;
-    const head = headRef.current;
-    if (!root || !table || !head || step > lastStep) return;
-    // A hidden header means the container query already stacked us: nothing to measure.
-    if (head.clientHeight === 0) return;
-    if (table.scrollWidth > root.clientWidth + 1) setStep(step + 1);
+    measure.current?.();
   });
 
   const active = sort ? columns.find((c) => c.id === sort.column) : undefined;
@@ -171,16 +220,14 @@ export function Table<T>({
     onSortChange({ column: column.id, direction });
   }
 
-  const shown = stacked ? columns : columns.filter((column) => !hidden.has(column.id));
-
   return (
     <div ref={rootRef} className={cx('@container overflow-x-auto', className)}>
       <table
         ref={tableRef}
         aria-label={label}
-        className={cx('block w-full border-collapse text-body', !stacked && TABLE_WIDE)}
+        className={cx('block w-full border-collapse text-body', !stacked && wide.table)}
       >
-        <thead ref={headRef} className={cx('hidden', !stacked && '@2xl:table-header-group')}>
+        <thead ref={headRef} className={cx('hidden', !stacked && wide.head)}>
           <tr className="text-caption text-text-mute">
             {shown.map((column) => {
               const narrow = compact && column.compact !== undefined;
@@ -196,7 +243,9 @@ export function Table<T>({
                   className={cx(
                     'px-3 py-2 font-medium',
                     column.align === 'end' ? 'text-right' : 'text-left',
-                    narrow && NARROW_COLUMN,
+                    !stacked && wide.nowrap,
+                    !stacked && column.primary && wide.fluid,
+                    narrow && wide.narrow,
                     column.className,
                   )}
                 >
@@ -222,7 +271,7 @@ export function Table<T>({
             })}
             {rowAction ? <th scope="col" className="px-3 py-2" /> : null}
             {overflowCell ? (
-              <th scope="col" className={cx('px-3 py-2 text-right', NARROW_COLUMN)}>
+              <th scope="col" className={cx('px-3 py-2 text-right', wide.narrow)}>
                 <Menu
                   variant="ghost"
                   size="sm"
@@ -240,11 +289,11 @@ export function Table<T>({
             ) : null}
           </tr>
         </thead>
-        <tbody className={cx('flex flex-col gap-2', !stacked && '@2xl:table-row-group')}>
+        <tbody className={cx('flex flex-col gap-2', !stacked && wide.body)}>
           {ordered.map((row) => (
             <tr
               key={rowKey(row)}
-              className={cx('block rounded-panel bg-surface-raised p-3', !stacked && ROW_WIDE)}
+              className={cx('block rounded-panel bg-surface-raised p-3', !stacked && wide.row)}
             >
               {shown.map((column) => {
                 const narrow = !stacked && compact && column.compact !== undefined;
@@ -255,14 +304,16 @@ export function Table<T>({
                       column.primary
                         ? 'mb-1.5 block'
                         : 'mr-3 inline-flex items-center gap-1 text-caption',
-                      !stacked && CELL,
-                      !stacked && column.align === 'end' && '@2xl:text-right',
-                      narrow && NARROW_COLUMN,
+                      !stacked && wide.cell,
+                      !stacked && column.align === 'end' && wide.end,
+                      !stacked && wide.nowrap,
+                      !stacked && column.primary && wide.fluid,
+                      narrow && wide.narrow,
                       column.className,
                     )}
                   >
                     {column.primary ? null : (
-                      <span className={cx('text-text-mute', !stacked && '@2xl:hidden')}>
+                      <span className={cx('text-text-mute', !stacked && wide.label)}>
                         {column.header}
                       </span>
                     )}
@@ -274,15 +325,15 @@ export function Table<T>({
                 <td
                   className={cx(
                     'mt-2 block',
-                    !stacked && '@2xl:text-right @2xl:whitespace-nowrap',
-                    !stacked && CELL,
+                    !stacked && wide.action,
+                    !stacked && wide.cell,
                   )}
                   colSpan={overflowCell ? 2 : undefined}
                 >
                   {rowAction(row)}
                 </td>
               ) : null}
-              {overflowCell && !rowAction ? <td className={CELL} /> : null}
+              {overflowCell && !rowAction ? <td className={wide.cell} /> : null}
             </tr>
           ))}
         </tbody>

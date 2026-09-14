@@ -1544,6 +1544,7 @@ interface Release {
   quality: string;
   sizeGb: number;
   indexer: string;
+  age: string;
   ok: boolean;
 }
 
@@ -1554,6 +1555,7 @@ const RELEASES: Release[] = [
     quality: 'WEBDL-1080p',
     sizeGb: 1.0,
     indexer: 'DrunkenSlug',
+    age: '2 hours',
     ok: true,
   },
   {
@@ -1562,6 +1564,7 @@ const RELEASES: Release[] = [
     quality: 'WEBDL-1080p',
     sizeGb: 1.4,
     indexer: 'NZBFinder',
+    age: '5 hours',
     ok: true,
   },
   {
@@ -1570,6 +1573,7 @@ const RELEASES: Release[] = [
     quality: 'WEBDL-1080p',
     sizeGb: 0.9,
     indexer: 'DrunkenSlug',
+    age: '3 days',
     ok: false,
   },
   {
@@ -1577,6 +1581,7 @@ const RELEASES: Release[] = [
     quality: 'HDTV-720p',
     sizeGb: 0.5,
     indexer: 'AnimeBytes',
+    age: '11 days',
     ok: true,
   },
 ];
@@ -1666,7 +1671,7 @@ export function TablePage() {
       </Demo>
       <Demo
         title="Progressive columns"
-        note="Drag the handle at the bottom right of the surface. Columns with a compact rendering switch to it first, then the lowest priority column drops behind a +N menu, and only once the primary column and the must-show band (priority 100 and up) no longer fit does the table stack into cards. Nothing is lost: the menu names what went, and the cards show every column again."
+        note="Drag the handle at the bottom right of the surface. Columns with a compact rendering switch to it first, then the lowest priority column drops behind a +N menu, and only once the primary column and the must-show band (priority 100 and up) no longer fit does the table stack into cards. The primary column truncates rather than letting the table scroll sideways. Nothing is lost: the menu names what went, and the cards show every column again."
         stack
         code={`<Table
   rows={releases}
@@ -1677,6 +1682,11 @@ export function TablePage() {
       compactHeader: 'q', compact: (r) => <Badge size="sm">{r.quality.split('-')[1]}</Badge>,
       cell: (r) => <Badge>{r.quality}</Badge> },
     { id: 'size', header: 'size', align: 'end', priority: 50, cell: (r) => \`\${r.sizeGb.toFixed(1)} GB\` },
+    { id: 'score', header: 'score', align: 'end', priority: 10, cell: (r) => r.score ?? '-' },
+    { id: 'status', header: 'status', priority: 20,
+      compactHeader: '', compact: (r) => <Badge size="sm" tone={r.ok ? 'success' : 'danger'} dot />,
+      cell: (r) => <Badge tone={r.ok ? 'success' : 'danger'} dot>{r.ok ? 'grabbable' : 'rejected'}</Badge> },
+    { id: 'age', header: 'age', priority: 5, cell: (r) => r.age },
     { id: 'indexer', header: 'indexer', cell: (r) => r.indexer },
   ]}
 />`}
@@ -1708,6 +1718,27 @@ export function TablePage() {
                 priority: 50,
                 cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
               },
+              {
+                id: 'score',
+                header: 'score',
+                align: 'end',
+                priority: 10,
+                cell: (r) =>
+                  r.score === undefined ? '-' : `${r.score > 0 ? '+' : ''}${String(r.score)}`,
+              },
+              {
+                id: 'status',
+                header: 'status',
+                priority: 20,
+                compactHeader: '',
+                compact: (r) => <Badge size="sm" tone={r.ok ? 'success' : 'danger'} dot />,
+                cell: (r) => (
+                  <Badge tone={r.ok ? 'success' : 'danger'} dot>
+                    {r.ok ? 'grabbable' : 'rejected'}
+                  </Badge>
+                ),
+              },
+              { id: 'age', header: 'age', priority: 5, cell: (r) => r.age },
               { id: 'indexer', header: 'indexer', cell: (r) => r.indexer },
             ]}
           />
@@ -1725,7 +1756,7 @@ export function TablePage() {
             'column.priority',
             'number',
             '0',
-            'Higher survives longer as the container narrows. 100 and up is the must-show band, never hidden: the table stacks into cards instead.',
+            'Higher survives longer as the container narrows. 100 and up is the must-show band, never hidden: the table stacks into cards instead. Declaring it on any column turns the measured cascade on; a table with neither priority nor compact wraps and stacks on the @2xl container query as before.',
           ],
           [
             'column.compact / compactHeader',

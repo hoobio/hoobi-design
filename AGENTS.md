@@ -120,9 +120,11 @@ control. Came off the deliberately-absent list when mendarr's release picker nee
 Columns also give way progressively rather than running off the right edge: a `compact` column
 switches to its narrow rendering first, then the lowest `priority` columns drop one at a time
 behind a "+N" menu that names them, and the stack of row cards is the last resort, reached only
-when the primary column plus the must-show band (`priority >= 100`) no longer fits. The measurement
-is a ResizeObserver on the wrapper and the table's own overflow, so a consumer that passes neither
-prop keeps exactly the behaviour it had.
+when the primary column plus the must-show band (`priority >= 100`) no longer fits. A column
+declaring `priority` or `compact` turns this on: those cells stop wrapping, so the columns have a
+natural width to measure against the wrapper, the primary column truncates rather than letting the
+table scroll, and the cards are reached by that measurement instead of the `@2xl` query. A consumer
+that passes neither prop keeps exactly the behaviour it had, container query included.
 
 Deliberately absent: Skeleton. Toggle came off that list rather than onto this one:
 Checkbox is the native input given the house look, which is what the absence already recommended.
