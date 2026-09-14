@@ -2,6 +2,11 @@ export { cx, type ClassValue } from './cx.js';
 export { Alert, type AlertProps, type AlertTone } from './Alert.js';
 export { Badge, type BadgeProps, type BadgeSize, type BadgeTone } from './Badge.js';
 export { Banner, type BannerProps } from './Banner.js';
+export { BarList, type BarFill, type BarListItem, type BarListProps } from './BarList.js';
+export { ChipInput, type Chip, type ChipInputProps } from './ChipInput.js';
+export { Notice, type NoticePlacement, type NoticeProps, type NoticeTone } from './Notice.js';
+export { Rating, type RatingProps, type RatingSize } from './Rating.js';
+export { Stat, type StatProps, type StatTone } from './Stat.js';
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from './Breadcrumbs.js';
 export { ActionButton, type ActionButtonProps, type ActionButtonState } from './ActionButton.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';
@@ -55,6 +60,12 @@ export {
 } from './Menu.js';
 export { Modal, type ModalProps } from './Modal.js';
 export { PageHeader, type PageHeaderProps } from './PageHeader.js';
+export {
+  Popover,
+  type PopoverPlacement,
+  type PopoverProps,
+  type PopoverTriggerProps,
+} from './Popover.js';
 export { Persona, type PersonaProps, type PersonaTone } from './Persona.js';
 export { Progress, type ProgressProps } from './Progress.js';
 export { Section, type SectionProps } from './Section.js';
@@ -109,6 +120,7 @@ export {
   type ToastTone,
   type ToasterProps,
 } from './Toast.js';
+export { RichTooltip, type RichTooltipProps } from './RichTooltip.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';
 export { UnsavedBar, type UnsavedBarProps } from './UnsavedBar.js';
 export { tipAnchor } from './tip.js';

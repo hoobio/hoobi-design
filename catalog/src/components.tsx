@@ -3,10 +3,13 @@ import {
   Alert,
   Badge,
   Banner,
+  BarList,
   Breadcrumbs,
   Button,
   Card,
   Checkbox,
+  ChipInput,
+  type Chip,
   CodeBlock,
   ConfirmButton,
   DescriptionList,
@@ -14,13 +17,18 @@ import {
   Input,
   Menu,
   Modal,
+  Notice,
   PageHeader,
   Persona,
+  Popover,
   Progress,
+  Rating,
+  RichTooltip,
   Section,
   Select,
   Shell,
   Spinner,
+  Stat,
   Table,
   type TableSort,
   Tabs,
@@ -676,6 +684,153 @@ export function TooltipPage() {
           ['text', 'string', 'required', 'The tip. Also the accessible description of the anchor.'],
           ['children', 'ReactNode', 'required', 'The anchor the tip is attached to.'],
           ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'className, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function RichTooltipPage() {
+  return (
+    <>
+      <Import names="RichTooltip" />
+      <p className="text-body text-text-dim">
+        Tooltip carries a string in a CSS attribute, which is the right tool for a sentence and
+        useless for anything with structure. RichTooltip is the panel version: a title and a few
+        lines, following the pointer, clamped to the viewport and{' '}
+        <code className="text-accent-blue">pointer-events: none</code> so it can never eat the hover
+        that spawned it. Words alone still belong on Tooltip.
+      </p>
+      <Demo
+        title="A title and its lines"
+        note="Hover or Tab to the chip and move the pointer around: the panel follows and stops at the viewport edge."
+        code={`<RichTooltip
+  content={
+    <>
+      <p className="text-body-strong">Restoration Shaman</p>
+      <p className="text-text-dim">Hoobi, Dorfmeister, Nyx</p>
+    </>
+  }
+>
+  <Badge tone="success" dot>3 signed</Badge>
+</RichTooltip>`}
+      >
+        <RichTooltip
+          content={
+            <>
+              <p className="text-body-strong">Restoration Shaman</p>
+              <p className="text-text-dim">Hoobi, Dorfmeister, Nyx</p>
+            </>
+          }
+        >
+          <Badge tone="success" dot>
+            3 signed
+          </Badge>
+        </RichTooltip>
+        <RichTooltip
+          content={
+            <>
+              <p className="text-body-strong">Mythic Rasz&apos;ageth</p>
+              <p className="text-text-dim">Best pull: 4% remaining</p>
+              <p className="text-text-dim">14 pulls across two nights</p>
+            </>
+          }
+        >
+          <Badge tone="warn" dot>
+            progression
+          </Badge>
+        </RichTooltip>
+      </Demo>
+      <Props
+        rows={[
+          [
+            'content',
+            'ReactNode',
+            'required',
+            'The panel body: a title and a few lines, not a paragraph.',
+          ],
+          ['children', 'ReactNode', 'required', 'The anchor. Focusable, so keyboard reaches it.'],
+          ['...rest', 'HTMLAttributes<HTMLSpanElement>', '', 'className, aria-*.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function PopoverPage() {
+  return (
+    <>
+      <Import names="Popover" />
+      <p className="text-body text-text-dim">
+        Menu is rows; Popover is whatever you put in it - a filter set, a few checkboxes and a
+        field, a small form. Fixed off the trigger&apos;s own rect and re-placed on capture-phase
+        scroll, so a table with its own scroll container cannot drag it out of line or clip it. It
+        closes on Escape and on a pointer down outside, and hands focus back to the trigger.
+      </p>
+      <Demo
+        title="Wrapped trigger"
+        note="Pass a node and the popover wraps it in its own bare button."
+        code={`<Popover label="Add an origin" trigger={<Badge tone="accent">+ origin</Badge>}>
+  <Checkbox label="Example Guild" />
+  <Checkbox label="Vanilla crew" />
+  <Button variant="primary" size="sm">Add</Button>
+</Popover>`}
+      >
+        <Popover label="Add an origin" trigger={<Badge tone="accent">+ origin</Badge>}>
+          <Checkbox label="Example Guild" />
+          <Checkbox label="Vanilla crew" />
+          <Button variant="primary" size="sm">
+            Add
+          </Button>
+        </Popover>
+      </Demo>
+      <Demo
+        title="Your own trigger"
+        note="A render prop hands you ref, onClick and the ARIA wiring to spread onto any control. placement picks the corner it hangs from."
+        code={`<Popover
+  placement="bottom-end"
+  trigger={(props) => (
+    <Button variant="secondary" size="sm" {...props}>Columns</Button>
+  )}
+>
+  <Checkbox label="Score" defaultChecked />
+  <Checkbox label="Indexer" />
+</Popover>`}
+      >
+        <Popover
+          placement="bottom-end"
+          trigger={(props) => (
+            <Button variant="secondary" size="sm" {...props}>
+              Columns
+            </Button>
+          )}
+        >
+          <Checkbox label="Score" defaultChecked />
+          <Checkbox label="Indexer" />
+        </Popover>
+      </Demo>
+      <Props
+        rows={[
+          [
+            'trigger',
+            'ReactNode | (props) => ReactNode',
+            'required',
+            'A node the library wraps in a bare button, or a render prop for your own control.',
+          ],
+          ['children', 'ReactNode', 'required', 'The panel body.'],
+          [
+            'open / onOpenChange',
+            'boolean / (open) => void',
+            'undefined',
+            'Controlled: pass both, or neither and the popover holds it.',
+          ],
+          [
+            'placement',
+            "'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'",
+            "'bottom-start'",
+            'Which corner it hangs from. Clamped to the viewport either way.',
+          ],
+          ['label', 'string', 'undefined', 'Names the panel, and the wrapped trigger.'],
         ]}
       />
     </>
@@ -1509,6 +1664,55 @@ export function TablePage() {
           />
         </div>
       </Demo>
+      <Demo
+        title="Progressive columns"
+        note="Drag the handle at the bottom right of the surface. Columns with a compact rendering switch to it first, then the lowest priority column drops behind a +N menu, and only once the primary column and the must-show band (priority 100 and up) no longer fit does the table stack into cards. Nothing is lost: the menu names what went, and the cards show every column again."
+        stack
+        code={`<Table
+  rows={releases}
+  rowKey={(r) => r.title}
+  columns={[
+    { id: 'title', header: 'release', primary: true, cell: (r) => r.title },
+    { id: 'quality', header: 'quality', priority: 100,
+      compactHeader: 'q', compact: (r) => <Badge size="sm">{r.quality.split('-')[1]}</Badge>,
+      cell: (r) => <Badge>{r.quality}</Badge> },
+    { id: 'size', header: 'size', align: 'end', priority: 50, cell: (r) => \`\${r.sizeGb.toFixed(1)} GB\` },
+    { id: 'indexer', header: 'indexer', cell: (r) => r.indexer },
+  ]}
+/>`}
+      >
+        <div className="styled-scrollbar w-full min-w-70 resize-x overflow-auto rounded-panel bg-bg p-2">
+          <Table
+            label="Release candidates, progressive"
+            rows={RELEASES}
+            rowKey={(r) => r.title}
+            columns={[
+              {
+                id: 'title',
+                header: 'release',
+                primary: true,
+                cell: (r) => <span className="text-caption break-all">{r.title}</span>,
+              },
+              {
+                id: 'quality',
+                header: 'quality',
+                priority: 100,
+                compactHeader: 'q',
+                compact: (r) => <Badge size="sm">{r.quality.split('-')[1]}</Badge>,
+                cell: (r) => <Badge>{r.quality}</Badge>,
+              },
+              {
+                id: 'size',
+                header: 'size',
+                align: 'end',
+                priority: 50,
+                cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
+              },
+              { id: 'indexer', header: 'indexer', cell: (r) => r.indexer },
+            ]}
+          />
+        </div>
+      </Demo>
       <Props
         rows={[
           [
@@ -1516,6 +1720,18 @@ export function TablePage() {
             'TableColumn<T>[]',
             '-',
             'id, header, cell; sortValue makes a column sortable; align, primary, defaultDirection, className.',
+          ],
+          [
+            'column.priority',
+            'number',
+            '0',
+            'Higher survives longer as the container narrows. 100 and up is the must-show band, never hidden: the table stacks into cards instead.',
+          ],
+          [
+            'column.compact / compactHeader',
+            '(row: T) => ReactNode / ReactNode',
+            'undefined',
+            'A narrower rendering - icons where the cell has words - tried before anything is hidden.',
           ],
           ['rows', 'T[]', '-', 'In stored order. The table sorts a copy for display.'],
           ['rowKey', '(row: T) => string', '-', 'Stable key per row.'],
@@ -1584,16 +1800,29 @@ export function TimeAxisPage() {
                 id: 'monitor',
                 label: 'monitor',
                 marks: every5min(12).map((m, i) =>
-                  i === 0 ? { ...m, tone: 'info' as const, pulse: true, tooltip: 'running now' } : m,
+                  i === 0
+                    ? { ...m, tone: 'info' as const, pulse: true, tooltip: 'running now' }
+                    : m,
                 ),
               },
               { id: 'backfill', label: 'backfill', marks: every5min(12) },
               {
                 id: 'watchdog',
                 label: 'watchdog',
-                marks: [...every5min(12), { at: new Date(from.getTime() + 47 * 60 * 1000), tone: 'danger' as const, tooltip: 'failed' }],
+                marks: [
+                  ...every5min(12),
+                  {
+                    at: new Date(from.getTime() + 47 * 60 * 1000),
+                    tone: 'danger' as const,
+                    tooltip: 'failed',
+                  },
+                ],
               },
-              { id: 'scan', label: 'scan', marks: [{ at: new Date(from.getTime() + 60 * 60 * 1000) }] },
+              {
+                id: 'scan',
+                label: 'scan',
+                marks: [{ at: new Date(from.getTime() + 60 * 60 * 1000) }],
+              },
             ]}
           />
         </div>
@@ -2912,6 +3141,456 @@ export function DescriptionListPage() {
             'Unboxed label-over-value stack with no hairlines, bleed or padding assumptions.',
           ],
           ['className', 'string', '', 'On the dl.'],
+        ]}
+      />
+    </>
+  );
+}
+
+const RATERS = ['Sturmwind', 'Bolvar', 'Khadgar'];
+
+export function RatingPage() {
+  const [value, setValue] = useState<number | null>(3);
+  return (
+    <>
+      <Import names="Rating" />
+      <Playground
+        knobs={{
+          size: { kind: 'select', options: ['md', 'sm'], init: 'md' },
+          max: { kind: 'select', options: ['3', '5', '10'], init: '5' },
+          readOnly: { kind: 'boolean', init: false },
+        }}
+        render={(v) => (
+          <Rating
+            value={value}
+            max={Number(v.max)}
+            size={v.size as 'md'}
+            readOnly={v.readOnly as boolean}
+            label="Raid performance"
+            onChange={setValue}
+          />
+        )}
+        code={(v) =>
+          `<Rating value={value} onChange={setValue}${v.max === '5' ? '' : ` max={${String(v.max)}}`}${v.size === 'md' ? '' : ' size="sm"'}${v.readOnly ? ' readOnly' : ''} label="Raid performance" />`
+        }
+      />
+
+      <Demo
+        title="Committed against preview"
+        note="The committed value is text-warn; hover and keyboard focus preview in text-warn/60, so the tone says which stars are yours and which are the pointer's. pointer-coarse skips the preview - a tap has no hover to leave."
+        code={`<Rating value={rating} onChange={setRating} label="Raid performance" />`}
+      >
+        <Rating value={value} onChange={setValue} label="Raid performance" />
+        <span className="text-caption text-text-dim">
+          {value === null ? 'Unrated' : `${String(value)} of 5`}
+        </span>
+      </Demo>
+
+      <Demo
+        title="Clearing"
+        note="Clicking the star that is already the value sets it back to null. There is no separate clear control, because the row would carry one per rating."
+        code={`onChange={(next) => { setRating(next); }} // next is null when the current value was clicked`}
+      >
+        <Rating value={value} onChange={setValue} label="Raid performance" />
+      </Demo>
+
+      <Demo
+        title="Read only, in a list"
+        note="Without onChange the stars are one role=img span: no buttons, no tab stops, and the whole rating is read out as a sentence."
+        stack
+        code={`{raiders.map((name) => (
+  <div key={name}>
+    <span>{name}</span>
+    <Rating value={ratings[name]} size="sm" readOnly label={name} />
+  </div>
+))}`}
+      >
+        {RATERS.map((name, i) => (
+          <div key={name} className="flex w-full max-w-[20rem] items-center justify-between">
+            <span className="text-body text-text">{name}</span>
+            <Rating value={i + 2} size="sm" readOnly label={name} />
+          </div>
+        ))}
+      </Demo>
+
+      <Props
+        rows={[
+          ['value', 'number | null', 'required', 'The committed rating. null is unrated.'],
+          ['max', 'number', '5', 'How many stars.'],
+          [
+            'onChange',
+            '(next: number | null) => void',
+            '',
+            'Clicking the current value passes null. Omitting it makes the rating read-only.',
+          ],
+          ['size', `'sm' | 'md'`, `'md'`, 'sm is the in-row marker, md the standalone control.'],
+          ['readOnly', 'boolean', 'false', 'Stars only: no buttons, no tab stops.'],
+          ['label', 'string', '', 'Names the group for assistive tech.'],
+          ['className', 'string', '', 'On the wrapper.'],
+        ]}
+      />
+    </>
+  );
+}
+
+const PEOPLE: Chip[] = [
+  { id: 'u1', label: 'Sturmwind', detail: '@sturm', avatarUrl: posterUrl },
+  { id: 'u2', label: 'Bolvar', detail: '@bolvar' },
+  { id: 'u3', label: 'Khadgar', detail: '@khad' },
+  { id: 'u4', label: 'Jaina', detail: '@jaina' },
+  { id: 'u5', label: 'Thrall', detail: '@thrall' },
+];
+
+export function ChipInputPage() {
+  const [chips, setChips] = useState<Chip[]>([PEOPLE[0] as Chip]);
+  return (
+    <>
+      <Import names="ChipInput, type Chip" />
+      <Demo
+        title="People filter"
+        note="The surface is bg-chip with no border, like every field inside a row. Type to match, Tab or Enter takes the top suggestion (marked with the tab key), Backspace on an empty input removes the last chip, Escape clears the query."
+        stack
+        code={`const [chips, setChips] = useState<Chip[]>([]);
+
+<ChipInput
+  chips={chips}
+  onChange={setChips}
+  suggestions={(query) =>
+    people.filter((p) => p.label.toLowerCase().includes(query.trim().toLowerCase()))
+  }
+  placeholder="Filter by raider"
+/>`}
+      >
+        <div className="w-full max-w-[26rem]">
+          <ChipInput
+            chips={chips}
+            onChange={setChips}
+            suggestions={(query) =>
+              PEOPLE.filter((person) =>
+                person.label.toLowerCase().includes(query.trim().toLowerCase()),
+              )
+            }
+            placeholder="Filter by raider"
+          />
+        </div>
+      </Demo>
+
+      <Demo
+        title="Suggestions may be async"
+        note="The prop returns Chip[] or a promise of them, so a local array and a lookup endpoint are the same call. Stale responses are dropped, and chips already picked never come back as suggestions."
+        stack
+        code={`<ChipInput
+  chips={chips}
+  onChange={setChips}
+  suggestions={async (query) => (await searchUsers(query)).map(toChip)}
+  maxSuggestions={4}
+/>`}
+      >
+        <div className="w-full max-w-[26rem]">
+          <ChipInput
+            chips={chips}
+            onChange={setChips}
+            maxSuggestions={4}
+            suggestions={(query) =>
+              Promise.resolve(
+                PEOPLE.filter((person) =>
+                  person.label.toLowerCase().includes(query.trim().toLowerCase()),
+                ),
+              )
+            }
+            placeholder="Search the roster"
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['chips', 'Chip[]', 'required', '{ id, label, detail?, avatarUrl? } - the picked set.'],
+          ['onChange', '(chips: Chip[]) => void', 'required', 'Fires on add and on remove.'],
+          [
+            'suggestions',
+            '(query: string) => Chip[] | Promise<Chip[]>',
+            'required',
+            'The consumer owns the matching. Already-picked chips are filtered out for you.',
+          ],
+          ['placeholder', 'string', '', 'Shown only while no chip is picked.'],
+          [
+            'query',
+            'string',
+            '',
+            'Controlled query, for a box whose leftover text also filters something else.',
+          ],
+          ['onQueryChange', '(query: string) => void', '', 'Every keystroke, including clears.'],
+          ['renderChip', '(chip: Chip) => ReactNode', '', 'Replaces avatar / label / detail.'],
+          [
+            'renderSuggestion',
+            '(chip: Chip) => ReactNode',
+            '',
+            'Replaces the suggestion row body.',
+          ],
+          ['maxSuggestions', 'number', '6', 'How many rows the list shows at most.'],
+          ['className', 'string', '', 'On the wrapper.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function StatPage() {
+  return (
+    <>
+      <Import names="Stat" />
+      <Playground
+        knobs={{
+          tone: {
+            kind: 'select',
+            options: ['default', 'success', 'warn', 'danger'],
+            init: 'default',
+          },
+          label: { kind: 'text', init: 'Parse average' },
+          value: { kind: 'text', init: '84.2' },
+          sub: { kind: 'text', init: 'across 12 kills' },
+        }}
+        render={(v) => (
+          <Stat
+            tone={v.tone as 'default'}
+            label={v.label as string}
+            value={v.value as string}
+            sub={(v.sub as string) || undefined}
+            className="w-56"
+          />
+        )}
+        code={(v) =>
+          `<Stat label="${String(v.label)}" value="${String(v.value)}"${v.sub ? ` sub="${String(v.sub)}"` : ''}${v.tone === 'default' ? '' : ` tone="${String(v.tone)}"`} />`
+        }
+      />
+
+      <Demo
+        title="A row of them"
+        note="A Card variant, not a new surface: caption label, text-title tabular value, caption-mute sub. The tone colours the number and the icon, never the card."
+        stack
+        code={`<div className="grid gap-3 sm:grid-cols-3">
+  <Stat label="Parse average" value="84.2" sub="across 12 kills" />
+  <Stat label="Attendance" value="96%" sub="last 8 weeks" tone="success" />
+  <Stat label="Missed raids" value="3" sub="two unexcused" tone="warn" />
+</div>`}
+      >
+        <div className="grid w-full gap-3 sm:grid-cols-3">
+          <Stat label="Parse average" value="84.2" sub="across 12 kills" />
+          <Stat label="Attendance" value="96%" sub="last 8 weeks" tone="success" />
+          <Stat label="Missed raids" value="3" sub="two unexcused" tone="warn" />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          ['label', 'ReactNode', 'required', 'Caption above the number.'],
+          [
+            'value',
+            'ReactNode',
+            'required',
+            'The number itself, tabular so a row of them lines up.',
+          ],
+          ['sub', 'ReactNode', '', 'What it is measured against, or where it came from.'],
+          [
+            'tone',
+            `'default' | 'success' | 'warn' | 'danger'`,
+            `'default'`,
+            'Colours the value and the icon. The card stays surface-raised.',
+          ],
+          ['icon', 'ReactNode', '', 'A 20px Fluent icon left of the stack.'],
+          ['className', 'string', '', 'On the Card.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function BarListPage() {
+  return (
+    <>
+      <Import names="BarList" />
+      <Demo
+        title="Shares of a whole"
+        note="Label, an 8px bg-chip track with a toned fill scaled to the largest value, then a right-aligned tabular readout. Not a chart library: one row per thing, no axes, no legend."
+        stack
+        code={`<Card title="Loot by raider">
+  <BarList
+    items={[
+      { key: 'sturm', label: 'Sturmwind', value: 12, display: '12' },
+      { key: 'bolvar', label: 'Bolvar', value: 9, display: '9' },
+      { key: 'khad', label: 'Khadgar', value: 4, display: '4' },
+    ]}
+  />
+</Card>`}
+      >
+        <Card title="Loot by raider" className="w-full max-w-[32rem]">
+          <BarList
+            items={[
+              { key: 'sturm', label: 'Sturmwind', value: 12, display: '12' },
+              { key: 'bolvar', label: 'Bolvar', value: 9, display: '9' },
+              { key: 'khad', label: 'Khadgar', value: 4, display: '4' },
+            ]}
+          />
+        </Card>
+      </Demo>
+
+      <Demo
+        title="Tones, avatars and a fixed max"
+        note="max pins what a full track means, so two lists beside each other stay comparable. labelWidth aligns the tracks when the labels are long."
+        stack
+        code={`<BarList
+  max={100}
+  labelWidth="10rem"
+  items={[
+    { key: 'a', label: 'Uptime', value: 99, display: '99%', fill: 'success' },
+    { key: 'b', label: 'Queue depth', value: 62, display: '62%', fill: 'warn' },
+    { key: 'c', label: 'Failed jobs', value: 18, display: '18%', fill: 'danger' },
+  ]}
+/>`}
+      >
+        <div className="w-full max-w-[32rem]">
+          <BarList
+            max={100}
+            labelWidth="10rem"
+            items={[
+              { key: 'a', label: 'Uptime', value: 99, display: '99%', fill: 'success' },
+              { key: 'b', label: 'Queue depth', value: 62, display: '62%', fill: 'warn' },
+              { key: 'c', label: 'Failed jobs', value: 18, display: '18%', fill: 'danger' },
+            ]}
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'items',
+            'BarListItem[]',
+            'required',
+            '{ key, label, value, display?, avatarUrl?, fill? } per row.',
+          ],
+          [
+            'max',
+            'number',
+            'largest value',
+            'What a full track means. Pin it to compare two lists.',
+          ],
+          ['labelWidth', 'string', `'8rem'`, 'Width of the label column, so tracks start level.'],
+          ['className', 'string', '', 'On the wrapper.'],
+        ]}
+      />
+    </>
+  );
+}
+
+const NOTICE_TONES = ['danger', 'success', 'warn', 'info'] as const;
+const NOTICE_TITLES: Record<(typeof NOTICE_TONES)[number], string> = {
+  danger: 'Disconnected',
+  success: 'Reconnected',
+  warn: 'Read-only mode',
+  info: 'Syncing the roster',
+};
+
+export function NoticePage() {
+  const [shown, setShown] = useState<'danger' | 'success' | 'warn' | 'info' | null>(null);
+  return (
+    <>
+      <Import names="Notice" />
+      <Demo
+        title="State news, not a toast"
+        note="A toast is news you did not ask for and can miss. A Notice is the state of the thing you are looking at - a dropped connection, a save that failed on the way out - so it is centred where the eye already is and stays until the state changes. The page keeps working underneath it."
+        stack
+        code={`<Notice
+  open={connection !== 'live'}
+  tone="danger"
+  title="Disconnected"
+  onDismiss={() => { setDismissed(true); }}
+>
+  The server may be updating or restarting. This page reconnects on its own.
+</Notice>`}
+      >
+        <Button
+          onClick={() => {
+            setShown('danger');
+          }}
+        >
+          Drop the connection
+        </Button>
+        <Notice
+          open={shown === 'danger'}
+          tone="danger"
+          title="Disconnected"
+          autoHideMs={4000}
+          onDismiss={() => {
+            setShown(null);
+          }}
+        >
+          The server may be updating or restarting. This page reconnects on its own.
+        </Notice>
+      </Demo>
+
+      <Demo
+        title="Tones"
+        note="An opaque surface-raised base with the library's mirage under a translucent tone wash, no border. danger is a failure, success the fix landing, warn something a person must act on, info work in progress. Only one is up at a time, so these raise the same Notice."
+        code={`<Notice open={phase === 'reconnected'} tone="success" title="Reconnected" autoHideMs={3000} />`}
+      >
+        {NOTICE_TONES.map((tone) => (
+          <Button
+            key={tone}
+            variant="secondary"
+            onClick={() => {
+              setShown(tone);
+            }}
+          >
+            {tone}
+          </Button>
+        ))}
+        {NOTICE_TONES.filter((tone) => tone !== 'danger').map((tone) => (
+          <Notice
+            key={tone}
+            open={shown === tone}
+            tone={tone}
+            title={NOTICE_TITLES[tone]}
+            autoHideMs={3000}
+            onDismiss={() => {
+              setShown(null);
+            }}
+          />
+        ))}
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'open',
+            'boolean',
+            'required',
+            'Controlled. The consumer owns the state that raised it.',
+          ],
+          [
+            'tone',
+            `'danger' | 'success' | 'warn' | 'info'`,
+            'required',
+            'Tints the wash over the mirage and colours the icon.',
+          ],
+          ['title', 'ReactNode', 'required', 'The one-look answer.'],
+          ['children', 'ReactNode', '', 'What to do about it, or why it happened.'],
+          ['icon', 'ReactNode', '', 'A 20px Fluent icon, toned for you.'],
+          [
+            'onDismiss',
+            '() => void',
+            '',
+            'Omitted means no close button: the consumer closes it on its own terms.',
+          ],
+          ['autoHideMs', 'number', '', 'Calls onDismiss after this long. Omitted means it stays.'],
+          [
+            'placement',
+            `'top' | 'center'`,
+            `'top'`,
+            'Under the app bar, or in the middle of the viewport.',
+          ],
+          ['className', 'string', '', 'On the fixed wrapper.'],
         ]}
       />
     </>

@@ -69,8 +69,13 @@ Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `ba
 Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
 Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no context, because
 the caller is usually a poll or a socket, not a component),
+Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes),
+Rating, ChipInput (chips + an inline query + suggestions Tab takes), Stat (the Card variant for one
+number), BarList (label / toned track / tabular readout, not a chart library),
 Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
-scrolling or clipping ancestor can cut it off), ActionDialog, Steps (chevrons wide, a stacked
+scrolling or clipping ancestor can cut it off), RichTooltip (the same idea with nodes in it: a
+title and a few lines, following the pointer), Popover (an anchored panel under a trigger of the
+consumer's choosing - Menu without the rows), ActionDialog, Steps (chevrons wide, a stacked
 list narrow), SectionNav, UnsavedBar (`sections` or a free `message`), the list-row primitive -
 SettingRow / SettingGroup / SettingList (one surface level: rows on `bg-surface`, a 1px seam of
 `bg-bg` between, a group title is text and never a box; slots `leading`, `label`, `meta`,
@@ -111,6 +116,13 @@ markup path. Columns are data (`id`, `header`, `cell`, optional `sortValue`); th
 table itself, which lets the consumer keep its rows in stored order. Undefined sort values sink to
 the bottom in either direction. `primary` marks the row's title column, `rowAction` the trailing
 control. Came off the deliberately-absent list when mendarr's release picker needed sortable columns.
+
+Columns also give way progressively rather than running off the right edge: a `compact` column
+switches to its narrow rendering first, then the lowest `priority` columns drop one at a time
+behind a "+N" menu that names them, and the stack of row cards is the last resort, reached only
+when the primary column plus the must-show band (`priority >= 100`) no longer fits. The measurement
+is a ResizeObserver on the wrapper and the table's own overflow, so a consumer that passes neither
+prop keeps exactly the behaviour it had.
 
 Deliberately absent: Skeleton. Toggle came off that list rather than onto this one:
 Checkbox is the native input given the house look, which is what the absence already recommended.
