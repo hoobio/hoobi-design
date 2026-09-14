@@ -498,6 +498,29 @@
     }
   }
 
+  /* Notice: the same arrive-and-settle rule as a toast, but downwards - it drops in from
+     above the fold it is pinned under. The translate is composed with the centring one the
+     element already carries, so the keyframes move it on its own axis rather than replacing
+     the -50% that puts it in the middle. */
+  .notice-in {
+    animation: notice-in 0.25s var(--ease-decelerate);
+  }
+  @keyframes notice-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  .notice-out {
+    animation: notice-out 0.15s var(--ease-accelerate) forwards;
+  }
+  @keyframes notice-out {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
   /* Scroll cues for a container with no scrollbar: a 16px fade into the pane surface at whichever
      edge still has content beyond it, driven by the browser's own scroll-state query rather than
      a scroll listener. Where the query is unsupported, the cues simply never show. */
