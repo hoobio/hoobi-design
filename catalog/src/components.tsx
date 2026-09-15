@@ -1433,9 +1433,8 @@ export function MultiSelectPage() {
     <>
       <Import names="MultiSelect, type MultiSelectOption" />
       <p className="text-body text-text-dim">
-        A categorical filter: a Popover trigger showing the count of what is picked, a Checkbox
-        row per option, and a Clear row once anything is selected. Built from the primitives, not
-        a new overlay.
+        A categorical filter: a Popover trigger showing the count of what is picked, a Checkbox row
+        per option, and a Clear row once anything is selected. Built from the primitives.
       </p>
       <Demo
         title="Class filter"
@@ -1457,15 +1456,15 @@ export function MultiSelectPage() {
           ['label', 'string', '', 'The trigger text, and the popover panel label.'],
           ['options', 'MultiSelectOption[]', '', 'value, label, optional iconUrl (16px).'],
           ['value', 'string[]', '', 'The selected option values, in any order.'],
-          ['onChange', '(value: string[]) => void', '', 'Called with the new selection, in option order.'],
-          ['placeholder', 'string', 'label', 'Trigger text while nothing is selected.'],
-          ['className', 'string', '', "Applied to Popover's own root, not a wrapper."],
           [
-            '...rest',
-            'HTMLAttributes<HTMLDivElement>',
+            'onChange',
+            '(value: string[]) => void',
             '',
-            "Forwarded to Popover's root.",
+            'Called with the new selection, in option order.',
           ],
+          ['placeholder', 'string', 'label', 'Trigger text while nothing is selected.'],
+          ['className', 'string', '', "Applied to Popover's own root element."],
+          ['...rest', 'HTMLAttributes<HTMLDivElement>', '', "Forwarded to Popover's root."],
         ]}
       />
     </>
