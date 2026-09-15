@@ -65,6 +65,10 @@
   /* Fluent 2 motion: decelerate for things entering/growing, accelerate for
      leaving, standard for everything in place. Durations sit on Fluent's ramp
      (fast 150 / normal 250 / gentle 300). */
+  /* Fluent 2 shadow16, the elevation a flyout gets: without it a panel on surface-raised
+     bleeds into a table drawn on the same fill. */
+  --shadow-flyout: 0 8px 16px rgb(0 0 0 / 0.28), 0 0 2px rgb(0 0 0 / 0.24);
+
   --ease-decelerate: cubic-bezier(0, 0, 0, 1);
   --ease-accelerate: cubic-bezier(1, 0, 1, 1);
   --ease-standard: cubic-bezier(0.33, 0, 0.67, 1);
@@ -179,6 +183,70 @@
     input,
     select {
       min-height: 44px;
+    }
+  }
+
+  /* Chrome/Edge 135+ only; everywhere else the picker stays the OS dropdown, which no CSS can reach. */
+  @supports (appearance: base-select) {
+    select,
+    ::picker(select) {
+      appearance: base-select;
+    }
+
+    /* base-select turns the control into a bare flex box: without this the value and the icon sit at the top. */
+    select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      /* The chevron glyph is inset inside its own box, so the text needs the extra 2px to look level with it. */
+      padding-left: 12px;
+      /* A flex box wraps; the control has a fixed height, so a long value would spill out of it. */
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* The default picker-icon is a filled triangle; this is the house ChevronIcon path, pointing down. */
+    select::picker-icon {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      background-color: var(--color-text-mute);
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.75 7.75L10 13l5.25-5.25'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+      transition: transform 150ms var(--ease-standard);
+    }
+
+    select:open::picker-icon {
+      transform: rotate(180deg);
+    }
+
+    ::picker(select) {
+      border: none;
+      border-radius: var(--radius-panel);
+      background-color: var(--color-surface-raised);
+      box-shadow: var(--shadow-flyout);
+      padding: 4px;
+    }
+
+    option {
+      border-radius: var(--radius-control);
+      padding: 6px 12px;
+      color: var(--color-text);
+    }
+
+    option:hover,
+    option:focus {
+      background-color: var(--color-surface);
+    }
+
+    option:checked {
+      color: var(--color-accent-hover);
+    }
+
+    option::checkmark {
+      display: none;
     }
   }
 
