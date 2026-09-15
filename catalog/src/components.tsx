@@ -1644,7 +1644,7 @@ export function TablePage() {
       <Import names="Table" />
       <Demo
         title="Sortable, controlled"
-        note="The table applies the sort; you hold it, usually in the URL. Click a header again to flip. A row with no value sinks to the bottom either way. Narrow the window: the same markup stacks into row cards with each column's label beside its value."
+        note="The table applies the sort; you hold it, usually in the URL. Click a header again to flip. A row with no value sinks to the bottom either way. Narrow the window: the same markup stacks into row cards with each column's label above its value."
         stack
         code={`const [sort, setSort] = useState<TableSort>({ column: 'score', direction: 'desc' });
 
@@ -1820,6 +1820,12 @@ export function TablePage() {
             '(row: T) => ReactNode / ReactNode',
             'undefined',
             'A narrower rendering - icons where the cell has words - tried before anything is hidden.',
+          ],
+          [
+            'column.hideLabel',
+            'boolean',
+            'false',
+            'Stacked, the cell carries no label: its own control already names it. The header still does wide.',
           ],
           ['rows', 'T[]', '-', 'In stored order. The table sorts a copy for display.'],
           ['rowKey', '(row: T) => string', '-', 'Stable key per row.'],

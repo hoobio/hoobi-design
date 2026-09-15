@@ -36,6 +36,8 @@ export interface TableColumn<T> {
   compact?: (row: T) => ReactNode;
   /** The header that goes with `compact`. Defaults to `header`. */
   compactHeader?: ReactNode;
+  /** Stacked, the cell carries no label: its own control already names it. The header still does wide. */
+  hideLabel?: boolean;
   className?: string;
 }
 
@@ -118,7 +120,8 @@ const PRIMARY_MIN = 320;
 /**
  * One markup path: a real <table> from `@2xl` (a container query, keyed off its own column
  * width, not the viewport), and below that each row is a card whose cells show their column
- * label before the value. The sort is applied here so the consumer can keep its rows in
+ * label above the value, wrapping in the order the columns are given; a column's `className`
+ * takes `@max-*` flex utilities to group the cells onto lines. The sort is applied here so the consumer can keep its rows in
  * whatever order they are stored, and held by the consumer so it has a URL.
  *
  * A column with `priority` or `compact` set turns on progressive hiding: cells stop wrapping,
@@ -304,7 +307,10 @@ export function Table<T>({
           {ordered.map((row) => (
             <tr
               key={rowKey(row)}
-              className={cx('block rounded-panel bg-surface-raised p-3', !stacked && wide.row)}
+              className={cx(
+                'flex flex-wrap items-start gap-x-4 gap-y-2 rounded-panel bg-surface-raised p-3',
+                !stacked && wide.row,
+              )}
             >
               {shown.map((column) => {
                 const narrow = !stacked && compact && column.compact !== undefined;
@@ -314,8 +320,8 @@ export function Table<T>({
                     key={column.id}
                     className={cx(
                       column.primary
-                        ? 'mb-1.5 block'
-                        : 'mr-3 inline-flex items-center gap-1 text-caption',
+                        ? 'w-full'
+                        : 'flex min-w-0 flex-col gap-1 text-caption',
                       !stacked && wide.cell,
                       !stacked && wide[valign],
                       !stacked && column.align === 'end' && wide.end,
@@ -325,7 +331,7 @@ export function Table<T>({
                       column.className,
                     )}
                   >
-                    {column.primary ? null : (
+                    {column.primary || column.hideLabel ? null : (
                       <span className={cx('text-text-mute', !stacked && wide.label)}>
                         {column.header}
                       </span>
@@ -337,7 +343,7 @@ export function Table<T>({
               {rowAction ? (
                 <td
                   className={cx(
-                    'mt-2 block',
+                    'w-full',
                     !stacked && wide.action,
                     !stacked && wide.cell,
                     !stacked && wide[rowValign?.(row) ?? 'middle'],
