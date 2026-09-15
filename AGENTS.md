@@ -118,6 +118,11 @@ table itself, which lets the consumer keep its rows in stored order. Undefined s
 the bottom in either direction. `primary` names the row's title column, `rowAction` the trailing
 control. Added when mendarr's release picker needed sortable columns.
 
+Cells are vertically centred, so a one-line cell reads against the middle of a row a taller
+neighbour has stretched. `valign` on a column and `rowValign` on the table are the two escapes,
+`rowValign` ahead of a column where both are set, and `top` is for a cell whose content hangs from
+the top of the row.
+
 Columns also give way progressively rather than running off the right edge: a `compact` column
 switches to its narrow rendering first, then the lowest `priority` columns drop one at a time
 behind a "+N" menu that names them, and the stack of row cards is the last resort, reached only

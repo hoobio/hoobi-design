@@ -19,6 +19,8 @@ export interface TableColumn<T> {
   /** Direction the first click on this header takes. */
   defaultDirection?: SortDirection;
   align?: 'start' | 'end';
+  /** Vertical placement for this column's cells. The table's default is `middle`. */
+  valign?: 'top' | 'middle';
   /**
    * The row's title. Wide it is an ordinary column; stacked it takes the full width and drops the
    * label every other cell repeats beside its value.
@@ -46,6 +48,8 @@ export interface TableProps<T> {
   onSortChange?: (sort: TableSort) => void;
   /** A per-row control, rendered last: right-aligned wide, below the cells stacked. */
   rowAction?: (row: T) => ReactNode;
+  /** Vertical placement for one row's cells, taking precedence over `valign` on a column. */
+  rowValign?: (row: T) => 'top' | 'middle' | undefined;
   /** Names the table for assistive tech. */
   label?: string;
   className?: string;
@@ -83,7 +87,9 @@ const QUERY_WIDE = {
   head: '@2xl:table-header-group',
   body: '@2xl:table-row-group',
   row: '@2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0',
-  cell: '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:align-top @2xl:text-body',
+  cell: '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:text-body',
+  top: '@2xl:align-top',
+  middle: '@2xl:align-middle',
   narrow: '@2xl:w-px @2xl:whitespace-nowrap',
   end: '@2xl:text-right',
   action: '@2xl:text-right @2xl:whitespace-nowrap',
@@ -96,7 +102,9 @@ const MEASURED_WIDE = {
   head: 'table-header-group',
   body: 'table-row-group',
   row: 'table-row rounded-none border-t border-bg p-0',
-  cell: 'table-cell px-3 py-2 align-top text-body',
+  cell: 'table-cell px-3 py-2 text-body',
+  top: 'align-top',
+  middle: 'align-middle',
   narrow: 'w-px whitespace-nowrap',
   end: 'text-right',
   action: 'text-right whitespace-nowrap',
@@ -127,6 +135,7 @@ export function Table<T>({
   sort,
   onSortChange,
   rowAction,
+  rowValign,
   label,
   className,
 }: TableProps<T>) {
@@ -299,6 +308,7 @@ export function Table<T>({
             >
               {shown.map((column) => {
                 const narrow = !stacked && compact && column.compact !== undefined;
+                const valign = rowValign?.(row) ?? column.valign ?? 'middle';
                 return (
                   <td
                     key={column.id}
@@ -307,6 +317,7 @@ export function Table<T>({
                         ? 'mb-1.5 block'
                         : 'mr-3 inline-flex items-center gap-1 text-caption',
                       !stacked && wide.cell,
+                      !stacked && wide[valign],
                       !stacked && column.align === 'end' && wide.end,
                       !stacked && wide.nowrap,
                       !stacked && column.primary && wide.fluid,
@@ -325,7 +336,12 @@ export function Table<T>({
               })}
               {rowAction ? (
                 <td
-                  className={cx('mt-2 block', !stacked && wide.action, !stacked && wide.cell)}
+                  className={cx(
+                    'mt-2 block',
+                    !stacked && wide.action,
+                    !stacked && wide.cell,
+                    !stacked && wide[rowValign?.(row) ?? 'middle'],
+                  )}
                   colSpan={overflowCell ? 2 : undefined}
                 >
                   {rowAction(row)}

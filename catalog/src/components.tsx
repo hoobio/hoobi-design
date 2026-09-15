@@ -1801,7 +1801,13 @@ export function TablePage() {
             'columns',
             'TableColumn<T>[]',
             '-',
-            'id, header, cell; sortValue makes a column sortable; align, primary, defaultDirection, className.',
+            'id, header, cell; sortValue makes a column sortable; align, valign, primary, defaultDirection, className.',
+          ],
+          [
+            'column.valign',
+            "'top' | 'middle'",
+            "'middle'",
+            'Vertical placement for one column, for a cell whose content should hug the top of a taller row.',
           ],
           [
             'column.priority',
@@ -1834,6 +1840,12 @@ export function TablePage() {
             '(row: T) => ReactNode',
             'undefined',
             'Trailing control: right-aligned wide, below the cells stacked.',
+          ],
+          [
+            'rowValign',
+            "(row: T) => 'top' | 'middle' | undefined",
+            'undefined',
+            "Vertical placement for one row, ahead of any column's own valign. undefined leaves that row to the columns.",
           ],
           ['label', 'string', 'undefined', 'aria-label for the table.'],
         ]}
