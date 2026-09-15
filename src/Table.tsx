@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Badge } from './Badge.js';
+import { Checkbox } from './Checkbox.js';
 import { Menu, MenuItem, MenuLabel } from './Menu.js';
 import { cx } from './cx.js';
 
@@ -55,6 +56,13 @@ export interface TableProps<T> {
   /** Names the table for assistive tech. */
   label?: string;
   className?: string;
+  /** Row selection, off when absent. Controlled: keys are `rowKey` values. */
+  selection?: {
+    selected: ReadonlySet<string>;
+    onChange: (selected: Set<string>) => void;
+    /** Accessible name for a row's checkbox. Defaults to "Select row". */
+    label?: (row: T) => string;
+  };
 }
 
 function compare(a: number | string | undefined, b: number | string | undefined): number {
@@ -141,6 +149,7 @@ export function Table<T>({
   rowValign,
   label,
   className,
+  selection,
 }: TableProps<T>) {
   const hideable = columns
     .map((column, index) => ({ column, index }))
@@ -174,7 +183,9 @@ export function Table<T>({
     const head = headRef.current;
     if (!root || !table || !head || !progressive || step > lastStep) return;
     if (head.clientHeight === 0) return;
-    const primaryIndex = shown.findIndex((column) => column.primary);
+    const rawPrimaryIndex = shown.findIndex((column) => column.primary);
+    // A leading selection checkbox cell shifts every DOM column index by one.
+    const primaryIndex = rawPrimaryIndex >= 0 && selection ? rawPrimaryIndex + 1 : rawPrimaryIndex;
     const widths: number[] = [];
     for (const row of Array.from(table.rows)) {
       Array.from(row.cells).forEach((cell, index) => {
@@ -234,6 +245,25 @@ export function Table<T>({
     onSortChange({ column: column.id, direction });
   }
 
+  const orderedKeys = selection ? ordered.map(rowKey) : [];
+  const selectedCount = selection ? orderedKeys.filter((key) => selection.selected.has(key)).length : 0;
+  const allSelected = selection !== undefined && orderedKeys.length > 0 && selectedCount === orderedKeys.length;
+  const someSelected = selection !== undefined && selectedCount > 0 && !allSelected;
+
+  function toggleAll(): void {
+    if (!selection) return;
+    selection.onChange(allSelected ? new Set() : new Set(orderedKeys));
+  }
+
+  function toggleRow(row: T): void {
+    if (!selection) return;
+    const key = rowKey(row);
+    const next = new Set(selection.selected);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    selection.onChange(next);
+  }
+
   return (
     <div ref={rootRef} className={cx('@container overflow-x-auto', className)}>
       <table
@@ -243,6 +273,16 @@ export function Table<T>({
       >
         <thead ref={headRef} className={cx('hidden', !stacked && wide.head)}>
           <tr className="text-caption text-text-mute">
+            {selection ? (
+              <th scope="col" className={cx('px-3 py-2', !stacked && wide.narrow)}>
+                <Checkbox
+                  aria-label="Select all"
+                  checked={allSelected}
+                  indeterminate={someSelected}
+                  onChange={toggleAll}
+                />
+              </th>
+            ) : null}
             {shown.map((column) => {
               const narrow = compact && column.compact !== undefined;
               const sortable = column.sortValue !== undefined && onSortChange !== undefined;
@@ -312,6 +352,15 @@ export function Table<T>({
                 !stacked && wide.row,
               )}
             >
+              {selection ? (
+                <td className={cx(!stacked && wide.cell, !stacked && wide.narrow)}>
+                  <Checkbox
+                    aria-label={selection.label?.(row) ?? 'Select row'}
+                    checked={selection.selected.has(rowKey(row))}
+                    onChange={() => toggleRow(row)}
+                  />
+                </td>
+              ) : null}
               {shown.map((column) => {
                 const narrow = !stacked && compact && column.compact !== undefined;
                 const valign = rowValign?.(row) ?? column.valign ?? 'middle';

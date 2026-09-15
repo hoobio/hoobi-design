@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Alert,
   Badge,
+  type BadgeTone,
   Banner,
   BarList,
   Breadcrumbs,
@@ -24,6 +25,8 @@ import {
   Popover,
   Progress,
   Rating,
+  ReorderGrip,
+  ReorderList,
   RichTooltip,
   Section,
   Select,
@@ -1639,6 +1642,7 @@ const RELEASES: Release[] = [
 
 export function TablePage() {
   const [sort, setSort] = useState<TableSort>({ column: 'score', direction: 'desc' });
+  const [selected, setSelected] = useState(new Set<string>());
   return (
     <>
       <Import names="Table" />
@@ -1795,6 +1799,54 @@ export function TablePage() {
           />
         </div>
       </Demo>
+      <Demo
+        title="Selection"
+        note="Controlled, like the sort: the keys are rowKey values and you hold the Set. The header checkbox covers every row currently shown and goes indeterminate on a partial selection. Stacked, the checkbox leads each row card."
+        stack
+        code={`const [selected, setSelected] = useState(new Set<string>());
+
+<Table
+  rows={releases}
+  rowKey={(r) => r.title}
+  selection={{ selected, onChange: setSelected, label: (r) => \`Select \${r.title}\` }}
+  columns={[...]}
+/>`}
+      >
+        <div className="flex w-full flex-col gap-2">
+          <Table
+            label="Release candidates, selectable"
+            rows={RELEASES}
+            rowKey={(r) => r.title}
+            selection={{
+              selected,
+              onChange: setSelected,
+              label: (r) => `Select ${r.title}`,
+            }}
+            columns={[
+              {
+                id: 'title',
+                header: 'release',
+                primary: true,
+                cell: (r) => <span className="text-caption break-all">{r.title}</span>,
+              },
+              {
+                id: 'quality',
+                header: 'quality',
+                cell: (r) => <Badge>{r.quality}</Badge>,
+              },
+              {
+                id: 'size',
+                header: 'size',
+                align: 'end',
+                cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
+              },
+            ]}
+          />
+          <p className="text-caption text-text-dim">
+            {selected.size === 0 ? 'Nothing selected' : `${String(selected.size)} selected`}
+          </p>
+        </div>
+      </Demo>
       <Props
         rows={[
           [
@@ -1853,7 +1905,106 @@ export function TablePage() {
             'undefined',
             "Vertical placement for one row, ahead of any column's own valign. undefined leaves that row to the columns.",
           ],
+          [
+            'selection',
+            '{ selected, onChange, label? }',
+            'undefined',
+            'Row selection, off when absent. Controlled: the keys are rowKey values, label names one row’s checkbox.',
+          ],
           ['label', 'string', 'undefined', 'aria-label for the table.'],
+        ]}
+      />
+    </>
+  );
+}
+
+interface Stage {
+  id: string;
+  name: string;
+  tone: BadgeTone;
+  runs: string;
+}
+
+const STAGES: Stage[] = [
+  { id: 'fetch', name: 'Fetch', tone: 'info', runs: '4s' },
+  { id: 'verify', name: 'Verify', tone: 'success', runs: '1s' },
+  { id: 'import', name: 'Import', tone: 'warn', runs: '12s' },
+  { id: 'rename', name: 'Rename', tone: 'neutral', runs: '0s' },
+  { id: 'notify', name: 'Notify', tone: 'danger', runs: '2s' },
+];
+
+export function ReorderListPage() {
+  const [stages, setStages] = useState(STAGES);
+  return (
+    <>
+      <Import names="ReorderList, ReorderGrip" />
+      <Demo
+        title="Drag the grip, or focus it and press the arrow keys"
+        note="The dragged row lifts on the flyout elevation and follows the pointer; its neighbours slide into the slot it left on the decelerate curve. Escape during a drag puts everything back. Home and End move to the ends, and each keyboard move is announced on a polite live region. You hold the order: onReorder hands back the whole array."
+        stack
+        code={`const [stages, setStages] = useState(STAGES);
+
+<ReorderList
+  label="Pipeline stages"
+  items={stages}
+  itemKey={(s) => s.id}
+  itemLabel={(s) => s.name}
+  onReorder={setStages}
+>
+  {(stage, handle) => (
+    <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+      <ReorderGrip {...handle} />
+      <Badge tone={stage.tone} dot>{stage.name}</Badge>
+      <span className="ml-auto pr-2 text-caption text-text-mute tabular-nums">{stage.runs}</span>
+    </div>
+  )}
+</ReorderList>`}
+      >
+        <div className="w-full max-w-100 rounded-panel bg-bg p-2">
+          <ReorderList
+            label="Pipeline stages"
+            items={stages}
+            itemKey={(s) => s.id}
+            itemLabel={(s) => s.name}
+            onReorder={setStages}
+          >
+            {(stage, handle) => (
+              <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+                <ReorderGrip {...handle} />
+                <Badge tone={stage.tone} dot>
+                  {stage.name}
+                </Badge>
+                <span className="ml-auto pr-2 text-caption text-text-mute tabular-nums">
+                  {stage.runs}
+                </span>
+              </div>
+            )}
+          </ReorderList>
+        </div>
+      </Demo>
+      <Props
+        rows={[
+          ['items', 'T[]', '-', 'The current order. The list renders it as given and never sorts.'],
+          ['itemKey', '(item: T) => string', '-', "Stable key per item; it lands on the row's data-key."],
+          [
+            'onReorder',
+            '(items: T[]) => void',
+            '-',
+            'The whole array in its new order, fired once the drop animation has finished so nothing flashes.',
+          ],
+          [
+            'children',
+            '(item: T, handle: ReorderHandleProps) => ReactNode',
+            '-',
+            'Renders one row. Spread handle onto the element that starts a drag: a grip, or the row itself.',
+          ],
+          [
+            'itemLabel',
+            '(item: T) => string',
+            "'Reorder'",
+            "Accessible name for a row's handle, and the name the live region announces.",
+          ],
+          ['label', 'string', 'undefined', 'aria-label for the list.'],
         ]}
       />
     </>

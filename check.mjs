@@ -66,7 +66,11 @@ const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]
   .filter((n) => n && !n.startsWith('type ') && !NON_VISUAL.has(n));
 const pages = readFileSync('catalog/src/pages.tsx', 'utf8');
 // Parts of one component share its page: SettingGroup and SettingList are SettingRow's.
-const PARTS = { SettingGroup: 'SettingRow', SettingList: 'SettingRow' };
+const PARTS = {
+  SettingGroup: 'SettingRow',
+  SettingList: 'SettingRow',
+  ReorderGrip: 'ReorderList',
+};
 for (const exportedName of exported) {
   const name = PARTS[exportedName] ?? exportedName;
   // Subcomponents (Menu.Item) live on their parent's page; only top-level exports need one.

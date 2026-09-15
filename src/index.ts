@@ -121,6 +121,12 @@ export {
   type ToastTone,
   type ToasterProps,
 } from './Toast.js';
+export {
+  ReorderGrip,
+  ReorderList,
+  type ReorderHandleProps,
+  type ReorderListProps,
+} from './ReorderList.js';
 export { RichTooltip, type RichTooltipProps } from './RichTooltip.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';
 export { UnsavedBar, type UnsavedBarProps } from './UnsavedBar.js';

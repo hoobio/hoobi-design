@@ -48,6 +48,7 @@ import {
   PopoverPage,
   ProgressPage,
   RatingPage,
+  ReorderListPage,
   RichTooltipPage,
   SectionPage,
   SelectPage,
@@ -395,6 +396,13 @@ export const PAGES: Page[] = [
     title: 'Table',
     caption: 'Sortable columns wide, a stack of row cards narrow. One markup path.',
     render: () => <TablePage />,
+  },
+  {
+    id: 'reorder-list',
+    group: 'Layout',
+    title: 'Reorder List',
+    caption: 'Drag or arrow-key reordering of a list the consumer owns.',
+    render: () => <ReorderListPage />,
   },
   {
     id: 'time-axis',
