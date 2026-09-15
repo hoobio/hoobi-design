@@ -231,10 +231,10 @@
   [data-tip]:focus-visible::after {
     display: block;
   }
-  /* Fixed variant: the box escapes every scrolling and clipping ancestor, placed from
+  /* Fixed variant: the box is placed outside every scrolling and clipping ancestor, from
      --tip-x/--tip-y which the anchor sets on pointerenter and focus (see tipAnchor).
-     Default sits above the anchor and centred; 'right' hangs off its right edge, which
-     is what a nav rail wants. */
+     Default sits above the anchor and centred; 'right' hangs off its right edge, for
+     use in a nav rail. */
   [data-tip].tip-fixed::after {
     position: fixed;
     bottom: auto;
@@ -256,8 +256,8 @@
     z-index: -1;
     /* Mica, not wallpaper: the artwork is a hint of colour behind the app, never something
        you can read. Tinted hard back towards bg and blurred past the point where any shape
-       survives, because a legible poster behind a page of text competes with the text. The
-       scoped card variant stays lighter - there the artwork IS the card's fill. */
+       remains, because a legible poster behind a page of text makes the text harder to read.
+       The scoped card variant stays lighter - there the artwork IS the card's fill. */
     background-image:
       linear-gradient(
         color-mix(in srgb, var(--color-bg) 90%, transparent),
@@ -273,7 +273,7 @@
   /* CodeBlock tones: standard highlight.js token classes mapped onto the theme
      tokens, which ARE the Ayu Mirage syntax scheme - keywords orange, strings
      green, constants purple, functions yellow, entities blue. Bring your own
-     engine; any hljs grammar lands themed. */
+     engine; any hljs grammar picks up the theme. */
   .code-block .hljs-keyword,
   .code-block .hljs-operator,
   .code-block .hljs-selector-pseudo {
@@ -321,16 +321,16 @@
     color: var(--color-text-dim);
   }
 
-  /* A hairline reaches its surface's edges by cancelling the padding the surface published
-     as --pad. The container owns the number; the rule just undoes it, so nothing has to be
-     told a magic inset and a padded Card slices correctly without any configuration. */
+  /* A hairline extends to its surface's edges by cancelling the padding value the surface
+     sets as --pad. The container defines that number; this rule just negates it, so a
+     padded Card gets correct edge-to-edge hairlines with no extra configuration. */
   .rule-bleed {
     margin-inline: calc(var(--pad, 0px) * -1);
   }
 
-  /* Text over a mirage is reading against artwork, not a flat fill, so the two muted
-     tones lift a step wherever one is in play. Scoped rather than global: the palette is
-     right on plain chrome, and it is only the busy backdrop that eats the contrast. */
+  /* Text over a mirage is read against artwork rather than a flat fill, so the two muted
+     tones move up a step wherever a mirage is present. Scoped rather than global: the
+     palette is correct on plain chrome, and only the busy backdrop reduces the contrast. */
   .mirage-scoped,
   .mirage-lift {
     --color-text-dim: #a6adb6;
@@ -347,9 +347,9 @@
      looks merely transparent rather than filled. Give such a host its own opaque
      base and put the mirage on a child.
 
-     It also sets position:relative and overflow:hidden, which beat a consumer's
+     It also sets position:relative and overflow:hidden, which override a consumer's
      `absolute` or `overflow-y-auto` on the same element - an overflowing panel goes
-     silently unscrollable. Placement and scrolling belong on wrapper elements. */
+     silently unscrollable. Placement and scrolling should go on wrapper elements. */
   .mirage-scoped {
     position: relative;
     isolation: isolate;
@@ -397,7 +397,7 @@
     background-size: cover;
     background-position: center;
     filter: blur(28px) saturate(1.4);
-    /* Stops approximate an ease-out, so the colour trails away instead of hitting a wall. */
+    /* Stops approximate an ease-out, so the colour fades gradually instead of stopping abruptly. */
     mask-image: linear-gradient(
       to right,
       rgb(0 0 0 / 55%) 12%,
@@ -418,12 +418,13 @@
 
   /* Mirage, as a hero band: the poster's colour behind the top of a page, fading down
      into flat bg - mica confined to the header instead of the whole viewport. The band
-     clips and masks itself; the host (the page column) only needs relative + isolate.
+     is clipped by its own overflow: hidden and masked by its own mask-image; the host
+     (the page column) only needs relative + isolate.
      Content above it should usually take .mirage-lift. */
   .mirage-hero {
     /* Anchored to the nearest positioned ancestor - the Shell's content area, which is
        relative+isolate - so the band spans the content edge to edge and never runs under
-       the pane. It scrolls away with the page, like a printed header. */
+       the pane. It scrolls with the page rather than staying fixed. */
     position: absolute;
     inset: 0 0 auto;
     height: 340px;
@@ -477,8 +478,8 @@
     }
   }
 
-  /* Toast: in on the decelerate curve, out on accelerate - Fluent's rule that a thing
-     arriving settles and a thing leaving gets out of the way. */
+  /* Toast: enters on the decelerate curve, exits on accelerate, matching Fluent's
+     motion rule for arriving and leaving elements. */
   .toast-in {
     animation: toast-in 0.25s var(--ease-decelerate);
   }
@@ -500,7 +501,7 @@
 
   /* Notice: the same arrive-and-settle rule as a toast, but downwards - it drops in from
      above the fold it is pinned under. The translate is composed with the centring one the
-     element already carries, so the keyframes move it on its own axis rather than replacing
+     element already has, so the keyframes move it on its own axis rather than replacing
      the -50% that puts it in the middle. */
   .notice-in {
     animation: notice-in 0.25s var(--ease-decelerate);

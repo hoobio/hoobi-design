@@ -7,14 +7,14 @@ export type DurationUnit = 'minutes' | 'hours' | 'days' | (string & {});
 
 export interface DurationInputProps {
   label: ReactNode;
-  /** Baked into the field as a chip-filled suffix, so the number is never unitless. */
+  /** Rendered inside the field as a chip-filled suffix, so the number is never unitless. */
   unit: DurationUnit;
   value: number | '';
   onChange: (value: number | '') => void;
   min?: number;
   max?: number;
   step?: number;
-  /** What the number means, and what 0 does, on the (i). Never a sentence under the field. */
+  /** What the number means, and what 0 does, shown on the (i) rather than under the field. */
   info?: string;
   error?: ReactNode;
   disabled?: boolean;
@@ -25,8 +25,8 @@ export interface DurationInputProps {
 }
 
 /**
- * A number with its unit inside the field. Separating the two - a bare box and the word
- * "hours" somewhere beside it - is how you get a value entered in the wrong scale.
+ * A number with its unit inside the field. Separating them - a bare box and the word
+ * "hours" somewhere beside it - risks a value entered in the wrong scale.
  */
 export function DurationInput({
   label,

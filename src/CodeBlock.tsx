@@ -17,9 +17,9 @@ export interface CodeBlockProps extends Omit<HTMLAttributes<HTMLPreElement>, 'ch
 }
 
 /**
- * The house code surface. Bring your own engine: the stylesheet maps standard
- * highlight.js token classes onto the theme tokens - which ARE Ayu Mirage - so
- * any hljs grammar lands themed while the library stays dependency-free.
+ * The stylesheet maps standard highlight.js token classes onto the theme
+ * tokens, which match Ayu Mirage, so any hljs grammar is themed without an
+ * added dependency.
  */
 export function CodeBlock({ code, html, copy = false, className, ...rest }: CodeBlockProps) {
   const content =
@@ -80,7 +80,8 @@ function CopyButton({ code }: { code: string }) {
   }, [copied]);
   return (
     // The code scrolls under this, so it sits on the surface's own fill. A wrapper, not a
-    // className on the Button: the ghost variant's transparent fill wins in stylesheet order.
+    // className on the Button: the ghost variant's transparent fill overrides a className here,
+    // given stylesheet order.
     <span className="absolute top-1.5 right-1.5 rounded-control bg-chip">
       <Button
         size="sm"

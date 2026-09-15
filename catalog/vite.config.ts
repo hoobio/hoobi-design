@@ -16,8 +16,8 @@ export default defineConfig({
   // devDependency. Without dedupe the page loads two Reacts and every hook is null.
   resolve: { dedupe: ['react', 'react-dom'] },
   // @hoobi/design resolves to ../, so its fonts/ sits outside the dev server's root and
-  // Vite refuses to serve it - Noto Sans and Dank Mono both silently fall back to a system
-  // face. The build inlines the woff2 as data: URIs, so this only ever bit the dev server.
+  // Vite does not serve it - Noto Sans and Dank Mono both silently fall back to a system
+  // face. The build inlines the woff2 as data: URIs, so this only ever affects the dev server.
   server: { fs: { allow: ['..'] } },
   build: {
     assetsInlineLimit: 1024 * 1024,

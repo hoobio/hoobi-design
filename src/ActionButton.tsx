@@ -21,10 +21,9 @@ export interface ActionButtonProps extends Omit<ButtonProps, 'onClick'> {
 }
 
 /**
- * A button that reports its own outcome. Press it and it goes busy; the promise settling
- * turns it green for a moment or red for longer, with the rejection's message on the
- * tooltip and in `title`. A plain Button wired to an async onClick has no way to say any
- * of that, which is how a button that quietly failed ends up in production.
+ * Reports the outcome of `action`: busy while pending, then a brief success state or a
+ * longer failure state, with the rejection message in the tooltip and in `title`. A plain
+ * Button wired to an async onClick has no equivalent state or error surface.
  */
 export function ActionButton({
   action,
@@ -44,9 +43,9 @@ export function ActionButton({
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    // Set on the way IN as well as cleared on the way out: React 19 StrictMode mounts,
-    // unmounts and remounts in development, and a flag only ever cleared would leave every
-    // later promise looking like it settled after unmount - the button would stay busy.
+    // Set on mount as well as cleared on unmount: React 19 StrictMode mounts, unmounts and
+    // remounts in development. A flag only cleared on unmount would count a later promise
+    // as settled after unmount, leaving the button stuck busy.
     alive.current = true;
     return () => {
       alive.current = false;
@@ -66,7 +65,7 @@ export function ActionButton({
   };
 
   const run = () => {
-    // A second press mid-flight is a double submit, not impatience worth honouring.
+    // A second press mid-flight is treated as a double submit and ignored.
     if (state === 'busy') return;
     clearTimeout(timer.current);
     setState('busy');
@@ -97,8 +96,8 @@ export function ActionButton({
       disabled={disabled}
       className={cx(
         state === 'failure' && 'tip-fixed',
-        // Important, because the variant's own border/text utilities are equally specific
-        // and CSS order, not class order, would decide the winner.
+        // Important, because the variant's own border/text utilities are equally specific:
+        // CSS order, not class order, determines which one applies.
         state === 'success' && 'border-success! text-success!',
         state === 'failure' && 'border-danger! text-danger!',
         className,

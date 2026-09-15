@@ -15,7 +15,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   dot?: boolean;
   /** A mute word before the value: `confidence high`, `webhook registered`. Text appearance only. */
   label?: ReactNode;
-  /** The dot breathes: something is in progress right now. */
+  /** Animates the dot to indicate an in-progress state. */
   pulse?: boolean;
   /** Tooltip shown on hover and keyboard focus, explaining what the badge means. */
   tooltip?: string;
@@ -30,8 +30,8 @@ const TONES: Record<BadgeTone, { text: string; dot: string }> = {
   info: { text: 'text-info', dot: 'bg-info' },
 };
 
-// 'text' appearance colour is its own map, not TONES.text: accent reads as accent-blue
-// here (there is no chip fill to carry the plain accent hue against).
+// 'text' appearance colour uses its own map, not TONES.text: accent renders as
+// accent-blue, since there is no chip fill for the plain accent hue to appear against.
 const TEXT_TONES: Record<BadgeTone, string> = {
   neutral: 'text-text-dim',
   accent: 'text-accent-blue',
@@ -59,8 +59,8 @@ export function Badge({
   ...rest
 }: BadgeProps) {
   if (appearance === 'text') {
-    // A plain inline run, NOT inline-flex: a flex container's reported baseline would be the
-    // dot's box, which makes the text ride high next to any baseline-aligned neighbour.
+    // Renders as a plain inline element, not inline-flex: a flex container's baseline
+    // would follow the dot's box, misaligning the text against baseline-aligned neighbours.
     return (
       <span
         {...tipAnchor(tooltip)}

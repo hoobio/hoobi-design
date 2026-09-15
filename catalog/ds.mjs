@@ -10,16 +10,16 @@ import { createElement } from 'react';
  * page, plus the tokens and a hash manifest.
  *
  * Server-rendered on purpose. The catalog's own dist/index.html is a 610KB React
- * bundle, and a design system whose files are bundled JS teaches a reader
- * nothing - the whole value is that the real markup and the real utility classes
- * are there to be read. Static also means no runtime, so a card cannot break.
+ * bundle; a design system built from bundled JS gives a reader nothing to read
+ * directly. The value is that the real markup and the real utility classes are
+ * visible. Static also means no runtime, so a card cannot break.
  *
  * Everything comes from catalog/src/pages.tsx, the same list the catalog nav
  * renders, so a component cannot be in one and missing from the other.
  *
- * ponytail: every card carries the full compiled stylesheet (~350KB, of which
- * 186KB is the four inlined woff2). Duplicated across ~30 cards that is ~10MB of
- * bundle. It is simple and it is correct; if the size ever bites, compile
+ * ponytail: every card includes the full compiled stylesheet (~350KB, of which
+ * 186KB is the four inlined woff2). Duplicated across ~30 cards, that is ~10MB
+ * of bundle. Simple and correct; if the size becomes a problem, compile
  * Tailwind per rendered card instead, which drops each to a few KB.
  */
 
@@ -43,8 +43,8 @@ const escapeAttr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').repla
 function stylesheet() {
   const html = readFileSync('dist/index.html', 'utf8');
   // Scripts go first: the bundled hljs XML grammar contains the literal text
-  // `<style(?=\s|>)`, so matching the style tag on the raw file starts the match
-  // inside the JS and drags a chunk of the bundle into every card.
+  // `<style(?=\s|>)`, so matching the style tag on the raw file would include a
+  // chunk of the bundle in every card.
   const style = html
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .match(/<style[^>]*>[\s\S]*?<\/style>/)?.[0];
@@ -55,10 +55,9 @@ function stylesheet() {
 }
 
 /**
- * Reveal what the server render leaves closed. Both overlays keep their panel in
- * the DOM when shut, so this unhides the real component rather than substituting
- * a hand-rolled open copy of it - which would be the exact fork the library
- * forbids consumers from writing.
+ * Reveals what the server render leaves closed. Both overlays keep their panel
+ * in the DOM when shut, so this unhides the real component instead of
+ * substituting a hand-rolled open copy, which consumers do not write.
  */
 function revealOverlays(markup) {
   return (

@@ -18,7 +18,7 @@ export function Tabs({ items, value, onChange, className }: TabsProps) {
     <div
       role="tablist"
       // No track rule: the selection underline is the only line, per the borderless language -
-      // a full-width hairline under every tab strip was decoration the accent already carries.
+      // a full-width hairline under every tab strip was decoration already provided by the accent.
       className={cx('no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1', className)}
     >
       {items.map((item) => {

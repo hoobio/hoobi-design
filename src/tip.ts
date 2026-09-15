@@ -4,10 +4,10 @@ import type { PointerEvent, FocusEvent } from 'react';
  * Anchor props for the house tooltip. The tip is `position: fixed` and placed off the
  * anchor's own rect as the pointer or focus arrives, because an absolutely positioned
  * one is clipped by any scrolling or clipping ancestor - a page shell's <main>, a card
- * that rounds by clipping - and a tip you cannot read is worse than none.
+ * that rounds by clipping - and the tip needs to stay readable.
  *
- * Still no positioning library and no state: two lines of measurement, and the CSS in
- * the base layer does the rest.
+ * No positioning library and no state: two lines of measurement, and the CSS in
+ * the base layer renders and positions the tip at that point.
  */
 export function tipAnchor(
   text: string | undefined,
@@ -15,8 +15,8 @@ export function tipAnchor(
   /**
    * false leaves the anchor out of the tab order and off the accessibility tree: the tip is
    * hover-only decoration, and its words reach assistive tech another way (an `id` the
-   * control points `aria-describedby` at). An (i) that steals a tab stop between two fields
-   * is a keyboard regression dressed up as help.
+   * control points `aria-describedby` at). Taking a tab stop for an (i) icon between two
+   * fields is a keyboard regression.
    */
   focusable = true,
 ) {

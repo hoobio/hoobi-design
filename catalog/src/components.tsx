@@ -235,7 +235,7 @@ export function BadgePage() {
       />
       <Demo
         title="Tones"
-        note="20px tall, chip surface, tone carried by the text colour only."
+        note="20px tall, chip surface, the text colour alone sets the tone."
         code={`{(['neutral', 'accent', 'success', 'warn', 'danger', 'info'] as const).map((t) => (
   <Badge key={t} tone={t}>{t}</Badge>
 ))}`}
@@ -385,7 +385,7 @@ export function ShellPage() {
       <Import names="Shell" />
       {demo ? (
         <Demo
-          title="Try it"
+          title="Live controls"
           note="These steer the real Shell around this page: the pane's three presentations, and the mirage behind them."
           code={`<Shell mode="side" collapsible mirage="url(...)" />`}
         >
@@ -432,8 +432,8 @@ export function ShellPage() {
       <p className="mt-3 text-body text-text-dim">
         <strong className="text-text">This catalog is the live demo</strong> - the chrome around
         this page is a Shell, and the selector in the top bar switches its presentation live.
-        Collapse the side pane and the labels fade out, the active pill stays, each rail icon grows
-        a tooltip, and items without an icon fall back to their initial.
+        Collapse the side pane and the labels fade out, the active pill stays, each rail icon gets a
+        tooltip, and items without an icon fall back to their initial.
       </p>
       <div className="mt-4">
         <Snippet
@@ -460,20 +460,20 @@ export function ShellPage() {
       </div>
       <Demo
         title="bar={false}"
-        note="Uncheck bar above to see it on this page. The top bar goes on md+ and the side pane runs the full viewport height, taking a 48px header cell of its own at its top - the same cell, holding the same wordmark and collapse trigger. Below md the bar still renders whatever bar says: it carries the overlay trigger, which is the only nav there is at that width, so actions are unavailable on md+ in this mode."
+        note="Uncheck bar above to see it on this page. The top bar goes on md+ and the side pane runs the full viewport height, taking a 48px header cell of its own at its top - the same cell, holding the same wordmark and collapse trigger. Below md the bar still renders whatever bar says: it holds the overlay trigger, which is the only nav there is at that width, so actions are unavailable on md+ in this mode."
         stack
         code={`<Shell bar={false} nav={nav} navFooter={<Shell.User ... />}>
   {routes}
 </Shell>`}
       >
         <p className="text-caption text-text-dim">
-          The content column loses its 40px desktop gap too (md:pt-6 rather than md:pt-10) - with no
-          bar above it, that gap reads as a hole rather than as breathing room.
+          The content column loses its 40px desktop gap too (md:pt-6 rather than md:pt-10) - without
+          the bar above it, that gap looks unintentional.
         </p>
       </Demo>
       <Demo
         title="The user menu"
-        note="Every row is the consumer's, composed from Shell.MenuItem / MenuLabel / MenuDivider (Menu's rows, one implementation), so nothing about accounts is baked in. onSignOut alone appends the danger row and the hairline above it, so a menu never needs to end in a divider of its own. Expanded it grows downward as a distinct raised panel; on the rail the same rows become a flyout; below md it opens inside the overlay pane. The pane's own bottom row is the live one, carrying the catalog's rows."
+        note="Every row is the consumer's, composed from Shell.MenuItem / MenuLabel / MenuDivider (Menu's rows, one implementation), so nothing about accounts is baked in. onSignOut alone appends the danger row and the hairline above it, so a menu never needs to end in a divider of its own. Expanded it grows downward as a distinct raised panel; on the rail the same rows become a flyout; below md it opens inside the overlay pane. The pane's own bottom row is the live one, holding the catalog's rows."
         stack
         code={`<Shell.User
   name="hoobi"
@@ -637,14 +637,14 @@ export function TooltipPage() {
       />
       <p className="text-body text-text-dim">
         The styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so anything
-        carrying that attribute grows a tooltip, shown instantly on hover and on keyboard focus.
-        Tooltip and Badge place theirs <em>fixed</em>, off the anchor's own rect, because an
-        absolutely positioned tip is cut off by any scrolling or clipping ancestor - a page shell's
-        main column, a card that rounds by clipping. Still no positioning library: two lines of
-        measurement in <code className="text-accent-blue">tipAnchor</code>, and CSS does the rest.
+        with that attribute shows a tooltip, instantly on hover and on keyboard focus. Tooltip and
+        Badge place theirs <em>fixed</em>, off the anchor's own rect, because an absolutely
+        positioned tip is cut off by any scrolling or clipping ancestor - a page shell's main
+        column, a card that rounds by clipping. Still no positioning library: two lines of
+        measurement in <code className="text-accent-blue">tipAnchor</code>, and plain CSS places it.
       </p>
       <Demo
-        title="Wrap anything"
+        title="Any element as anchor"
         note="Hover or Tab to the chip. The wrapper is focusable so keyboard users get the tip too."
         code={`<Tooltip text="Radarr accepted the release and the download is running.">
   <Badge tone="info" dot>grabbing</Badge>
@@ -696,11 +696,10 @@ export function RichTooltipPage() {
     <>
       <Import names="RichTooltip" />
       <p className="text-body text-text-dim">
-        Tooltip carries a string in a CSS attribute, which is the right tool for a sentence and
-        useless for anything with structure. RichTooltip is the panel version: a title and a few
-        lines, following the pointer, clamped to the viewport and{' '}
-        <code className="text-accent-blue">pointer-events: none</code> so it can never eat the hover
-        that spawned it. Words alone still belong on Tooltip.
+        Tooltip holds a string in a CSS attribute, which fits a sentence but not anything with
+        structure. RichTooltip is the panel version: a title and a few lines, following the pointer,
+        clamped to the viewport and <code className="text-accent-blue">pointer-events: none</code>{' '}
+        so it never intercepts the hover that opened it. Words alone still belong on Tooltip.
       </p>
       <Demo
         title="A title and its lines"
@@ -763,10 +762,10 @@ export function PopoverPage() {
     <>
       <Import names="Popover" />
       <p className="text-body text-text-dim">
-        Menu is rows; Popover is whatever you put in it - a filter set, a few checkboxes and a
+        Menu renders rows; Popover renders arbitrary content - a filter set, a few checkboxes and a
         field, a small form. Fixed off the trigger&apos;s own rect and re-placed on capture-phase
         scroll, so a table with its own scroll container cannot drag it out of line or clip it. It
-        closes on Escape and on a pointer down outside, and hands focus back to the trigger.
+        closes on Escape and on a pointer down outside, and returns focus to the trigger.
       </p>
       <Demo
         title="Wrapped trigger"
@@ -889,7 +888,7 @@ export function CardPage() {
 
       <Demo
         title="Grid"
-        note="Card carries no width of its own. Lay it out with a grid."
+        note="Card has no width of its own. Lay it out with a grid."
         stack
         code={`<div className="grid gap-3 sm:grid-cols-3">
   <Card title="Queue"><Progress value={64} /></Card>
@@ -972,7 +971,7 @@ export function CardPage() {
 
       <Demo
         title="tone"
-        note="The whole card - not just a strip inside it - takes the tone as a solid fill. warn pauses for a person to act, success is a landed fix, danger a failure, info in-progress. Ignored when mirage is also set."
+        note="The whole card - not just a strip inside it - takes the tone as a solid fill. warn is a person needed to act, success is a completed fix, danger a failure, info in-progress. Ignored when mirage is also set."
         stack
         code={`<Card tone="warn" title="Awaiting approval">
   A person needs to act.
@@ -1809,7 +1808,7 @@ export function TablePage() {
             'column.priority',
             'number',
             '0',
-            'Higher survives longer as the container narrows. 100 and up is the must-show band, never hidden: the table stacks into cards instead. Declaring it on any column turns the measured cascade on; a table with neither priority nor compact wraps and stacks on the @2xl container query as before.',
+            'A higher value stays visible longer as the container narrows. 100 and up is the must-show band, never hidden: the table stacks into cards instead. Declaring it on any column turns the measured cascade on; a table with neither priority nor compact wraps and stacks on the @2xl container query as before.',
           ],
           [
             'column.compact / compactHeader',
@@ -1974,7 +1973,7 @@ export function TabsPage() {
       </Demo>
 
       <Demo
-        title="Labels can be nodes"
+        title="Node labels"
         note="label is a ReactNode, so counts and dots go inline."
         stack
         code={`items={[
@@ -2003,7 +2002,7 @@ export function TabsPage() {
 
       <Demo
         title="Overflow"
-        note="The strip scrolls horizontally with the scrollbar hidden, so a long set survives a 360px viewport. Drag it sideways."
+        note="The strip scrolls horizontally with the scrollbar hidden, so a long set still fits a 360px viewport. Drag it sideways."
         stack
         code={`<Tabs value={value} onChange={setValue} items={manyItems} />`}
       >
@@ -2091,7 +2090,7 @@ export function ProgressPage() {
 
       <Demo
         title="Tone"
-        note="Fill colour only, for when the bar itself should carry the state rather than a badge beside it."
+        note="Fill colour only, for when the bar itself should show the state rather than a badge beside it."
         stack
         code={`<Progress value={64} label="Downloading" tone="accent" />
 <Progress value={100} label="Imported" tone="success" />
@@ -2128,7 +2127,7 @@ export function SpinnerPage() {
       />
       <Demo
         title="Sizes"
-        note="A bordered circle with an accent top arc. 16px and 24px, nothing else."
+        note="A bordered circle with an accent top arc. 16px and 24px."
         code={`<Spinner />
 <Spinner size="md" />`}
       >
@@ -2281,7 +2280,7 @@ const CODE_SAMPLES: { language: string; label: string; code: string }[] = [
     language: 'typescript',
     label: 'typescript',
     code: `export async function remediate(issue: SeerrIssue): Promise<Plan> {
-  // believe the reporter, not the label
+  // the reporter is the source of truth
   const plan = await agent.plan(issue);
   return plan.risky ? approve(plan) : execute(plan);
 }`,
@@ -2717,7 +2716,7 @@ export function ConfirmButtonPage() {
     <>
       <Import names="ConfirmButton" />
       <Demo
-        title="Arm, then confirm"
+        title="Two-step confirmation"
         note="First click arms it: the button turns danger and shows confirmLabel. A second click within the timeout fires onConfirm; otherwise it disarms itself. Press it once and wait to see that."
         stack
         code={`<ConfirmButton onConfirm={deleteFile}>Delete file</ConfirmButton>`}
@@ -2814,7 +2813,7 @@ export function TimelinePage() {
       <Import names="Timeline" />
       <Demo
         title="Default"
-        note="The rail is one of the border exceptions the design rules allow. Tone carries the outcome; time is dense metadata in tabular figures, head takes badges or labels beside it."
+        note="The rail is one of the border exceptions the design rules allow. Tone reflects the outcome; time is dense metadata in tabular figures, head takes badges or labels beside it."
         stack
         code={`<Timeline>
   <Timeline.Item tone="accent" time="14:02:11" head={<Badge tone="accent">plan</Badge>}>
@@ -2891,7 +2890,7 @@ export function TimelinePage() {
 
       <Demo
         title="Plain"
-        note="A bare neutral rail with no Timeline.Item chrome - children render as-is, for a feed whose beats already carry their own layout."
+        note="A bare neutral rail with no Timeline.Item chrome - children render as-is, for a feed whose beats already have their own layout."
         stack
         code={`<Timeline plain>
   <p className="text-body text-text">Issue 1042 opened by hoobi.</p>
@@ -2935,7 +2934,7 @@ export function TimelinePage() {
 
       <Demo
         title="Machinery: Fold, Event, Step"
-        note="The comments carry the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. Opened, it reads forward in one stream: an Event is a dense transition line, a Step is a dense agent-tool line, in the order they happened. A call and its result are one Step - the tool and what came back on the line, the input and output behind its chevron."
+        note="The comments hold the conversation; everything mendarr did on its own collapses behind a Fold so the feed reads as what was SAID. Opened, it reads forward in one stream: an Event is a dense transition line, a Step is a dense agent-tool line, in the order they happened. A call and its result are one Step - the tool and what came back on the line, the input and output behind its chevron."
         stack
         code={`<Timeline plain>
   <Timeline.Fold summary="2 status changes and 2 agent steps" range="10:50 am - 10:52 am" id="run-1" open={open} onOpenChange={setOpen}>
@@ -3109,13 +3108,13 @@ export function DividerPage() {
       <p className="text-body text-text-dim">
         A slice, not a rule you draw: 1px of page background cutting a surface in two. It bleeds to
         the surface's edges by cancelling whatever padding its container published as{' '}
-        <code className="text-accent-blue">--pad</code>, which a Card does for free - so a hairline
+        <code className="text-accent-blue">--pad</code>, which a Card already does - so a hairline
         inside a padded card reaches the edges without anyone passing it a magic inset.
       </p>
 
       <Demo
         title="Inside a Card"
-        note="The default. The card pads its content by 16px and the rule undoes exactly that, so it lands edge to edge."
+        note="The default. The card pads its content by 16px and the rule undoes exactly that, so it reaches edge to edge."
         stack
         code={`<Card title="plan">
   <p>...</p>
@@ -3189,7 +3188,7 @@ export function DescriptionListPage() {
 
       <Demo
         title="Inline"
-        note="A two-column grid from sm up, stacked below it. Long values wrap rather than pushing the row wide, which is what makes it survive 360px."
+        note="A two-column grid from sm up, stacked below it. Long values wrap rather than pushing the row wide, which is what keeps it usable at 360px."
         stack
         code={`<DescriptionList layout="inline" items={items} />`}
       >
@@ -3272,7 +3271,7 @@ export function RatingPage() {
 
       <Demo
         title="Clearing"
-        note="Clicking the star that is already the value sets it back to null. There is no separate clear control, because the row would carry one per rating."
+        note="Clicking the star that is already the value sets it back to null. There is no separate clear control, because the row would need one per rating."
         code={`onChange={(next) => { setRating(next); }} // next is null when the current value was clicked`}
       >
         <Rating value={value} onChange={setValue} label="Raid performance" />
@@ -3360,7 +3359,7 @@ export function ChipInputPage() {
       </Demo>
 
       <Demo
-        title="Suggestions may be async"
+        title="Async suggestions"
         note="The prop returns Chip[] or a promise of them, so a local array and a lookup endpoint are the same call. Stale responses are dropped, and chips already picked never come back as suggestions."
         stack
         code={`<ChipInput
@@ -3582,8 +3581,8 @@ export function NoticePage() {
     <>
       <Import names="Notice" />
       <Demo
-        title="State news, not a toast"
-        note="A toast is news you did not ask for and can miss. A Notice is the state of the thing you are looking at - a dropped connection, a save that failed on the way out - so it is centred where the eye already is and stays until the state changes. The page keeps working underneath it."
+        title="Persistent state notice"
+        note="A Notice shows the state of what is being viewed - a dropped connection, a save that failed on the way out. It stays centred where the eye already is until the state changes, unlike a toast, which can be missed. The page keeps working underneath it."
         stack
         code={`<Notice
   open={connection !== 'live'}

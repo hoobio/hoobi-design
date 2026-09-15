@@ -69,10 +69,10 @@ export interface Page {
   render: () => ReactNode;
   /**
    * Reveal the overlays in the static export. The bundle is server-rendered, so a
-   * Modal exports as the button that opens it and a Menu as its trigger - a card
-   * that teaches the reader the component is a button. Both keep their panel in
-   * the DOM when closed (dialog without [open], flyout with .hidden), so the
-   * exporter unhides them rather than anything hand-rolling an open copy.
+   * Modal exports as the button that opens it and a Menu as its trigger, showing
+   * only the button, not the open panel. Both keep their panel in the DOM when
+   * closed (dialog without [open], flyout with .hidden), so the exporter unhides
+   * them instead of hand-rolling an open copy.
    */
   dsOpen?: true;
   /** Kept out of the design-system export: a catalog mechanic, not a design fact. */
@@ -89,7 +89,7 @@ export const PAGES: Page[] = [
     id: 'identity',
     group: 'Foundations',
     title: 'Identity',
-    caption: 'What this library is, and what it refuses to be.',
+    caption: 'Design system description.',
     render: () => <Identity />,
   },
   {
@@ -152,7 +152,7 @@ export const PAGES: Page[] = [
     id: 'recipe-destructive',
     group: 'Recipes',
     title: 'Destructive action',
-    caption: 'Arm in place, or spell out the cost. Picking wrong is the risk.',
+    caption: 'Arm in place, or spell out the cost.',
     render: () => <DestructiveRecipe />,
   },
   {
@@ -181,7 +181,7 @@ export const PAGES: Page[] = [
     id: 'button',
     group: 'Actions',
     title: 'Button',
-    caption: 'Four variants, two sizes. Accent is spent once per view.',
+    caption: 'Four variants, two sizes. One accent per view.',
     render: () => <ButtonPage />,
   },
   {
@@ -294,7 +294,7 @@ export const PAGES: Page[] = [
     id: 'checkbox',
     group: 'Inputs',
     title: 'Checkbox',
-    caption: 'A native checkbox in house clothes. 20px box, 44px target.',
+    caption: 'A native checkbox styled to match the house look. 20px box, 44px target.',
     render: () => <CheckboxPage />,
   },
   {
@@ -330,7 +330,7 @@ export const PAGES: Page[] = [
     id: 'tabs',
     group: 'Navigation',
     title: 'Tabs',
-    caption: 'Controlled, scrollable, no panel opinions.',
+    caption: 'Controlled, scrollable, with no panel layout imposed.',
     render: () => <TabsPage />,
   },
   {
@@ -421,7 +421,7 @@ export const PAGES: Page[] = [
     id: 'action-button',
     group: 'Actions',
     title: 'Action Button',
-    caption: 'A button that reports its own outcome: busy, then success or the error.',
+    caption: 'Busy, then success or the error, shown on the button itself.',
     render: () => <ActionButtonPage />,
   },
   {
@@ -477,7 +477,7 @@ export const PAGES: Page[] = [
     id: 'action-dialog',
     group: 'Overlays',
     title: 'Action Dialog',
-    caption: 'The gate in front of anything destructive or with a byproduct.',
+    caption: 'A confirmation step before anything destructive or with a byproduct.',
     render: () => <ActionDialogPage />,
     dsOpen: true,
   },
@@ -542,10 +542,10 @@ export const PAGES: Page[] = [
     id: 'cx',
     group: 'Utilities',
     title: 'cx',
-    caption: 'The whole class-joining story, in one line.',
+    caption: 'The whole class-joining approach, in one line.',
     render: () => <CxPage />,
-    // A class-joining helper has no render. The design system is what things look
-    // like; this one is documentation and belongs only in the catalog.
+    // A class-joining helper has no render. It is documentation, not a
+    // design-system component, so it stays only in the catalog.
     dsSkip: true,
   },
 ];

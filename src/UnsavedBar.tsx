@@ -22,10 +22,10 @@ export interface UnsavedBarProps {
 }
 
 /**
- * Sticky at the foot of the scroll container while anything is unsaved, naming WHICH
- * sections - on a page you scroll, "you have unsaved changes" leaves you hunting for them.
- * The strip behind the bar is page background rather than a shadow: depth here is fill,
- * and content sliding under a translucent edge is what a shadow was covering up.
+ * Sticky at the foot of the scroll container while anything is unsaved, naming which
+ * sections hold the changes - on a page you scroll, "you have unsaved changes" alone
+ * does not say where. The strip behind the bar is page background rather than a
+ * shadow, so content does not appear to pass under a translucent edge.
  */
 export function UnsavedBar({
   sections = [],

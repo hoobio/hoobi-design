@@ -10,9 +10,8 @@ export interface ButtonProps
   variant?: ButtonVariant;
   size?: ButtonSize;
   /**
-   * The work this button started is running: it locks and a spinner leads the label. The
-   * LABEL STAYS - a button that empties itself into a spinner has stopped saying what it
-   * is doing at exactly the moment someone is waiting to find out.
+   * True while the triggered work is running: the button disables and a spinner leads the
+   * label. The label stays visible during the busy state.
    */
   busy?: boolean;
 }

@@ -7,18 +7,18 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** What this field means, on an (i) beside the label. Shown on hover and keyboard focus. */
   info?: string;
   /**
-   * @deprecated Use `info`. Explanations are tooltips, not captions: a sentence under every
-   * field is a sentence nobody reads, and it pushes the form apart. Still renders, so 0.19.0
+   * @deprecated Use `info`. Explanations belong in a tooltip, not a caption: a sentence
+   * under every field goes unread and pushes the form apart. Still renders, so 0.19.0
    * consumers keep working.
    */
   hint?: ReactNode;
-  /** Validation failure. The one thing that belongs under the control. */
+  /** Validation failure, the thing that belongs under the control. */
   error?: ReactNode;
   /** For a url, an id, a key - anything read character by character. */
   mono?: boolean;
   /** Right-aligned in the label row: a badge, a readout, a small action. */
   aside?: ReactNode;
-  /** The label is read to screen readers but not drawn: for a control inside a SettingRow, where the row carries the words. */
+  /** The label is read to screen readers but not drawn: for a control inside a SettingRow, where the row shows the words. */
   hideLabel?: boolean;
 }
 

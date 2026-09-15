@@ -7,8 +7,8 @@
 > is the basis for everything, with **Ayu Mirage** as the colour scheme and the library's own
 > YouTube-sized type scale on top. **Minimalism heavy.**
 
-Every token and component decision resolves against that statement. If a change makes the library
-less Fluent, less Ayu, or less minimal, it does not land. When a question has no house answer,
+This is the ethos applied to every token and component decision. Design choices must be consistent
+with Fluent, Ayu, and minimalism. When a question has no house answer,
 Fluent 2's answer is the default: icons are Fluent System Icons - consumers install
 `@fluentui/react-icons` (20px/Regular variants) and pass them as ReactNodes, the library itself
 stays zero-dependency; one-off glyphs drawn by hand follow the 20px grid with 1.5px strokes. Motion
@@ -32,7 +32,7 @@ operations/pipelines/publish.yaml
 
 `tsc` is the whole build for the library itself. No Vite lib mode, no tsup, no Storybook.
 
-## Consuming
+## Consumer setup
 
 ```jsonc
 // consumer package.json
@@ -61,8 +61,8 @@ save-exact=true
 Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout; `Menu.Item` /
 `Menu.Label` / `Menu.Divider`), Badge (tone + optional dot + tooltip, covers status dots), Card
 (optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
-`html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar lands
-Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, controlled sort), Breadcrumbs,
+`html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar
+renders in Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, controlled sort), Breadcrumbs,
 Timeline (`Timeline.Item`), DescriptionList,
 Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, a `Shell.Item` with `children` is an accordion of icon-less sub-items shown while it is active, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
@@ -94,8 +94,9 @@ for rows/lists where a full-bleed mirage per row would be too busy.
 
 Every strength tints at part opacity, so mirage assumes an **opaque page background beneath it**.
 A box floating over a canvas, photo or video has none, and the content underneath reads through it:
-the result looks transparent rather than filled, which is not a mirage that needs tuning but the
-wrong tool. Such a surface wants its own opaque fill, with mirage on a child if it is wanted at all.
+the result looks transparent rather than filled. Mirage tuning does not fix this; the surface is
+the wrong target for it. Such a surface needs its own opaque fill; mirage then goes on a child
+element, if used at all.
 `.mirage-scoped` also sets `position: relative` and `overflow: hidden`, which beat a consumer's
 `absolute` or `overflow-y-auto` on the same element and can leave an overflowing panel silently
 unscrollable - placement and scrolling belong on wrappers.
@@ -114,8 +115,8 @@ no icon of its own.
 markup path. Columns are data (`id`, `header`, `cell`, optional `sortValue`); the sort is
 **controlled** (`sort` + `onSortChange`, so the consumer keeps it in the URL) and applied by the
 table itself, which lets the consumer keep its rows in stored order. Undefined sort values sink to
-the bottom in either direction. `primary` marks the row's title column, `rowAction` the trailing
-control. Came off the deliberately-absent list when mendarr's release picker needed sortable columns.
+the bottom in either direction. `primary` names the row's title column, `rowAction` the trailing
+control. Added when mendarr's release picker needed sortable columns.
 
 Columns also give way progressively rather than running off the right edge: a `compact` column
 switches to its narrow rendering first, then the lowest `priority` columns drop one at a time
@@ -126,11 +127,11 @@ natural width to measure against the wrapper, the primary column truncates rathe
 table scroll, and the cards are reached by that measurement instead of the `@2xl` query. A consumer
 that passes neither prop keeps exactly the behaviour it had, container query included.
 
-Deliberately absent: Skeleton. Toggle came off that list rather than onto this one:
-Checkbox is the native input given the house look, which is what the absence already recommended.
+Skeleton is deliberately absent. Toggle was considered and dropped: Checkbox covers the value case;
+Switch covers the acting setting.
 
-**Components are only added when a consumer actually needs one.** No speculative components, no
-props added "for later". A consumer wanting Table is the trigger to write Table.
+**A component is added only when a consumer needs one.** No speculative components, no props
+added "for later".
 
 **And a component is a primitive with slots, never a product concept.** A scheduled task, an
 upstream connection, a wizard step are compositions of SettingRow + Badge + ActionButton in the
@@ -138,11 +139,11 @@ consumer, shown here as Recipes; ConnectionCard and TaskRow were both taken back
 mendarr's words (`Test`, `Run now`, `health`). If a consumer pattern needs something the primitives
 cannot express, the fix is a slot on the primitive, not a new component named after the screen.
 
-### Rules the API enforces, not just this file
+### API-enforced rules
 
-- **A control explains itself; a paragraph beside it does not.** State is shown by the control -
-  a badge, a lock, an icon, a tone - and an explanation lives on the `(i)` in `FieldLabel`'s
-  `info`, on hover and keyboard focus. The line under a field is reserved for a validation
+- **Control state is shown on the control**, not in a paragraph beside it: a badge, a lock,
+  an icon, a tone. An explanation lives on the `(i)` in `FieldLabel`'s `info`, on hover and
+  keyboard focus. The line under a field is reserved for a validation
   `error` and for a live readout the value demands (CronInput's next runs). `Input.hint` is
   **@deprecated - use `info`**; no new component takes a `hint`/`helper`/`description` prop.
 - **Anything destructive, irrecoverable, or with a byproduct confirms through `ActionDialog`**,
@@ -152,20 +153,18 @@ cannot express, the fix is a slot on the primitive, not a new component named af
   the consumer owns the dialog, because only the consumer knows the byproduct.
 - **Wording overrides are for translation, never for helper copy.** `SecretField` takes a
   `labels` object and nothing else; there is no slot for a sentence.
-- **An async button is an `ActionButton`; a plain `Button` with an async `onClick` does not
-  land.** A button that starts work reports it: busy, then a moment of success or a longer
-  moment of failure with the error on its tooltip. `Button` takes `busy` for the cases the
-  consumer already tracks. A silent button is the bug the rule exists to prevent.
-- **News you did not ask for is a toast; the outcome of a button you pressed is on the
-  button.** A background outcome nobody clicked for - an auto-correction that landed, a job
-  that finished, a webhook that arrived - is `toast()`. The result of a press belongs on the
-  control that was pressed, which is `ActionButton`. A toast for something the person is
-  already watching a button for says it twice, in the wrong corner of the screen.
+- **Async buttons use `ActionButton`.** A plain `Button` with an async `onClick` is not used.
+  A button that starts work reports it: busy, then success or failure, with the error shown
+  on its tooltip. `Button` takes `busy` for the cases the consumer already tracks.
+- **Unrequested updates use `toast()`. A pressed button's result stays on the button.** A
+  background outcome nobody clicked for - an auto-correction, a finished job, an arrived
+  webhook - is `toast()`. The result of a press belongs on the control that was pressed,
+  `ActionButton`. A toast does not repeat a result the button already shows.
 - **Every tooltip is `Tooltip`.** A native `title=` on a DOM element is the browser's own box: late, unstyled, absent on touch. `check.mjs` fails the build on one in the library; consumers wrap the element in `Tooltip` (a relative time, a badge, a truncated value) instead.
 - **The (i) is never a tab stop.** `InfoTip` is a `role="img"` span with `tabIndex={-1}`,
   hover-only; its words reach assistive tech through a hidden span the control names in
-  `aria-describedby`, wired for you by every field in the library. Tab from one field must
-  land on the next, not on an explanation.
+  `aria-describedby`, wired for you by every field in the library. Tab from one field moves
+  focus to the next field, not to an explanation.
 
 `ActionDialog` is yes-or-no; `FormDialog` is the one with fields, and its submit is gated on
 the browser's own `checkValidity()`. Neither **ever closes itself** - the consumer flips
@@ -174,9 +173,8 @@ runs: busy while pending, the rejection's message in a danger line, still open.
 `tone="danger"` is only for discarding something irrecoverable.
 
 **The button names the action.** `actionLabel` and `submitLabel` are REQUIRED and say what
-happens - "Rotate", "Regenerate", "Clear", "Set password". A dialog button reading "Confirm"
-is the anti-pattern the required prop exists to prevent; "confirm" was never the concept,
-which is why the component is `ActionDialog`.
+happens: "Rotate", "Regenerate", "Clear", "Set password", not "Confirm". The component is
+named `ActionDialog`, not `ConfirmDialog`, for the same reason.
 
 ## Design rules
 
@@ -187,9 +185,9 @@ which is why the component is `ActionDialog`.
   Fields inside a row fill with `bg-chip` and no border (the danger border on `error` stays) and
   take `hideLabel`, because the row is the label. `bg-surface-raised` is for things that float: a
   menu, the unsaved bar, the hover on a secondary button, the "new lines" pill.
-- **A free-text field carries an example placeholder.** `http://sonarr:8989`, `*/15 * * * *`,
-  `-1001234567890`: the cheapest hint there is, and an empty field has nothing else to say what
-  shape it wants. Numbers show their default; a secret's placeholder is SecretField's own.
+- **A free-text field has an example placeholder**, e.g. `http://sonarr:8989`,
+  `*/15 * * * *`, `-1001234567890`. It is the cheapest hint available.
+  Numbers show their default; a secret's placeholder is SecretField's own.
 - Dark only. `color-scheme: dark`, no light-mode variants, no `dark:` prefixes.
 - Everything comes from a token in `styles.css`. No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
@@ -217,12 +215,12 @@ which is why the component is `ActionDialog`.
 - Respect `prefers-reduced-motion` (handled globally in the base layer).
 - **Every state a person can reach is reachable by URL.** A page is a real path (`/timeline`,
   never `#timeline`); a filter, a tab, a knob, an expanded fold or step lives in the query string;
-  and anything expandable carries a static, unique `id`, so the state has an address a link can
+  and anything expandable has a static, unique `id`, so the state has an address a link can
   name. Components stay controlled and dependency-free (`open` + `onOpenChange` + `id`) and the
-  consumer's router owns the URL. Transient controls are the exception, not the loophole: an
+  consumer's router owns the URL. Transient controls are excepted: an
   armed destructive button or a flyout that closes on the next click is not view state.
 
-### WinUI 3 conventions this library follows
+### WinUI 3 conventions
 
 | Convention      | How it is encoded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -239,7 +237,7 @@ which is why the component is `ActionDialog`.
 (4 / 8 / 12 / 16 / 24 / 32) rather than odd numbers.
 
 Minimalism: a component gets no decoration it does not need. No gradients, no shadows, no
-double-signalling a state that the border or the ring already carries.
+double-signalling a state that the border or the ring already shows.
 
 - A stateful tone tints the **whole surface** as a solid `/15` fill (`bg-warn/15`) - never a
   gradient fade, never a border.
@@ -252,16 +250,16 @@ Strict TS, ESM, `.js` extensions on relative imports (NodeNext). Props interface
 `<Component>Props`. Self-documenting: no comment noise, comments only where the reason isn't in the
 code.
 
-## Changes land here, not in consumers
+## Library-only changes
 
-**Never mutate or restyle a library component inside a consuming service.** A consumer that needs a
-component to look or behave differently is the trigger to change it in hoobi-design and repin - a
+**Library components are not mutated or restyled inside a consuming service.** A component that
+needs to look or behave differently is changed in hoobi-design and repinned - a
 `className` hack or a hand-rolled copy in the consumer forks the design system silently. Library
-changes should be **backwards compatible, ideally additive**: new props default to the old
+changes are **backwards compatible, ideally additive**: new props default to the old
 behaviour, tokens are added rather than repurposed, and anything breaking is called out in the
-commit and lands together with the consumer updates.
+commit and shipped together with the consumer updates.
 
-## Build and verify
+## Build and verification
 
 pnpm workspace: the root is the library, `catalog/` is the one workspace package and links the
 library through `workspace:*`. One `pnpm install` at the root installs both; the only lockfile is
@@ -288,7 +286,7 @@ commit. A component that was never rendered is not verified.
 `pnpm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
 literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
 lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
-in `catalog/src/pages.tsx`. A rule that is only prose is a rule that drifts.
+in `catalog/src/pages.tsx`.
 
 Sanity-check token to utility generation after touching `styles.css`:
 
@@ -300,7 +298,7 @@ pnpm dlx @tailwindcss/cli@4.3.3 -i styles.css -o ./.tw-check.css   # gitignored
 
 `catalog/` is a hand-rolled Vite + React reference page: sidebar nav (hash routing), a Foundations
 group (Colour, Typography, Spacing & Radius) and one page per component with a description, import
-line, prop table, and a variant/size/state matrix where every demo carries its copyable JSX.
+line, prop table, and a variant/size/state matrix where every demo includes its copyable JSX.
 
 Deliberately **not** Storybook. Plain anchors, one flat `pages.tsx`, no addons, no MDX, no
 doc-extraction pipeline. Prop tables are hand-written.
@@ -331,11 +329,11 @@ Claude generates Hoobi-shaped UI from the real components, the real rules, and t
 - **Sync runs at release time, not per commit** - the design system should show what consumers
   can `pnpm add`, and every card is stamped with the library version. After
   `pnpm version && git push --follow-tags`, run `/design-sync` (the repo skill at
-  `.claude/skills/design-sync/` carries the project id and the exact procedure): it diffs the
+  `.claude/skills/design-sync/` has the project id and the exact procedure): it diffs the
   remote `_hashes.json` against the local one and uploads only what changed (re-running is a
   no-op). This cannot run in the pipeline: DesignSync needs an interactive claude.ai login.
 
-## Publishing
+## Publish process
 
 The end-to-end ritual (verify -> version -> tag push -> pipeline to green -> design-sync
 decision -> consumer repin) is the **`release` skill** (`.claude/skills/release/`). Mechanics:
@@ -349,8 +347,8 @@ The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`,
 Lab pool): npmAuthenticate -> pnpm install --frozen-lockfile -> typecheck -> build -> guard that the tag matches
 `package.json` version -> publish, skipped when that version is already on the feed.
 
-ADO feed versions are immutable: a wrong publish burns the version number permanently, which is what
-the tag guard exists to prevent. The build step is explicit rather than leaning on `prepublishOnly`,
+ADO feed versions are immutable: a wrong publish consumes the version number permanently, which the
+tag guard checks against. The build step is explicit rather than leaning on `prepublishOnly`,
 because `ignore-scripts=true` in a user `.npmrc` silently skips lifecycle scripts and would publish
 a stale `dist`.
 
@@ -370,4 +368,4 @@ lines.
 
 pnpm ignores `always-auth` silently; npm 11 (which still does the `npm publish` in the pipeline)
 warns `Unknown project config "always-auth"`. It is kept because Azure Artifacts' own docs and
-`npmAuthenticate@0` still expect it. Harmless.
+`npmAuthenticate@0` still specify it, and it is harmless.

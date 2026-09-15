@@ -16,10 +16,9 @@ export interface DescriptionListProps {
 }
 
 /**
- * Rows are sliced the house way: a 1px hairline of page background running the full width
- * of the surface. The list owns its own row padding for exactly that reason - a padded
- * parent would inset every hairline and turn a slice into a drawn line - so drop it into
- * an unpadded surface (`<Card className="p-0">`), not one that pads its children.
+ * Rows use a 1px hairline of page background running the full width of the surface. The
+ * list sets its own row padding: a padded parent would inset every hairline and turn the
+ * effect into a drawn line, so use an unpadded surface for it, such as `<Card className="p-0">`.
  */
 export function DescriptionList({
   items,

@@ -19,15 +19,14 @@ export function Rules() {
   return (
     <>
       <p className="text-body text-text-dim">
-        Each rule below is a decision the library has already made. They are not preferences to
-        weigh against your own - a change that breaks one of these is a change that does not land.
-        The wrong column is not a strawman: every one of them is a pattern that has actually been
-        written against this library and had to be taken back out.
+        Each rule below is a decision the library has already made: these are settled, not
+        preferences to weigh against your own. The wrong column is not a strawman: each pattern
+        shown has been written against this library and had to be removed.
       </p>
 
       <DoDont
-        rule="Accent is spent once per view"
-        why="Accent marks the one primary action, the selected tab, progress fill and the focus ring. A second accent button does not double the emphasis, it halves it - now neither is the answer to what happens next."
+        rule="Single accent per view"
+        why="The primary action, the selected tab, progress fill and the focus ring are accented. A second accent button halves emphasis instead of doubling it."
         doLabel="One primary, everything else neutral."
         dontLabel="Three primaries: nothing is primary."
       >
@@ -44,8 +43,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Depth is fill, never stroke, never shadow"
-        why="Surfaces are told apart by background alone - bg, surface, surface-raised, chip. A card that outlines itself is carrying its separation twice, and the outline is the half that stops working the moment two cards sit side by side."
+        rule="Depth from fill"
+        why="Surfaces are told apart by background alone - bg, surface, surface-raised, chip - never by stroke or shadow. An outline duplicates separation the fill already provides, and the outline is the half that stops working the moment two cards sit side by side."
         doLabel="bg-surface, no border."
         dontLabel="A border doing what the fill already did."
       >
@@ -60,8 +59,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Segmentation is a hairline of page background"
-        why="The earmark WinUI card treatment: sections are sliced apart by 1px of bg showing through, not divided by a stroke drawn on top. Divider does it and bleeds to the surface edges on its own, cancelling whatever padding the container published as --pad."
+        rule="Segmentation as a background hairline"
+        why="The WinUI card treatment: sections are sliced apart by 1px of bg showing through, not divided by a stroke drawn on top. Divider does it and bleeds to the surface edges on its own, cancelling whatever padding the container published as --pad."
         doLabel="Divider - a slice of bg, edge to edge."
         dontLabel="border-border: a stroke, inset by the padding."
       >
@@ -78,9 +77,9 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="A state tints the whole surface"
-        why="Semantic tone is a fill at low opacity - bg-danger/15 - so the surface itself reads as the state at a glance and from the corner of the eye. A coloured border on a neutral fill is a state you have to go looking for."
-        doLabel="The surface carries the tone."
+        rule="Full-surface state tint"
+        why="Semantic tone is a fill at low opacity, such as bg-danger/15, so the surface reads as the state immediately. A coloured border on a neutral fill requires looking for the state."
+        doLabel="The surface fill itself is toned."
         dontLabel="A coloured outline around a neutral box."
       >
         <Alert tone="danger" title="Execution failed" className="w-64">
@@ -93,8 +92,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Links shift shade, they never underline"
-        why="WinUI hyperlinks move accent-blue to accent-cyan on hover. The base layer already does it for every anchor, so a link needs no classes at all - and a button-shaped link (a nav row, a sidebar entry) highlights its own surface instead, because it is a target, not a word."
+        rule="Link colour change on hover"
+        why="WinUI hyperlinks move accent-blue to accent-cyan on hover. The base layer already does it for every anchor, so a link needs no classes at all - and a button-shaped link (a nav row, a sidebar entry) highlights its own surface instead, since it is a click target rather than inline text."
         doLabel="Colour shift, handled by the base layer."
         dontLabel="An underline the house does not have."
       >
@@ -105,8 +104,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="The focus ring is one language, set globally"
-        why="A 2px accent outline at 2px offset, on :focus-visible, for everything. A component that clears the outline to draw its own has forked the keyboard experience, and the replacement is always worse on the one surface nobody tested it against."
+        rule="One global focus ring"
+        why="A 2px accent outline at 2px offset, on :focus-visible, for everything. A component that clears the outline to draw its own forks the keyboard experience, and the replacement is untested against most surfaces."
         doLabel="Tab to it: the global ring, unmodified."
         dontLabel="Cleared outline and a bespoke replacement."
       >
@@ -120,8 +119,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Caption is de-emphasised by colour, not by size"
-        why="14px is the floor. Metadata recedes because it is text-mute, not because it shrank - the YouTube grid does exactly this, and it is why their channel line stays readable on a phone."
+        rule="Caption de-emphasis by colour"
+        why="14px is the floor. Metadata is de-emphasised through text-mute colour rather than a smaller size, the same approach the YouTube grid uses to keep its channel line readable on a phone."
         doLabel="text-caption at 14px, muted."
         dontLabel="11px grey, unreadable at arm's length."
       >
@@ -136,7 +135,7 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Everything lands on the 4px grid"
+        rule="Alignment to the 4px grid"
         why="--spacing is 4px, so every Tailwind spacing utility is already a multiple of it. An arbitrary value is a number nobody can align to later, and it is how a page ends up 3px out of true with the one beside it."
         doLabel="gap-3, p-4: 12px and 16px."
         dontLabel="Arbitrary values, off the grid."
@@ -152,8 +151,8 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="Settings are one surface level"
-        why="Rows are bg-surface with a 1px seam of bg between them, and a group is a caption title, not a box. A row inside a panel inside a section is three fills saying the same thing, and the reader has to work out which one is the setting. surface-raised is for things that float: a menu, the unsaved bar."
+        rule="One surface level for settings"
+        why="Rows are bg-surface with a 1px seam of bg between them, and a group is a caption title, not a box. A row inside a panel inside a section repeats the same fill three times, forcing the reader to work out which one is the setting. surface-raised is for things that float: a menu, the unsaved bar."
         doLabel="SettingList: rows and a seam."
         dontLabel="A surface inside a surface."
       >
@@ -201,9 +200,9 @@ export function Rules() {
       </DoDont>
 
       <DoDont
-        rule="A field sits into the row, and the row is its label"
+        rule="Field label from the row"
         why="Inside a SettingRow the words are already there at body size, so the field draws no label of its own (hideLabel keeps it for screen readers) and fills with chip rather than standing on the surface with a border. A second, caption-sized label under the first is the same words twice, smaller."
-        doLabel="hideLabel, chip fill, the row says what it is."
+        doLabel="hideLabel, chip fill, label from the row."
         dontLabel="A labelled field: the words twice."
       >
         <SettingList className="w-72">
@@ -218,13 +217,13 @@ export function Rules() {
         </SettingList>
       </DoDont>
 
-      <h3 className="mt-10 text-body-strong text-text">Changes land here, not in the consumer</h3>
+      <h3 className="mt-10 text-body-strong text-text">Library-side changes</h3>
       <p className="mt-1 text-caption text-text-dim">
-        The rule with no picture, and the most expensive one to break. A consumer that needs a
-        component to look or behave differently is the trigger to change it in hoobi-design and
-        repin. A className override or a hand-rolled copy forks the design system silently, and the
-        fork is only found once the two have already drifted. Library changes are backwards
-        compatible and ideally additive: new props default to the old behaviour.
+        The most expensive rule to break, without a paired example. A consumer needing different
+        component behaviour changes hoobi-design and repins. A className override or a hand-rolled
+        copy forks the design system silently, discovered only once the two have drifted. Library
+        changes are backwards compatible and ideally additive: new props default to the old
+        behaviour.
       </p>
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         <div className="flex flex-col gap-px overflow-hidden rounded-panel">
@@ -249,12 +248,11 @@ export function Rules() {
 
       <Card title="Deliberately absent" className="mt-8">
         <p className="text-caption text-text-dim">
-          There is no Table, Toast or Skeleton, and that is a decision rather than a gap. A
-          component is added when a consumer actually needs one - never speculatively, and never
-          with props added &quot;for later&quot;. If you need one of these, the answer is to write
-          it here first, not to reach for another library or hand-roll it in the app. Toggle came
-          off that list rather than onto this one: Checkbox is the native input given the house
-          look, which is what the absence already recommended.
+          There is no Skeleton, by decision rather than oversight. A component is added only when a
+          consumer needs one, never speculatively and never with props added &quot;for later&quot;.
+          A missing component is written here first, rather than sourced from another library or
+          hand-rolled in the app. Toggle was removed from this list: Checkbox is the native input
+          styled to match, consistent with the same rule.
         </p>
       </Card>
     </>

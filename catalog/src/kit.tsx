@@ -16,12 +16,12 @@ hljs.registerLanguage('yaml', yaml);
 // the first element in a snippet highlights and everything after it does not.
 hljs.registerLanguage('xml', xml);
 
-/** Highlight through the shared registry; CodeBlock takes the html and the theme does the rest. */
+/** Highlight through the shared registry; CodeBlock renders the resulting html, styled by the theme. */
 export function highlight(code: string, language = 'typescript'): string {
   return hljs.highlight(code, { language }).value;
 }
 
-/** The Shell page steers the catalog's own chrome through this. */
+/** The Shell page controls the catalog's own chrome through this. */
 export interface ShellDemo {
   navType: 'pinned' | 'rail' | 'top';
   setNavType: (v: ShellDemo['navType']) => void;
@@ -35,7 +35,7 @@ export const ShellDemoContext = createContext<ShellDemo | null>(null);
 /**
  * The URL is the state. Pages are paths, everything else a person can change - a knob, an
  * expanded fold, the Shell's presentation - is a query parameter, so any state has a link.
- * Defaults are never written; a parameter appears only while it says something.
+ * Defaults are never written; a parameter appears only when it differs from the default.
  */
 const listeners = new Set<() => void>();
 function notify() {
@@ -112,8 +112,8 @@ export type KnobDef =
 export type KnobValues = Record<string, string | boolean>;
 
 /**
- * Live component configuration: a row of knobs steering a real render, with the
- * JSX for the current state below it. Every component page carries one.
+ * Live component configuration: a row of knobs controlling a real render, with
+ * the JSX for the current state below it. Every component page includes one.
  */
 export function Playground({
   knobs,
@@ -277,9 +277,9 @@ export function Label({ children }: { children: ReactNode }) {
 
 /**
  * A rule, shown rather than stated: the correct render beside the wrong one.
- * Pairs are the highest-value thing in a design system for anyone - human or
- * model - generating new UI, because a rule you can only read is a rule that
- * gets averaged away against every other library they have seen.
+ * Pairs are the highest-value format in a design system for anyone - human or
+ * model - generating new UI: a rule stated only in prose is easy to override
+ * with patterns learned from every other library they have seen.
  */
 export function DoDont({
   rule,

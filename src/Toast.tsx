@@ -29,9 +29,9 @@ interface ToastRecord extends ToastOptions {
   leaving?: boolean;
 }
 
-/** Three is the whole stack. A fourth is a log, and nobody reads a log that moves. */
+/** Maximum of three toasts visible at once; a fourth reads as a log. */
 const MAX = 3;
-/** Long enough to read a line, short enough not to sit in the corner of the screen. */
+/** Default time on screen in ms: long enough to read one line, short enough that it does not linger in the corner. */
 const DEFAULT_DURATION = 4000;
 /** Matches the leave animation, so the node is gone the frame after it finishes. */
 const LEAVE_MS = 150;
@@ -98,7 +98,7 @@ export function toast(options: ToastOptions): ToastHandle {
     ...options,
     id,
   };
-  // Oldest out, so the newest is always the one that arrived where the eye already is.
+  // Drops the oldest toast first, so the newest stays in the position the person is already looking at.
   const kept = records.filter((r) => !r.leaving);
   publish([...kept.slice(Math.max(0, kept.length - (MAX - 1))), record]);
   return {
@@ -109,7 +109,7 @@ export function toast(options: ToastOptions): ToastHandle {
   };
 }
 
-/** Clears the stack. For a route change, where the last page's news is no longer news. */
+/** Clears the stack. Use on a route change, where the previous page's toasts no longer apply. */
 export function dismissAllToasts() {
   for (const record of records) startLeaving(record.id);
 }
@@ -127,8 +127,8 @@ function ToastItem({ record }: { record: ToastRecord }) {
     }, remaining.current);
     return () => {
       clearTimeout(timer);
-      // Bank what has already elapsed, so hovering pauses rather than restarts: a toast
-      // that resets its clock every time the pointer crosses it never leaves.
+      // Bank what has already elapsed, so hovering pauses the timer rather than restarting it:
+      // restarting on every hover would mean the toast never expires.
       remaining.current -= Date.now() - startedAt.current;
     };
   }, [paused, record.duration, record.id, record.leaving]);
@@ -193,8 +193,8 @@ export interface ToasterProps {
 
 /**
  * Mount once, near the root. Bottom-right on a desktop where the corner is dead space;
- * full width along the bottom edge on a phone, above the home indicator, because a
- * 320px card floated in the corner of a 360px screen is just a card with a margin.
+ * full width along the bottom edge on a phone, above the home indicator, since a
+ * 320px card in the corner of a 360px screen leaves almost no margin either side.
  */
 export function Toaster({ className }: ToasterProps) {
   const items = useSyncExternalStore(
@@ -205,7 +205,7 @@ export function Toaster({ className }: ToasterProps) {
 
   return (
     <div
-      // Not aria-live: each toast carries its own role, so the region must not announce
+      // Not aria-live: each toast has its own role, so the region must not announce
       // a second time. pointer-events-none lets the page take clicks through the gaps.
       className={cx(
         'pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2 p-3',

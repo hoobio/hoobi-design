@@ -54,8 +54,8 @@ export function FieldLabelPage() {
       />
 
       <Demo
-        title="The (i) is where explanations live"
-        note="Every field in the library labels itself through this row. Hover or tab to the (i)."
+        title="Explanations in the (i)"
+        note="Every field is labelled through this row. Hover or tab to the (i)."
         stack
         code={`<Input label="model" info="Any OpenAI-compatible model id." mono defaultValue="qwen3-30b-a3b" />`}
       >
@@ -91,8 +91,8 @@ export function FieldLabelPage() {
       </Demo>
 
       <DoDont
-        rule="Explain in the (i), not under the field"
-        why="A caption under every field is a caption nobody reads, and six of them turn a form into a wall. The line under a control is reserved for a validation error."
+        rule="Explanations in the (i)"
+        why="A caption under every field goes unread, and several together clutter the form. The line under a control is reserved for a validation error."
         doLabel="One glyph, one tooltip, on demand."
         dontLabel="A sentence per field, always on screen."
       >
@@ -117,8 +117,8 @@ export function FieldLabelPage() {
       </DoDont>
 
       <Demo
-        title="InfoTip is not a tab stop"
-        note="The glyph is a role=img span with tabIndex -1, hover-only: Tab from the first field lands on the second, never on an explanation. The words still reach a screen reader, through a hidden span the control names in aria-describedby - every field here wires that for you. Tab through these two."
+        title="InfoTip: never a tab stop"
+        note="The glyph is a role=img span with tabIndex -1, hover-only: Tab from the first field moves to the second, never on an explanation. The words still reach a screen reader, through a hidden span the control names in aria-describedby - every field here wires that. Tab through these two."
         stack
         code={`<Input label="username" info="Your Jellyfin account name." />
 <Input label="password" type="password" />
@@ -196,7 +196,7 @@ export function SwitchPage() {
 
       <Demo
         title={`A settings row: align="between"`}
-        note="The words left, the track flush right, and the label WRAPS - a sentence-long setting must not set a floor on the page width. Narrow the window to 360px: this is the layout mendarr's Behaviour and Scanner rows use."
+        note="The words left, the track flush right, and the label wraps - a sentence-long setting must not set a floor on the page width. Narrow the window to 360px: this is the layout mendarr's Behaviour and Scanner rows use."
         stack
         code={`<Switch
   align="between"
@@ -253,8 +253,8 @@ export function SwitchPage() {
       </Demo>
 
       <DoDont
-        rule="A switch takes effect; a checkbox is a value"
-        why="A setting that acts the moment you press it is a Switch. One of several options you tick and then submit is a Checkbox."
+        rule="Switch and Checkbox timing"
+        why="A setting that applies the moment you press it is a Switch. A checkbox holds one of several selections until the form submits."
         doLabel="Switch for the setting, checkbox for the selection."
         dontLabel="A checkbox that silently applies, a switch inside a form."
       >
@@ -323,8 +323,8 @@ export function SliderPage() {
       />
 
       <Demo
-        title="The readout is not optional"
-        note="A slider without a number is a control you cannot set deliberately or describe to anyone else. Format the value yourself - the component does not guess your precision."
+        title="A required readout"
+        note="A slider without a number is a control you cannot set deliberately or describe to anyone else. Format the value yourself - the component applies no default precision."
         stack
         code={`<Slider label="temperature" valueLabel={value.toFixed(2)} min={0} max={2} step={0.05} value={value} onChange={(e) => setValue(Number(e.target.value))} />`}
       >
@@ -399,7 +399,7 @@ export function SecretFieldPage() {
 
       <Demo
         title="write-only"
-        note="The lock and the dots say a value is stored and cannot be read back. Nothing writes that in a sentence; the wording is on the lock's tooltip, on hover and keyboard focus. Typing arms a replacement, which is the one thing worth a line of its own."
+        note="The lock and the dots say a value is stored and cannot be read back. Nothing writes that in a sentence; the wording is on the lock's tooltip, on hover and keyboard focus. Typing arms a replacement, which shares the line below the field with a validation error."
         stack
         code={`<SecretField
   label="api key"
@@ -431,7 +431,7 @@ export function SecretFieldPage() {
 
       <Demo
         title="reveal"
-        note="For a value the server can hand back: masked, with an eye, a copy and an optional regenerate. The eye IS the affordance, so there is no helper text at all."
+        note="For a value the server can hand back: masked, with an eye, a copy and an optional regenerate. The eye is the affordance, so there is no helper text at all."
         stack
         code={`<SecretField
   variant="reveal"
@@ -476,8 +476,8 @@ export function SecretFieldPage() {
       </Demo>
 
       <DoDont
-        rule="Destructive callbacks are confirmed by the consumer"
-        why="clear, regenerate and rotate fire immediately and hold no arm state. The page puts a ActionDialog in front of them, because only the page knows what the byproduct is."
+        rule="Consumer-confirmed destructive callbacks"
+        why="clear, regenerate and rotate fire immediately and hold no arm state. The page puts a ActionDialog in front of them, because the byproduct differs by page."
         doLabel="ActionDialog states the consequence, then acts."
         dontLabel="A second click on a strip that says nothing."
       >
@@ -643,8 +643,8 @@ export function ActionDialogPage() {
       />
 
       <Demo
-        title="onAction returns a promise"
-        note="The dialog runs it: busy while pending, a danger line on reject, and it STAYS OPEN either way. Closing is the consumer flipping open once the work actually succeeded - a dialog that closes itself closes over failures too. Press Regenerate; it fails."
+        title="Promise-based onAction"
+        note="The dialog runs it: busy while pending, a danger line on reject, and it stays open either way. Closing is the consumer setting open to false once the work succeeds; a dialog that closes itself on submit would hide failures too. Press Regenerate; it fails."
         code={`<ActionDialog
   open={open}
   tone="danger"
@@ -681,9 +681,9 @@ export function ActionDialogPage() {
       />
 
       <DoDont
-        rule="The button names the action"
+        rule="Action-named buttons"
         why={
-          'actionLabel is required and has no default: a dialog whose button says Confirm has told the reader nothing they did not already know. Confirm was never the concept, which is why this is ActionDialog.'
+          'actionLabel is required and has no default. "Confirm" adds no information the reader lacks. ActionDialog names the action instead.'
         }
         doLabel="Rotate. Regenerate. Delete 12 issues."
         dontLabel="Confirm. OK. Yes."
@@ -700,7 +700,7 @@ export function ActionDialogPage() {
       </DoDont>
 
       <DoDont
-        rule="Byproducts get a dialog, not an armed button"
+        rule="Confirmation dialogs for byproducts"
         why="Anything destructive, irrecoverable, or with a side effect on somebody else needs its consequence stated before the second click. ConfirmButton disarms itself after four seconds and states nothing; it is deprecated for exactly this."
         doLabel="The consequence, then Cancel and Rotate."
         dontLabel="An armed button that says only 'confirm'."
@@ -745,7 +745,7 @@ export function ActionDialogPage() {
             'onAction',
             '() => void | Promise<unknown>',
             '',
-            'A promise makes it busy, then shows a rejection inline. Never closes itself.',
+            'A promise makes it busy, then shows a rejection inline, without closing on its own.',
           ],
           ['onCancel', '() => void', '', 'Cancel also fires on Escape and on the backdrop.'],
         ]}
@@ -786,7 +786,7 @@ export function DurationInputPage() {
       />
 
       <Demo
-        title="The unit is in the field"
+        title="Unit inside the field"
         note="A bare number box with the word 'hours' somewhere beside it is how a value gets entered in the wrong scale. What zero does goes on the (i), not under the field."
         stack
         code={`<DurationInput
@@ -879,7 +879,7 @@ export function CronInputPage() {
 
       <Demo
         title="cronRuns, on its own"
-        note="The matcher is exported: five fields, *, lists, ranges and steps, brute-forced a minute at a time over a 366-day horizon. Zero dependencies."
+        note="The matcher is exported: five fields, *, lists, ranges and steps, brute-forced a minute at a time over a 366-day horizon, with zero dependencies."
         stack
         code={`const { runs, error } = cronRuns('0 3 * * 1', 3);`}
       >
@@ -989,8 +989,8 @@ export function SectionNavPage() {
     <>
       <Import names="SectionNav" />
       <Demo
-        title="It spies on the page"
-        note="Omit activeId and the nav follows the scroll itself - an IntersectionObserver on the nearest scrolling ancestor, cropped to the top 30% so the section nearest the top wins, with the bottom of the scroll claiming the last one. Scroll the pane, then click an item."
+        title="Scroll tracking without activeId"
+        note="Omit activeId and an IntersectionObserver on the nearest scrolling ancestor drives the nav, cropped to the top 30% so the section nearest the top wins, with the bottom of the scroll claiming the last one. Scroll the pane, then click an item."
         stack
         flush
         code={`<div className="flex gap-6 overflow-y-auto">
@@ -1045,7 +1045,7 @@ export function SectionNavPage() {
             'activeId',
             'string',
             '',
-            'Controlled override. Omit it and the nav spies on the scroll itself.',
+            'Controlled override. Omit it and the scroll position drives the nav.',
           ],
           [
             'onSelect',
@@ -1070,7 +1070,7 @@ export function UnsavedBarPage() {
     <>
       <Import names="UnsavedBar" />
       <Demo
-        title="Which sections, not just that something changed"
+        title="Named dirty sections"
         note="On a page you scroll, 'you have unsaved changes' leaves you hunting. Nothing renders when the list is empty. Save is an ActionButton: the first press fails and says why on its tooltip, the second saves and reads Saved."
         stack
         flush
@@ -1137,7 +1137,7 @@ export function SettingRowPage() {
       <Import names="SettingGroup, SettingList, SettingRow" />
       <Demo
         title="Label, description, one control"
-        note="A settings page is rows on ONE surface: bg-surface each, a 1px seam of page background between them, never a surface inside a surface. The label is body-sized, the description caption and dim and only there when the label cannot say it alone. Field components take hideLabel, because the row already carries the words."
+        note="A settings page is rows on one surface: bg-surface each, a 1px seam of page background between them, never a surface inside a surface. The label is body-sized, the description caption and dim and only there when the label cannot say it alone. Field components take hideLabel, because the row already shows the words."
         stack
         flush
         code={`<SettingGroup title="Automation">
@@ -1189,7 +1189,7 @@ export function SettingRowPage() {
 
       <Demo
         title="Three fills, each with one job"
-        note="bg is the page and the seam between rows; surface is every row and is never nested in another surface; chip is what a field sits INTO, not on top of. surface-raised is reserved for things that float: the unsaved bar, a menu, the hover on a secondary button."
+        note="bg is the page and the seam between rows; surface is every row and is never nested in another surface; chip is what a field sits into, not on top of. surface-raised is reserved for things that float: the unsaved bar, a menu, the hover on a secondary button."
         stack
         code={`<SettingList>
   <SettingRow label="Model">
@@ -1605,7 +1605,7 @@ const LOG_SAMPLE: LogLine[] = (() => {
       ts: at(1),
       tag: 'INFO',
       ctx: 'issue-1042',
-      message: 'Plan: episode S02E07 has a file Sonarr refuses to import (sample match)',
+      message: 'Plan: episode S02E07 has a file Sonarr rejected on import (sample match)',
     },
     {
       ts: at(2),
@@ -1933,7 +1933,7 @@ export function ActionButtonPage() {
     <>
       <Import names="ActionButton" />
       <Demo
-        title="The promise is the state"
+        title="State driven by the promise"
         note="Press each one. Busy while it runs, a green tick for a moment on resolve, a red state for longer on reject with the message on the button's tooltip and title. A second press mid-flight is ignored."
         code={`<ActionButton action={() => api.reregister()}>Re-register in Seerr</ActionButton>
 
@@ -1980,7 +1980,7 @@ export function ActionButtonPage() {
       </Demo>
 
       <Demo
-        title="Button busy, when you already track it"
+        title="Manual busy state"
         note="The label keeps its place and its width - a spinner sits over it - so a row of buttons does not shuffle the moment one is pressed."
         code={`<Button busy>Save</Button>`}
       >
@@ -1995,8 +1995,8 @@ export function ActionButtonPage() {
       </Demo>
 
       <DoDont
-        rule="An async button reports its own outcome"
-        why="A plain Button with an async onClick has no way to say it is working, worked, or failed - and a button that quietly failed is the bug this component exists to prevent."
+        rule="Outcome-reporting async buttons"
+        why="A plain Button with an async onClick shows no working, done or failed state, so a failure passes unsignalled."
         doLabel="ActionButton: busy, then success or the error."
         dontLabel="A button that looks identical before and after."
       >
@@ -2048,7 +2048,7 @@ export function FormDialogPage() {
       <Import names="FormDialog" />
       <Demo
         title="Invalid, valid, submitting, failed"
-        note="Open it: Save is dead until the fields satisfy their own constraints (required, minLength 8) AND the two passwords match. Submitting runs the promise; the first attempt fails and the dialog stays open with the reason. Enter submits."
+        note="Open it: Save is dead until the fields satisfy their own constraints (required, minLength 8) and the two passwords match. Submitting runs the promise; the first attempt fails and the dialog stays open with the reason. Enter submits."
         code={`<FormDialog
   open={open}
   title="Set a password"
@@ -2122,7 +2122,7 @@ export function FormDialogPage() {
       </FormDialog>
 
       <DoDont
-        rule="Fields get a FormDialog, yes-or-no gets an ActionDialog"
+        rule="Fields in FormDialog, confirmations in ActionDialog"
         why="Validity, Enter-to-submit and a disabled submit are form problems; a confirm has nothing to validate. Splitting them keeps ActionDialog free of a prop that would only ever mean something here."
         doLabel="FormDialog: fields, native validity, Enter submits."
         dontLabel="An ActionDialog with inputs stuffed into its body."
@@ -2164,7 +2164,7 @@ export function FormDialogPage() {
             'onSubmit',
             '(e: FormEvent) => void | Promise<unknown>',
             '',
-            'Enter or the button. A promise drives busy and the inline error. Never closes itself.',
+            'Enter or the button. A promise drives busy and the inline error. The dialog stays open.',
           ],
           ['tone', "'default' | 'danger'", "'default'", 'A form is almost never danger.'],
         ]}
@@ -2180,7 +2180,7 @@ export function ToasterPage() {
     <>
       <Import names="Toaster, toast" />
       <Demo
-        title="Mount one Toaster, then call toast()"
+        title="One Toaster, mounted once"
         note="A module-level store, so a poll callback or a socket message can raise one without a component to hang a hook off. Three at most, newest at the bottom, bottom-right here and full width along the bottom edge on a phone."
         code={`// once, near the root
 <Toaster />
@@ -2288,8 +2288,8 @@ t.dismiss();`}
       </Demo>
 
       <DoDont
-        rule="A toast is news you did not ask for"
-        why="A background outcome nobody clicked for - a job that finished, an auto-correction that landed - is a toast. The result of a button someone pressed belongs on that button, where they are already looking."
+        rule="Toasts for unrequested outcomes"
+        why="A background outcome nobody clicked for - a job that finished, an auto-correction that applied - is a toast. The result of a button someone pressed belongs on that button, where they are already looking."
         doLabel="toast() for the sweep that finished on its own."
         dontLabel="A toast for the Save the person is watching."
       >
@@ -2313,8 +2313,8 @@ t.dismiss();`}
 
       <Props
         rows={[
-          ['title', 'string', '', 'One line. The whole point of the toast.'],
-          ['description', 'string', '', 'A second line of detail. Optional.'],
+          ['title', 'string', '', 'The one required line.'],
+          ['description', 'string', '', 'An optional second line of detail.'],
           [
             'tone',
             "'default' | 'success' | 'warn' | 'danger'",

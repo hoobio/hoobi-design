@@ -10,7 +10,7 @@ export interface SectionProps {
   /**
    * Makes the section its own surface - a settings panel rather than a page heading:
    * bg-surface, panel radius, the subtitle tier, and a scroll margin that matches its
-   * own padding so a jump-list lands it flush.
+   * own padding so a jump-list scroll stops it flush.
    */
   panel?: boolean;
   className?: string;

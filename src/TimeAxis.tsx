@@ -33,7 +33,7 @@ export interface TimeAxisProps {
 const defaultFormatTick = (d: Date) =>
   new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(d);
 
-/** Events on a shared horizontal time window, one lane per row. Not a chart library. */
+/** Events on a shared horizontal time window, one lane per row. */
 export function TimeAxis({
   from,
   to,

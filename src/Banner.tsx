@@ -18,7 +18,7 @@ export interface BannerProps {
 
 /**
  * The one-look-answer banner: a headline (an outcome), the reasoning, then dense
- * facts and actions. Built on Card so it carries the same tone fills.
+ * facts and actions. Built on Card, using the same tone fills.
  */
 export function Banner({ tone, headline, code, children, chips, actions, className }: BannerProps) {
   return (

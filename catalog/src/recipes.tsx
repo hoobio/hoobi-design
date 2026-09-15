@@ -39,7 +39,7 @@ export function ListRecipe() {
   ] as const;
   return (
     <Recipe
-      note="A filtered list. The filters are the section's actions, not a toolbar of their own; the empty state is an Alert rather than a paragraph, so it carries a tone; and one markup path collapses from a row grid to stacked cards below md - never two branches, which is how the phone layout silently rots."
+      note="A filtered list. The filters are the section's actions, not a toolbar of their own; the empty state is an Alert rather than a paragraph, so it is toned; and one markup path collapses from a row grid to stacked cards below md - never two branches, since two branches let the phone layout drift out of date unnoticed."
       code={`<Section
   id="issues"
   title="Issues"
@@ -193,7 +193,7 @@ export function DetailRecipe() {
 export function DestructiveRecipe() {
   return (
     <Recipe
-      note="Two tiers, and picking the wrong one is the whole risk. ConfirmButton is arm-then-confirm in place: right for a reversible or small destructive act, because it costs one extra click and no context switch. A Modal is for the act that needs the consequence spelled out before the click - it deletes a 4.4GB file. Never use a Modal to confirm something trivial, and never use an inline confirm for something you cannot undo."
+      note="Two tiers. ConfirmButton is arm-then-confirm in place: right for a reversible or small destructive act, because it costs one extra click and no context switch. A Modal is for the act that needs the consequence spelled out before the click - it deletes a 4.4GB file. Never use a Modal to confirm something trivial, and never use an inline confirm for something you cannot undo."
       code={`{/* small, reversible: arm in place */}
 <ConfirmButton variant="danger" onConfirm={reject}>Reject plan</ConfirmButton>
 
@@ -210,7 +210,7 @@ export function DestructiveRecipe() {
 </Modal>`}
     >
       <div className="flex flex-col gap-4">
-        <Card title="Reversible - arm in place">
+        <Card title="Reversible: armed in place">
           <div className="flex flex-wrap gap-3">
             <ConfirmButton variant="danger" onConfirm={() => undefined}>
               Reject plan
@@ -220,7 +220,7 @@ export function DestructiveRecipe() {
             </ConfirmButton>
           </div>
         </Card>
-        <Card title="Irreversible - say what it costs">
+        <Card title="Irreversible: cost spelled out">
           <p className="text-body text-text-dim">
             Deletes <strong className="text-text">The.Odyssey.2026.1080p.WEBDL.mkv</strong> (4.4 GB)
             and grabs the chosen release. Reversible only while the download is in flight.
@@ -238,7 +238,7 @@ export function DestructiveRecipe() {
 export function StatesRecipe() {
   return (
     <Recipe
-      note="Empty, loading and failed are designs, not afterthoughts. An empty state says what would be here and how to make it appear; a failure says what broke and what to do, never just red text. Every one of them is an Alert, so the tone carries the meaning and no page invents its own vocabulary for the same three moments."
+      note="Empty, loading and failed are designs, not afterthoughts. An empty state says what would be here and how to make it appear; a failure says what broke and what to do, never just red text. Every one of them is an Alert, so the tone conveys the meaning and no page invents its own vocabulary for the same three moments."
       code={`{error ? <Alert tone="danger" title="Sonarr is unreachable">
   Check the connection in Config. The sweep will retry on the next tick.
 </Alert> : null}

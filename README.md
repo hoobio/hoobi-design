@@ -8,7 +8,7 @@ React components and design tokens for Hoobi apps.
 
 Zero runtime dependencies. Peer deps only: `react >=19`, `react-dom >=19`, `tailwindcss >=4.3`.
 
-## Install
+## Installation
 
 ```
 @hoobi:registry=https://pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/npm/registry/
@@ -57,12 +57,12 @@ Everything is a Tailwind v4 `@theme` token in `styles.css`, so `bg-surface`, `te
 
 - **4px** radius on controls, **8px** on surfaces and overlays.
 - **32px** standard control height (`h-8`); 28px for the small button. 44px minimum under
-  `pointer: coarse`, so touch targets survive.
+  `pointer: coarse`, so touch targets stay usable.
 - Spacing and radii are **px**, matching WinUI's device-independent pixels. Text stays rem against
   the 18px root so it still tracks user zoom.
 - Subtle 1px borders instead of shadows.
-- **Restrained accent**: accent marks the one primary action, the selected tab, progress fill and
-  the focus ring. Everything else is neutral.
+- **Restrained accent**: the one primary action, the selected tab, progress fill and the focus
+  ring are accented. Everything else is neutral.
 - One focus language: a 2px outer ring at 2px offset, from the global `:focus-visible`.
 
 ## Catalog
@@ -80,11 +80,11 @@ all four woff2 fonts inlined.
 
 ## Mobile
 
-Every component has to survive a 360px viewport: `min-w-0` on flex children, wrapping headers,
+Every component works at a 360px viewport: `min-w-0` on flex children, wrapping headers,
 horizontally scrollable tab strips, `dvh`-capped scrollable modals, `env(safe-area-inset-*)` where
 content reaches the bottom edge.
 
-## Publishing
+## Publish process
 
 ```bash
 pnpm version minor

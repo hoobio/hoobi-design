@@ -81,8 +81,8 @@ export interface ShellProps {
   divided?: boolean;
   /**
    * 'seamless' (default) leaves the pane on the page background. 'contrast' fills it with the
-   * darker chip surface, so contrast does the separating instead of a hairline - pair it with
-   * divided={false}; a hairline on top of contrast is saying the same thing twice.
+   * darker chip surface, so contrast separates the pane instead of a hairline - pair it with
+   * divided={false}; a hairline on top of contrast duplicates the separation.
    */
   paneSurface?: 'seamless' | 'contrast';
   /**
@@ -92,8 +92,8 @@ export interface ShellProps {
   mirage?: string;
   /**
    * PageLayout contract: 'default' centres the content in a max-width
-   * column that breathes with the pane; 'full' lets it run fluid. The Shell owns
-   * the content paddings either way - children need no wrapper of their own.
+   * column that adjusts to the pane's width; 'full' lets it run fluid. The Shell applies
+   * the content padding either way - children need no wrapper of their own.
    */
   pageWidth?: 'default' | 'full';
   children: ReactNode;
@@ -271,7 +271,7 @@ export function Shell({
             } as CSSProperties
           }
         >
-          {/* Scroll cues, so a hidden scrollbar still says there is more above or below. */}
+          {/* Scroll cues indicate there is more content above or below when the scrollbar is hidden. */}
           <div aria-hidden className="scroll-hint-top" />
           {nav}
           <div aria-hidden className="scroll-hint-bottom" />
@@ -463,7 +463,7 @@ export interface ShellItemProps extends HTMLAttributes<HTMLElement> {
 /**
  * The house tooltip, on the rail only: the pane is a scroll container, so the tip
  * uses the fixed [data-tip].tip-fixed variant, placed beside the anchor on entry.
- * Expanded rows carry no tip at all - the label is right there.
+ * Expanded rows have no tip: the label is already visible.
  */
 const sideTip = (label: string) => tipAnchor(label, 'right');
 
@@ -488,7 +488,7 @@ function ShellItem({
     setToggled(null);
   }, [active]);
   const open = toggled ?? active;
-  // Picking a destination is what finishes with the overlay; nothing else in the pane is.
+  // Only picking a destination closes the overlay; nothing else in the pane does.
   const handleClick = (e: MouseEvent<HTMLElement>) => {
     onClick?.(e);
     if (area === 'overlay') closeOverlay();
@@ -519,7 +519,7 @@ function ShellItem({
   }
 
   if (area === 'top') {
-    // WinUI top nav: compact chip, selection carried by an underline.
+    // WinUI top nav: compact chip, selection shown by an underline.
     return (
       <Comp
         aria-current={active ? 'page' : undefined}
@@ -629,9 +629,9 @@ const MARK_HUES = [
 
 /**
  * Icon-less items get a brand-mark-styled square with the label's initial. Hues are
- * dealt around the wheel in first-seen order, so a list of marks never repeats a
- * colour until the wheel wraps - a hash would cluster. The registry is module-level:
- * stable per label for the session, and list order is what seeds it.
+ * assigned around the wheel in first-seen order, so a list of marks never repeats a
+ * colour until the wheel wraps; a hash would cluster them instead. The registry is
+ * module-level: stable per label for the session, and list order determines the assignment.
  */
 const assignedHues = new Map<string, number>();
 
@@ -841,7 +841,7 @@ function ShellUser({
     className,
   );
 
-  // Sign-out is the library's affordance so it is red by default, everywhere.
+  // Sign-out is red by default everywhere, as the library's standard danger affordance.
   const menuContent =
     menu || onSignOut ? (
       <MenuGutter>

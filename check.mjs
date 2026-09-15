@@ -1,9 +1,9 @@
 import { readFileSync, readdirSync } from 'node:fs';
 
 /**
- * The rules AGENTS.md states, enforced. Each check exists because the pattern it
- * catches has either been written against this library already or forks the
- * design system silently the day it is.
+ * Enforces the rules in AGENTS.md. Each check exists because the pattern it
+ * flags has either already been written against this library, or would fork
+ * the design system silently.
  */
 const errors = [];
 const MONO_SITES = new Set([

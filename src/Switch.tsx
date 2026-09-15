@@ -17,13 +17,13 @@ export interface SwitchProps extends Omit<
    */
   info?: string;
   /**
-   * 'start'   - track then label, hugging its content. The inline form.
+   * 'start'   - track then label, sized to its content. The inline form.
    * 'between' - a full-width settings row: the words left, the track flush right. The label
    *             sits outside the button and is wired with aria-labelledby, because a
    *             sentence-long hit target that also has to hold an (i) is not one button.
    */
   align?: 'start' | 'between';
-  /** Prints On / Off before the track, the WinUI ToggleSwitch content. For a switch whose row says what it does but not which way it is. */
+  /** Prints On / Off before the track, the WinUI ToggleSwitch content. For a switch whose label describes what it does but not its current state. */
   stateLabel?: boolean;
 }
 
@@ -31,8 +31,8 @@ export interface SwitchProps extends Omit<
  * The master on/off. A button with role="switch", not a checkbox: this is a setting that
  * takes effect on its own, where Checkbox is a value in a set.
  *
- * The label WRAPS. A settings row reads "Auto-approve when the reporter is the requester",
- * and a control that refuses to wrap that sets a 355px floor on the whole page.
+ * The label wraps. A settings row reads "Auto-approve when the reporter is the requester",
+ * and a control that does not wrap sets a 355px floor on the page.
  */
 export function Switch({
   checked,
@@ -49,9 +49,9 @@ export function Switch({
   const labelId = useId();
   const infoId = `${labelId}-info`;
   const between = align === 'between';
-  // An (i) beside a bare track has nothing to explain: it needs the words it annotates.
+  // An (i) beside a bare track has nothing to explain: it depends on the words it annotates.
   // Inline after the last word, not a flex sibling: a wrapped label's flex sibling ends up
-  // pinned beside the track, which is the one place the (i) must never sit.
+  // pinned beside the track, which is the one place the (i) must never be.
   const tip =
     label && info ? (
       <InfoTip text={info} id={infoId} className={between ? 'ml-1.5 align-text-bottom' : 'mt-2'} />
@@ -107,7 +107,7 @@ export function Switch({
     return (
       <div className={cx('flex w-full min-w-0 items-start justify-between gap-3', className)}>
         {/* labelledby points at the words alone: the (i)'s hidden text is a sibling, so
-            aria-describedby reads it once instead of the label swallowing it. */}
+            aria-describedby reads it once instead of it being included twice in the label. */}
         <span className="min-w-0 py-1.5 text-body text-text">
           <span id={labelId}>{label}</span>
           {tip}

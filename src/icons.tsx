@@ -2,10 +2,11 @@ import type { SVGProps } from 'react';
 import { cx } from './cx.js';
 
 /**
- * The handful of glyphs a control needs to explain itself. Fluent System Icons are the
- * house iconography and consumers pass them in as ReactNodes; these three are drawn here
- * because they are the affordance of a component, not decoration a consumer chooses -
- * a secret field without its lock is just an empty box. 20px grid, 1.5px strokes.
+ * The handful of glyphs needed to convey a control's own affordance. Fluent System Icons
+ * are the house iconography and consumers pass them in as ReactNodes; these three are
+ * drawn here because they are part of a component's affordance, not decoration a
+ * consumer chooses - without the lock icon, a secret field reads as an empty box.
+ * 20px grid, 1.5px strokes.
  */
 function Glyph({ className, children, ...rest }: SVGProps<SVGSVGElement>) {
   return (

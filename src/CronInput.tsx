@@ -36,10 +36,9 @@ const DEFAULT_PRESETS: CronPreset[] = [
 ];
 
 /**
- * A schedule as chips first and an expression second, because the answer is almost always
- * one of four and nobody should have to write `*​/15 * * * *` to get it. The next firings
- * are the validation that matters: a syntactically perfect expression that fires on the
- * 31st of February is still wrong, and only the run list says so.
+ * Chips cover the common schedules; the expression field is for anything else. The next
+ * firings are the real validation: a syntactically valid expression can still fire on the
+ * wrong date, and the run list shows that.
  */
 export function CronInput({
   value,

@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState, type HTMLAttributes, type ReactNode 
 import { cx } from './cx.js';
 
 export interface RichTooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'content'> {
-  /** A title and a few lines, not a paragraph. Plain words still belong on `Tooltip`. */
+  /** A short title and a few lines. Plain text still uses `Tooltip`. */
   content: ReactNode;
   children: ReactNode;
 }
@@ -13,7 +13,7 @@ const EDGE = 8;
 /**
  * Tooltip holds a string in a CSS attribute; this one holds nodes, so it is a real panel that
  * follows the pointer (and parks off the anchor on keyboard focus), clamped to the viewport and
- * pointer-events-none so it can never eat the hover that spawned it.
+ * pointer-events-none so it never captures the hover that spawned it.
  */
 export function RichTooltip({ content, children, className, ...rest }: RichTooltipProps) {
   const [at, setAt] = useState<{ x: number; y: number } | null>(null);

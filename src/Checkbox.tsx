@@ -13,7 +13,7 @@ export interface CheckboxProps extends Omit<
 /**
  * A native checkbox given the house look - appearance-none on the input itself, so
  * the label association, the space key and the global focus ring all stay the
- * platform's. The label wrapper carries the 44px touch target; the box stays 20px.
+ * platform's. The label wrapper has the 44px touch target; the box stays 20px.
  */
 export function Checkbox({
   label,
@@ -41,8 +41,8 @@ export function Checkbox({
           ref={ref}
           type="checkbox"
           disabled={disabled}
-          // Filled, not transparent: an unchecked box on a mirage-backed surface had nothing
-          // but a 1px border to read against artwork, which is not a control you can find.
+          // Filled, not transparent: an unchecked box on a mirage-backed surface needs more
+          // than a 1px border to stay visible against artwork.
           className="peer size-5 min-h-0 appearance-none rounded-control border border-border bg-chip checked:border-accent checked:bg-accent indeterminate:border-accent indeterminate:bg-accent"
           {...rest}
         />

@@ -6,7 +6,7 @@ export interface ConfirmButtonProps extends Omit<ButtonProps, 'onClick' | 'varia
   variant?: ButtonVariant;
   /** Armed label. Defaults to 'Confirm' plus the children when they are a string. */
   confirmLabel?: ReactNode;
-  /** ms before it disarms itself. */
+  /** Milliseconds until it disarms. */
   timeout?: number;
   onConfirm: () => void;
 }
@@ -14,9 +14,9 @@ export interface ConfirmButtonProps extends Omit<ButtonProps, 'onClick' | 'varia
 /**
  * Arm-then-confirm: one click switches it to danger, a second fires.
  *
- * @deprecated Use ActionDialog. Anything destructive, irrecoverable, or with a byproduct
- * needs its consequence STATED before the second click, and a strip that disarms itself
- * after four seconds states nothing. Kept for trivial, reversible actions and for 0.19.0
+ * @deprecated Use ActionDialog. A destructive, irrecoverable, or side-effecting action
+ * must have its consequence stated before the second click. A strip that disarms after
+ * four seconds does not state one. Kept for trivial, reversible actions and for 0.19.0
  * consumers.
  */
 export function ConfirmButton({

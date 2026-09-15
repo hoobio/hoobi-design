@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { cx } from './cx.js';
 
 export interface SettingGroupProps {
-  /** Caption-weight title above the list. Text, never a box: a surface in a surface is what the settings page was taken back from. */
+  /** Caption-weight title above the list, text only, not a boxed surface. */
   title?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -44,7 +44,7 @@ export interface SettingRowProps {
    * of a list line up.
    */
   meta?: ReactNode;
-  /** Caption, dim, under the label. Only when the label cannot say it alone; never restates a value a control on the page already shows. */
+  /** Caption, dim, under the label. Used only when the label alone is not enough; never restates a value a control on the page already shows. */
   description?: ReactNode;
   /** Flush right: a Switch, a DurationInput, a Select with `hideLabel` (the row IS the label), a status word, a button or two. */
   control?: ReactNode;

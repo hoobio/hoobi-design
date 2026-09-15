@@ -43,8 +43,8 @@ const PLACEMENTS: Record<NoticePlacement, string> = {
 };
 
 /**
- * State news that outranks a toast: a dropped connection, a save that failed on the way
- * out. Centred where the eye already is, and the page keeps working underneath it.
+ * Higher priority than a toast: a dropped connection, a save that failed on the way
+ * out. Centred in the viewport; the page stays interactive underneath it.
  */
 export function Notice({
   open,

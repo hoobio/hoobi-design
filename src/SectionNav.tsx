@@ -12,8 +12,8 @@ export interface SectionNavItem {
 export interface SectionNavProps {
   items: SectionNavItem[];
   /**
-   * Controlled override. OMIT IT and the nav spies on the page itself - every consumer
-   * gets the highlight following the scroll, instead of each one rebuilding it.
+   * Controlled override. Omit it and the nav tracks scroll position itself, so every
+   * consumer gets the same behaviour instead of reimplementing it.
    */
   activeId?: string;
   onSelect: (id: string) => void;
@@ -40,7 +40,7 @@ function scrollParent(el: HTMLElement): HTMLElement | null {
   return null;
 }
 
-/** Where a section has to reach before it owns the nav: 30% down the scroll root. */
+/** Scroll position at which a section becomes active: 30% down the scroll root. */
 const LINE = 0.3;
 
 /** Keys that scroll. Typing in a field inside the pane is not a person leaving the section. */
@@ -56,19 +56,17 @@ const SCROLL_KEYS = new Set([
 ]);
 
 /**
- * Which section owns the pane, as a scroll position each one activates at.
+ * Computes the scroll position at which each section becomes active.
  *
- * The natural point is where a section's top crosses the line 30% down the pane. The last
- * sections on a page never get one: nothing can scroll them that far up, so a rule that
- * only knows natural points skips them entirely - and the consumer ends up padding the page
- * with a magic `pb-[70vh]` to buy back a rule the library owns. So the ones past the end are
- * spread evenly across whatever scroll is left, with the last of them landing exactly at the
- * bottom. Scrolling the final stretch walks through them in order, and the very bottom is
- * always the last section.
+ * A section's natural activation point is where its top crosses the line 30% down the pane.
+ * Sections near the end of the page cannot reach that point: nothing can scroll them that far
+ * up. Without this, consumers add pb-[70vh] padding so the last section can reach the top.
+ * Those are spread evenly across the remaining scroll, with the last one landing exactly
+ * at the bottom, so scrolling the final stretch walks through them in order.
  *
- * A click pins the nav to what was clicked and holds it until the PERSON scrolls - a wheel,
- * a touch, a scrolling key, a drag on the scrollbar. Releasing it when the smooth scroll
- * merely stops is what made "click Security, land on Webhook".
+ * A click pins the active section until the person scrolls: a wheel, a touch, a scrolling
+ * key, or a drag on the scrollbar. Releasing the pin when a smooth scroll stops selects the
+ * wrong section (click Security, the highlight moves to Webhook).
  */
 function useScrollSpy(ids: string[], enabled: boolean) {
   const key = ids.join(' ');
@@ -123,8 +121,8 @@ function useScrollSpy(ids: string[], enabled: boolean) {
 
     measure.current = () => {
       if (pinned.current !== null) return;
-      // +1: a fractional layout leaves scrollTop a hair under the maximum at the bottom,
-      // which would keep the last section permanently one pixel out of reach.
+      // +1: a fractional layout can leave scrollTop a pixel under the maximum, which would
+      // keep the last section out of reach.
       const scrollTop = box.scrollTop + 1;
       let current = list[0];
       for (let i = 0; i < list.length; i++) {
@@ -140,7 +138,7 @@ function useScrollSpy(ids: string[], enabled: boolean) {
 
     let frame = 0;
     const onScroll = () => {
-      // A pinned nav ignores the smooth scroll it started; only the person releases it.
+      // A pin holds through the scroll it started; only the person releases it.
       if (pinned.current !== null) return;
       if (frame) return;
       frame = requestAnimationFrame(() => {
@@ -192,10 +190,10 @@ function useScrollSpy(ids: string[], enabled: boolean) {
 }
 
 /**
- * Jump list for a long page of sections. A dot rather than a count for a dirty section:
- * the number of edited fields is not something anyone acts on, but "something is unsaved
- * over there" is. `self-start` on the rail is load-bearing - a stretched flex item is full
- * height, and a sticky element with nowhere to move does not stick.
+ * Jump list for a long page of sections. A dot rather than a count for a dirty section, since
+ * only the presence of unsaved edits is useful information. `self-start` on the rail is
+ * load-bearing - a stretched flex item is full height, and a sticky element with nowhere to
+ * move does not stick.
  */
 export function SectionNav({
   items,

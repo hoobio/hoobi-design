@@ -30,7 +30,7 @@ const GROUPS: { group: string; note: string; names: string[] }[] = [
   },
   {
     group: 'Action',
-    note: 'Restrained by design: accent marks the one primary action, the selected tab, progress fill and the focus ring.',
+    note: 'The primary action, the selected tab, progress fill and the focus ring are accented.',
     names: ['accent', 'accent-hover', 'accent-fill'],
   },
   {
@@ -113,10 +113,10 @@ export function Typography() {
     <>
       <p className="text-body text-text-dim">
         The WinUI 3 ramp shape with a YouTube-sized reading tier, expressed in rem against the 18px
-        root so it still tracks user zoom. Hanken Grotesk carries every step. Dank Mono is reserved for
-        machine strings: something a person copies, pastes, types exactly or compares character by
-        character - a url, a key, a path, a release name, a cron expression, JSON, code. A name, a
-        label, a timestamp or a count is sans; digits that have to line up get{' '}
+        root so it still tracks user zoom. Hanken Grotesk is used at every step. Dank Mono is
+        reserved for machine strings: something a person copies, pastes, types exactly or compares
+        character by character - a url, a key, a path, a release name, a cron expression, JSON,
+        code. A name, a label, a timestamp or a count is sans; digits that have to line up get{' '}
         <code>tabular-nums</code>, not a typeface change.
       </p>
       <div className="mt-6 flex flex-col gap-px overflow-hidden rounded-panel">
@@ -190,7 +190,7 @@ const RADII: [string, string, string][] = [
 export function Spacing() {
   return (
     <>
-      <Alert tone="info" title="Spacing is px, not rem">
+      <Alert tone="info" title="Spacing in px">
         WinUI 3 lays out in device-independent pixels, so{' '}
         <code className="text-accent-blue">--spacing</code> is <code>4px</code> rather than the
         Tailwind default of <code>0.25rem</code>. <code>p-4</code> is a real 16px at any root size,
@@ -218,7 +218,7 @@ export function Spacing() {
 
       <h3 className="mt-8 text-body-strong text-text">Radius</h3>
       <p className="mt-1 text-caption text-text-dim">
-        The WinUI pair: 4px on controls, 8px on surfaces and overlays. Nothing else.
+        The WinUI pair: 4px on controls, 8px on surfaces and overlays.
       </p>
       <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
         {RADII.map(([cls, token, px]) => (
@@ -258,13 +258,12 @@ export function Identity({ children }: { children?: ReactNode }) {
     <>
       <blockquote className="rounded-panel bg-surface p-4 text-body-large text-text">
         hoobi-design is a <strong>dark-mode-preference</strong> library using the{' '}
-        <strong>Ayu Mirage</strong> colour scheme heavily, with components, fonts and spacing{' '}
-        <strong>heavily influenced by WinUI 3 (Fluent 2)</strong>.{' '}
-        <strong>Minimalism heavy.</strong>
+        <strong>Ayu Mirage</strong> colour scheme, with components, fonts and spacing{' '}
+        <strong>influenced by WinUI 3 (Fluent 2)</strong>, built <strong>minimal</strong>.
       </blockquote>
       <p className="mt-4 text-body text-text-dim">
-        Every token and component decision resolves against that statement. If a change makes the
-        library less Ayu, less WinUI, or less minimal, it does not land.
+        This is the ethos applied to all design system components. Design choices must be consistent
+        with Ayu, WinUI and minimalism.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -288,20 +287,20 @@ export function Identity({ children }: { children?: ReactNode }) {
         <Snippet code={`import { Button, Card, Badge } from '@hoobi/design';`} />
       </div>
 
-      <h3 className="mt-8 text-body-strong text-text">What WinUI 3 buys us</h3>
+      <h3 className="mt-8 text-body-strong text-text">WinUI influences</h3>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <Card title="4px and 8px">
           <p className="text-caption text-text-dim">
-            Controls and chips round at 4px, surfaces and overlays at 8px. Two values, no others.
+            Controls and chips round at 4px, surfaces and overlays at 8px.
           </p>
         </Card>
         <Card title="32px density">
           <p className="text-caption text-text-dim">
-            Compact but breathable. Everything interactive lands on the same 32px line, so forms and
-            toolbars align without effort.
+            Compact but breathable, with every interactive element on the same 32px line, so forms
+            and toolbars align.
           </p>
         </Card>
-        <Card title="Fills, not strokes">
+        <Card title="Surface fills">
           <p className="text-caption text-text-dim">
             Surfaces are told apart by background alone. Cards, pills and alerts carry no border;
             segmentation is a 1px hairline of page background. The only scrim is the Modal backdrop.
@@ -309,7 +308,7 @@ export function Identity({ children }: { children?: ReactNode }) {
         </Card>
         <Card title="One accent">
           <p className="text-caption text-text-dim">
-            Accent marks the primary action, the selected tab, progress fill and the focus ring.
+            The primary action, the selected tab, progress fill and the focus ring are accented.
             Everything else is neutral.
           </p>
         </Card>
@@ -326,12 +325,11 @@ export function Mirage() {
       <p className="text-body text-text-dim">
         The house material - Fluent mica, named for Ayu Mirage. Hand it{' '}
         <strong className="text-text">any CSS image</strong> and it is fixed behind the whole app,
-        heavily blurred by the layer itself and tinted back towards{' '}
-        <code className="text-accent-blue">bg</code>. The blur is the point: a low-res photo, a
-        movie poster, a stack of gradients - all melt into the same soft colour wash, so an app can
-        derive its backdrop from whatever it is showing. With no artwork,{' '}
-        <code className="text-accent-blue">mirageImage(colors?)</code> builds one from a few hues -
-        the Ayu trio by default.
+        blurred by the layer itself and tinted back towards{' '}
+        <code className="text-accent-blue">bg</code>. A low-res photo, a movie poster, or a stack of
+        gradients all produce the same soft colour wash, so the backdrop derives from whatever image
+        is showing. With no artwork, <code className="text-accent-blue">mirageImage(colors?)</code>{' '}
+        builds one from a few hues, the Ayu trio by default.
       </p>
 
       {demo ? (
@@ -372,8 +370,8 @@ export function Mirage() {
 
       <h3 className="mt-8 text-body-strong text-text">In miniature</h3>
       <p className="mt-1 text-caption text-text-dim">
-        The default hues, then a movie poster - raw and as mirage. The blur melts a 500px poster
-        into the backdrop an app would sit on while showing that film.
+        The default hues, then a movie poster - raw and as mirage. A 500px poster blurred into the
+        backdrop an app would show behind that film.
       </p>
       <div className="mt-3 flex flex-wrap gap-3">
         <div
@@ -426,7 +424,8 @@ export function Mirage() {
         <code className="text-accent-blue">bg-surface</code> and{' '}
         <code className="text-accent-blue">.mirage-edge</code> masks a strip of artwork at the left,
         fading out before it reaches the text - a hint at the row&apos;s edge, not the fill. A full
-        <code className="text-accent-blue">.mirage-scoped</code> per row is too busy at list density.
+        <code className="text-accent-blue">.mirage-scoped</code> per row is too busy at list
+        density.
       </p>
       <div className="mt-3">
         <Snippet
@@ -476,7 +475,7 @@ export function Mirage() {
         />
         <div className="mirage-lift p-4">
           <p className="text-subtitle text-text">Rockman.EXE: The Program of Light and Darkness</p>
-          <p className="text-caption text-text-dim">Missing file, wants alternatives</p>
+          <p className="text-caption text-text-dim">Missing file, alternatives requested</p>
         </div>
         <div className="h-40 p-4 text-caption text-text-mute">
           The page reads on flat background from here down.
@@ -491,13 +490,13 @@ const CURVES: { name: string; token: string; fluent: string; use: string }[] = [
     name: 'Decelerate',
     token: '--ease-decelerate',
     fluent: 'curveDecelerateMid',
-    use: 'Entering and growing. Arrives fast, settles softly - the thing is coming to rest where you are looking.',
+    use: 'Entering and growing. Arrives fast, settles softly.',
   },
   {
     name: 'Accelerate',
     token: '--ease-accelerate',
     fluent: 'curveAccelerateMid',
-    use: 'Leaving and shrinking. Departs slowly, exits fast - nobody needs to watch the last half of an exit.',
+    use: 'Leaving and shrinking. Departs slowly, exits fast.',
   },
   {
     name: 'Standard',
@@ -525,11 +524,11 @@ export function Motion() {
   return (
     <>
       <p className="text-body text-text-dim">
-        Fluent 2 motion, unmodified: three curves and three durations, and nothing outside them. The
-        library&apos;s easings are the exact values Microsoft ships in{' '}
+        Fluent 2 motion, unmodified: three curves and three durations. The library&apos;s easings
+        are the exact values Microsoft ships in{' '}
         <code className="text-accent-blue">@fluentui/tokens</code> - the mid tier of each family,
-        which is the one Fluent uses for UI. Motion here signals <em>what happened</em>, never
-        decoration; a component gets an animation only when something moved or appeared.
+        which is the one Fluent uses for UI. Motion here indicates <em>what happened</em>, not
+        decoration; a component animates only when something moved or appeared.
       </p>
 
       <h3 className="mt-8 text-body-strong text-text">Curves</h3>
@@ -590,9 +589,8 @@ export function Motion() {
       <h3 className="mt-8 text-body-strong text-text">Durations</h3>
       <p className="mt-1 text-caption text-text-dim">
         Fluent&apos;s ramp runs 50 / 100 / 150 / 200 / 250 / 300 / 400 / 500ms. This library uses
-        three of them, because a house with three durations is one nobody has to think about. Size
-        and distance pick the value: a small thing moving a short way takes 150ms, a pane crossing
-        the viewport takes 300ms.
+        three of them. Size and distance pick the value: a small thing moving a short way takes
+        150ms, a pane crossing the viewport takes 300ms.
       </p>
       <div className="mt-3 flex flex-col gap-px overflow-hidden rounded-panel">
         {DURATIONS.map(([ms, fluent, use]) => (
@@ -606,12 +604,12 @@ export function Motion() {
         ))}
       </div>
 
-      <h3 className="mt-8 text-body-strong text-text">What the library animates</h3>
+      <h3 className="mt-8 text-body-strong text-text">Animated components</h3>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <Card title=".slide-in-left">
           <p className="text-caption text-text-dim">
-            250ms on decelerate. The Shell&apos;s side pane entering. Travel is the whole point, so
-            it gets the middle duration.
+            250ms on decelerate. The Shell&apos;s side pane entering, at the middle duration for
+            real travel.
           </p>
         </Card>
         <Card title=".fade-in">
@@ -622,11 +620,11 @@ export function Motion() {
         </Card>
       </div>
 
-      <Alert tone="warn" title="Reduced motion is handled globally" className="mt-6">
+      <Alert tone="warn" title="Global reduced-motion handling" className="mt-6">
         The base layer collapses every animation, transition and smooth scroll to 0.01ms under{' '}
         <code>prefers-reduced-motion: reduce</code>. Components must not re-implement that check,
-        and must not rely on an animation to convey state - the state has to survive the animation
-        being switched off.
+        and must not rely on an animation to convey state - the state must remain visible when the
+        animation is switched off.
       </Alert>
     </>
   );

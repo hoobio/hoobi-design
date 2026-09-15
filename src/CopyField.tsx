@@ -4,7 +4,7 @@ import { FieldLabel } from './FieldLabel.js';
 import { useCopy } from './copy.js';
 
 export interface CopyFieldProps {
-  /** What lands on the clipboard. */
+  /** What is copied to the clipboard. */
   value: string;
   /** Caption label above the row. */
   label?: ReactNode;

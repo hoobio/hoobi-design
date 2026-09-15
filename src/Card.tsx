@@ -24,9 +24,9 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>
    */
   tone?: CardTone;
   /**
-   * false makes this a sliced card: the body runs flush to the edges so content that
-   * bleeds its own hairlines (DescriptionList, a full-width list) can actually reach
-   * them, and the title becomes its own section above a hairline of page background.
+   * false makes this a sliced card: the body runs flush to the edges so content with its
+   * own hairlines (DescriptionList, a full-width list) can reach them, and the title
+   * becomes its own section above a hairline of page background.
    */
   padded?: boolean;
 }
@@ -63,8 +63,8 @@ export function Card({
         mirage ? 'mirage-scoped' : tone ? TONE_FILLS[tone] : 'bg-surface-raised',
         className,
       )}
-      // --pad is what a Divider inside cancels to reach the edges, so the card states its
-      // own padding rather than every rule having to guess it.
+      // --pad lets a Divider inside cancel it to reach the edges; the card sets its
+      // padding value here rather than each consumer duplicating it.
       style={
         {
           ...style,

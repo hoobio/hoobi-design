@@ -78,13 +78,12 @@ export interface SecretFieldProps {
 const MASK = '•'.repeat(16);
 
 /**
- * A secret, shown as what can be done to it rather than explained in a sentence. The lock
- * and the dots ARE the statement that something is stored and cannot be read back; the
- * tooltip carries the words, on hover and keyboard focus only. There is deliberately no
- * prop for a caption under the field.
+ * A secret is shown by what can be done to it. The lock and the dots indicate a stored
+ * value that cannot be read back; the tooltip holds the words, shown on hover and
+ * keyboard focus only. There is deliberately no prop for a caption under the field.
  *
  * Every mutating callback fires immediately and unconfirmed: clearing, regenerating and
- * rotating are destructive, so the CONSUMER puts a ActionDialog in front of them. This
+ * rotating are destructive, so the consumer puts an ActionDialog in front of them. This
  * component holds no arm state.
  */
 export function SecretField({
@@ -215,7 +214,7 @@ export function SecretField({
     </span>
   );
 
-  // With the label hidden there is no label row to hold the badge and clear, so they ride inside the field: an empty row above the input read as a layout bug.
+  // With the label hidden there is no label row for the badge and clear, so they sit inside the field: an empty row above the input would look like a layout bug.
   return (
     <div className={cx('flex min-w-0 flex-col gap-1', className)}>
       <FieldLabel

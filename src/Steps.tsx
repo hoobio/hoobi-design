@@ -18,10 +18,10 @@ export interface StepsProps {
 }
 
 /**
- * Where you are in a linear flow. Chevrons on a wide screen because a row of them reads as
- * a direction; a stacked list below md because four clipped arrows at 360px are four
- * ellipses. A finished step swaps its number for a tick and, stacked, says what it settled
- * on - a trail that only counts is a trail you have to remember.
+ * Where you are in a linear flow. Chevrons on a wide screen read as a direction; below md
+ * the flow becomes a stacked list, since four clipped arrows at 360px become four ellipses.
+ * A finished step shows a tick instead of its number, and in the stacked layout shows what
+ * it produced instead of only a count.
  */
 export function Steps({ steps, current, onSelect, label = 'Progress', className }: StepsProps) {
   return (
@@ -50,7 +50,7 @@ export function Steps({ steps, current, onSelect, label = 'Progress', className 
                   }
                 : {})}
               // The chevron is a clip, not a background image: it keeps the fill a token and
-              // survives any width. Off below md, where the notches eat the label instead.
+              // survives any width. Disabled below md, where the notches would overlap the label.
               style={
                 {
                   '--chev':

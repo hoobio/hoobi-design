@@ -25,8 +25,9 @@ export interface TableColumn<T> {
    */
   primary?: boolean;
   /**
-   * Higher survives longer as the container narrows; the default is 0. `100` and up is the
-   * must-show band, which is never hidden - the table stacks into cards instead.
+   * Higher-priority columns are dropped later as the container narrows; the default is 0.
+   * `100` and up is the must-show band, which is never hidden - the table stacks into cards
+   * instead.
    */
   priority?: number;
   /** A narrower rendering - icons where the full cell has words - tried before anything is hidden. */
@@ -75,8 +76,8 @@ function Chevron({ up }: { up: boolean }) {
   );
 }
 
-// Every class is written out in full: Tailwind reads the compiled file for utilities to emit, and a
-// name assembled at runtime is one it never sees.
+// Every class is written out in full: Tailwind's compiler only emits utilities that appear
+// literally in the file; a class name assembled at runtime goes undetected.
 const QUERY_WIDE = {
   table: '@2xl:table @2xl:overflow-hidden @2xl:rounded-panel @2xl:bg-surface-raised',
   head: '@2xl:table-header-group',
@@ -107,16 +108,17 @@ const MEASURED_WIDE = {
 const PRIMARY_MIN = 320;
 
 /**
- * One markup path: a real <table> from `@2xl` (a container query, so it keys off its own column,
- * not the viewport) and below that each row is a card whose cells wrap with their column label in
- * front of them. The sort is applied here so the consumer can keep its rows in whatever order they
- * are stored, and held by the consumer so it has a URL.
+ * One markup path: a real <table> from `@2xl` (a container query, keyed off its own column
+ * width, not the viewport), and below that each row is a card whose cells show their column
+ * label before the value. The sort is applied here so the consumer can keep its rows in
+ * whatever order they are stored, and held by the consumer so it has a URL.
  *
- * A column carrying `priority` or `compact` turns that on: cells stop wrapping, the natural width
- * is measured against the wrapper, and columns give way in order as the container narrows - anything
- * with `compact` switches to its narrow rendering, then the lowest `priority` columns drop one at a
- * time behind a "+N" menu, and only when the primary column plus the must-show band no longer fits
- * does the table stack. Such a table stacks on that measurement rather than on the container query.
+ * A column with `priority` or `compact` set turns on progressive hiding: cells stop wrapping,
+ * the natural width is measured against the wrapper, and columns are dropped in order as the
+ * container narrows. Anything with `compact` switches to its narrow rendering first, then the
+ * lowest-`priority` columns drop one at a time behind a "+N" menu, and the table stacks only
+ * once the primary column plus the must-show band no longer fit. Such a table stacks on that
+ * measurement rather than on the container query.
  */
 export function Table<T>({
   columns,
@@ -182,7 +184,7 @@ export function Table<T>({
       const grew = width > widthRef.current;
       widthRef.current = width;
       cancelAnimationFrame(frame);
-      // A container that grew runs the cascade again from the full set; a narrowing one carries on.
+      // A container that grew re-measures from the full column set; a narrowing one continues from the current step.
       frame = requestAnimationFrame(() => (grew ? setStep(0) : measure.current?.()));
     });
     observer.observe(root);
@@ -203,7 +205,7 @@ export function Table<T>({
       ? [...rows].sort((a, b) => {
           const va = sortValue(a);
           const vb = sortValue(b);
-          // Undefined sinks regardless of direction: it is an absence, not a small value.
+          // Undefined represents missing data, so it always sinks regardless of sort direction.
           if (va === undefined || vb === undefined) return compare(va, vb);
           return sort.direction === 'asc' ? compare(va, vb) : compare(vb, va);
         })
@@ -323,11 +325,7 @@ export function Table<T>({
               })}
               {rowAction ? (
                 <td
-                  className={cx(
-                    'mt-2 block',
-                    !stacked && wide.action,
-                    !stacked && wide.cell,
-                  )}
+                  className={cx('mt-2 block', !stacked && wide.action, !stacked && wide.cell)}
                   colSpan={overflowCell ? 2 : undefined}
                 >
                   {rowAction(row)}

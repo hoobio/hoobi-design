@@ -13,8 +13,8 @@ export interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
 }
 
 /**
- * The native range input in house clothes. The readout is not decoration: a slider with
- * no number is a control you cannot set deliberately or describe to anyone else.
+ * The native range input, styled to match the library. The readout is not decoration: a
+ * slider with no number is a control you cannot set deliberately or describe to anyone else.
  */
 export function Slider({
   label,

@@ -29,8 +29,8 @@ function Chevron() {
 }
 
 /**
- * Fluent 2 breadcrumb. The last item is the current page: never a link, whatever
- * `as` says, so its href/onClick are dropped rather than rendered inert.
+ * Fluent 2 breadcrumb. The last item is always the current page, never a link: its
+ * href/onClick are dropped rather than rendered inert.
  */
 export function Breadcrumbs({ items, separator, className }: BreadcrumbsProps) {
   return (

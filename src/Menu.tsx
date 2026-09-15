@@ -49,7 +49,7 @@ const MenuCloseContext = createContext<() => void>(() => undefined);
 /** True when a sibling row has an icon, so icon-less rows reserve the same gutter. */
 const MenuGutterContext = createContext(false);
 
-/** Does any descendant row carry an icon? Read once by Menu, off its own children. */
+/** Does any descendant row have an icon? Read once by Menu, off its own children. */
 function hasIconRow(children: ReactNode): boolean {
   return Children.toArray(children).some((child) => {
     if (!isValidElement(child)) return false;
@@ -60,7 +60,7 @@ function hasIconRow(children: ReactNode): boolean {
 
 /**
  * Decides the icon gutter for one group of rows. Menu wraps its panel in this; Shell's
- * user flyout wraps its own, because those rows live outside a Menu.
+ * user flyout wraps its own rows, which are outside a Menu.
  */
 export function MenuGutter({ children }: { children: ReactNode }) {
   return (
@@ -86,11 +86,11 @@ export function MenuItem({
         {iconProp}
       </span>
     );
-  // A row without its own onClick is data, not a control (a linked account whose only act is
-  // its trailing button): no hover fill, no button semantics, and clicking it closes nothing.
+  // A row without its own onClick is inert (a linked account whose only act is its trailing
+  // button): no hover fill, no button semantics, and clicking it closes nothing.
   const interactive = onClick !== undefined;
   const rowClass = cx(
-    // caption, not body: a flyout is a 216px pane and its rows are controls, not reading.
+    // caption size: a flyout is a 216px pane of controls, sized for quick scanning.
     'flex h-10 w-full items-center gap-3 rounded-control px-3 text-caption',
     tone === 'danger' ? 'text-danger' : 'text-text',
     interactive && (tone === 'danger' ? 'hover:bg-danger/15' : 'hover:bg-surface'),
@@ -123,7 +123,7 @@ export function MenuItem({
   if (!action) return row;
 
   // Overlaid rather than nested: a button cannot contain a button, and the row's
-  // hover fill still has to run the full width under it.
+  // hover fill must still span the full row width beneath it.
   return (
     <div className="relative flex items-center">
       {row}
@@ -144,9 +144,7 @@ export function MenuItem({
 
 export function MenuLabel({ children, className }: MenuLabelProps) {
   return (
-    <div className={cx('px-3 pt-2 pb-1 text-caption text-text-mute', className)}>
-      {children}
-    </div>
+    <div className={cx('px-3 pt-2 pb-1 text-caption text-text-mute', className)}>{children}</div>
   );
 }
 
@@ -212,7 +210,7 @@ export function Menu({
         aria-expanded={open}
         onClick={toggle}
         // A menu button never takes focus from a pointer, so a click can never
-        // paint the focus ring; keyboard focus still rings as it should.
+        // paint the focus ring; keyboard focus still shows the ring.
         onPointerDown={(e) => {
           e.preventDefault();
         }}

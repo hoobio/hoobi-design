@@ -7,7 +7,7 @@ import { GROUPS, PAGES, type Page } from './pages.js';
 type NavType = 'pinned' | 'rail' | 'top';
 type MirageSrc = 'off' | 'hues' | 'poster';
 
-// Old links named pages by hash; they still land on the page, now at its path.
+// Old hash-based links still resolve to the page, now at its path.
 const legacy = PAGES.find((p) => p.id === location.hash.slice(1));
 if (legacy && location.pathname === '/') history.replaceState(null, '', `/${legacy.id}`);
 
@@ -24,7 +24,7 @@ export function App() {
   }, [page.id]);
 
   // The chrome doubles as the Shell demo: ?nav, ?mirage and ?bar switch the real nav between
-  // its presentations so each can be experienced, not just read about - and linked to.
+  // its presentations, each directly linkable.
   const navType = pick<NavType>(url.searchParams.get('nav'), ['pinned', 'rail', 'top'], 'rail');
   const mirageSrc = pick<MirageSrc>(
     url.searchParams.get('mirage'),
@@ -84,7 +84,7 @@ export function App() {
         <Shell.User
           name="hoobi"
           detail="design.hoobi.io"
-          // The catalog's own menu carries the catalog's own rows: where this version came
+          // The catalog's own menu holds the catalog's own rows: where this version came
           // from. Account-shaped rows (linked accounts, Sign out) are a consumer's to compose;
           // the Shell page renders that composition as a demo.
           menu={
@@ -116,7 +116,7 @@ export function App() {
           {page.render()}
         </Section>
       </ShellDemoContext.Provider>
-      {/* One Toaster for the whole app, mounted at the root. Every toast() lands here. */}
+      {/* One Toaster for the whole app, mounted at the root. Every toast() call renders here. */}
       <Toaster />
     </Shell>
   );

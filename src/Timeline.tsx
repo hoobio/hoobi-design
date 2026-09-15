@@ -6,7 +6,7 @@ export type TimelineTone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' 
 export interface TimelineProps {
   children: ReactNode;
   className?: string;
-  /** A bare neutral rail with no Timeline.Item chrome - for a feed whose beats already carry their own layout. */
+  /** A bare neutral rail with no Timeline.Item chrome - for a feed whose beats already have their own layout. */
   plain?: boolean;
 }
 
@@ -39,7 +39,7 @@ export interface TimelineFoldProps {
   /** Controlled open state; pair with onOpenChange. A permalink can then reopen this fold. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** A static, unique name for the fold, so its state has an address. */
+  /** A static, unique name for the fold, so a permalink can target its open state directly. */
   id?: string;
   children?: ReactNode;
 }
@@ -62,7 +62,7 @@ export interface TimelineStepProps {
   /** Controlled open state of the detail; pair with onOpenChange. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** A static, unique name for the step, so its state has an address. */
+  /** A static, unique name for the step, so a permalink can target its open state directly. */
   id?: string;
   /** Alternative body under the line, plain caption-small dim text. */
   children?: ReactNode;
@@ -179,7 +179,7 @@ function TimelineFold({
           ) : null}
         </span>
       </summary>
-      {/* Indented under the chevron: what a fold hides is a level below what names it. */}
+      {/* Indented under the chevron: content sits one level below the summary that names it. */}
       <div className="mt-2 flex flex-col gap-1.5 pl-5">{children}</div>
     </details>
   );
@@ -187,14 +187,14 @@ function TimelineFold({
 
 function TimelineEvent({ time, label, note }: TimelineEventProps) {
   return (
-    // Each Event is its own grid, so the time cell carries the column width itself: 8ch of its
+    // Each Event is its own grid, so the time cell sets the column width itself: 8ch of its
     // own tabular figures, exactly "12:58 pm", which aligns every row with no slack. Baseline alignment
     // keeps the time, the label and the note reading as one line of text.
     <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-baseline gap-x-2 gap-y-0.5 max-sm:grid-cols-[auto_minmax(0,1fr)]">
       <span className="min-w-[8ch] text-caption-small whitespace-nowrap text-text-mute tabular-nums">
         {time}
       </span>
-      {/* Sized here, not by the consumer: an Event is one dense line, whatever label it gets. */}
+      {/* The size is fixed by the component: an Event is one dense line whatever the label. */}
       <span className="min-w-0 text-caption-small">{label}</span>
       {note ? (
         <span className="text-caption-small text-text-dim break-words max-sm:col-start-2">

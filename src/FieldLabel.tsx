@@ -8,8 +8,8 @@ export interface FieldLabelProps {
   children: ReactNode;
   /**
    * What this field means, shown from an (i) on hover. The house answer to helper copy:
-   * nobody reads a sentence under every field, so the explanation hides behind an
-   * affordance and the line under the control stays free for a validation error.
+   * nobody reads a sentence under every field, so the explanation sits behind an
+   * affordance instead, and the line under the control stays free for a validation error.
    */
   info?: string;
   /**
@@ -36,8 +36,9 @@ export function FieldLabel({ htmlFor, children, info, infoId, aside, className }
         {info ? <InfoTip text={info} /> : null}
       </Tag>
       {/* OUTSIDE the label element on purpose: text inside <label> becomes part of the
-          control's accessible NAME, so a field called "password" would answer to
-          "password At least 8 characters". The description belongs to describedby. */}
+          control's accessible name, so a field called "password" would read as
+          "password At least 8 characters". The description is handled by describedby
+          instead. */}
       {info && infoId ? (
         <span id={infoId} className="sr-only">
           {info}
@@ -56,10 +57,9 @@ export interface InfoTipProps {
 }
 
 /**
- * The (i). A decorative glyph, NOT a button: it takes no tab stop, because Tab from
- * username has to land on password. The words still reach a screen reader - through the
- * hidden span this renders and the `aria-describedby` the field points at it - so nothing
- * is lost by taking the glyph itself off the accessibility tree.
+ * The (i). A decorative glyph, not a button: it takes no tab stop, so Tab from username
+ * moves to password next. A hidden span holds the text for screen readers via
+ * `aria-describedby`, so removing the glyph from the accessibility tree loses nothing.
  */
 export function InfoTip({ text, id, className }: InfoTipProps) {
   return (
