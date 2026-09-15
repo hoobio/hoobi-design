@@ -62,6 +62,8 @@ export interface TableProps<T> {
     onChange: (selected: Set<string>) => void;
     /** Accessible name for a row's checkbox. Defaults to "Select row". */
     label?: (row: T) => string;
+    /** Name for the select-all checkbox, which covers the rows currently shown. Defaults to "Select all". */
+    allLabel?: string;
   };
 }
 
@@ -246,13 +248,22 @@ export function Table<T>({
   }
 
   const orderedKeys = selection ? ordered.map(rowKey) : [];
-  const selectedCount = selection ? orderedKeys.filter((key) => selection.selected.has(key)).length : 0;
-  const allSelected = selection !== undefined && orderedKeys.length > 0 && selectedCount === orderedKeys.length;
+  const selectedCount = selection
+    ? orderedKeys.filter((key) => selection.selected.has(key)).length
+    : 0;
+  const allSelected =
+    selection !== undefined && orderedKeys.length > 0 && selectedCount === orderedKeys.length;
   const someSelected = selection !== undefined && selectedCount > 0 && !allSelected;
 
   function toggleAll(): void {
     if (!selection) return;
-    selection.onChange(allSelected ? new Set() : new Set(orderedKeys));
+    // The box covers the rows currently shown, so a key selected under another filter survives.
+    const next = new Set(selection.selected);
+    for (const key of orderedKeys) {
+      if (allSelected) next.delete(key);
+      else next.add(key);
+    }
+    selection.onChange(next);
   }
 
   function toggleRow(row: T): void {
@@ -266,6 +277,17 @@ export function Table<T>({
 
   return (
     <div ref={rootRef} className={cx('@container overflow-x-auto', className)}>
+      {selection && (!progressive || stacked) ? (
+        <div className={cx('mb-2 px-3', !progressive && '@2xl:hidden')}>
+          <Checkbox
+            label={selection.allLabel ?? 'Select all'}
+            className="text-caption text-text-mute"
+            checked={allSelected}
+            indeterminate={someSelected}
+            onChange={toggleAll}
+          />
+        </div>
+      ) : null}
       <table
         ref={tableRef}
         aria-label={label}
@@ -276,7 +298,7 @@ export function Table<T>({
             {selection ? (
               <th scope="col" className={cx('px-3 py-2', !stacked && wide.narrow)}>
                 <Checkbox
-                  aria-label="Select all"
+                  aria-label={selection.allLabel ?? 'Select all'}
                   checked={allSelected}
                   indeterminate={someSelected}
                   onChange={toggleAll}
@@ -353,7 +375,7 @@ export function Table<T>({
               )}
             >
               {selection ? (
-                <td className={cx(!stacked && wide.cell, !stacked && wide.narrow)}>
+                <td className={cx('shrink-0', !stacked && wide.cell, !stacked && wide.narrow)}>
                   <Checkbox
                     aria-label={selection.label?.(row) ?? 'Select row'}
                     checked={selection.selected.has(rowKey(row))}
@@ -369,7 +391,9 @@ export function Table<T>({
                     key={column.id}
                     className={cx(
                       column.primary
-                        ? 'w-full'
+                        ? selection
+                          ? 'min-w-0 grow basis-[calc(100%-36px)]'
+                          : 'w-full'
                         : 'flex min-w-0 flex-col gap-1 text-caption',
                       !stacked && wide.cell,
                       !stacked && wide[valign],

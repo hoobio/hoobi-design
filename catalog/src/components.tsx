@@ -1801,7 +1801,7 @@ export function TablePage() {
       </Demo>
       <Demo
         title="Selection"
-        note="Controlled, like the sort: the keys are rowKey values and you hold the Set. The header checkbox covers every row currently shown and goes indeterminate on a partial selection. Stacked, the checkbox leads each row card."
+        note="Controlled, like the sort: the keys are rowKey values and you hold the Set. The header checkbox covers the rows currently shown and goes indeterminate on a partial selection; it unions those keys in and out, so a row selected under another filter survives. Stacked, the checkbox leads each row card and the select-all moves to a labelled row above them."
         stack
         code={`const [selected, setSelected] = useState(new Set<string>());
 
@@ -1907,9 +1907,9 @@ export function TablePage() {
           ],
           [
             'selection',
-            '{ selected, onChange, label? }',
+            '{ selected, onChange, label?, allLabel? }',
             'undefined',
-            'Row selection, off when absent. Controlled: the keys are rowKey values, label names one row’s checkbox.',
+            'Row selection, off when absent. Controlled: the keys are rowKey values, label names one row’s checkbox and allLabel the select-all, which defaults to "Select all".',
           ],
           ['label', 'string', 'undefined', 'aria-label for the table.'],
         ]}
@@ -1939,8 +1939,8 @@ export function ReorderListPage() {
     <>
       <Import names="ReorderList, ReorderGrip" />
       <Demo
-        title="Drag the grip, or focus it and press the arrow keys"
-        note="The dragged row lifts on the flyout elevation and follows the pointer; its neighbours slide into the slot it left on the decelerate curve. Escape during a drag puts everything back. Home and End move to the ends, and each keyboard move is announced on a polite live region. You hold the order: onReorder hands back the whole array."
+        title="Drag the grip, or focus it and press Alt with an arrow key"
+        note="The dragged row lifts on the flyout elevation and follows the pointer; its neighbours slide into the slot it left on the decelerate curve. Escape during a drag puts everything back. Alt+Home and Alt+End move to the ends, and each keyboard move is announced on a polite live region. Alt is the gate so a focused handle does not swallow the arrow keys the page scrolls with. You hold the order: onReorder hands back the whole array."
         stack
         code={`const [stages, setStages] = useState(STAGES);
 
@@ -1985,7 +1985,12 @@ export function ReorderListPage() {
       <Props
         rows={[
           ['items', 'T[]', '-', 'The current order. The list renders it as given and never sorts.'],
-          ['itemKey', '(item: T) => string', '-', "Stable key per item; it lands on the row's data-key."],
+          [
+            'itemKey',
+            '(item: T) => string',
+            '-',
+            "Stable key per item; it lands on the row's data-key.",
+          ],
           [
             'onReorder',
             '(items: T[]) => void',

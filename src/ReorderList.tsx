@@ -35,9 +35,11 @@ export interface ReorderListProps<T> {
 
 interface DragState {
   key: string;
+  keys: string[];
   from: number;
   to: number;
   dy: number;
+  scrollY: number;
   tops: number[];
   heights: number[];
   centres: number[];
@@ -73,9 +75,11 @@ export function ReorderList<T>({
   const listRef = useRef<HTMLUListElement>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [flip, setFlip] = useState<Record<string, number>>({});
+  const [frozen, setFrozen] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const startY = useRef(0);
   const pending = useRef<T[] | null>(null);
+  const pendingKey = useRef<string | null>(null);
   const flipFrom = useRef<Map<string, number> | null>(null);
   const hintId = `${useId()}-reorder-hint`;
 
@@ -116,45 +120,71 @@ export function ReorderList<T>({
     };
   }, [items, itemKey, rowTops]);
 
+  useEffect(() => {
+    if (frozen === null) return;
+    const frame = requestAnimationFrame(() => {
+      setFrozen(null);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [frozen]);
+
   const finish = useCallback(() => {
     const next = pending.current;
+    const movedKey = pendingKey.current;
     pending.current = null;
+    pendingKey.current = null;
     setDrag(null);
-    if (next) onReorder(next);
+    if (!next) return;
+    // The row already sits at its resting offset, so the commit that moves it there for real
+    // must not transition, or it slides back across the distance it has already covered.
+    setFrozen(movedKey);
+    onReorder(next);
   }, [onReorder]);
 
   const settle = useCallback(
     (apply: boolean) => {
       setDrag((current) => {
         if (!current || current.settling) return current;
-        const { from, to, tops, heights } = current;
-        const moved = apply && to !== from;
+        const { from, to, tops, heights, keys } = current;
+        const toKey = keys[to];
+        const liveFrom = items.findIndex((item) => itemKey(item) === current.key);
+        const liveTo =
+          toKey === undefined ? -1 : items.findIndex((item) => itemKey(item) === toKey);
+        const moved = apply && to !== from && liveFrom >= 0 && liveTo >= 0;
+        const top = (i: number) => tops[i] ?? 0;
+        const height = (i: number) => heights[i] ?? 0;
         const rest = !moved
           ? 0
           : to > from
-            ? (tops[to] as number) + (heights[to] as number) - (heights[from] as number) - (tops[from] as number)
-            : (tops[to] as number) - (tops[from] as number);
-        pending.current = moved ? reorderTo(items, from, to) : null;
+            ? top(to) + height(to) - height(from) - top(from)
+            : top(to) - top(from);
+        pending.current = moved ? reorderTo(items, liveFrom, liveTo) : null;
+        pendingKey.current = moved ? current.key : null;
         return { ...current, dy: rest, settling: true };
       });
     },
-    [items],
+    [items, itemKey],
   );
 
+  const dragging = drag !== null && !drag.settling;
+
   useEffect(() => {
-    if (!drag || drag.settling) return;
+    if (!dragging) return;
     const onMove = (event: PointerEvent) => {
       setDrag((current) => {
         if (!current || current.settling) return current;
-        const centre = (current.centres[current.from] as number) + (event.clientY - startY.current);
+        const dy = event.clientY - startY.current + (scrollY - current.scrollY);
+        const centre = (current.centres[current.from] ?? 0) + dy;
         let to = current.from;
         for (let j = current.from + 1; j < current.centres.length; j++) {
-          if (centre > (current.centres[j] as number)) to = j;
+          if (centre > (current.centres[j] ?? 0)) to = j;
         }
         for (let j = current.from - 1; j >= 0; j--) {
-          if (centre < (current.centres[j] as number)) to = j;
+          if (centre < (current.centres[j] ?? 0)) to = j;
         }
-        return { ...current, dy: event.clientY - startY.current, to };
+        return { ...current, dy, to };
       });
     };
     const onUp = () => {
@@ -176,7 +206,7 @@ export function ReorderList<T>({
       removeEventListener('pointercancel', onCancel);
       removeEventListener('keydown', onKey);
     };
-  }, [drag, settle]);
+  }, [dragging, settle]);
 
   useEffect(() => {
     if (!drag?.settling) return;
@@ -196,9 +226,11 @@ export function ReorderList<T>({
     startY.current = event.clientY;
     setDrag({
       key: itemKey(items[index] as T),
+      keys: items.map(itemKey),
       from: index,
       to: index,
       dy: 0,
+      scrollY,
       tops: rows.map((row) => row.top),
       heights: rows.map((row) => row.height),
       centres: rows.map((row) => row.top + row.height / 2),
@@ -214,6 +246,8 @@ export function ReorderList<T>({
   };
 
   const onHandleKey = (event: ReactKeyboardEvent, item: T, index: number) => {
+    // Alt is the gate: a focused handle must not swallow the arrow keys the page scrolls with.
+    if (!event.altKey) return;
     const step =
       event.key === 'ArrowUp'
         ? -1
@@ -243,13 +277,13 @@ export function ReorderList<T>({
   return (
     <div className={cx('min-w-0', className)}>
       <span id={hintId} className="sr-only">
-        Drag, or press the arrow keys to move this item.
+        Drag, or hold Alt and press the arrow keys, to move this item.
       </span>
       <ul ref={listRef} role="list" aria-label={label} className="flex flex-col gap-px">
         {items.map((item, index) => {
           const key = itemKey(item);
           const lifted = drag?.key === key;
-          const settled = flip[key] !== undefined || (lifted && !drag.settling);
+          const settled = flip[key] !== undefined || frozen === key || (lifted && !drag.settling);
           const offset = offsetFor(index, key);
           return (
             <li
@@ -262,6 +296,7 @@ export function ReorderList<T>({
                 zIndex: lifted ? 1 : undefined,
               }}
               onTransitionEnd={(event) => {
+                if (event.target !== event.currentTarget) return;
                 if (lifted && drag.settling && event.propertyName === 'transform') finish();
               }}
             >
