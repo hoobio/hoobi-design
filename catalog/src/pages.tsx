@@ -41,6 +41,7 @@ import {
   InputPage,
   MenuPage,
   ModalPage,
+  MultiSelectPage,
   NoticePage,
   PageHeaderPage,
   PersonaPage,
@@ -302,6 +303,13 @@ export const PAGES: Page[] = [
     title: 'Select',
     caption: 'A native select, styled to match Input exactly.',
     render: () => <SelectPage />,
+  },
+  {
+    id: 'multi-select',
+    group: 'Inputs',
+    title: 'MultiSelect',
+    caption: 'A categorical filter: Popover trigger, Checkbox rows, a Clear row.',
+    render: () => <MultiSelectPage />,
   },
   {
     id: 'modal',

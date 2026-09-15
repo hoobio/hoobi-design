@@ -17,6 +17,7 @@ import {
   Input,
   Menu,
   Modal,
+  MultiSelect,
   Notice,
   PageHeader,
   Persona,
@@ -1413,6 +1414,58 @@ export function SelectPage() {
             'SelectHTMLAttributes<HTMLSelectElement>',
             '',
             'value, onChange, disabled, children.',
+          ],
+        ]}
+      />
+    </>
+  );
+}
+
+const CLASS_OPTIONS = [
+  { value: 'warrior', label: 'Warrior', iconUrl: posterUrl },
+  { value: 'mage', label: 'Mage', iconUrl: posterUrl },
+  { value: 'rogue', label: 'Rogue', iconUrl: posterUrl },
+  { value: 'priest', label: 'Priest', iconUrl: posterUrl },
+];
+
+export function MultiSelectPage() {
+  const [classes, setClasses] = useState<string[]>(['mage']);
+  return (
+    <>
+      <Import names="MultiSelect, type MultiSelectOption" />
+      <p className="text-body text-text-dim">
+        A categorical filter: a Popover trigger showing the count of what is picked, a Checkbox
+        row per option, and a Clear row once anything is selected. Built from the primitives, not
+        a new overlay.
+      </p>
+      <Demo
+        title="Class filter"
+        note="The trigger reads the label until something is picked, then the label plus a count badge."
+        code={`const [classes, setClasses] = useState<string[]>(['mage']);
+
+<MultiSelect
+  label="Class"
+  options={classOptions}
+  value={classes}
+  onChange={setClasses}
+/>`}
+      >
+        <MultiSelect label="Class" options={CLASS_OPTIONS} value={classes} onChange={setClasses} />
+      </Demo>
+
+      <Props
+        rows={[
+          ['label', 'string', '', 'The trigger text, and the popover panel label.'],
+          ['options', 'MultiSelectOption[]', '', 'value, label, optional iconUrl (16px).'],
+          ['value', 'string[]', '', 'The selected option values, in any order.'],
+          ['onChange', '(value: string[]) => void', '', 'Called with the new selection, in option order.'],
+          ['placeholder', 'string', 'label', 'Trigger text while nothing is selected.'],
+          ['className', 'string', '', "Applied to Popover's own root, not a wrapper."],
+          [
+            '...rest',
+            'HTMLAttributes<HTMLDivElement>',
+            '',
+            "Forwarded to Popover's root.",
           ],
         ]}
       />
