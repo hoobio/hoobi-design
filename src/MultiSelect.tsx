@@ -43,7 +43,7 @@ export function MultiSelect({
       className={className}
       {...rest}
       trigger={(props) => (
-        <Button variant="secondary" {...props}>
+        <Button variant="secondary" className="w-full justify-between" {...props}>
           <span className="min-w-0 truncate">{value.length > 0 ? label : (placeholder ?? label)}</span>
           {value.length > 0 ? (
             <Badge tone="accent" size="sm">
