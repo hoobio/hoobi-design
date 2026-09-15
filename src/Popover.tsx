@@ -123,7 +123,7 @@ export function Popover({
           role="dialog"
           aria-label={label}
           style={place}
-          className="fade-in fixed z-50 flex max-w-[calc(100vw-2rem)] flex-col gap-2 rounded-panel bg-surface-raised p-2"
+          className="fade-in fixed z-50 flex max-w-[calc(100vw-2rem)] flex-col gap-2 rounded-panel bg-surface-raised p-2 shadow-flyout"
         >
           {children}
         </div>

@@ -237,7 +237,7 @@ export function Menu({
         ref={panelRef}
         role="menu"
         className={cx(
-          'fixed z-50 w-56 max-w-[calc(100vw-2rem)] rounded-panel bg-surface-raised p-1',
+          'fixed z-50 w-56 max-w-[calc(100vw-2rem)] rounded-panel bg-surface-raised p-1 shadow-flyout',
           open ? 'fade-in' : 'hidden',
         )}
       >
