@@ -1,12 +1,14 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { Badge } from './Badge.js';
 import { Button } from './Button.js';
 import { Checkbox } from './Checkbox.js';
+import { cx } from './cx.js';
+import { ChevronIcon } from './icons.js';
 import { Popover } from './Popover.js';
 
 export interface MultiSelectOption {
   value: string;
-  label: string;
+  label: ReactNode;
   iconUrl?: string;
 }
 
@@ -43,14 +45,26 @@ export function MultiSelect({
       className={className}
       {...rest}
       trigger={(props) => (
-        <Button variant="secondary" className="w-full justify-between" {...props}>
+        <button
+          type="button"
+          className="flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-control border border-transparent bg-chip pr-2.5 pl-3 text-body text-text"
+          {...props}
+        >
           <span className="min-w-0 truncate">{value.length > 0 ? label : (placeholder ?? label)}</span>
-          {value.length > 0 ? (
-            <Badge tone="accent" size="sm">
-              {value.length}
-            </Badge>
-          ) : null}
-        </Button>
+          <span className="flex shrink-0 items-center gap-1.5">
+            {value.length > 0 ? (
+              <Badge tone="accent" size="sm">
+                {value.length}
+              </Badge>
+            ) : null}
+            <ChevronIcon
+              className={cx(
+                'size-3 text-text-mute transition-transform duration-150 ease-standard',
+                props['aria-expanded'] ? '-rotate-90' : 'rotate-90',
+              )}
+            />
+          </span>
+        </button>
       )}
     >
       <div className="flex flex-col gap-1">

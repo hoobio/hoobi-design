@@ -1364,7 +1364,7 @@ export function SelectPage() {
       <Import names="Select" />
       <Demo
         title="Anatomy"
-        note="A native select, so the option list is the platform's own. 32px to match Input and Button."
+        note="A native select. In Chrome and Edge the option list is styled here too; elsewhere it is the platform's own. 32px to match Input and Button."
         stack
         code={`<Select label="Quality profile" defaultValue="1080p">
   <option value="720p">HD - 720p</option>
@@ -1454,7 +1454,7 @@ export function MultiSelectPage() {
       <Props
         rows={[
           ['label', 'string', '', 'The trigger text, and the popover panel label.'],
-          ['options', 'MultiSelectOption[]', '', 'value, label, optional iconUrl (16px).'],
+          ['options', 'MultiSelectOption[]', '', 'value, label (a node, so an option can be coloured), optional iconUrl (16px).'],
           ['value', 'string[]', '', 'The selected option values, in any order.'],
           [
             'onChange',
