@@ -511,7 +511,15 @@ export function Mirage() {
           and Shell&apos;s group dropdown and railed user flyout
         </strong>{' '}
         take it with no wiring. Modal, ActionDialog and FormDialog do not: WinUI signals a modal
-        surface with smoke, and a dialog carries the most prose of anything that floats. Tooltip,
+        surface with smoke, and a dialog carries the most prose of anything that floats. Those three
+        share one backdrop, from Modal:{' '}
+        <code className="text-accent-blue">
+          color-mix(in srgb, var(--color-smoke) 60%, transparent)
+        </code>{' '}
+        and no blur, since blur is acrylic&apos;s signal. Fluent&apos;s smoke is #4D000000,
+        translucent black at 30% in both themes, but that is tuned for a light page; over a #1f2430
+        one no amount of black gets past a 1.36:1 dim, so the alpha is doubled and the ink is tinted
+        to <code className="text-accent-blue">--color-bg</code> rather than left pure black. Tooltip,
         RichTooltip and Toast do not either - no Fluent guidance puts a material on them, they are
         one or two lines, and a toast&apos;s tone wash would be diluted by one. Notice keeps the
         opaque base plus <code className="text-accent-blue">.mirage-scoped</code> it always had:

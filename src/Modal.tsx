@@ -36,7 +36,7 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
       onCancel={onClose}
       onClick={onBackdrop}
       className={cx(
-        'm-auto max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-black/60',
+        'm-auto max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-[color-mix(in_srgb,var(--color-smoke)_60%,transparent)]',
         SIZES[size],
         className,
       )}

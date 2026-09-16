@@ -31,7 +31,7 @@ for (const f of src) {
     if (/outline-none|focus:outline|focus-visible:(ring|outline)/.test(line)) {
       errors.push(`${at}: bespoke focus styling - the global :focus-visible ring is the only one`);
     }
-    // Depth is fill, never shadow. The Modal backdrop scrim is bg-black/60, not a shadow.
+    // Depth is fill, never shadow. The Modal backdrop scrim is a smoke fill, not a shadow.
     if (/shadow-(sm|md|lg|xl|2xl)\b/.test(line)) {
       errors.push(`${at}: box shadow - depth is fill, never shadow`);
     }

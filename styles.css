@@ -31,6 +31,9 @@
 
   --color-chip: #1a1f2b;
 
+  /* Fluent's smoke (SmokeFillColorDefault #4D000000) tinted to the palette; black over a page this dark caps at a 1.36:1 dim, so the use site carries twice Fluent's alpha. */
+  --color-smoke: color-mix(in srgb, var(--color-bg) 25%, #000);
+
   /* WinUI 3 works in device-independent pixels, so spacing and radii are px, not rem.
      Text stays rem so it still tracks the root size and user zoom. */
   --spacing: 4px;

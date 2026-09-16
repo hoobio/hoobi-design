@@ -112,6 +112,19 @@ saturate(1.4)`; 72% is the lowest that keeps a danger-toned menu row above 4.5:1
 of bright class-coloured text. The other four strengths sit on an opaque page, where the artwork is
 the point, and keep using `--mirage-image` as they always have.
 
+Modal, and so `ActionDialog` and `FormDialog` which render through it, take **smoke** instead:
+`--color-smoke` at 60% on the `<dialog>` backdrop. Acrylic says a surface is floating over the page
+and will dismiss itself; smoke says the page is blocked. Fluent's own value is
+`SmokeFillColorDefault` `#4D000000` - translucent black at 30%, the same in Light and Dark because
+smoke is [not a mode-aware material](https://fluent2.microsoft.design/material) ([WinUI theme
+resources](https://raw.githubusercontent.com/microsoft/microsoft-ui-xaml/main/controls/dev/CommonStyles/Common_themeresources_any.xaml)).
+That 30% is calibrated for a light page, where it halves the page's luminance; over `#1f2430` a
+black veil cannot reach that dim at any alpha, because pure black only takes the page from a 1.19:1
+to a 1.36:1 reading against `surface-raised`. So the alpha is doubled to Fluent's, which lands at
+1.42:1 and, more to the point, pulls the bright accent text behind the dialog back towards the page
+fill. The ink is `color-mix(in srgb, var(--color-bg) 25%, #000)` rather than pure black, so the
+scrim is the same cool near-black the palette is built from. No blur: blur is acrylic's signal.
+
 Every strength tints at part opacity, so mirage assumes an **opaque page background beneath it**.
 A box floating over a canvas, photo or video has none, and the content underneath reads through it:
 the result looks transparent rather than filled. Mirage tuning does not fix this; the surface is
