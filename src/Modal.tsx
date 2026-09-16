@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { cx } from './cx.js';
 
 export interface ModalProps {
@@ -53,7 +53,11 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
             &times;
           </button>
         </header>
-        <div className="styled-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div
+          className="styled-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+          // --pad lets a Divider inside the body cancel it and reach the dialog's edges, as it does in a Card.
+          style={{ '--pad': '16px' } as CSSProperties}
+        >
           {children}
         </div>
       </div>
