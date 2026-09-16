@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx.js';
 import { tipAnchor } from './tip.js';
 
@@ -8,6 +8,10 @@ export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: BadgeTone;
+  /** A hex that replaces `tone` with an arbitrary hue, mixed into the chip's text, border and fill - for catalogue values whose colour is data rather than a semantic state. */
+  color?: string;
+  /** Mirage on a coloured chip's fill, on by default; `false` gives a flat tint. Ignored without `color`. */
+  mirage?: boolean;
   /** 'chip' (default) is the filled pill. 'text' drops the fill/padding/radius for an inline run of tone-coloured text - for a banner headline or a label beside other text. */
   appearance?: BadgeAppearance;
   /** 'sm' is the 18px inline marker that sits inside a field label; 'md' is the standalone chip. */
@@ -48,6 +52,8 @@ const SIZES: Record<BadgeSize, { chip: string; dot: string }> = {
 
 export function Badge({
   tone = 'neutral',
+  color,
+  mirage = true,
   appearance = 'chip',
   size = 'md',
   dot = false,
@@ -55,16 +61,25 @@ export function Badge({
   label,
   tooltip,
   className,
+  style,
   children,
   ...rest
 }: BadgeProps) {
+  const coloured = color != null;
+  const hued = coloured ? ({ '--chip-color': color, ...style } as CSSProperties) : style;
   if (appearance === 'text') {
     // Renders as a plain inline element, not inline-flex: a flex container's baseline
     // would follow the dot's box, misaligning the text against baseline-aligned neighbours.
     return (
       <span
         {...tipAnchor(tooltip)}
-        className={cx('inline', tooltip && 'tip-fixed', TEXT_TONES[tone], className)}
+        className={cx(
+          'inline',
+          tooltip && 'tip-fixed',
+          coloured ? 'text-(--chip-color)' : TEXT_TONES[tone],
+          className,
+        )}
+        style={hued}
         {...rest}
       >
         {label != null ? <span className="text-text-mute">{label} </span> : null}
@@ -87,17 +102,23 @@ export function Badge({
     <span
       {...tipAnchor(tooltip)}
       className={cx(
-        'inline-flex items-center rounded-chip bg-chip whitespace-nowrap',
+        'inline-flex items-center rounded-chip whitespace-nowrap',
+        coloured ? cx('chip-color border', mirage && 'mirage-chip') : cx('bg-chip', t.text),
         SIZES[size].chip,
         tooltip && 'tip-fixed',
-        t.text,
         className,
       )}
+      style={hued}
       {...rest}
     >
       {dot ? (
         <span
-          className={cx('shrink-0 rounded-full', SIZES[size].dot, t.dot, pulse && 'animate-pulse')}
+          className={cx(
+            'shrink-0 rounded-full',
+            SIZES[size].dot,
+            coloured ? 'bg-current' : t.dot,
+            pulse && 'animate-pulse',
+          )}
         />
       ) : null}
       {children}

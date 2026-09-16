@@ -454,6 +454,32 @@
     backdrop-filter: blur(24px) saturate(1.4);
   }
 
+  /* A chip whose hue is data rather than a semantic tone: text, border and fill all mix from
+     the one --chip-color the consumer sets. Badge's `color` prop is the only intended caller. */
+  .chip-color {
+    color: var(--chip-color);
+    background-color: color-mix(in srgb, var(--chip-color) 16%, transparent);
+    border-color: color-mix(in srgb, var(--chip-color) 40%, transparent);
+  }
+
+  /* Mirage, as a coloured chip's fill: the artwork is the chip's own hue, so the wash reads as
+     depth in the tint rather than as a second colour. No blur or --mirage-image here - at chip
+     size there is nothing to blur, and the spots are sized well past the chip on purpose, so no
+     gradient edge lands inside it and the fill never goes blotchy. */
+  .chip-color.mirage-chip {
+    background-image:
+      radial-gradient(
+        4rem 2.6rem at 12% -40%,
+        color-mix(in srgb, var(--chip-color) 13%, transparent),
+        transparent
+      ),
+      radial-gradient(
+        5rem 3rem at 88% 150%,
+        color-mix(in srgb, var(--chip-color) 8%, transparent),
+        transparent
+      );
+  }
+
   /* Mirage, as an edge accent on a list row: unlike .mirage-scoped the art is a hint at
      the row's edge, not the fill - the host paints its OWN bg/surface and a mica bleed of
      the artwork's colour sits at the left, fading out before it reaches the text. Same

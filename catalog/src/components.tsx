@@ -209,6 +209,14 @@ const FACTS = [
   { label: 'opened', value: '31 Aug 2026, 14:01' },
 ];
 
+const CATALOGUE_HUES: [string, string][] = [
+  ['Example Guild', '#409fff'],
+  ['Molten Core Social', '#bae67e'],
+  ['Needs vouch', '#d4bfff'],
+  ['Officer', '#ffa759'],
+  ['PUG', '#f28779'],
+];
+
 export function BadgePage() {
   return (
     <>
@@ -297,6 +305,31 @@ export function BadgePage() {
         </Badge>
       </Demo>
 
+      <Demo
+        title="Coloured"
+        note="For a value whose colour is data rather than a state: a guild, a label, a catalogue entry the user picked the hue for. The hex sets text, border and fill, so the six tones stay reserved for meaning."
+        code={`<Badge color="#409fff">Example Guild</Badge>
+<Badge color="#ffa759" dot>Officer</Badge>`}
+      >
+        {CATALOGUE_HUES.map(([name, hex]) => (
+          <Badge key={name} color={hex}>
+            {name}
+          </Badge>
+        ))}
+      </Demo>
+
+      <Demo
+        title="Coloured, flat"
+        note="A coloured chip carries mirage by default - two washes of its own hue, sized past the chip so the fill reads as depth rather than a blob. mirage={false} drops back to a flat tint."
+        code={`<Badge color="#409fff" mirage={false}>Example Guild</Badge>`}
+      >
+        {CATALOGUE_HUES.map(([name, hex]) => (
+          <Badge key={name} color={hex} mirage={false}>
+            {name}
+          </Badge>
+        ))}
+      </Demo>
+
       <Props
         rows={[
           [
@@ -304,6 +337,18 @@ export function BadgePage() {
             `'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info'`,
             `'neutral'`,
             'Text and dot colour.',
+          ],
+          [
+            'color',
+            'string',
+            '',
+            'A hex that replaces tone with an arbitrary hue, mixed into text, border and fill. For catalogue values whose colour is data, not a semantic state.',
+          ],
+          [
+            'mirage',
+            'boolean',
+            'true',
+            'Mirage on a coloured chip’s fill. false gives a flat tint. Ignored without color.',
           ],
           [
             'appearance',

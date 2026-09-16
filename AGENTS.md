@@ -59,7 +59,8 @@ save-exact=true
 ## Components
 
 Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout; `Menu.Item` /
-`Menu.Label` / `Menu.Divider`), Badge (tone + optional dot + tooltip, covers status dots), Card
+`Menu.Label` / `Menu.Divider`), Badge (tone + optional dot + tooltip, covers status dots; `color`
+swaps the tone for an arbitrary hex - the coloured-chip primitive), Card
 (optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
 `html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar
 renders in Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, controlled sort), Breadcrumbs,
@@ -90,12 +91,15 @@ settings field set - FieldLabel
 (with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
 `mirageImage` and `markFavicon`.
 
-Mirage comes in five strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
+Mirage comes in six strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
 own fill (or `Card mirage="..."`), `.mirage-edge` as a masked strip at a list row's left edge -
 for rows/lists where a full-bleed mirage per row would be too busy - `.mirage-hero` as a band
-behind a page head, and `.mirage-flyout` as a floating panel's fill.
+behind a page head, `.mirage-flyout` as a floating panel's fill, and `.mirage-chip` as a coloured
+chip's fill (or `Badge color="#..."`).
 
-`.mirage-flyout` is the one strength applied **by default**, and only to transient light-dismiss
+`.mirage-flyout` and `.mirage-chip` are the two strengths applied **by default** - the chip one
+whenever `Badge` is given a `color`, opted out of with `mirage={false}`. The flyout one covers only
+transient light-dismiss
 popups: `Menu`, `Popover` (so `MultiSelect` and `ColorPicker` inherit it), `ChipInput`'s
 suggestions, Shell's group dropdown and railed user flyout, and `Toast`. That is WinUI's own rule -
 "Acrylic is used only for transient, light-dismiss surfaces such as flyouts and context menus"
@@ -107,13 +111,16 @@ leading dot. That wash lightens the fill, so a toned toast's description drops t
 colour for `text-text` and clears 4.5:1; the default tone keeps the dim one. A tone tint alone was its whole surface until then, which left it 85% transparent and
 a dense table read straight through the words.
 
-`.mirage-flyout` is also the one strength that does **not** read `--mirage-image`: it is the
-backdrop sample plus a `bg`-leaning tint and nothing else, because fixed artwork has no relation to
-what the panel is covering and would tint every flyout the same regardless of content. The tint is
-`color-mix(in srgb, var(--color-bg) 72%, transparent)` over `backdrop-filter: blur(24px)
-saturate(1.4)`; 72% is the lowest that keeps a danger-toned menu row above 4.5:1 over a dense table
-of bright class-coloured text. The other four strengths sit on an opaque page, where the artwork is
-the point, and keep using `--mirage-image` as they always have.
+`.mirage-flyout` and `.mirage-chip` are also the two strengths that do **not** read
+`--mirage-image`. The flyout is the backdrop sample plus a `bg`-leaning tint and nothing else,
+because fixed artwork has no relation to what the panel is covering and would tint every flyout the
+same regardless of content. The tint is `color-mix(in srgb, var(--color-bg) 72%, transparent)` over
+`backdrop-filter: blur(24px) saturate(1.4)`; 72% is the lowest that keeps a danger-toned menu row
+above 4.5:1 over a dense table of bright class-coloured text. The chip draws its own hue instead:
+two washes mixed from `--chip-color` over the flat 16% tint, with no blur - a 20px chip has nothing
+to blur, and the washes are sized past the chip so no gradient edge lands inside it. The other four
+strengths sit on an opaque page, where the artwork is the point, and keep using `--mirage-image` as
+they always have.
 
 Modal, and so `ActionDialog` and `FormDialog` which render through it, take **smoke** instead:
 `--color-smoke` at 60% on the `<dialog>` backdrop. Acrylic says a surface is floating over the page
