@@ -1532,8 +1532,14 @@ const CLASS_OPTIONS = [
   { value: 'priest', label: 'Priest', iconUrl: posterUrl },
 ];
 
+const TAG_OPTIONS = [
+  { value: 'raid', label: 'Raid' },
+  { value: 'pvp', label: 'PvP' },
+];
+
 export function MultiSelectPage() {
   const [classes, setClasses] = useState<string[]>(['mage']);
+  const [tags, setTags] = useState<string[]>([]);
   return (
     <>
       <Import names="MultiSelect, type MultiSelectOption" />
@@ -1556,6 +1562,32 @@ export function MultiSelectPage() {
         <MultiSelect label="Class" options={CLASS_OPTIONS} value={classes} onChange={setClasses} />
       </Demo>
 
+      <Demo
+        title="With a footer action"
+        note="footer sits below the options and the Clear row, behind a border-t seam. Its click handler is entirely the consumer's: closing the panel and opening a manage dialog is not something MultiSelect does for you."
+        code={`const [tags, setTags] = useState<string[]>([]);
+
+<MultiSelect
+  label="Tags"
+  options={tagOptions}
+  value={tags}
+  onChange={setTags}
+  footer={<Button variant="ghost" size="sm" className="justify-start">Manage tags</Button>}
+/>`}
+      >
+        <MultiSelect
+          label="Tags"
+          options={TAG_OPTIONS}
+          value={tags}
+          onChange={setTags}
+          footer={
+            <Button variant="ghost" size="sm" className="justify-start">
+              Manage tags
+            </Button>
+          }
+        />
+      </Demo>
+
       <Props
         rows={[
           ['label', 'string', '', 'The trigger text, and the popover panel label.'],
@@ -1568,6 +1600,7 @@ export function MultiSelectPage() {
             'Called with the new selection, in option order.',
           ],
           ['placeholder', 'string', 'label', 'Trigger text while nothing is selected.'],
+          ['footer', 'ReactNode', '', 'An action below the options, such as a manage link. No selection or close behaviour of its own.'],
           ['className', 'string', '', "Applied to Popover's own root element."],
           ['...rest', 'HTMLAttributes<HTMLDivElement>', '', "Forwarded to Popover's root."],
         ]}

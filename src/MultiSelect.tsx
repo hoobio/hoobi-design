@@ -19,6 +19,8 @@ export interface MultiSelectProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   onChange: (value: string[]) => void;
   /** Shown when nothing is selected; defaults to label. */
   placeholder?: string;
+  /** Rendered at the bottom of the open panel, below the options, above nothing else. For an action such as a manage link. */
+  footer?: ReactNode;
 }
 
 export function MultiSelect({
@@ -27,6 +29,7 @@ export function MultiSelect({
   value,
   onChange,
   placeholder,
+  footer,
   className,
   ...rest
 }: MultiSelectProps) {
@@ -99,6 +102,7 @@ export function MultiSelect({
           Clear
         </Button>
       </div>
+      {footer ? <div className="border-t border-bg pt-2">{footer}</div> : null}
     </Popover>
   );
 }
