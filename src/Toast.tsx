@@ -36,11 +36,12 @@ const DEFAULT_DURATION = 4000;
 /** Matches the leave animation, so the node is gone the frame after it finishes. */
 const LEAVE_MS = 150;
 
-const TONE_FILLS: Record<ToastTone, string> = {
-  default: 'bg-surface-raised',
-  success: 'bg-success/15',
-  warn: 'bg-warn/15',
-  danger: 'bg-danger/15',
+// A wash over the acrylic, not the fill: as the whole fill a tone tint had nothing opaque under it and the page read through the words.
+const TONE_WASHES: Record<ToastTone, string> = {
+  default: '',
+  success: 'before:bg-success/20',
+  warn: 'before:bg-warn/20',
+  danger: 'before:bg-danger/20',
 };
 
 const TONE_DOTS: Record<ToastTone, string> = {
@@ -149,8 +150,9 @@ function ToastItem({ record }: { record: ToastRecord }) {
       onFocus={hold}
       onBlur={release}
       className={cx(
-        'pointer-events-auto flex items-start gap-2.5 rounded-panel px-3 py-2.5',
-        TONE_FILLS[tone],
+        'mirage-flyout pointer-events-auto relative isolate flex items-start gap-2.5 rounded-panel px-3 py-2.5',
+        "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-panel before:content-['']",
+        TONE_WASHES[tone],
         record.leaving ? 'toast-out' : 'toast-in',
       )}
     >
@@ -158,7 +160,15 @@ function ToastItem({ record }: { record: ToastRecord }) {
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-body-strong break-words text-text">{record.title}</span>
         {record.description ? (
-          <span className="text-caption break-words text-text-dim">{record.description}</span>
+          <span
+            className={cx(
+              'text-caption break-words',
+              // The tone wash lightens the fill, which takes the dim caption under 4.5:1, and the description is the line that says what went wrong.
+              tone === 'default' ? 'text-text-dim' : 'text-text',
+            )}
+          >
+            {record.description}
+          </span>
         ) : null}
         {record.action ? (
           <button

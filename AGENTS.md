@@ -97,12 +97,15 @@ behind a page head, and `.mirage-flyout` as a floating panel's fill.
 
 `.mirage-flyout` is the one strength applied **by default**, and only to transient light-dismiss
 popups: `Menu`, `Popover` (so `MultiSelect` and `ColorPicker` inherit it), `ChipInput`'s
-suggestions, and Shell's group dropdown and railed user flyout. That is WinUI's own rule -
+suggestions, Shell's group dropdown and railed user flyout, and `Toast`. That is WinUI's own rule -
 "Acrylic is used only for transient, light-dismiss surfaces such as flyouts and context menus"
 ([signature experiences: materials](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/materials)).
-Modal surfaces are excluded because WinUI signals those with smoke, not acrylic; tooltips and
-toasts are excluded because no Fluent guidance puts a material on them and a tone wash would be
-diluted by one.
+Modal surfaces are excluded because WinUI signals those with smoke, not acrylic; tooltips are
+excluded because no Fluent guidance puts a material on them. A toast floats over whatever the page
+is showing, so it takes the acrylic as its fill and its tone rides on top as a `/20` wash plus the
+leading dot. That wash lightens the fill, so a toned toast's description drops the dim caption
+colour for `text-text` and clears 4.5:1; the default tone keeps the dim one. A tone tint alone was its whole surface until then, which left it 85% transparent and
+a dense table read straight through the words.
 
 `.mirage-flyout` is also the one strength that does **not** read `--mirage-image`: it is the
 backdrop sample plus a `bg`-leaning tint and nothing else, because fixed artwork has no relation to
@@ -278,7 +281,9 @@ Minimalism: a component gets no decoration it does not need. No gradients, no sh
 double-signalling a state that the border or the ring already shows.
 
 - A stateful tone tints the **whole surface** as a solid `/15` fill (`bg-warn/15`) - never a
-  gradient fade, never a border.
+  gradient fade, never a border. On a surface that floats over arbitrary content the tone is a
+  `/20` wash over the acrylic instead (`Toast`), because a `/15` tint over glass no longer reads
+  as its tone.
 - Tone semantics: `warn` (yellow) = paused, a person must act; `success` (green) = done, the fix
   landed; `danger` = failure; `info` = in progress / informational.
 

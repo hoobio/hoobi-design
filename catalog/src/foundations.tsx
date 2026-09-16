@@ -508,7 +508,7 @@ export function Mirage() {
         line the library holds.{' '}
         <strong className="text-text">
           Menu, Popover (so MultiSelect and ColorPicker inherit it), ChipInput&apos;s suggestions,
-          and Shell&apos;s group dropdown and railed user flyout
+          Shell&apos;s group dropdown and railed user flyout, and Toast
         </strong>{' '}
         take it with no wiring. Modal, ActionDialog and FormDialog do not: WinUI signals a modal
         surface with smoke, and a dialog carries the most prose of anything that floats. Those three
@@ -519,9 +519,11 @@ export function Mirage() {
         and no blur, since blur is acrylic&apos;s signal. Fluent&apos;s smoke is #4D000000,
         translucent black at 30% in both themes, but that is tuned for a light page; over a #1f2430
         one no amount of black gets past a 1.36:1 dim, so the alpha is doubled and the ink is tinted
-        to <code className="text-accent-blue">--color-bg</code> rather than left pure black. Tooltip,
-        RichTooltip and Toast do not either - no Fluent guidance puts a material on them, they are
-        one or two lines, and a toast&apos;s tone wash would be diluted by one. Notice keeps the
+        to <code className="text-accent-blue">--color-bg</code> rather than left pure black. Tooltip and
+        RichTooltip do not either - no Fluent guidance puts a material on them and they are one or
+        two lines. Toast does: it floats over whatever the page is showing, so the acrylic is its
+        fill and the tone rides on top as a <code className="text-accent-blue">/20</code> wash with
+        the leading dot, where a bare tone tint left it 85% transparent. Notice keeps the
         opaque base plus <code className="text-accent-blue">.mirage-scoped</code> it always had:
         it outranks a toast and stays until the state changes.
       </p>

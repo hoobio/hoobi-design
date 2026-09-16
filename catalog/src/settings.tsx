@@ -2314,12 +2314,17 @@ t.dismiss();`}
       <Props
         rows={[
           ['title', 'string', '', 'The one required line.'],
-          ['description', 'string', '', 'An optional second line of detail.'],
+          [
+            'description',
+            'string',
+            '',
+            'An optional second line of detail. Dim on the default tone, full text colour on a toned one, where the wash lightens the fill.',
+          ],
           [
             'tone',
             "'default' | 'success' | 'warn' | 'danger'",
             "'default'",
-            '15% tint and a leading dot. danger takes role="alert", the rest role="status".',
+            'A 20% wash over the acrylic and a leading dot. danger takes role="alert", the rest role="status".',
           ],
           ['duration', 'number', '4000', '0 is sticky. The timer pauses on hover and on focus.'],
           [
