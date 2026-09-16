@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { cx } from './cx.js';
+import { FLYOUT_RESET, placeFlyout, raiseFlyout, type FlyoutPlacement } from './flyout.js';
 
-export type PopoverPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+export type PopoverPlacement = FlyoutPlacement;
 
 export interface PopoverTriggerProps {
   ref: (el: HTMLElement | null) => void;
@@ -23,12 +24,10 @@ export interface PopoverProps {
   className?: string;
 }
 
-const GAP = 4;
-const EDGE = 8;
-
 /**
- * An anchored floating panel with a trigger of your choosing: fixed, so nothing that scrolls or
- * clips can cut it off, and re-placed on capture-phase scroll because a table's own scroll
+ * An anchored floating panel with a trigger of your choosing: raised into the top layer, so no
+ * ancestor's transform, clip or z-index can cut it off, flipped to the opposite side when the
+ * requested one has no room, and re-placed on capture-phase scroll because a table's own scroll
  * container never bubbles one to the window.
  */
 export function Popover({
@@ -54,26 +53,23 @@ export function Popover({
   };
 
   useLayoutEffect(() => {
-    if (!open) return;
+    const panel = panelRef.current;
+    if (!open || !panel) return;
+    const lower = raiseFlyout(panel);
     const position = () => {
       const anchor = triggerRef.current?.getBoundingClientRect();
-      const panel = panelRef.current?.getBoundingClientRect();
-      if (!anchor || !panel) return;
-      const left = placement.endsWith('end') ? anchor.right - panel.width : anchor.left;
-      const top = placement.startsWith('top')
-        ? anchor.top - panel.height - GAP
-        : anchor.bottom + GAP;
-      setPlace({
-        left: Math.max(EDGE, Math.min(left, window.innerWidth - panel.width - EDGE)),
-        top: Math.max(EDGE, Math.min(top, window.innerHeight - panel.height - EDGE)),
-      });
+      if (anchor) setPlace(placeFlyout(anchor, panel.getBoundingClientRect(), placement));
     };
     position();
+    const resize = new ResizeObserver(position);
+    resize.observe(panel);
     window.addEventListener('scroll', position, true);
     window.addEventListener('resize', position);
     return () => {
+      resize.disconnect();
       window.removeEventListener('scroll', position, true);
       window.removeEventListener('resize', position);
+      lower();
     };
   }, [open, placement]);
 
@@ -122,7 +118,7 @@ export function Popover({
           ref={panelRef}
           role="dialog"
           aria-label={label}
-          style={place}
+          style={{ ...FLYOUT_RESET, ...place }}
           className="fade-in fixed z-50 flex max-w-[calc(100vw-2rem)] flex-col gap-2 rounded-panel bg-surface-raised p-2 shadow-flyout"
         >
           {children}

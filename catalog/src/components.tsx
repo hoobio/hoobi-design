@@ -760,15 +760,63 @@ export function RichTooltipPage() {
   );
 }
 
+const SWATCH_ROWS: { id: string; name: string; tone: BadgeTone }[] = [
+  { id: 'verify', name: 'Verify', tone: 'success' },
+  { id: 'import', name: 'Import', tone: 'warn' },
+  { id: 'notify', name: 'Notify', tone: 'danger' },
+];
+
+function NestedPopoverDemo() {
+  const [rows, setRows] = useState(SWATCH_ROWS);
+  const [openRow, setOpenRow] = useState<string | null>('verify');
+  return (
+    <div className="w-full max-w-100 rounded-panel bg-bg p-2" style={{ transform: 'translateZ(0)' }}>
+      <ReorderList
+        label="Stage colours"
+        items={rows}
+        itemKey={(r) => r.id}
+        itemLabel={(r) => r.name}
+        onReorder={setRows}
+      >
+        {(row, handle) => (
+          <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+            <ReorderGrip {...handle} />
+            <span className="min-w-0 flex-1 truncate text-caption text-text">{row.name}</span>
+            <Popover
+              label={`${row.name} colour`}
+              placement="bottom-end"
+              open={openRow === row.id}
+              onOpenChange={(next) => {
+                setOpenRow(next ? row.id : null);
+              }}
+              trigger={
+                <Badge tone={row.tone} dot>
+                  {row.tone}
+                </Badge>
+              }
+            >
+              <Checkbox label="Success" defaultChecked={row.tone === 'success'} />
+              <Checkbox label="Warn" defaultChecked={row.tone === 'warn'} />
+              <Checkbox label="Danger" defaultChecked={row.tone === 'danger'} />
+            </Popover>
+          </div>
+        )}
+      </ReorderList>
+    </div>
+  );
+}
+
 export function PopoverPage() {
   return (
     <>
       <Import names="Popover" />
       <p className="text-body text-text-dim">
         Menu renders rows; Popover renders arbitrary content - a filter set, a few checkboxes and a
-        field, a small form. Fixed off the trigger&apos;s own rect and re-placed on capture-phase
-        scroll, so a table with its own scroll container cannot drag it out of line or clip it. It
-        closes on Escape and on a pointer down outside, and returns focus to the trigger.
+        field, a small form. Placed off the trigger&apos;s own rect in the top layer and re-placed on
+        capture-phase scroll, on resize and when its own content changes height, so neither a
+        scroll container nor a transformed ancestor can clip it or drag it out of line. It flips to
+        the opposite side when the requested one has no room, and closes on Escape and on a pointer
+        down outside, returning focus to the trigger.
       </p>
       <Demo
         title="Wrapped trigger"
@@ -812,6 +860,60 @@ export function PopoverPage() {
           <Checkbox label="Indexer" />
         </Popover>
       </Demo>
+      <Demo
+        title="Inside a transformed row"
+        note="The panel is raised into the top layer with the native popover API, so an ancestor with a transform, a filter or containment - a ReorderList row mid-slide, a wrapper on its own compositing layer - cannot become its containing block and drag it off-screen or stretch a Modal's scroll area. The first row opens with the page."
+        stack
+        code={`<div style={{ transform: 'translateZ(0)' }}>
+  <ReorderList items={rows} itemKey={(r) => r.id} onReorder={setRows}>
+    {(row, handle) => (
+      <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+        <ReorderGrip {...handle} />
+        <span className="min-w-0 flex-1 truncate text-caption">{row.name}</span>
+        <Popover
+          placement="bottom-end"
+          open={openRow === row.id}
+          onOpenChange={(next) => { setOpenRow(next ? row.id : null); }}
+          trigger={<Badge tone={row.tone} dot>{row.tone}</Badge>}
+        >
+          <Checkbox label="Success" />
+          <Checkbox label="Warn" />
+          <Checkbox label="Danger" />
+        </Popover>
+      </div>
+    )}
+  </ReorderList>
+</div>`}
+      >
+        <NestedPopoverDemo />
+      </Demo>
+      <Demo
+        title="Flip near an edge"
+        note="A tall panel on a trigger low in the viewport renders above it instead of below. Scroll this demo towards the bottom of the window and open it: bottom-start becomes top-start, and if neither side holds the panel it takes the roomier one and clamps to an 8px edge gap."
+        code={`<Popover
+  label="Pick a stage"
+  trigger={(props) => (
+    <Button variant="secondary" size="sm" {...props}>Stages</Button>
+  )}
+>
+  {STAGES.map((stage) => (
+    <Checkbox key={stage.id} label={stage.name} />
+  ))}
+</Popover>`}
+      >
+        <Popover
+          label="Pick a stage"
+          trigger={(props) => (
+            <Button variant="secondary" size="sm" {...props}>
+              Stages
+            </Button>
+          )}
+        >
+          {STAGES.map((stage) => (
+            <Checkbox key={stage.id} label={stage.name} />
+          ))}
+        </Popover>
+      </Demo>
       <Props
         rows={[
           [
@@ -831,7 +933,7 @@ export function PopoverPage() {
             'placement',
             "'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'",
             "'bottom-start'",
-            'Which corner it hangs from. Clamped to the viewport either way.',
+            'Which corner it hangs from. Flipped to the opposite side when that one has no room, then clamped to the viewport.',
           ],
           ['label', 'string', 'undefined', 'Names the panel, and the wrapped trigger.'],
         ]}

@@ -4,14 +4,15 @@ import {
   isValidElement,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ButtonHTMLAttributes,
-  type MouseEvent,
   type ReactNode,
 } from 'react';
 import { Button, type ButtonSize, type ButtonVariant } from './Button.js';
 import { cx } from './cx.js';
+import { FLYOUT_RESET, placeFlyout, raiseFlyout } from './flyout.js';
 
 export interface MenuProps {
   /** The trigger's content. */
@@ -164,26 +165,33 @@ export function Menu({
   className,
 }: MenuProps) {
   const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState({ top: 0, left: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // The panel is fixed and placed off the trigger's rect: a scroll-container
-  // ancestor would otherwise clip it. Always mounted, so the ref is there on click.
-  const toggle = (e: MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+  // The root's rect is the trigger's: the panel is the only other child and it is out of flow.
+  useLayoutEffect(() => {
     const panel = panelRef.current;
-    if (panel) {
-      panel.style.top = `${String(rect.bottom + 4)}px`;
-      if (align === 'end') {
-        panel.style.left = 'auto';
-        panel.style.right = `${String(Math.max(window.innerWidth - rect.right, 8))}px`;
-      } else {
-        panel.style.right = 'auto';
-        panel.style.left = `${String(Math.max(rect.left, 8))}px`;
+    if (!open || !panel) return;
+    const lower = raiseFlyout(panel);
+    const position = () => {
+      const anchor = rootRef.current?.getBoundingClientRect();
+      if (anchor) {
+        setPlace(placeFlyout(anchor, panel.getBoundingClientRect(), `bottom-${align}`));
       }
-    }
-    setOpen((was) => !was);
-  };
+    };
+    position();
+    const resize = new ResizeObserver(position);
+    resize.observe(panel);
+    window.addEventListener('scroll', position, true);
+    window.addEventListener('resize', position);
+    return () => {
+      resize.disconnect();
+      window.removeEventListener('scroll', position, true);
+      window.removeEventListener('resize', position);
+      lower();
+    };
+  }, [open, align]);
 
   useEffect(() => {
     if (!open) return;
@@ -208,7 +216,9 @@ export function Menu({
         disabled={disabled}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={toggle}
+        onClick={() => {
+          setOpen((was) => !was);
+        }}
         // A menu button never takes focus from a pointer, so a click can never
         // paint the focus ring; keyboard focus still shows the ring.
         onPointerDown={(e) => {
@@ -236,6 +246,7 @@ export function Menu({
       <div
         ref={panelRef}
         role="menu"
+        style={{ ...FLYOUT_RESET, ...place }}
         className={cx(
           'fixed z-50 w-56 max-w-[calc(100vw-2rem)] rounded-panel bg-surface-raised p-1 shadow-flyout',
           open ? 'fade-in' : 'hidden',

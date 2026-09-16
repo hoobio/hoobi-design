@@ -291,7 +291,9 @@ export function ReorderList<T>({
               data-key={key}
               className={cx('relative min-w-0', lifted && 'shadow-flyout')}
               style={{
-                transform: `translateY(${String(offset)}px)`,
+                // An identity transform still makes the row a containing block for fixed
+                // descendants, which drags a Popover panel inside it out of the viewport.
+                transform: offset === 0 ? undefined : `translateY(${String(offset)}px)`,
                 transition: settled ? 'none' : SLIDE,
                 zIndex: lifted ? 1 : undefined,
               }}
