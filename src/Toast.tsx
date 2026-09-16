@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { cx } from './cx.js';
+import { raiseFlyout } from './flyout.js';
 
 export type ToastTone = 'default' | 'success' | 'warn' | 'danger';
 
@@ -212,14 +213,33 @@ export function Toaster({ className }: ToasterProps) {
     () => records,
     () => records,
   );
+  // Changes only when toast() is called, so a dismissal does not re-raise the rail.
+  const raised = useSyncExternalStore(
+    subscribe,
+    () => counter,
+    () => counter,
+  );
+  const railRef = useRef<HTMLDivElement>(null);
+
+  // Re-raised on every new toast rather than once on mount: the top layer stacks by the order
+  // panels were shown, so a Popover or Menu opened later would otherwise cover the toast.
+  useLayoutEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    return raiseFlyout(rail);
+  }, [raised]);
 
   return (
     <div
+      ref={railRef}
       // Not aria-live: each toast has its own role, so the region must not announce
       // a second time. pointer-events-none lets the page take clicks through the gaps.
       className={cx(
         'pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2 p-3',
         'pb-[calc(12px+env(safe-area-inset-bottom))] md:left-auto md:w-90 md:p-4',
+        // Cancels the UA styling the top-layer `popover` attribute brings: its `inset: 0` top,
+        // `fit-content` width, auto margin, default border, opaque fill and scroll container.
+        'top-auto m-0 w-full overflow-visible border-0 bg-transparent',
         className,
       )}
     >

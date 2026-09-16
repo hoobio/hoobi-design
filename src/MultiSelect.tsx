@@ -74,6 +74,7 @@ export function MultiSelect({
         {options.map((option) => (
           <Checkbox
             key={option.value}
+            className="w-full rounded-control px-2.5 hover:bg-surface"
             checked={value.includes(option.value)}
             onChange={() => {
               toggle(option.value);
@@ -102,7 +103,7 @@ export function MultiSelect({
           Clear
         </Button>
       </div>
-      {footer ? <div className="border-t border-bg pt-2">{footer}</div> : null}
+      {footer ? <div className="border-t border-bg px-2.5 pt-2">{footer}</div> : null}
     </Popover>
   );
 }
