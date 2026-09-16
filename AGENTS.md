@@ -72,6 +72,8 @@ the caller is usually a poll or a socket, not a component),
 Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes),
 Rating, ChipInput (chips + an inline query + suggestions Tab takes), Stat (the Card variant for one
 number), BarList (label / toned track / tabular readout, not a chart library),
+ColorPicker (WinUI's anatomy: a hue and saturation ring, a value slider, a preview and a hex box,
+with an optional nearest-swatch name from a palette you pass),
 Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
 scrolling or clipping ancestor can cut it off), RichTooltip (the same idea with nodes in it: a
 title and a few lines, following the pointer), Popover (an anchored panel under a trigger of the
