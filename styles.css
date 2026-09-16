@@ -400,6 +400,7 @@
      tones move up a step wherever a mirage is present. Scoped rather than global: the
      palette is correct on plain chrome, and only the busy backdrop reduces the contrast. */
   .mirage-scoped,
+  .mirage-flyout,
   .mirage-lift {
     --color-text-dim: #a6adb6;
     --color-text-mute: #949daa;
@@ -438,6 +439,16 @@
     background-position: center 25%;
     filter: blur(32px) saturate(1.4);
     scale: 1.2;
+  }
+
+  /* Mirage, as a floating surface's own fill: Fluent's acrylic, on the transient light-dismiss
+     popups WinUI draws it on and nothing else. No --mirage-image here on purpose - fixed artwork
+     has no relation to what a flyout covers and tints every one of them the same. 72% is the
+     tint floor: below it a danger row drops under 4.5:1 over a table of bright coloured text. */
+  .mirage-flyout {
+    background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    backdrop-filter: blur(24px) saturate(1.4);
   }
 
   /* Mirage, as an edge accent on a list row: unlike .mirage-scoped the art is a hint at

@@ -1,5 +1,5 @@
 import { useContext, type CSSProperties, type ReactNode } from 'react';
-import { Alert, Badge, Card, Select } from '@hoobi/design';
+import { Alert, Badge, Button, Card, Menu, Popover, Select } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
 import { colour, token } from './tokens.js';
 import posterUrl from './poster.jpg';
@@ -480,6 +480,68 @@ export function Mirage() {
         <div className="h-40 p-4 text-caption text-text-mute">
           The page reads on flat background from here down.
         </div>
+      </div>
+
+      <h3 className="mt-8 text-body-strong text-text">Flyout, for a floating panel</h3>
+      <p className="mt-1 text-caption text-text-dim">
+        The fifth strength, and the only one applied{' '}
+        <strong className="text-text">by default</strong>.{' '}
+        <code className="text-accent-blue">.mirage-flyout</code> replaces a panel&apos;s{' '}
+        <code className="text-accent-blue">bg-surface-raised</code> with the backdrop sample plus a
+        light tint, so the panel shows what it is actually covering and reads as depth over the
+        page rather than as a transparent box.
+      </p>
+      <p className="mt-2 text-caption text-text-dim">
+        It is the one strength that does not read{' '}
+        <code className="text-accent-blue">--mirage-image</code>: fixed artwork has no relation to
+        what a flyout covers, and it would tint every flyout the same whatever is under it. The
+        recipe is{' '}
+        <code className="text-accent-blue">
+          background-color: color-mix(in srgb, var(--color-bg) 72%, transparent)
+        </code>{' '}
+        over <code className="text-accent-blue">backdrop-filter: blur(24px) saturate(1.4)</code>.
+        72% is the floor: below it a danger-toned menu row drops under 4.5:1 against a dense table
+        of bright class-coloured text.
+      </p>
+      <p className="mt-2 text-caption text-text-dim">
+        WinUI draws acrylic on transient, light-dismiss popups and on nothing else, so that is the
+        line the library holds.{' '}
+        <strong className="text-text">
+          Menu, Popover (so MultiSelect and ColorPicker inherit it), ChipInput&apos;s suggestions,
+          and Shell&apos;s group dropdown and railed user flyout
+        </strong>{' '}
+        take it with no wiring. Modal, ActionDialog and FormDialog do not: WinUI signals a modal
+        surface with smoke, and a dialog carries the most prose of anything that floats. Tooltip,
+        RichTooltip and Toast do not either - no Fluent guidance puts a material on them, they are
+        one or two lines, and a toast&apos;s tone wash would be diluted by one. Notice keeps the
+        opaque base plus <code className="text-accent-blue">.mirage-scoped</code> it always had:
+        it outranks a toast and stays until the state changes.
+      </p>
+      <div className="mt-3">
+        <Snippet
+          code={`// nothing to pass - Menu, Popover and the rest carry it:
+<Menu label="Actions">...</Menu>
+
+// by hand, on your own floating panel:
+<div className="mirage-flyout fixed rounded-panel p-1 shadow-flyout">...</div>`}
+        />
+      </div>
+      <div className="mt-3 flex flex-wrap items-start gap-3">
+        <Menu label="Actions">
+          <Menu.Label>Release</Menu.Label>
+          <Menu.Item onClick={() => undefined}>Run now</Menu.Item>
+          <Menu.Item onClick={() => undefined}>Rename</Menu.Item>
+          <Menu.Divider />
+          <Menu.Item tone="danger" onClick={() => undefined}>
+            Delete
+          </Menu.Item>
+        </Menu>
+        <Popover label="Details" trigger={<Button variant="secondary">Details</Button>}>
+          <p className="max-w-64 text-caption text-text-dim">
+            Body text over the material. The muted tones lift a step so a caption reads the same
+            as it does on flat chrome.
+          </p>
+        </Popover>
       </div>
     </>
   );

@@ -248,7 +248,7 @@ export function Menu({
         role="menu"
         style={{ ...FLYOUT_RESET, ...place }}
         className={cx(
-          'fixed z-50 w-56 max-w-[calc(100vw-2rem)] rounded-panel bg-surface-raised p-1 shadow-flyout',
+          'mirage-flyout fixed z-50 w-56 max-w-[calc(100vw-2rem)] rounded-panel p-1 shadow-flyout',
           open ? 'fade-in' : 'hidden',
         )}
       >

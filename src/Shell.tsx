@@ -723,7 +723,7 @@ function ShellGroup({ label, children }: ShellGroupProps) {
         </span>
         <div
           data-shell-dropdown
-          className="invisible fixed z-50 w-54 rounded-panel bg-surface-raised p-1 opacity-0 transition-opacity duration-150 ease-standard group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+          className="mirage-flyout invisible fixed z-50 w-54 rounded-panel p-1 opacity-0 transition-opacity duration-150 ease-standard group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
         >
           <NavAreaContext.Provider value="dropdown">{children}</NavAreaContext.Provider>
         </div>
@@ -920,7 +920,7 @@ function ShellUser({
         <div
           data-shell-user-flyout
           className={cx(
-            'fixed z-50 w-72 max-w-[calc(100vw-4rem)] rounded-panel bg-surface-raised p-1',
+            'mirage-flyout fixed z-50 w-72 max-w-[calc(100vw-4rem)] rounded-panel p-1',
             open && railed ? 'fade-in' : 'hidden',
           )}
         >

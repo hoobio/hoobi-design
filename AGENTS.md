@@ -90,9 +90,27 @@ settings field set - FieldLabel
 (with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
 `mirageImage` and `markFavicon`.
 
-Mirage comes in three strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
-own fill (or `Card mirage="..."`), and `.mirage-edge` as a masked strip at a list row's left edge -
-for rows/lists where a full-bleed mirage per row would be too busy.
+Mirage comes in five strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
+own fill (or `Card mirage="..."`), `.mirage-edge` as a masked strip at a list row's left edge -
+for rows/lists where a full-bleed mirage per row would be too busy - `.mirage-hero` as a band
+behind a page head, and `.mirage-flyout` as a floating panel's fill.
+
+`.mirage-flyout` is the one strength applied **by default**, and only to transient light-dismiss
+popups: `Menu`, `Popover` (so `MultiSelect` and `ColorPicker` inherit it), `ChipInput`'s
+suggestions, and Shell's group dropdown and railed user flyout. That is WinUI's own rule -
+"Acrylic is used only for transient, light-dismiss surfaces such as flyouts and context menus"
+([signature experiences: materials](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/materials)).
+Modal surfaces are excluded because WinUI signals those with smoke, not acrylic; tooltips and
+toasts are excluded because no Fluent guidance puts a material on them and a tone wash would be
+diluted by one.
+
+`.mirage-flyout` is also the one strength that does **not** read `--mirage-image`: it is the
+backdrop sample plus a `bg`-leaning tint and nothing else, because fixed artwork has no relation to
+what the panel is covering and would tint every flyout the same regardless of content. The tint is
+`color-mix(in srgb, var(--color-bg) 72%, transparent)` over `backdrop-filter: blur(24px)
+saturate(1.4)`; 72% is the lowest that keeps a danger-toned menu row above 4.5:1 over a dense table
+of bright class-coloured text. The other four strengths sit on an opaque page, where the artwork is
+the point, and keep using `--mirage-image` as they always have.
 
 Every strength tints at part opacity, so mirage assumes an **opaque page background beneath it**.
 A box floating over a canvas, photo or video has none, and the content underneath reads through it:
