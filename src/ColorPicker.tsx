@@ -24,7 +24,7 @@ const RING_LAYERS =
   'radial-gradient(circle closest-side, rgb(255 255 255) 0%, rgb(255 255 255 / 0) 100%), conic-gradient(rgb(255 0 0), rgb(255 255 0), rgb(0 255 0), rgb(0 255 255), rgb(0 0 255), rgb(255 0 255), rgb(255 0 0))';
 
 const THUMB =
-  '[&::-webkit-slider-thumb]:h-8 [&::-webkit-slider-thumb]:w-1.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-chip [&::-webkit-slider-thumb]:bg-text [&::-moz-range-thumb]:h-8 [&::-moz-range-thumb]:w-1.5 [&::-moz-range-thumb]:rounded-chip [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-text';
+  '[&::-webkit-slider-thumb]:h-8 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-chip [&::-webkit-slider-thumb]:bg-text [&::-moz-range-thumb]:h-8 [&::-moz-range-thumb]:w-2 [&::-moz-range-thumb]:rounded-chip [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-text pointer-coarse:[&::-webkit-slider-thumb]:h-11 pointer-coarse:[&::-moz-range-thumb]:h-11';
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
@@ -88,93 +88,95 @@ export function ColorPicker({ value, onChange, names, label, className }: ColorP
   const name = names?.length ? nearestName(current, names) : undefined;
 
   return (
-    <div className={cx('flex w-full max-w-70 min-w-0 flex-col gap-3', className)}>
+    <div className={cx('flex w-64 max-w-full min-w-0 flex-col gap-1', className)}>
       {label ? <FieldLabel htmlFor={hexId}>{label}</FieldLabel> : null}
-      <div
-        ref={ringRef}
-        className="relative aspect-square w-full touch-none rounded-full select-none"
-        style={{
-          background: `linear-gradient(rgb(0 0 0 / ${String(1 - hsv.v)}), rgb(0 0 0 / ${String(1 - hsv.v)})), ${RING_LAYERS}`,
-        }}
-        onPointerDown={(event) => {
-          if (event.button !== 0) return;
-          event.currentTarget.setPointerCapture(event.pointerId);
-          setDragging(true);
-          fromPointer(event);
-        }}
-        onPointerMove={(event) => {
-          if (dragging) fromPointer(event);
-        }}
-        onPointerUp={() => {
-          setDragging(false);
-        }}
-        onPointerCancel={() => {
-          setDragging(false);
-        }}
-      >
+      <div className="flex flex-col gap-3">
         <div
-          role="slider"
-          tabIndex={0}
-          aria-label="Hue and saturation"
-          aria-valuemin={0}
-          aria-valuemax={360}
-          aria-valuenow={Math.round(hsv.h)}
-          aria-valuetext={`Hue ${String(Math.round(hsv.h))} degrees, saturation ${String(Math.round(hsv.s * 100))} per cent`}
-          onKeyDown={onThumbKey}
-          className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-text"
+          ref={ringRef}
+          className="relative aspect-square w-full touch-none rounded-full select-none"
           style={{
-            left: `${String(50 + hsv.s * 50 * Math.sin(radians))}%`,
-            top: `${String(50 - hsv.s * 50 * Math.cos(radians))}%`,
-            background: current,
+            background: `linear-gradient(rgb(0 0 0 / ${String(1 - hsv.v)}), rgb(0 0 0 / ${String(1 - hsv.v)})), ${RING_LAYERS}`,
           }}
-        />
-      </div>
-      <div
-        className="relative h-8 w-full rounded-control"
-        style={{
-          background: `linear-gradient(to right, rgb(0 0 0), ${hsvToHex({ ...hsv, v: 1 })})`,
-        }}
-      >
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={1}
-          value={Math.round(hsv.v * 100)}
-          aria-label="Value"
-          onChange={(event) => {
-            applyHsv({ ...hsv, v: Number(event.target.value) / 100 });
+          onPointerDown={(event) => {
+            if (event.button !== 0) return;
+            event.currentTarget.setPointerCapture(event.pointerId);
+            setDragging(true);
+            fromPointer(event);
           }}
-          className={cx('absolute inset-0 m-0 h-8 w-full appearance-none bg-transparent', THUMB)}
-        />
-      </div>
-      <div className="flex min-w-0 items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="h-8 w-8 shrink-0 rounded-control"
-          style={{ background: current }}
-        />
-        <Input
-          id={hexId}
-          label="Hex colour"
-          hideLabel
-          mono
-          className="w-28 shrink-0"
-          spellCheck={false}
-          value={draft ?? current}
-          onChange={(event) => {
-            setDraft(event.target.value);
+          onPointerMove={(event) => {
+            if (dragging) fromPointer(event);
           }}
-          onBlur={commitHex}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter') return;
-            event.preventDefault();
-            commitHex();
+          onPointerUp={() => {
+            setDragging(false);
           }}
-        />
-        {name ? (
-          <span className="min-w-0 flex-1 truncate text-caption text-text-dim">{name}</span>
-        ) : null}
+          onPointerCancel={() => {
+            setDragging(false);
+          }}
+        >
+          <div
+            role="slider"
+            tabIndex={0}
+            aria-label="Hue and saturation"
+            aria-valuemin={0}
+            aria-valuemax={360}
+            aria-valuenow={Math.round(hsv.h)}
+            aria-valuetext={`Hue ${String(Math.round(hsv.h))} degrees, saturation ${String(Math.round(hsv.s * 100))} per cent`}
+            onKeyDown={onThumbKey}
+            className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-text"
+            style={{
+              left: `${String(50 + hsv.s * 50 * Math.sin(radians))}%`,
+              top: `${String(50 - hsv.s * 50 * Math.cos(radians))}%`,
+              background: current,
+            }}
+          />
+        </div>
+        <div
+          className="relative h-8 w-full rounded-control pointer-coarse:h-11"
+          style={{
+            background: `linear-gradient(to right, rgb(0 0 0), ${hsvToHex({ ...hsv, v: 1 })})`,
+          }}
+        >
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={Math.round(hsv.v * 100)}
+            aria-label="Value"
+            onChange={(event) => {
+              applyHsv({ ...hsv, v: Number(event.target.value) / 100 });
+            }}
+            className={cx('absolute inset-0 m-0 h-8 w-full appearance-none bg-transparent', THUMB)}
+          />
+        </div>
+        <div className="flex min-w-0 items-center justify-center gap-3">
+          <span
+            aria-hidden="true"
+            className="h-8 w-8 shrink-0 rounded-control"
+            style={{ background: current }}
+          />
+          <Input
+            id={hexId}
+            label="Hex colour"
+            hideLabel
+            mono
+            className="w-24 shrink-0"
+            spellCheck={false}
+            value={draft ?? current}
+            onChange={(event) => {
+              setDraft(event.target.value);
+            }}
+            onBlur={commitHex}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return;
+              event.preventDefault();
+              commitHex();
+            }}
+          />
+          {name ? (
+            <span className="min-w-0 truncate text-caption text-text-dim">{name}</span>
+          ) : null}
+        </div>
       </div>
     </div>
   );

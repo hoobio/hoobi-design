@@ -3581,7 +3581,9 @@ function ColorPickerFlyoutDemo() {
           </Button>
         )}
       >
-        <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+        <div className="p-2">
+          <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+        </div>
       </Popover>
     </div>
   );
@@ -3614,14 +3616,16 @@ export function ColorPickerPage() {
       </Demo>
       <Demo
         title="Behind a Custom… button"
-        note="How a consumer reaches it: a swatch grid or a resting colour with the full picker in a Popover, which is earmark's own ColourSwatchPicker layout. The picker sizes itself to the panel."
+        note="How a consumer reaches it: a swatch grid or a resting colour with the full picker in a Popover, which is earmark's own ColourSwatchPicker layout. The picker is a fixed 256px wide and carries no padding of its own, so the panel adds a p-2 on top of Popover's own for a 16px inset."
         code={`<Popover
   label="Custom colour"
   trigger={(props) => (
     <Button variant="secondary" size="sm" {...props}>Custom…</Button>
   )}
 >
-  <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+  <div className="p-2">
+    <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+  </div>
 </Popover>`}
       >
         <ColorPickerFlyoutDemo />
