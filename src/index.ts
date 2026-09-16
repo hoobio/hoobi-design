@@ -43,6 +43,7 @@ export { DurationInput, type DurationInputProps, type DurationUnit } from './Dur
 export { Divider, type DividerProps } from './Divider.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
+export { ColorPicker, type ColorPickerProps } from './ColorPicker.js';
 export { ConfirmButton, type ConfirmButtonProps } from './ConfirmButton.js';
 export {
   DescriptionList,

@@ -12,6 +12,7 @@ import {
   ChipInput,
   type Chip,
   CodeBlock,
+  ColorPicker,
   ConfirmButton,
   DescriptionList,
   Divider,
@@ -770,7 +771,10 @@ function NestedPopoverDemo() {
   const [rows, setRows] = useState(SWATCH_ROWS);
   const [openRow, setOpenRow] = useState<string | null>('verify');
   return (
-    <div className="w-full max-w-100 rounded-panel bg-bg p-2" style={{ transform: 'translateZ(0)' }}>
+    <div
+      className="w-full max-w-100 rounded-panel bg-bg p-2"
+      style={{ transform: 'translateZ(0)' }}
+    >
       <ReorderList
         label="Stage colours"
         items={rows}
@@ -812,8 +816,8 @@ export function PopoverPage() {
       <Import names="Popover" />
       <p className="text-body text-text-dim">
         Menu renders rows; Popover renders arbitrary content - a filter set, a few checkboxes and a
-        field, a small form. Placed off the trigger&apos;s own rect in the top layer and re-placed on
-        capture-phase scroll, on resize and when its own content changes height, so neither a
+        field, a small form. Placed off the trigger&apos;s own rect in the top layer and re-placed
+        on capture-phase scroll, on resize and when its own content changes height, so neither a
         scroll container nor a transformed ancestor can clip it or drag it out of line. It flips to
         the opposite side when the requested one has no room, and closes on Escape and on a pointer
         down outside, returning focus to the trigger.
@@ -1591,7 +1595,12 @@ export function MultiSelectPage() {
       <Props
         rows={[
           ['label', 'string', '', 'The trigger text, and the popover panel label.'],
-          ['options', 'MultiSelectOption[]', '', 'value, label (a node, so an option can be coloured), optional iconUrl (16px).'],
+          [
+            'options',
+            'MultiSelectOption[]',
+            '',
+            'value, label (a node, so an option can be coloured), optional iconUrl (16px).',
+          ],
           ['value', 'string[]', '', 'The selected option values, in any order.'],
           [
             'onChange',
@@ -1600,7 +1609,12 @@ export function MultiSelectPage() {
             'Called with the new selection, in option order.',
           ],
           ['placeholder', 'string', 'label', 'Trigger text while nothing is selected.'],
-          ['footer', 'ReactNode', '', 'An action below the options, such as a manage link. No selection or close behaviour of its own.'],
+          [
+            'footer',
+            'ReactNode',
+            '',
+            'An action below the options, such as a manage link. No selection or close behaviour of its own.',
+          ],
           ['className', 'string', '', "Applied to Popover's own root element."],
           ['...rest', 'HTMLAttributes<HTMLDivElement>', '', "Forwarded to Popover's root."],
         ]}
@@ -3539,6 +3553,106 @@ export function DescriptionListPage() {
 }
 
 const RATERS = ['Sturmwind', 'Bolvar', 'Khadgar'];
+
+const ACCENT_SWATCHES = [
+  { name: 'Accent blue', hex: '#73d0ff' },
+  { name: 'Accent red', hex: '#f28779' },
+  { name: 'Accent cyan', hex: '#95e6cb' },
+  { name: 'Accent yellow', hex: '#ffd580' },
+  { name: 'Accent orange', hex: '#ffa759' },
+  { name: 'Accent purple', hex: '#d4bfff' },
+  { name: 'Accent green', hex: '#bae67e' },
+];
+
+function ColorPickerFlyoutDemo() {
+  const [colour, setColour] = useState('#d4bfff');
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        aria-hidden="true"
+        className="h-8 w-8 shrink-0 rounded-control"
+        style={{ background: colour }}
+      />
+      <Popover
+        label="Custom colour"
+        trigger={(props) => (
+          <Button variant="secondary" size="sm" {...props}>
+            Custom…
+          </Button>
+        )}
+      >
+        <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+      </Popover>
+    </div>
+  );
+}
+
+export function ColorPickerPage() {
+  const [colour, setColour] = useState('#409fff');
+  return (
+    <>
+      <Import names="ColorPicker" />
+      <p className="text-body text-text-dim">
+        WinUI&apos;s ColorPicker with a Ring spectrum and alpha off: hue by angle and saturation by
+        radius, drawn at the current value, a value slider from black to the full-value hue, a
+        preview and a hex input. Controlled on <code>#rrggbb</code>. The ring is CSS gradients
+        rather than a canvas, so it stays sharp at any size, and a drag that leaves it clamps to the
+        rim.
+      </p>
+      <Demo
+        title="Bound to state"
+        note="The thumb is a tab stop: arrow left and right move hue, up and down move saturation. The value slider is a native range, so it is keyboard and screen-reader native on its own."
+        stack
+        code={`const [colour, setColour] = useState('#409fff');
+
+<ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} label="Accent" />`}
+      >
+        <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} label="Accent" />
+        <span className="text-caption text-text-dim">
+          Selected <code>{colour}</code>
+        </span>
+      </Demo>
+      <Demo
+        title="Behind a Custom… button"
+        note="How a consumer reaches it: a swatch grid or a resting colour with the full picker in a Popover, which is earmark's own ColourSwatchPicker layout. The picker sizes itself to the panel."
+        code={`<Popover
+  label="Custom colour"
+  trigger={(props) => (
+    <Button variant="secondary" size="sm" {...props}>Custom…</Button>
+  )}
+>
+  <ColorPicker value={colour} onChange={setColour} names={ACCENT_SWATCHES} />
+</Popover>`}
+      >
+        <ColorPickerFlyoutDemo />
+      </Demo>
+      <Props
+        rows={[
+          [
+            'value',
+            'string',
+            'required',
+            'The current colour as #rrggbb. Anything else reads as black.',
+          ],
+          [
+            'onChange',
+            '(hex: string) => void',
+            'required',
+            'Fires with the new #rrggbb on every ring drag, slider step and committed hex.',
+          ],
+          [
+            'names',
+            '{ name: string; hex: string }[]',
+            '',
+            'Swatch names. The nearest by RGB Euclidean distance is shown beside the hex.',
+          ],
+          ['label', 'string', '', 'A label row above the ring, pointing at the hex field.'],
+          ['className', 'string', '', 'On the wrapper. The picker is full width up to 280px.'],
+        ]}
+      />
+    </>
+  );
+}
 
 export function RatingPage() {
   const [value, setValue] = useState<number | null>(3);

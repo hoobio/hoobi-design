@@ -34,6 +34,7 @@ import {
   CheckboxPage,
   ChipInputPage,
   CodeBlockPage,
+  ColorPickerPage,
   ConfirmButtonPage,
   CxPage,
   DescriptionListPage,
@@ -445,6 +446,13 @@ export const PAGES: Page[] = [
     title: 'Switch',
     caption: 'The master on/off. A setting that acts, not a value in a set.',
     render: () => <SwitchPage />,
+  },
+  {
+    id: 'color-picker',
+    group: 'Inputs',
+    title: 'ColorPicker',
+    caption: "WinUI's ring spectrum, value slider, preview and hex input.",
+    render: () => <ColorPickerPage />,
   },
   {
     id: 'slider',
