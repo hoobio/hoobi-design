@@ -18,6 +18,8 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   mono?: boolean;
   /** Right-aligned in the label row: a badge, a readout, a small action. */
   aside?: ReactNode;
+  /** Inside the field at its right edge: a clear or reset button, a unit. The text makes room for it. */
+  trailing?: ReactNode;
   /** The label is read to screen readers but not drawn: for a control inside a SettingRow, where the row shows the words. */
   hideLabel?: boolean;
 }
@@ -29,6 +31,7 @@ export function Input({
   error,
   mono = false,
   aside,
+  trailing,
   hideLabel = false,
   className,
   id,
@@ -50,17 +53,23 @@ export function Input({
           {label}
         </FieldLabel>
       ) : null}
-      <input
-        id={inputId}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={info ? infoId : undefined}
-        className={cx(
-          'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 text-body text-text placeholder:text-text-mute',
-          mono && 'font-mono',
-          error ? 'border-danger' : 'border-transparent',
-        )}
-        {...rest}
-      />
+      <div className="relative flex min-w-0">
+        <input
+          id={inputId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={info ? infoId : undefined}
+          className={cx(
+            'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 text-body text-text placeholder:text-text-mute',
+            mono && 'font-mono',
+            trailing ? 'pr-8' : undefined,
+            error ? 'border-danger' : 'border-transparent',
+          )}
+          {...rest}
+        />
+        {trailing ? (
+          <span className="absolute inset-y-0 right-1 flex items-center">{trailing}</span>
+        ) : null}
+      </div>
       {error ? <p className="text-caption text-danger">{error}</p> : null}
       {!error && hint ? <p className="text-caption text-text-mute">{hint}</p> : null}
     </div>
