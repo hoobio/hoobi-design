@@ -98,13 +98,14 @@ const QUERY_WIDE = {
   table: '@2xl:table @2xl:overflow-hidden @2xl:rounded-panel @2xl:bg-surface-raised',
   head: '@2xl:table-header-group',
   body: '@2xl:table-row-group',
-  row: '@2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0 @2xl:hover:bg-surface',
+  row: '@2xl:static @2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0 @2xl:hover:bg-surface',
   cell: '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:text-body',
   top: '@2xl:align-top',
   middle: '@2xl:align-middle',
   narrow: '@2xl:w-px @2xl:whitespace-nowrap',
   end: '@2xl:text-right',
-  action: '@2xl:text-right @2xl:whitespace-nowrap',
+  // w-px: the action cell hugs its control, so a table with room to spare gives it to a real column.
+  action: '@2xl:static @2xl:w-px @2xl:text-right @2xl:whitespace-nowrap',
   label: '@2xl:hidden',
   nowrap: '',
   fluid: '',
@@ -113,13 +114,13 @@ const MEASURED_WIDE = {
   table: 'table overflow-hidden rounded-panel bg-surface-raised',
   head: 'table-header-group',
   body: 'table-row-group',
-  row: 'table-row rounded-none border-t border-bg p-0 hover:bg-surface',
+  row: 'static table-row rounded-none border-t border-bg p-0 hover:bg-surface',
   cell: 'table-cell px-3 py-2 text-body',
   top: 'align-top',
   middle: 'align-middle',
   narrow: 'w-px whitespace-nowrap',
   end: 'text-right',
-  action: 'text-right whitespace-nowrap',
+  action: 'static w-px text-right whitespace-nowrap',
   label: 'hidden',
   nowrap: 'whitespace-nowrap',
   fluid: 'w-full max-w-0 truncate',
@@ -345,7 +346,9 @@ export function Table<T>({
                 </th>
               );
             })}
-            {rowAction ? <th scope="col" className="px-3 py-2" /> : null}
+            {rowAction ? (
+              <th scope="col" className={cx('px-3 py-2', !stacked && wide.narrow)} />
+            ) : null}
             {overflowCell ? (
               <th scope="col" className={cx('px-3 py-2 text-right', wide.narrow)}>
                 <Menu
@@ -370,7 +373,7 @@ export function Table<T>({
             <tr
               key={rowKey(row)}
               className={cx(
-                'flex flex-wrap items-start gap-x-4 gap-y-2 rounded-panel bg-surface-raised p-3',
+                'relative flex flex-wrap items-start gap-x-4 gap-y-2 rounded-panel bg-surface-raised p-3',
                 !stacked && wide.row,
               )}
             >
@@ -395,6 +398,10 @@ export function Table<T>({
                           ? 'min-w-0 grow basis-[calc(100%-36px)]'
                           : 'w-full'
                         : 'flex min-w-0 flex-col gap-1 text-caption',
+                      // room for the action sitting in the card's corner
+                      column.primary &&
+                        rowAction &&
+                        (stacked ? 'pr-9' : progressive ? undefined : '@max-2xl:pr-9'),
                       !stacked && wide.cell,
                       !stacked && wide[valign],
                       !stacked && column.align === 'end' && wide.end,
@@ -416,7 +423,8 @@ export function Table<T>({
               {rowAction ? (
                 <td
                   className={cx(
-                    'w-full',
+                    // stacked, the row is a card and its action belongs in the corner, not on a line of its own
+                    'absolute top-2 right-2',
                     !stacked && wide.action,
                     !stacked && wide.cell,
                     !stacked && wide[rowValign?.(row) ?? 'middle'],
