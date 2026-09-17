@@ -9,6 +9,21 @@ import type { PointerEvent, FocusEvent } from 'react';
  * No positioning library and no state: two lines of measurement, and the CSS in
  * the base layer renders and positions the tip at that point.
  */
+function fixedHost(el: HTMLElement): DOMRect | null {
+  for (let node = el.parentElement; node; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    if (
+      style.backdropFilter !== 'none' ||
+      style.filter !== 'none' ||
+      style.transform !== 'none' ||
+      style.perspective !== 'none' ||
+      /paint|layout|strict|content/.test(style.contain)
+    )
+      return node.getBoundingClientRect();
+  }
+  return null;
+}
+
 export function tipAnchor(
   text: string | undefined,
   placement: 'above' | 'right' = 'above',
@@ -23,8 +38,11 @@ export function tipAnchor(
   if (!text) return {};
   const place = (el: HTMLElement) => {
     const r = el.getBoundingClientRect();
-    const x = placement === 'right' ? r.right + 8 : r.left + r.width / 2;
-    const y = placement === 'right' ? r.top + r.height / 2 : r.top - 6;
+    // backdrop-filter, filter, transform or contain on an ancestor (a flyout's mirage, say) makes
+    // that ancestor the containing block for a fixed child, so the viewport point is rebased onto it.
+    const host = fixedHost(el);
+    const x = (placement === 'right' ? r.right + 8 : r.left + r.width / 2) - (host?.left ?? 0);
+    const y = (placement === 'right' ? r.top + r.height / 2 : r.top - 6) - (host?.top ?? 0);
     el.style.setProperty('--tip-x', `${String(x)}px`);
     el.style.setProperty('--tip-y', `${String(y)}px`);
   };
