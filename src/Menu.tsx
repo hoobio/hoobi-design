@@ -23,6 +23,8 @@ export interface MenuProps {
   disabled?: boolean;
   /** 'start' (default) aligns the panel's left edge to the trigger's, 'end' its right. */
   align?: 'start' | 'end';
+  /** The trigger's dropdown chevron, on by default. `false` for a glyph trigger that already reads as a menu, such as an ellipsis. */
+  chevron?: boolean;
   /** Menu.Item rows. */
   children: ReactNode;
   className?: string;
@@ -161,6 +163,7 @@ export function Menu({
   size = 'md',
   disabled = false,
   align = 'start',
+  chevron = true,
   children,
   className,
 }: MenuProps) {
@@ -226,22 +229,24 @@ export function Menu({
         }}
       >
         {label}
-        <svg
-          viewBox="0 0 12 12"
-          aria-hidden
-          fill="none"
-          className={cx(
-            'size-3 shrink-0 transition-transform duration-250 ease-standard',
-            open && 'rotate-180',
-          )}
-        >
-          <path
-            d="M2.5 4.5L6 8l3.5-3.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
+        {chevron ? (
+          <svg
+            viewBox="0 0 12 12"
+            aria-hidden
+            fill="none"
+            className={cx(
+              'size-3 shrink-0 transition-transform duration-250 ease-standard',
+              open && 'rotate-180',
+            )}
+          >
+            <path
+              d="M2.5 4.5L6 8l3.5-3.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        ) : null}
       </Button>
       <div
         ref={panelRef}
