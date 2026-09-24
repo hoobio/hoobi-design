@@ -454,12 +454,11 @@
     backdrop-filter: blur(24px) saturate(1.4);
   }
 
-  /* A chip whose hue is data rather than a semantic tone: text, border and fill all mix from
+  /* A chip whose hue is data rather than a semantic tone: text and fill both mix from
      the one --chip-color the consumer sets. Badge's `color` prop is the only intended caller. */
   .chip-color {
     color: var(--chip-color);
     background-color: color-mix(in srgb, var(--chip-color) 16%, transparent);
-    border-color: color-mix(in srgb, var(--chip-color) 40%, transparent);
   }
 
   /* Mirage, as a coloured chip's fill: the artwork is the chip's own hue, so the wash reads as

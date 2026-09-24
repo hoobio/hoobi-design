@@ -8,7 +8,7 @@ export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: BadgeTone;
-  /** A hex that replaces `tone` with an arbitrary hue, mixed into the chip's text, border and fill - for catalogue values whose colour is data rather than a semantic state. */
+  /** A hex that replaces `tone` with an arbitrary hue, mixed into the chip's text and fill - for catalogue values whose colour is data rather than a semantic state. */
   color?: string;
   /** Mirage on a coloured chip's fill, on by default; `false` gives a flat tint. Ignored without `color`. */
   mirage?: boolean;
@@ -103,7 +103,7 @@ export function Badge({
       {...tipAnchor(tooltip)}
       className={cx(
         'inline-flex items-center rounded-chip whitespace-nowrap',
-        coloured ? cx('chip-color border', mirage && 'mirage-chip') : cx('bg-chip', t.text),
+        coloured ? cx('chip-color', mirage && 'mirage-chip') : cx('bg-chip', t.text),
         SIZES[size].chip,
         tooltip && 'tip-fixed',
         className,
