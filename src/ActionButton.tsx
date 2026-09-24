@@ -96,10 +96,10 @@ export function ActionButton({
       disabled={disabled}
       className={cx(
         state === 'failure' && 'tip-fixed',
-        // Important, because the variant's own border/text utilities are equally specific:
+        // Important, because the variant's own fill/text utilities are equally specific:
         // CSS order, not class order, determines which one applies.
-        state === 'success' && 'border-success! text-success!',
-        state === 'failure' && 'border-danger! text-danger!',
+        state === 'success' && 'bg-success/15! text-success!',
+        state === 'failure' && 'bg-danger/15! text-danger!',
         className,
       )}
     >

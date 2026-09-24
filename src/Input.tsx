@@ -59,10 +59,10 @@ export function Input({
           aria-invalid={error ? true : undefined}
           aria-describedby={info ? infoId : undefined}
           className={cx(
-            'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 text-body text-text placeholder:text-text-mute',
+            'h-8 w-full min-w-0 rounded-control px-2.5 text-body text-text placeholder:text-text-mute',
             mono && 'font-mono',
             trailing ? 'pr-8' : undefined,
-            error ? 'border-danger' : 'border-transparent',
+            error ? 'bg-danger/15' : 'bg-chip',
           )}
           {...rest}
         />

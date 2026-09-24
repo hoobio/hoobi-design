@@ -50,7 +50,7 @@ export function MultiSelect({
       trigger={(props) => (
         <button
           type="button"
-          className="flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-control border border-transparent bg-chip pr-2.5 pl-3 text-body text-text"
+          className="flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-control bg-chip pr-2.5 pl-3 text-body text-text"
           {...props}
         >
           <span className="min-w-0 truncate">{value.length > 0 ? label : (placeholder ?? label)}</span>

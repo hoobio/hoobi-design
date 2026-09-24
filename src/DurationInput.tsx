@@ -58,8 +58,8 @@ export function DurationInput({
       </FieldLabel>
       <span
         className={cx(
-          'flex h-8 items-center overflow-hidden rounded-control border bg-chip pointer-coarse:h-11',
-          error ? 'border-danger' : 'border-transparent',
+          'flex h-8 items-center overflow-hidden rounded-control pointer-coarse:h-11',
+          error ? 'bg-danger/15' : 'bg-chip',
           disabled && 'opacity-50',
         )}
       >

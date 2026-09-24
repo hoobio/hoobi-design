@@ -1498,7 +1498,7 @@ export function InputPage() {
         rows={[
           ['label', 'ReactNode', '', 'Caption-sized label, linked by id.'],
           ['hint', 'ReactNode', '', 'Muted helper line. Hidden while error is set.'],
-          ['error', 'ReactNode', '', 'Danger line; also sets the danger border and aria-invalid.'],
+          ['error', 'ReactNode', '', 'Danger line; also tints the field bg-danger/15 and sets aria-invalid.'],
           ['className', 'string', '', 'Applied to the wrapper, not the input.'],
           [
             '...rest',

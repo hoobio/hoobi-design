@@ -60,7 +60,7 @@ Everything is a Tailwind v4 `@theme` token in `styles.css`, so `bg-surface`, `te
   `pointer: coarse`, so touch targets stay usable.
 - Spacing and radii are **px**, matching WinUI's device-independent pixels. Text stays rem against
   the 18px root so it still tracks user zoom.
-- Subtle 1px borders instead of shadows.
+- Fills instead of borders or shadows.
 - **Restrained accent**: the one primary action, the selected tab, progress fill and the focus
   ring are accented. Everything else is neutral.
 - One focus language: a 2px outer ring at 2px offset, from the global `:focus-visible`.

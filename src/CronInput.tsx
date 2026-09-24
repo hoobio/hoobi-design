@@ -84,10 +84,10 @@ export function CronInput({
                 onChange(preset.expression);
               }}
               className={cx(
-                'inline-flex h-7 shrink-0 items-center rounded-control border px-2.5 text-caption whitespace-nowrap transition-colors',
+                'inline-flex h-7 shrink-0 items-center rounded-control px-2.5 text-caption whitespace-nowrap transition-colors',
                 active
-                  ? 'border-accent bg-accent/15 text-text'
-                  : 'border-border bg-surface text-text-dim hover:bg-surface-raised hover:text-text',
+                  ? 'bg-accent/15 text-text'
+                  : 'bg-chip text-text-dim hover:bg-surface-raised hover:text-text',
               )}
             >
               {preset.label}
@@ -101,7 +101,7 @@ export function CronInput({
           onClick={() => {
             setOpen(!open);
           }}
-          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-control border border-transparent bg-transparent px-2.5 text-caption text-text-dim hover:bg-surface hover:text-text"
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-control bg-transparent px-2.5 text-caption text-text-dim hover:bg-surface hover:text-text"
         >
           <ChevronIcon
             className={cx(
@@ -129,8 +129,8 @@ export function CronInput({
               onChange(e.target.value);
             }}
             className={cx(
-              'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 font-mono text-body text-text pointer-coarse:h-11',
-              result.error ? 'border-danger' : 'border-transparent',
+              'h-8 w-full min-w-0 rounded-control px-2.5 font-mono text-body text-text pointer-coarse:h-11',
+              result.error ? 'bg-danger/15' : 'bg-chip',
             )}
           />
         </div>

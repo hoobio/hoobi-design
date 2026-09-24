@@ -139,7 +139,7 @@ export function SecretField({
           {label}
         </FieldLabel>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-8 min-w-60 flex-1 items-center overflow-hidden rounded-control border border-transparent bg-chip pointer-coarse:h-11">
+          <div className="flex h-8 min-w-60 flex-1 items-center overflow-hidden rounded-control bg-chip pointer-coarse:h-11">
             <code
               className={cx(
                 'min-w-0 flex-1 truncate px-2.5 font-mono text-body text-text',
@@ -226,8 +226,8 @@ export function SecretField({
       </FieldLabel>
       <div
         className={cx(
-          'flex h-8 items-center rounded-control border bg-chip pointer-coarse:h-11',
-          error ? 'border-danger' : 'border-transparent',
+          'flex h-8 items-center rounded-control pointer-coarse:h-11',
+          error ? 'bg-danger/15' : 'bg-chip',
         )}
       >
         <span className="flex h-full shrink-0 items-center pl-2.5">{lock}</span>

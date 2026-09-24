@@ -17,10 +17,10 @@ export interface ButtonProps
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'border border-transparent bg-accent-fill text-on-accent hover:bg-accent',
-  secondary: 'border border-border bg-surface text-text hover:bg-surface-raised',
-  ghost: 'border border-transparent bg-transparent text-text-dim hover:bg-surface hover:text-text',
-  danger: 'border border-danger bg-transparent text-danger hover:bg-danger hover:text-bg',
+  primary: 'bg-accent-fill text-on-accent hover:bg-accent',
+  secondary: 'bg-chip text-text hover:bg-surface-raised',
+  ghost: 'bg-transparent text-text-dim hover:bg-surface hover:text-text',
+  danger: 'bg-danger/15 text-danger hover:bg-danger hover:text-bg',
 };
 
 const SIZES: Record<ButtonSize, string> = {

@@ -42,8 +42,8 @@ export function Select({
         aria-invalid={error ? true : undefined}
         aria-describedby={info ? infoId : undefined}
         className={cx(
-          'h-8 w-full min-w-0 rounded-control border bg-chip px-2.5 text-body text-text',
-          error ? 'border-danger' : 'border-transparent',
+          'h-8 w-full min-w-0 rounded-control px-2.5 text-body text-text',
+          error ? 'bg-danger/15' : 'bg-chip',
         )}
         {...rest}
       >
