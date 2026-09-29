@@ -421,7 +421,12 @@
 
      It also sets position:relative and overflow:hidden, which override a consumer's
      `absolute` or `overflow-y-auto` on the same element - an overflowing panel goes
-     silently unscrollable. Placement and scrolling should go on wrapper elements. */
+     silently unscrollable. Placement and scrolling should go on wrapper elements.
+
+     Tunable per host through custom properties, each defaulting to the value below:
+     --mirage-wash (75%, the surface-raised share of the tint), --mirage-blur (32px),
+     --mirage-saturate (1.4) and --mirage-scale (1.2). A thin host wants a lower wash and a
+     smaller blur, since the card values average the art away on a few pixels of height. */
   .mirage-scoped {
     position: relative;
     isolation: isolate;
@@ -434,14 +439,14 @@
     z-index: -1;
     background-image:
       linear-gradient(
-        color-mix(in srgb, var(--color-surface-raised) 75%, transparent),
-        color-mix(in srgb, var(--color-surface-raised) 75%, transparent)
+        color-mix(in srgb, var(--color-surface-raised) var(--mirage-wash, 75%), transparent),
+        color-mix(in srgb, var(--color-surface-raised) var(--mirage-wash, 75%), transparent)
       ),
       var(--mirage-image);
     background-size: cover;
     background-position: center 25%;
-    filter: blur(32px) saturate(1.4);
-    scale: 1.2;
+    filter: blur(var(--mirage-blur, 32px)) saturate(var(--mirage-saturate, 1.4));
+    scale: var(--mirage-scale, 1.2);
   }
 
   /* Mirage, as a floating surface's own fill: Fluent's acrylic, on the transient light-dismiss

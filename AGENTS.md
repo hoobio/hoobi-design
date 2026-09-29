@@ -143,6 +143,9 @@ element, if used at all.
 `.mirage-scoped` also sets `position: relative` and `overflow: hidden`, which beat a consumer's
 `absolute` or `overflow-y-auto` on the same element and can leave an overflowing panel silently
 unscrollable - placement and scrolling belong on wrappers.
+`.mirage-scoped` is tunable per host through `--mirage-wash` (default 75%, the `surface-raised`
+share of the tint), `--mirage-blur` (32px), `--mirage-saturate` (1.4) and `--mirage-scale` (1.2);
+a thin host such as an 8px bar sets a lower wash and a smaller blur to keep the artwork's hue.
 
 `Divider` is the house hairline as a component: 1px of page background, and it **bleeds to the
 surface's edges by default** by cancelling whatever padding the container published as `--pad`
