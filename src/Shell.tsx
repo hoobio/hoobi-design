@@ -547,7 +547,7 @@ function ShellItem({
     <Comp
       aria-current={active ? 'page' : undefined}
       className={cx(
-        'relative flex h-10 items-center gap-3 overflow-hidden rounded-control whitespace-nowrap pointer-coarse:min-h-11',
+        'relative flex h-10 items-center gap-1 pr-2 overflow-hidden rounded-control whitespace-nowrap pointer-coarse:min-h-11',
         // surface-raised, not surface: the pill has to read on the contrast (chip) pane too.
         active ? 'bg-surface-raised text-text' : 'text-text-dim hover:bg-surface hover:text-text',
         railed && 'tip-fixed',
@@ -836,7 +836,7 @@ function ShellUser({
   );
 
   const rowClasses = cx(
-    'flex h-12 w-full items-center gap-3 overflow-hidden rounded-control whitespace-nowrap text-text',
+    'flex h-12 w-full items-center gap-1 pr-2 overflow-hidden rounded-control whitespace-nowrap text-text',
     railed && 'tip-fixed',
     className,
   );
