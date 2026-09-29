@@ -31,6 +31,7 @@ import {
   RichTooltip,
   Section,
   Select,
+  Sheet,
   Shell,
   Spinner,
   Stat,
@@ -1779,6 +1780,84 @@ export function ModalPage() {
           ['title', 'ReactNode', '', 'Subtitle-sized h2 in the header.'],
           ['children', 'ReactNode', 'required', 'Scrollable body.'],
           ['size', "'md' | 'lg'", 'md', '38rem wide, or 54rem for lg.'],
+          ['className', 'string', '', 'Merged onto the dialog. Keep p-0 for backdrop clicks.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function SheetPage() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Import names="Sheet" />
+      <Demo
+        title="Open one"
+        note="A native <dialog> with showModal(), pinned to the right edge: 32rem wide, or the full viewport on a phone. Escape and a backdrop click close it, focus moves in and returns to the trigger. The header and footer stay put while the body scrolls."
+        code={`<Sheet
+  open={open}
+  onClose={() => setOpen(false)}
+  title="New rule"
+  description="Applies to every new release."
+  footer={
+    <>
+      <Button onClick={() => setOpen(false)}>Cancel</Button>
+      <Button variant="primary" onClick={() => setOpen(false)}>Create</Button>
+    </>
+  }
+>
+  ...
+</Sheet>`}
+      >
+        <Button variant="primary" onClick={() => setOpen(true)}>
+          New rule
+        </Button>
+      </Demo>
+
+      <Sheet
+        open={open}
+        onClose={() => setOpen(false)}
+        title="New rule"
+        description="Applies to every new release."
+        footer={
+          <>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="primary" onClick={() => setOpen(false)}>
+              Create
+            </Button>
+          </>
+        }
+      >
+        <div className="flex flex-col gap-2">
+          {Array.from({ length: 24 }, (_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between gap-3 text-body text-text-dim"
+            >
+              <span className="min-w-0 truncate">Episode {i + 1} - 1080p WEB-DL</span>
+              <Badge tone={i % 3 === 0 ? 'success' : 'neutral'} dot>
+                {i % 3 === 0 ? 'done' : 'queued'}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </Sheet>
+
+      <Props
+        rows={[
+          ['open', 'boolean', 'required', 'Drives showModal() / close().'],
+          [
+            'onClose',
+            '() => void',
+            'required',
+            'Fires on Escape, the close button, and a backdrop click.',
+          ],
+          ['title', 'ReactNode', 'required', 'Subtitle-sized h2 in the header.'],
+          ['description', 'ReactNode', '', 'Caption line under the title.'],
+          ['children', 'ReactNode', 'required', 'Scrollable body.'],
+          ['footer', 'ReactNode', '', 'Fixed action row under the body.'],
+          ['size', "'md' | 'lg'", 'md', '32rem wide, or 40rem for lg.'],
           ['className', 'string', '', 'Merged onto the dialog. Keep p-0 for backdrop clicks.'],
         ]}
       />

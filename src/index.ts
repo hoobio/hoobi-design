@@ -60,6 +60,7 @@ export {
   type MenuProps,
 } from './Menu.js';
 export { Modal, type ModalProps } from './Modal.js';
+export { Sheet, type SheetProps } from './Sheet.js';
 export { MultiSelect, type MultiSelectOption, type MultiSelectProps } from './MultiSelect.js';
 export { PageHeader, type PageHeaderProps } from './PageHeader.js';
 export {

@@ -576,6 +576,14 @@
       translate: -100% 0;
     }
   }
+  .slide-in-right {
+    animation: slide-in-right 0.25s var(--ease-decelerate);
+  }
+  @keyframes slide-in-right {
+    from {
+      translate: 100% 0;
+    }
+  }
   .fade-in {
     animation: fade-in 0.15s var(--ease-standard);
   }

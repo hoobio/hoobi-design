@@ -57,6 +57,7 @@ import {
   SpinnerPage,
   StatPage,
   TablePage,
+  SheetPage,
   TabsPage,
   TimeAxisPage,
   TimelinePage,
@@ -319,6 +320,14 @@ export const PAGES: Page[] = [
     title: 'Modal',
     caption: 'A native dialog, so the platform does the hard parts.',
     render: () => <ModalPage />,
+    dsOpen: true,
+  },
+  {
+    id: 'sheet',
+    group: 'Overlays',
+    title: 'Sheet',
+    caption: 'A modal side panel from the right edge, for create and edit forms.',
+    render: () => <SheetPage />,
     dsOpen: true,
   },
   {
