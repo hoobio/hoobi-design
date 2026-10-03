@@ -284,7 +284,6 @@
     max-width: 18rem;
     padding: 4px 8px;
     border-radius: var(--radius-control);
-    background-color: var(--color-chip);
     color: var(--color-text);
     font-family: var(--font-sans);
     font-size: var(--text-caption);
@@ -450,10 +449,11 @@
   }
 
   /* Mirage, as a floating surface's own fill: Fluent's acrylic, on the transient light-dismiss
-     popups WinUI draws it on and nothing else. No --mirage-image here on purpose - fixed artwork
+     popups WinUI draws it on, plus tooltips. No --mirage-image here on purpose - fixed artwork
      has no relation to what a flyout covers and tints every one of them the same. 72% is the
      tint floor: below it a danger row drops under 4.5:1 over a table of bright coloured text. */
-  .mirage-flyout {
+  .mirage-flyout,
+  [data-tip]::after {
     background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
     -webkit-backdrop-filter: blur(24px) saturate(1.4);
     backdrop-filter: blur(24px) saturate(1.4);

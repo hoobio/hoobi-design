@@ -101,11 +101,13 @@ chip's fill (or `Badge color="#..."`).
 whenever `Badge` is given a `color`, opted out of with `mirage={false}`. The flyout one covers only
 transient light-dismiss
 popups: `Menu`, `Popover` (so `MultiSelect` and `ColorPicker` inherit it), `ChipInput`'s
-suggestions, Shell's group dropdown and railed user flyout, and `Toast`. That is WinUI's own rule -
+suggestions, Shell's group dropdown and railed user flyout, `Toast`, and tooltips (`[data-tip]` and
+`RichTooltip`, matching the Wowhead item tooltips consumers float over the same tables). Apart from
+tooltips, that is WinUI's own rule -
 "Acrylic is used only for transient, light-dismiss surfaces such as flyouts and context menus"
 ([signature experiences: materials](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/materials)).
-Modal surfaces are excluded because WinUI signals those with smoke, not acrylic; tooltips are
-excluded because no Fluent guidance puts a material on them. A toast floats over whatever the page
+Modal surfaces are excluded because WinUI signals those with smoke, not acrylic. WinUI's own ToolTip
+is a solid brush; the house tooltip departs from it so it reads the same as a Wowhead tip. A toast floats over whatever the page
 is showing, so it takes the acrylic as its fill and its tone rides on top as a `/20` wash plus the
 leading dot. That wash lightens the fill, so a toned toast's description drops the dim caption
 colour for `text-text` and clears 4.5:1; the default tone keeps the dim one. A tone tint alone was its whole surface until then, which left it 85% transparent and
