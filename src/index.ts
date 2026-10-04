@@ -6,7 +6,7 @@ export { BarList, type BarFill, type BarListItem, type BarListProps } from './Ba
 export { ChipInput, type Chip, type ChipInputProps } from './ChipInput.js';
 export { Notice, type NoticePlacement, type NoticeProps, type NoticeTone } from './Notice.js';
 export { Rating, type RatingProps, type RatingSize } from './Rating.js';
-export { Stat, type StatProps, type StatTone } from './Stat.js';
+export { Stat, StatStrip, type StatProps, type StatStripProps, type StatTone } from './Stat.js';
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from './Breadcrumbs.js';
 export { ActionButton, type ActionButtonProps, type ActionButtonState } from './ActionButton.js';
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button.js';

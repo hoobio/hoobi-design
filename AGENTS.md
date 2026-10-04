@@ -72,7 +72,7 @@ Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no cont
 the caller is usually a poll or a socket, not a component),
 Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes),
 Rating, ChipInput (chips + an inline query + suggestions Tab takes), Stat (the Card variant for one
-number), BarList (label / toned track / tabular readout, not a chart library),
+number; StatStrip slices a row of them into one surface), BarList (label / toned track / tabular readout, not a chart library),
 ColorPicker (WinUI's anatomy: a hue and saturation ring, a value slider, a preview and a hex box,
 with an optional nearest-swatch name from a palette you pass),
 Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no

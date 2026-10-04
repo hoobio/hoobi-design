@@ -70,6 +70,7 @@ const PARTS = {
   SettingGroup: 'SettingRow',
   SettingList: 'SettingRow',
   ReorderGrip: 'ReorderList',
+  StatStrip: 'Stat',
 };
 for (const exportedName of exported) {
   const name = PARTS[exportedName] ?? exportedName;

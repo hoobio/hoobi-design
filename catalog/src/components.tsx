@@ -35,6 +35,7 @@ import {
   Shell,
   Spinner,
   Stat,
+  StatStrip,
   Table,
   type TableSort,
   Tabs,
@@ -3972,12 +3973,12 @@ export function ChipInputPage() {
 export function StatPage() {
   return (
     <>
-      <Import names="Stat" />
+      <Import names="Stat, StatStrip" />
       <Playground
         knobs={{
           tone: {
             kind: 'select',
-            options: ['default', 'success', 'warn', 'danger'],
+            options: ['default', 'success', 'warn', 'danger', 'mute'],
             init: 'default',
           },
           label: { kind: 'text', init: 'Parse average' },
@@ -4015,6 +4016,25 @@ export function StatPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="A strip"
+        note="StatStrip slices the stats into one surface: flush bg-surface cells with a 1px seam of page background, four across folding to two below 760px. tint washes a cell's whole surface for a state the reader has to act on. sliced gives the same cell inside a sliced surface of the consumer's own."
+        stack
+        code={`<StatStrip>
+  <Stat label="Team attendance" value="91%" sub="Last 8 raids, 25 raiders" />
+  <Stat label="Below 60%" value={2} sub="Bolvar, Khadgar" tint="warn" />
+  <Stat label="No-shows last raid" value={1} sub="Sturmwind" tint="danger" />
+  <Stat label="Bot" value="idle" tone="mute" sub="not in voice" />
+</StatStrip>`}
+      >
+        <StatStrip className="w-full">
+          <Stat label="Team attendance" value="91%" sub="Last 8 raids, 25 raiders" />
+          <Stat label="Below 60%" value={2} sub="Bolvar, Khadgar" tint="warn" />
+          <Stat label="No-shows last raid" value={1} sub="Sturmwind" tint="danger" />
+          <Stat label="Bot" value="idle" tone="mute" sub="not in voice" />
+        </StatStrip>
+      </Demo>
+
       <Props
         rows={[
           ['label', 'ReactNode', 'required', 'Caption above the number.'],
@@ -4027,12 +4047,31 @@ export function StatPage() {
           ['sub', 'ReactNode', '', 'What it is measured against, or where it came from.'],
           [
             'tone',
-            `'default' | 'success' | 'warn' | 'danger'`,
+            `'default' | 'success' | 'warn' | 'danger' | 'mute'`,
             `'default'`,
-            'Colours the value and the icon. The card stays surface-raised.',
+            'Colours the value and the icon. mute is for a value that is absent or idle.',
+          ],
+          [
+            'tint',
+            `'info' | 'success' | 'warn' | 'danger'`,
+            '',
+            'Tints the whole surface, as Card tone does. The value keeps its tone.',
+          ],
+          [
+            'sliced',
+            'boolean',
+            'true in a StatStrip',
+            'A flush bg-surface cell instead of a Card, for a sliced surface. The value truncates.',
           ],
           ['icon', 'ReactNode', '', 'A 20px Fluent icon left of the stack.'],
-          ['className', 'string', '', 'On the Card.'],
+          ['className', 'string', '', 'On the Card or the cell.'],
+        ]}
+      />
+      <Props
+        rows={[
+          ['columns', '2 | 3 | 4', '4', 'Columns from 760px; four folds to two below that.'],
+          ['children', 'ReactNode', 'required', 'Stats, sliced by default.'],
+          ['className', 'string', '', 'On the grid.'],
         ]}
       />
     </>
@@ -4095,13 +4134,36 @@ export function BarListPage() {
         </div>
       </Demo>
 
+      <Demo
+        title="Mixed units"
+        note="A row max scales that row against its own kind, so text channels and voice channels share one list. Long readouts widen the readout column for every row."
+        stack
+        code={`<BarList
+  items={[
+    { key: 'g', label: '# general', value: 1840, max: 1840, display: '1,840', fill: 'accent-blue' },
+    { key: 'r', label: '# raids', value: 620, max: 1840, display: '620', fill: 'accent-blue' },
+    { key: 'v', label: 'Raid voice', value: 151200, max: 151200, display: '42h 0m', fill: 'accent-cyan' },
+  ]}
+/>`}
+      >
+        <Card title="Busiest channels" className="w-full max-w-[32rem]">
+          <BarList
+            items={[
+              { key: 'g', label: '# general', value: 1840, max: 1840, display: '1,840', fill: 'accent-blue' },
+              { key: 'r', label: '# raids', value: 620, max: 1840, display: '620', fill: 'accent-blue' },
+              { key: 'v', label: 'Raid voice', value: 151200, max: 151200, display: '42h 0m', fill: 'accent-cyan' },
+            ]}
+          />
+        </Card>
+      </Demo>
+
       <Props
         rows={[
           [
             'items',
             'BarListItem[]',
             'required',
-            '{ key, label, value, display?, avatarUrl?, fill? } per row.',
+            '{ key, label, value, display?, avatarUrl?, fill?, max? } per row. A row max scales that row alone, for a list that mixes units. The readout column sizes to the widest readout.',
           ],
           [
             'max',
