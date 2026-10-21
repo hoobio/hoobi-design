@@ -40,6 +40,7 @@ import {
   DescriptionListPage,
   DividerPage,
   InputPage,
+  MarkdownPage,
   MenuPage,
   ModalPage,
   MultiSelectPage,
@@ -392,6 +393,13 @@ export const PAGES: Page[] = [
     title: 'Divider',
     caption: 'A slice of page background, edge to edge by default.',
     render: () => <DividerPage />,
+  },
+  {
+    id: 'markdown',
+    group: 'Layout',
+    title: 'Markdown',
+    caption: 'The subset Seerr renders, as React nodes.',
+    render: () => <MarkdownPage />,
   },
   {
     id: 'description-list',

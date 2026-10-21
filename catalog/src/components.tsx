@@ -17,6 +17,7 @@ import {
   DescriptionList,
   Divider,
   Input,
+  Markdown,
   Menu,
   Modal,
   MultiSelect,
@@ -3612,6 +3613,52 @@ export function DividerPage() {
   );
 }
 
+const MARKDOWN_SAMPLE = `I've read this as **Cyberpunk: Edgerunners** not showing in the library.
+What landed:
+- **Audio:** jpn, eng
+- **Subtitles:** eng (*external*)
+
+Reply with a number:
+1. **[SubsPlease] Edgerunners - 01**
+2. the current file
+
+A [link](https://example.com), a \`code\` span and snake_case stay text.`;
+
+export function MarkdownPage() {
+  return (
+    <>
+      <Import names="Markdown" />
+      <p className="text-body text-text-dim">
+        The markdown subset Seerr renders in a comment: paragraphs, line breaks, strong, em, and
+        bulleted and numbered lists. Everything else stays literal text, a link included. The output
+        is React nodes, never HTML. Size and colour come from the parent.
+      </p>
+
+      <Demo title="Block" stack code={`<Markdown>{comment}</Markdown>`}>
+        <Markdown className="w-full max-w-[32rem] text-body">{MARKDOWN_SAMPLE}</Markdown>
+      </Demo>
+
+      <Demo
+        title="inline"
+        note="For a one-line slot such as a label: inline formatting in a span, no blocks."
+        code={`<Markdown inline>{'Linked the file to **Cyberpunk: Edgerunners II**'}</Markdown>`}
+      >
+        <Markdown inline className="text-caption text-text-dim">
+          {'Linked the file in Shoko to **Cyberpunk: Edgerunners II**.'}
+        </Markdown>
+      </Demo>
+
+      <Props
+        rows={[
+          ['children', 'string', 'required', 'The text, as written.'],
+          ['inline', 'boolean', 'false', 'A span with inline formatting only.'],
+          ['className', 'string', '-', 'On the root: a div, or the span when inline.'],
+        ]}
+      />
+    </>
+  );
+}
+
 export function DescriptionListPage() {
   return (
     <>
@@ -4149,9 +4196,30 @@ export function BarListPage() {
         <Card title="Busiest channels" className="w-full max-w-[32rem]">
           <BarList
             items={[
-              { key: 'g', label: '# general', value: 1840, max: 1840, display: '1,840', fill: 'accent-blue' },
-              { key: 'r', label: '# raids', value: 620, max: 1840, display: '620', fill: 'accent-blue' },
-              { key: 'v', label: 'Raid voice', value: 151200, max: 151200, display: '42h 0m', fill: 'accent-cyan' },
+              {
+                key: 'g',
+                label: '# general',
+                value: 1840,
+                max: 1840,
+                display: '1,840',
+                fill: 'accent-blue',
+              },
+              {
+                key: 'r',
+                label: '# raids',
+                value: 620,
+                max: 1840,
+                display: '620',
+                fill: 'accent-blue',
+              },
+              {
+                key: 'v',
+                label: 'Raid voice',
+                value: 151200,
+                max: 151200,
+                display: '42h 0m',
+                fill: 'accent-cyan',
+              },
             ]}
           />
         </Card>

@@ -59,6 +59,7 @@ export {
   type MenuLabelProps,
   type MenuProps,
 } from './Menu.js';
+export { Markdown, type MarkdownProps } from './Markdown.js';
 export { Modal, type ModalProps } from './Modal.js';
 export { Sheet, type SheetProps } from './Sheet.js';
 export { MultiSelect, type MultiSelectOption, type MultiSelectProps } from './MultiSelect.js';

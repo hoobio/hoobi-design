@@ -85,7 +85,9 @@ SettingRow / SettingGroup / SettingList (one surface level: rows on `bg-surface`
 `description`, `control`, `children`; `highlight` swaps the row's fill for the accent tint when a
 link calls it out) - LogViewer (level chips with counts, substring or /regex/
 search, a pinned context, Follow; the level set is the consumer's), TimeAxis (events on a shared
-time window, one lane per row - a cron schedule, a set of firings - not a chart library), and the
+time window, one lane per row - a cron schedule, a set of firings - not a chart library), Markdown
+(the subset Seerr renders - paragraphs, strong, em, lists - built as React nodes, never HTML;
+anything else, a link included, stays text; `inline` for a label), and the
 settings field set - FieldLabel
 (the one label row: the `(i)` and the right-hand slot), SecretField, DurationInput, CronInput
 (with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
