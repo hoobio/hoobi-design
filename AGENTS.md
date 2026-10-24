@@ -315,6 +315,24 @@ double-signalling a state that the border or the ring already shows.
 - Tone semantics: `warn` (yellow) = paused, a person must act; `success` (green) = done, the fix
   landed; `danger` = failure; `info` = in progress / informational.
 
+## Native ports (Avalonia)
+
+Steward and Earmark draw this design system natively in Avalonia, with styles that mirror the tokens
+in `styles.css`. These rules hold for every native port.
+
+- A state change animated by a `BrushTransition` goes between two brushes of the same RGB. A clear
+  rest state is the target colour at alpha 0 (`#002B3140` under a `surface-raised` hover), not
+  `Transparent` or `#00FFFFFF`. Avalonia interpolates brush colours with straight (not
+  premultiplied) alpha, so a fade from clear white to an opaque Mirage colour passes through a
+  lighter colour, and the control flashes white on hover or press.
+- FluentAvalonia's clear theme brushes are white (`#00FFFFFF`, `SubtleFillColorTransparentBrush`).
+  A port that sets a hover or pressed brush to an opaque token also sets the matching rest brush.
+- Each native port has a headless guard test before its first page ships. The test walks the shell,
+  each page, each flyout and a gallery of the control types and button themes the app uses,
+  applies `:pointerover` and `:pressed`, and fails when a `BrushTransition` frame composited over
+  `bg` is lighter than both of its ends. The reference implementation is `FlyoutTests` in
+  steward-companion (`tests/Steward.Desktop.Tests/FlyoutTests.cs`); a new port copies it.
+
 ## Code style
 
 Strict TS, ESM, `.js` extensions on relative imports (NodeNext). Props interfaces exported and named
