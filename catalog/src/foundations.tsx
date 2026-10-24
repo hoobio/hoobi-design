@@ -517,7 +517,7 @@ export function Mirage() {
           color-mix(in srgb, var(--color-smoke) 60%, transparent)
         </code>{' '}
         and no blur, since blur is acrylic&apos;s signal. Fluent&apos;s smoke is #4D000000,
-        translucent black at 30% in both themes, but that is tuned for a light page; over a #1f2430
+        translucent black at 30% in both themes, but that is tuned for a light page; over a #181c26
         one no amount of black gets past a 1.36:1 dim, so the alpha is doubled and the ink is tinted
         to <code className="text-accent-blue">--color-bg</code> rather than left pure black. Tooltip and
         RichTooltip do not either - no Fluent guidance puts a material on them and they are one or

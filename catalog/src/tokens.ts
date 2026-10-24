@@ -21,7 +21,7 @@ function parseTheme(source: string): Record<string, string> {
 
 export const TOKENS: Record<string, string> = parseTheme(css);
 
-/** `--color-surface-raised` -> `#2b3140`. Utilities drop the `--color-` prefix. */
+/** `--color-surface-raised` -> `#242936`. Utilities drop the `--color-` prefix. */
 export function colour(name: string): string {
   return TOKENS[`--color-${name}`] ?? '';
 }

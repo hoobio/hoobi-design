@@ -2,9 +2,9 @@
 @source "./dist";
 
 @theme static {
-  --color-bg: #1f2430;
-  --color-surface: #232834;
-  --color-surface-raised: #2b3140;
+  --color-bg: #181c26;
+  --color-surface: #1f2430;
+  --color-surface-raised: #242936;
   --color-border: #343b4c;
 
   --color-text: #cbccc6;
@@ -22,14 +22,14 @@
   --color-accent: #409fff;
   --color-accent-hover: #73d0ff;
   --color-on-accent: #ffffff;
-  --color-accent-fill: color-mix(in srgb, #409fff 72%, #1f2430);
+  --color-accent-fill: color-mix(in srgb, #409fff 72%, #181c26);
 
   --color-success: #bae67e;
   --color-warn: #ffd580;
   --color-danger: #f28779;
   --color-info: #73d0ff;
 
-  --color-chip: #1a1f2b;
+  --color-chip: #15181f;
 
   /* Fluent's smoke (SmokeFillColorDefault #4D000000) tinted to the palette; black over a page this dark caps at a 1.36:1 dim, so the use site carries twice Fluent's alpha. */
   --color-smoke: color-mix(in srgb, var(--color-bg) 25%, #000);
