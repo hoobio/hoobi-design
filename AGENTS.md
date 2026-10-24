@@ -482,6 +482,12 @@ feature branches for this repo. Test directly: build it, link it into the consum
 Commits use conventional-commit + gitmoji. Never add AI-attribution trailers or `Co-Authored-By`
 lines.
 
+A PR gets squash auto-complete from the `hoobi-design-pr-auto-complete` pipeline
+(`operations/pipelines/pr-auto-complete.yaml`, an optional build policy on `main` with no path
+filter), which runs the `pr/auto-complete.yaml` step from hoobi-pipeline-tools. Renovate and
+claude-bot PRs are left alone, as they complete their own. A docs-only PR skips the required PR
+validation build, so it completes as soon as auto-complete is set.
+
 ## Known noise
 
 pnpm ignores `always-auth` silently; npm 11 (which still does the `npm publish` in the pipeline)
