@@ -104,7 +104,9 @@ export function ActionButton({
       )}
     >
       {state === 'success' ? <CheckIcon className="size-4" /> : null}
-      <span aria-live="polite">{label}</span>
+      <span aria-live="polite" className="inline-flex items-center gap-1.5">
+        {label}
+      </span>
     </Button>
   );
 }
