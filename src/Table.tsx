@@ -56,6 +56,8 @@ export interface TableProps<T> {
   /** Names the table for assistive tech. */
   label?: string;
   className?: string;
+  /** Pins the header row to the nearest scrolling ancestor; set `--table-sticky-top` to the height of any sticky block above the table. */
+  stickyHeader?: boolean;
   /** Row selection, off when absent. Controlled: keys are `rowKey` values. */
   selection?: {
     selected: ReadonlySet<string>;
@@ -96,7 +98,10 @@ function Chevron({ up }: { up: boolean }) {
 // literally in the file; a class name assembled at runtime goes undetected.
 const QUERY_WIDE = {
   table: '@2xl:table @2xl:overflow-hidden @2xl:rounded-panel @2xl:bg-surface-raised',
+  tableSticky: '@2xl:table @2xl:overflow-clip @2xl:rounded-panel @2xl:bg-surface-raised',
   head: '@2xl:table-header-group',
+  headSticky:
+    '@2xl:table-header-group @2xl:sticky @2xl:top-[var(--table-sticky-top,0px)] @2xl:z-10 @2xl:bg-surface-raised',
   body: '@2xl:table-row-group',
   row: '@2xl:static @2xl:table-row @2xl:rounded-none @2xl:border-t @2xl:border-bg @2xl:p-0 @2xl:hover:bg-surface',
   cell: '@2xl:table-cell @2xl:px-3 @2xl:py-2 @2xl:text-body',
@@ -112,7 +117,10 @@ const QUERY_WIDE = {
 };
 const MEASURED_WIDE = {
   table: 'table overflow-hidden rounded-panel bg-surface-raised',
+  tableSticky: 'table overflow-clip rounded-panel bg-surface-raised',
   head: 'table-header-group',
+  headSticky:
+    'table-header-group sticky top-[var(--table-sticky-top,0px)] z-10 bg-surface-raised',
   body: 'table-row-group',
   row: 'static table-row rounded-none border-t border-bg p-0 hover:bg-surface',
   cell: 'table-cell px-3 py-2 text-body',
@@ -152,6 +160,7 @@ export function Table<T>({
   rowValign,
   label,
   className,
+  stickyHeader = false,
   selection,
 }: TableProps<T>) {
   const hideable = columns
@@ -277,7 +286,11 @@ export function Table<T>({
   }
 
   return (
-    <div ref={rootRef} className={cx('@container overflow-x-auto', className)}>
+    <div
+      ref={rootRef}
+      // overflow-x-clip makes no scroll container, so the sticky header resolves against the page scroller
+      className={cx('@container', stickyHeader ? 'overflow-x-clip' : 'overflow-x-auto', className)}
+    >
       {selection && (!progressive || stacked) ? (
         <div className={cx('mb-2 px-3', !progressive && '@2xl:hidden')}>
           <Checkbox
@@ -292,9 +305,15 @@ export function Table<T>({
       <table
         ref={tableRef}
         aria-label={label}
-        className={cx('block w-full border-collapse text-body', !stacked && wide.table)}
+        className={cx(
+          'block w-full border-collapse text-body',
+          !stacked && (stickyHeader ? wide.tableSticky : wide.table),
+        )}
       >
-        <thead ref={headRef} className={cx('hidden', !stacked && wide.head)}>
+        <thead
+          ref={headRef}
+          className={cx('hidden', !stacked && (stickyHeader ? wide.headSticky : wide.head))}
+        >
           <tr className="text-caption text-text-mute">
             {selection ? (
               <th scope="col" className={cx('px-3 py-2', !stacked && wide.narrow)}>

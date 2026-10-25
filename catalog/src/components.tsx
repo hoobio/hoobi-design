@@ -2122,8 +2122,61 @@ export function TablePage() {
           </p>
         </div>
       </Demo>
+      <Demo
+        title="Sticky header"
+        note="stickyHeader pins the header row to the nearest scrolling ancestor, so a page that scrolls keeps the column names in view. The root clips instead of scrolling sideways, which is what lets the header stick to the page rather than to the table. Set --table-sticky-top to the height of any sticky block above the table; here a 48px title bar."
+        stack
+        code={`<div className="overflow-y-auto">
+  <div className="sticky top-0 h-12 bg-bg">Roster</div>
+  <div style={{ '--table-sticky-top': '48px' }}>
+    <Table stickyHeader rows={releases} rowKey={(r) => r.title} columns={[...]} />
+  </div>
+</div>`}
+      >
+        <div className="styled-scrollbar max-h-72 w-full overflow-y-auto rounded-panel bg-bg">
+          <div className="sticky top-0 z-20 flex h-12 items-center bg-bg px-3 text-body-strong">
+            Roster
+          </div>
+          <div
+            className="px-2 pb-2"
+            style={{ '--table-sticky-top': '48px' } as React.CSSProperties}
+          >
+            <Table
+              stickyHeader
+              label="Release candidates, sticky header"
+              rows={[...RELEASES, ...RELEASES]}
+              rowKey={(r) => r.title + String(RELEASES.indexOf(r))}
+              columns={[
+                {
+                  id: 'title',
+                  header: 'release',
+                  primary: true,
+                  cell: (r) => <span className="text-caption break-all">{r.title}</span>,
+                },
+                {
+                  id: 'quality',
+                  header: 'quality',
+                  cell: (r) => <Badge>{r.quality}</Badge>,
+                },
+                {
+                  id: 'size',
+                  header: 'size',
+                  align: 'end',
+                  cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </Demo>
       <Props
         rows={[
+          [
+            'stickyHeader',
+            'boolean',
+            'false',
+            'Pins the header row to the nearest scrolling ancestor (wide layout only). The root uses overflow-x-clip, so it no longer scrolls sideways itself. --table-sticky-top is the offset, default 0px.',
+          ],
           [
             'columns',
             'TableColumn<T>[]',
