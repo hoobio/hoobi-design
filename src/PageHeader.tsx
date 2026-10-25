@@ -11,6 +11,8 @@ export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 't
   meta?: ReactNode;
   /** Right-aligned, beside the title row. */
   actions?: ReactNode;
+  /** Centred on the title row from lg up, like a WinUI title bar control; wraps inline below lg. */
+  center?: ReactNode;
   /** Rendered above the title row - a Breadcrumbs trail. */
   crumbs?: ReactNode;
 }
@@ -26,6 +28,7 @@ export function PageHeader({
   title,
   meta,
   actions,
+  center,
   crumbs,
   className,
   ...rest
@@ -41,7 +44,7 @@ export function PageHeader({
       ) : null}
       <div className="mirage-lift flex flex-col gap-4">
         {crumbs}
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="relative flex flex-wrap items-center gap-4">
           {thumb ? (
             <div className="h-[66px] w-11 shrink-0 overflow-hidden rounded-control">{thumb}</div>
           ) : null}
@@ -51,6 +54,11 @@ export function PageHeader({
             <h2 className="text-subtitle break-words text-text">{title}</h2>
             {meta ? <p className="text-caption text-text-dim">{meta}</p> : null}
           </div>
+          {center ? (
+            <div className="flex flex-col items-center gap-0.5 lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-1/2">
+              {center}
+            </div>
+          ) : null}
           {actions ? <span className="flex shrink-0 items-center gap-3">{actions}</span> : null}
         </div>
       </div>
