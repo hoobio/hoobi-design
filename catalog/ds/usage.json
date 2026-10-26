@@ -16,6 +16,8 @@
   "color-accent": "The one accent: the one primary action per view, the Tabs selection indicator, Progress fill, Spinner arc, the checked Checkbox and the focus ring (2px solid at 2px offset; 5.27:1 or more on every surface). As text, on bg, surface and surface-raised (5.27:1 or more).",
   "color-accent-hover": "The checked option text in a Select picker, on surface-raised (8.44:1). The same hex as accent-blue.",
   "color-on-accent": "Text and glyphs on an accent fill: the primary button label, the Checkbox tick. 4.45:1 on the primary button's resting fill (accent-fill, #357ac2 resolved) and 2.76:1 on its accent hover fill, as the source sets it.",
+  "color-accent-fill": "The primary button's resting fill: accent mixed 72% into bg (color-mix in the source), so a full-bleed primary button sits quieter than the raw accent. Hover lifts it to accent. on-accent text on it is 4.45:1.",
+  "color-smoke": "The Modal and Sheet backdrop, at 60% (color-mix of smoke into transparent): bg mixed 25% into black (color-mix in the source). Smoke says the page is blocked; light-dismiss popups take acrylic (.mirage-flyout) instead.",
   "color-success": "Done, the fix landed. As text on the surfaces, or a whole-surface /15 tint (bg-success/15). Never a border.",
   "color-warn": "Paused, a person must act. As text on the surfaces, or a whole-surface /15 tint (bg-warn/15).",
   "color-danger": "Failure. As text on the surfaces, or a whole-surface /15 tint (bg-danger/15); a field with an error fills bg-danger/15.",
