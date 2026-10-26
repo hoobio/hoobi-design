@@ -71,16 +71,6 @@ export interface Page {
   title: string;
   caption: string;
   render: () => ReactNode;
-  /**
-   * Reveal the overlays in the static export. The bundle is server-rendered, so a
-   * Modal exports as the button that opens it and a Menu as its trigger, showing
-   * only the button, not the open panel. Both keep their panel in the DOM when
-   * closed (dialog without [open], flyout with .hidden), so the exporter unhides
-   * them instead of hand-rolling an open copy.
-   */
-  dsOpen?: true;
-  /** Kept out of the design-system export: a catalog mechanic, not a design fact. */
-  dsSkip?: true;
 }
 
 /**
@@ -201,7 +191,6 @@ export const PAGES: Page[] = [
     title: 'Menu',
     caption: 'A trigger and an anchored panel of rows, nothing can clip it.',
     render: () => <MenuPage />,
-    dsOpen: true,
   },
   {
     id: 'code-block',
@@ -321,7 +310,6 @@ export const PAGES: Page[] = [
     title: 'Modal',
     caption: 'A native dialog, so the platform does the hard parts.',
     render: () => <ModalPage />,
-    dsOpen: true,
   },
   {
     id: 'sheet',
@@ -329,7 +317,6 @@ export const PAGES: Page[] = [
     title: 'Sheet',
     caption: 'A modal side panel from the right edge, for create and edit forms.',
     render: () => <SheetPage />,
-    dsOpen: true,
   },
   {
     id: 'breadcrumbs',
@@ -512,7 +499,6 @@ export const PAGES: Page[] = [
     title: 'Action Dialog',
     caption: 'A confirmation step before anything destructive or with a byproduct.',
     render: () => <ActionDialogPage />,
-    dsOpen: true,
   },
   {
     id: 'form-dialog',
@@ -520,7 +506,6 @@ export const PAGES: Page[] = [
     title: 'Form Dialog',
     caption: 'A dialog whose body is a form, gated on native validity.',
     render: () => <FormDialogPage />,
-    dsOpen: true,
   },
   {
     id: 'setting-row',
@@ -577,9 +562,6 @@ export const PAGES: Page[] = [
     title: 'cx',
     caption: 'The whole class-joining approach, in one line.',
     render: () => <CxPage />,
-    // A class-joining helper has no render. It is documentation, not a
-    // design-system component, so it stays only in the catalog.
-    dsSkip: true,
   },
 ];
 

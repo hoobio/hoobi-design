@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "build:artifact": "vite build && node artifact.mjs",
-    "build:ds": "vite build && node ds.mjs"
+    "build:ds": "vite build && node ds/build.mjs"
   },
   "dependencies": {
     "@hoobi/design": "workspace:*",

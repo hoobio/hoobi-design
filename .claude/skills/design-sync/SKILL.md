@@ -1,67 +1,62 @@
 ---
 name: design-sync
-description: Sync the hoobi-design catalog to the "Hoobi Design" Claude Design project (claude.ai/design) via the DesignSync tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system", "update Claude Design", or "push the catalog to claude.ai". Diffs by hash manifest, so re-running is a no-op.
+description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artifact (https://claude.ai/artifact/ALWcBjhXaoQeu5tzLe8Q3H) - build the files with catalog/ds/build.mjs, then publish them with the Artifact tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system" or "update the design system artifact".
 ---
 
 # design-sync
 
-Push the static design-system bundle to the Claude Design project so Claude generates
-Hoobi-shaped UI from the real components, rules and tokens.
+Publish the library's tokens, brand book and live component cards to the Design System artifact
+so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
 
-- **Project:** "Hoobi Design", projectId `<project-id>`.
-- **When:** after a release (`pnpm version` + `git push --follow-tags`), once the publish
-  pipeline is green. The design system shows what consumers can `pnpm add`, so never
-  sync unreleased `main` unless explicitly asked to preview.
-- **Auth:** DesignSync needs an interactive claude.ai login (`/design-login`). If it errors
-  on auth, ask the user to run that - it cannot happen headless, which is why this is a
-  skill and not a pipeline step.
+- **Target:** "Hoobi Design", https://claude.ai/artifact/ALWcBjhXaoQeu5tzLe8Q3H. Its content is
+  files under `project/`; everything else in the artifact belongs to the Design System type and is
+  refused.
+- **When:** after a release (`pnpm version` + `git push --follow-tags`), once the publish pipeline
+  is green. The system shows what consumers can `pnpm add`, so never sync unreleased `main` unless
+  explicitly asked to preview.
+- **Mode:** the index carries `"editing": "code"`, so the page is read-only and every change comes
+  from this repo. Keep it on every sync.
 
 ## Procedure
 
-1. Build the bundle (library dist first - the catalog consumes `../` via `workspace:*`):
+1. Build (library `dist` first, the catalog consumes `../` via `workspace:*`):
 
    ```bash
    pnpm run build && pnpm -C catalog build:ds
    ```
 
-   Output: `catalog/design-system/` - one standalone HTML card per page from
-   `catalog/src/pages.tsx`, plus `tokens.json` and `_hashes.json`.
+   Output: `catalog/design-system/project/`. The generator checks the tree against the format
+   (paths, caps, token grammar, preview markers, the bundle header) and fails on a breach.
 
-2. Diff against the remote:
-   - `DesignSync get_file` on `_hashes.json` (the one small file; cards are ~400KB and
-     `get_file` caps at 256KiB, so never try to read a card back).
-   - Compare with the local `_hashes.json`: changed/new paths → writes, remote paths
-     absent locally → deletes. If nothing differs, say so and stop.
-   - If the remote has no `_hashes.json` (fresh project), everything is a write.
+2. Read the live artifact in one message: `Artifact` `read` with `url` and
+   `path: "project/design-system.json"`, and `list` with `scope: "files"`.
+   - The live index has a `createdOnFiles` marker: copy the local index's `title`, `namespace`,
+     `libraries`, `editing` and `lastChange` onto it, keep every other live key (`createdOnFiles`,
+     `sections`, `groups`, `assetGroups`, `blobs`, `docs`), and write the result over
+     `catalog/design-system/project/design-system.json`.
+   - A live `project/design-system.json` without a marker is not an index: stop and say so.
+   - No live index: publish the local one as built.
 
-3. `finalize_plan` with exactly those writes and deletes,
-   `localDir: <repo>/catalog/design-system`, then `write_files` (use `localPath` for
-   every file) and `delete_files`. No `register_assets` - the `@dsCard` comment on each
-   card's first line is the registration.
+3. Publish to the `url` with `root: "catalog/design-system"` (an absolute path to it), `file_path`
+   one local file by its full path, and `files` mapping each other `project/<path>` to itself.
+   - Send every file in `project/` except the index, plus `"project/<path>": null` for each live
+     `project/` path the build no longer produces.
+   - At most 255 paths a call; a larger set goes in several calls.
+   - The index goes ONCE, alone, in the LAST call: `read` it again right before and redo step 2's
+     merge on that copy.
+   - Refused because someone saved meanwhile: read those files again and redo the change once;
+     refused again, stop and tell the user.
+
+4. Report the artifact link, the commit the files came from (`lastChange.via`), and the "Not
+   synced" list at the end of `project/README.md`.
 
 ## Notes
 
-- Every card is stamped with the library version, so a version bump changes every hash
-  and a release syncs all ~34 files (~13MB). Expected and fine - the diff only saves
-  work when re-running or iterating.
-- A page removed from `pages.tsx` must end up in `deletes` - the hash diff catches this;
-  do not skip the delete or the stale card lingers in the pane.
-- Never wholesale-replace the project by deleting everything first; the plan is always
-  the minimal diff.
-
-## Auth recovery (write_files failure)
-
-The design authorization is per-session-ish state: a crashed or headless session loses it, and
-the failure mode is asymmetric - `list_files`/`get_file`/`finalize_plan` may still WORK while
-`write_files` errors with "DesignSync needs design-system authorization". `/design-consent` can
-also 403 when the claude.ai login itself is stale.
-
-- The fix is `/design-login`, and it ONLY runs in an interactive Claude Code session - not in
-  print mode, not via a driven TUI (there is no CLI subcommand for it either).
-- It must run under the account that owns the design projects: **user@example.com**, i.e. with
-  `CLAUDE_CONFIG_DIR=C:\Users\<user>\.claude-personal`. The work config's login
-  cannot see these projects; a 403 from /design-consent is usually this.
-- Hoobi runs it themselves in their own terminal. Do NOT try to type into their windows with
-  SendKeys - it types into whatever has focus (it has typed into their browser).
-- After the login, the sync itself needs no re-run of anything else: re-issue finalize_plan +
-  write_files and the hash diff continues where it stopped.
+- The format rules are the Design System type's `SKILL.md` and `artifact-type/reference/*.md`,
+  readable on the artifact's url with `read`. `catalog/ds/build.mjs` implements them; when a
+  publish is refused for format, read those, fix the generator, rebuild.
+- Inputs live in `catalog/ds/`: `brand.md` (the README), `guidance.md` (per-component rules),
+  `usage.json` (a note per token, required), `examples.mjs` (preview examples where the catalog's
+  own `<Demo>` children cannot render alone, and overlays shown open), `cover.html`.
+- Previews load React 18 from jsDelivr (the index's `libraries`); the library targets React 19, so
+  a preview that needs a React 19 feature renders degraded there.
