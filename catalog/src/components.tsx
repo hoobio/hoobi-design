@@ -1501,7 +1501,12 @@ export function InputPage() {
         rows={[
           ['label', 'ReactNode', '', 'Caption-sized label, linked by id.'],
           ['hint', 'ReactNode', '', 'Muted helper line. Hidden while error is set.'],
-          ['error', 'ReactNode', '', 'Danger line; also tints the field bg-danger/15 and sets aria-invalid.'],
+          [
+            'error',
+            'ReactNode',
+            '',
+            'Danger line; also tints the field bg-danger/15 and sets aria-invalid.',
+          ],
           ['className', 'string', '', 'Applied to the wrapper, not the input.'],
           [
             '...rest',
@@ -1918,6 +1923,16 @@ const RELEASES: Release[] = [
 export function TablePage() {
   const [sort, setSort] = useState<TableSort>({ column: 'score', direction: 'desc' });
   const [selected, setSelected] = useState(new Set<string>());
+  const [expandSort, setExpandSort] = useState<TableSort>({ column: 'size', direction: 'desc' });
+  const [expanded, setExpanded] = useState(new Set<string>());
+  const toggleExpanded = (key: string) => {
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
   return (
     <>
       <Import names="Table" />
@@ -2123,6 +2138,90 @@ export function TablePage() {
         </div>
       </Demo>
       <Demo
+        title="Expandable rows"
+        note="Controlled, like the sort: you hold the Set of expanded rowKey values, and the toggle is your own control in a cell, so it carries aria-expanded and aria-controls. Wide, the panel is a full-width row under its row, with no rule between them and one shared hover; stacked, it continues the row's card. The panel brings its own padding, and it never counts toward the measured width of progressive columns."
+        stack
+        code={`const [expanded, setExpanded] = useState(new Set<string>());
+
+<Table
+  rows={releases}
+  rowKey={(r) => r.title}
+  sort={sort}
+  onSortChange={setSort}
+  expansion={{
+    expanded,
+    render: (r) => <div id={\`files-\${r.id}\`} className="px-3 pb-3">...</div>,
+  }}
+  columns={[
+    ...,
+    { id: 'files', header: 'files', hideLabel: true, cell: (r) => (
+      <Button size="sm" variant="ghost" aria-expanded={expanded.has(r.title)}
+        aria-controls={\`files-\${r.id}\`} onClick={() => toggle(r.title)}>3 files</Button>
+    ) },
+  ]}
+/>`}
+      >
+        <div className="w-full">
+          <Table
+            label="Release candidates, expandable"
+            rows={RELEASES}
+            rowKey={(r) => r.title}
+            sort={expandSort}
+            onSortChange={setExpandSort}
+            expansion={{
+              expanded,
+              render: (r) => (
+                <ul
+                  id={`files-${String(RELEASES.indexOf(r))}`}
+                  className="flex flex-col gap-1 px-3 pb-3 font-mono text-caption text-text-mute"
+                >
+                  {['mkv', 'nfo', 'srt'].map((ext) => (
+                    <li key={ext} className="rounded-control bg-bg px-3 py-2 break-all">
+                      {r.title}.{ext}
+                    </li>
+                  ))}
+                </ul>
+              ),
+            }}
+            columns={[
+              {
+                id: 'title',
+                header: 'release',
+                primary: true,
+                cell: (r) => <span className="text-caption break-all">{r.title}</span>,
+              },
+              {
+                id: 'size',
+                header: 'size',
+                align: 'end',
+                priority: 100,
+                defaultDirection: 'desc',
+                sortValue: (r) => r.sizeGb,
+                cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
+              },
+              { id: 'indexer', header: 'indexer', priority: 10, cell: (r) => r.indexer },
+              {
+                id: 'files',
+                header: 'files',
+                priority: 100,
+                hideLabel: true,
+                cell: (r) => (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    aria-expanded={expanded.has(r.title)}
+                    aria-controls={`files-${String(RELEASES.indexOf(r))}`}
+                    onClick={() => toggleExpanded(r.title)}
+                  >
+                    3 files
+                  </Button>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Demo>
+      <Demo
         title="Sticky header"
         note="stickyHeader pins the header row to the nearest scrolling ancestor, so a page that scrolls keeps the column names in view. The root clips instead of scrolling sideways, which is what lets the header stick to the page rather than to the table. Set --table-sticky-top to the height of any sticky block above the table; here a 48px title bar."
         stack
@@ -2238,6 +2337,12 @@ export function TablePage() {
             '{ selected, onChange, label?, allLabel? }',
             'undefined',
             'Row selection, off when absent. Controlled: the keys are rowKey values, label names one row’s checkbox and allLabel the select-all, which defaults to "Select all".',
+          ],
+          [
+            'expansion',
+            '{ expanded, render }',
+            'undefined',
+            'Controlled row expansion: a row whose rowKey is in expanded renders render(row) under it, full width. The toggle is your own control in a cell.',
           ],
           ['label', 'string', 'undefined', 'aria-label for the table.'],
         ]}

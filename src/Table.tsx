@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Badge } from './Badge.js';
 import { Checkbox } from './Checkbox.js';
 import { Menu, MenuItem, MenuLabel } from './Menu.js';
@@ -67,6 +67,11 @@ export interface TableProps<T> {
     /** Name for the select-all checkbox, which covers the rows currently shown. Defaults to "Select all". */
     allLabel?: string;
   };
+  /** Controlled row expansion: a row whose key is in `expanded` renders `render(row)` under it, full width. The toggle is the consumer's own control in a cell, so it can carry aria-expanded and aria-controls. */
+  expansion?: {
+    expanded: ReadonlySet<string>;
+    render: (row: T) => ReactNode;
+  };
 }
 
 function compare(a: number | string | undefined, b: number | string | undefined): number {
@@ -114,6 +119,10 @@ const QUERY_WIDE = {
   label: '@2xl:hidden',
   nowrap: '',
   fluid: '',
+  expandedRow: '@2xl:[&:has(+tr:hover)]:bg-surface',
+  expansionRow:
+    '@2xl:table-row @2xl:rounded-none @2xl:hover:bg-surface @2xl:[tr:hover+&]:bg-surface',
+  expansionCell: '@2xl:table-cell',
 };
 const MEASURED_WIDE = {
   table: 'table overflow-hidden rounded-panel bg-surface-raised',
@@ -132,6 +141,10 @@ const MEASURED_WIDE = {
   label: 'hidden',
   nowrap: 'whitespace-nowrap',
   fluid: 'w-full max-w-0 truncate',
+  expandedRow: '[&:has(+tr:hover)]:bg-surface',
+  expansionRow: 'table-row rounded-none hover:bg-surface [tr:hover+&]:bg-surface',
+  // max-w-0 keeps a wide panel from widening the table, which would stretch the measured cells.
+  expansionCell: 'table-cell max-w-0',
 };
 // The primary column truncates, so it has no natural width: this is the room it must keep or stack.
 const PRIMARY_MIN = 320;
@@ -162,6 +175,7 @@ export function Table<T>({
   className,
   stickyHeader = false,
   selection,
+  expansion,
 }: TableProps<T>) {
   const hideable = columns
     .map((column, index) => ({ column, index }))
@@ -200,6 +214,7 @@ export function Table<T>({
     const primaryIndex = rawPrimaryIndex >= 0 && selection ? rawPrimaryIndex + 1 : rawPrimaryIndex;
     const widths: number[] = [];
     for (const row of Array.from(table.rows)) {
+      if (row.dataset.expansion !== undefined) continue;
       Array.from(row.cells).forEach((cell, index) => {
         if (index === primaryIndex) return;
         widths[index] = Math.max(widths[index] ?? 0, cell.scrollWidth);
@@ -264,6 +279,8 @@ export function Table<T>({
   const allSelected =
     selection !== undefined && orderedKeys.length > 0 && selectedCount === orderedKeys.length;
   const someSelected = selection !== undefined && selectedCount > 0 && !allSelected;
+  const columnCount =
+    shown.length + (selection ? 1 : 0) + (rowAction ? 1 : 0) + (overflowCell ? 1 : 0);
 
   function toggleAll(): void {
     if (!selection) return;
@@ -388,74 +405,97 @@ export function Table<T>({
           </tr>
         </thead>
         <tbody className={cx('flex flex-col gap-2', !stacked && wide.body)}>
-          {ordered.map((row) => (
-            <tr
-              key={rowKey(row)}
-              className={cx(
-                'relative flex flex-wrap items-start gap-x-4 gap-y-2 rounded-panel bg-surface-raised p-3',
-                !stacked && wide.row,
-              )}
-            >
-              {selection ? (
-                <td className={cx('shrink-0', !stacked && wide.cell, !stacked && wide.narrow)}>
-                  <Checkbox
-                    aria-label={selection.label?.(row) ?? 'Select row'}
-                    checked={selection.selected.has(rowKey(row))}
-                    onChange={() => toggleRow(row)}
-                  />
-                </td>
-              ) : null}
-              {shown.map((column) => {
-                const narrow = !stacked && compact && column.compact !== undefined;
-                const valign = rowValign?.(row) ?? column.valign ?? 'middle';
-                return (
-                  <td
-                    key={column.id}
+          {ordered.map((row) => {
+            const key = rowKey(row);
+            const expanded = expansion?.expanded.has(key) === true;
+            return (
+              <Fragment key={key}>
+                <tr
+                  className={cx(
+                    'relative flex flex-wrap items-start gap-x-4 gap-y-2 rounded-panel bg-surface-raised p-3',
+                    !stacked && wide.row,
+                    expanded && 'rounded-b-none',
+                    expanded && !stacked && wide.expandedRow,
+                  )}
+                >
+                  {selection ? (
+                    <td className={cx('shrink-0', !stacked && wide.cell, !stacked && wide.narrow)}>
+                      <Checkbox
+                        aria-label={selection.label?.(row) ?? 'Select row'}
+                        checked={selection.selected.has(rowKey(row))}
+                        onChange={() => toggleRow(row)}
+                      />
+                    </td>
+                  ) : null}
+                  {shown.map((column) => {
+                    const narrow = !stacked && compact && column.compact !== undefined;
+                    const valign = rowValign?.(row) ?? column.valign ?? 'middle';
+                    return (
+                      <td
+                        key={column.id}
+                        className={cx(
+                          column.primary
+                            ? selection
+                              ? 'min-w-0 grow basis-[calc(100%-36px)]'
+                              : 'w-full'
+                            : 'flex min-w-0 flex-col gap-1 text-caption',
+                          // room for the action sitting in the card's corner
+                          column.primary &&
+                            rowAction &&
+                            (stacked ? 'pr-9' : progressive ? undefined : '@max-2xl:pr-9'),
+                          !stacked && wide.cell,
+                          !stacked && wide[valign],
+                          !stacked && column.align === 'end' && wide.end,
+                          !stacked && wide.nowrap,
+                          !stacked && column.primary && wide.fluid,
+                          narrow && wide.narrow,
+                          column.className,
+                        )}
+                      >
+                        {column.primary || column.hideLabel ? null : (
+                          <span className={cx('text-text-mute', !stacked && wide.label)}>
+                            {column.header}
+                          </span>
+                        )}
+                        {narrow && column.compact ? column.compact(row) : column.cell(row)}
+                      </td>
+                    );
+                  })}
+                  {rowAction ? (
+                    <td
+                      className={cx(
+                        // stacked, the row is a card and its action belongs in the corner, not on a line of its own
+                        'absolute top-2 right-2',
+                        !stacked && wide.action,
+                        !stacked && wide.cell,
+                        !stacked && wide[rowValign?.(row) ?? 'middle'],
+                      )}
+                      colSpan={overflowCell ? 2 : undefined}
+                    >
+                      {rowAction(row)}
+                    </td>
+                  ) : null}
+                  {overflowCell && !rowAction ? <td className={wide.cell} /> : null}
+                </tr>
+                {expanded ? (
+                  <tr
+                    data-expansion=""
                     className={cx(
-                      column.primary
-                        ? selection
-                          ? 'min-w-0 grow basis-[calc(100%-36px)]'
-                          : 'w-full'
-                        : 'flex min-w-0 flex-col gap-1 text-caption',
-                      // room for the action sitting in the card's corner
-                      column.primary &&
-                        rowAction &&
-                        (stacked ? 'pr-9' : progressive ? undefined : '@max-2xl:pr-9'),
-                      !stacked && wide.cell,
-                      !stacked && wide[valign],
-                      !stacked && column.align === 'end' && wide.end,
-                      !stacked && wide.nowrap,
-                      !stacked && column.primary && wide.fluid,
-                      narrow && wide.narrow,
-                      column.className,
+                      '-mt-2 block rounded-b-panel bg-surface-raised',
+                      !stacked && wide.expansionRow,
                     )}
                   >
-                    {column.primary || column.hideLabel ? null : (
-                      <span className={cx('text-text-mute', !stacked && wide.label)}>
-                        {column.header}
-                      </span>
-                    )}
-                    {narrow && column.compact ? column.compact(row) : column.cell(row)}
-                  </td>
-                );
-              })}
-              {rowAction ? (
-                <td
-                  className={cx(
-                    // stacked, the row is a card and its action belongs in the corner, not on a line of its own
-                    'absolute top-2 right-2',
-                    !stacked && wide.action,
-                    !stacked && wide.cell,
-                    !stacked && wide[rowValign?.(row) ?? 'middle'],
-                  )}
-                  colSpan={overflowCell ? 2 : undefined}
-                >
-                  {rowAction(row)}
-                </td>
-              ) : null}
-              {overflowCell && !rowAction ? <td className={wide.cell} /> : null}
-            </tr>
-          ))}
+                    <td
+                      colSpan={columnCount}
+                      className={cx('block', !stacked && wide.expansionCell)}
+                    >
+                      {expansion?.render(row)}
+                    </td>
+                  </tr>
+                ) : null}
+              </Fragment>
+            );
+          })}
         </tbody>
       </table>
     </div>
