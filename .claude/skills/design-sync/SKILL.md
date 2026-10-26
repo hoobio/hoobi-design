@@ -1,6 +1,6 @@
 ---
 name: design-sync
-description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artifact (https://claude.ai/artifact/ALWcBjhXaoQeu5tzLe8Q3H) - build the files with catalog/ds/build.mjs, then publish them with the Artifact tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system" or "update the design system artifact".
+description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artifact (https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB) - build the files with catalog/ds/build.mjs, then publish them with the Artifact tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system" or "update the design system artifact".
 ---
 
 # design-sync
@@ -8,7 +8,7 @@ description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artif
 Publish the library's tokens, brand book and live component cards to the Design System artifact
 so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
 
-- **Target:** "Hoobi Design", https://claude.ai/artifact/ALWcBjhXaoQeu5tzLe8Q3H. Its content is
+- **Target:** "Hoobi Design", https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB. Its content is
   files under `project/`; everything else in the artifact belongs to the Design System type and is
   refused.
 - **When:** after a release (`pnpm version` + `git push --follow-tags`), once the publish pipeline
@@ -37,8 +37,14 @@ so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
    - A live `project/design-system.json` without a marker is not an index: stop and say so.
    - No live index: publish the local one as built.
 
-3. Publish to the `url` with `root: "catalog/design-system"` (an absolute path to it), `file_path`
-   one local file by its full path, and `files` mapping each other `project/<path>` to itself.
+3. Publish to the `url` with `root`, `file_path` one local file by its full path, and `files`
+   mapping each other `project/<path>` to itself.
+   - `root` must sit under the session's working directory or scratchpad. From another repo, copy
+     `catalog/design-system/project` into the scratchpad first. Use the long scratchpad path
+     (`C:\Users\<user>\...`), never the 8.3 short form (`<USER>~1`), which a Read rule
+     blocks.
+   - `project/components/index.d.ts` goes as `{"from": "...", "contentType": "text/plain"}`; the
+     publish cannot infer a type for `.d.ts`.
    - Send every file in `project/` except the index, plus `"project/<path>": null` for each live
      `project/` path the build no longer produces.
    - At most 255 paths a call; a larger set goes in several calls.

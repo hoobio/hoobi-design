@@ -437,7 +437,7 @@ so `catalog/dist/index.html` opens with zero external requests and can be publis
 ## Claude Design System sync
 
 The library is also a Claude **Design System** artifact, "Hoobi Design"
-(https://claude.ai/artifact/ALWcBjhXaoQeu5tzLe8Q3H), so Claude generates Hoobi-shaped UI from the
+(https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB), so Claude generates Hoobi-shaped UI from the
 real components, rules and tokens. It moved there from the standalone claude.ai/design project
 because claude.ai/design closes on 14 December 2026. `pnpm -C catalog build:ds` (library `dist`
 first) runs `catalog/ds/build.mjs`, which writes the artifact's files to
