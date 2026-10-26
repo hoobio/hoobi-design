@@ -57,7 +57,7 @@ export function RichTooltip({ content, children, className, ...rest }: RichToolt
           ref={panelRef}
           role="tooltip"
           style={place}
-          className="fade-in pointer-events-none fixed z-50 flex max-w-[calc(100vw-2rem)] flex-col gap-1 mirage-flyout rounded-panel px-3 py-2 text-caption"
+          className="fade-in pointer-events-none fixed z-50 flex max-w-[calc(100vw-2rem)] flex-col gap-1 mirage-flyout rounded-panel px-3 py-2 text-caption shadow-flyout"
         >
           {content}
         </div>
