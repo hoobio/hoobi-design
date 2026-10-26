@@ -39,6 +39,8 @@ export interface TableColumn<T> {
   compactHeader?: ReactNode;
   /** Stacked, the cell carries no label: its own control already names it. The header still does wide. */
   hideLabel?: boolean;
+  /** Rendered in the header cell after the header (and after its sort button), so it can hold its own control, such as an info tooltip. Wide only: stacked cards carry no header row. */
+  headerAccessory?: ReactNode;
   className?: string;
 }
 
@@ -346,6 +348,23 @@ export function Table<T>({
               const narrow = compact && column.compact !== undefined;
               const sortable = column.sortValue !== undefined && onSortChange !== undefined;
               const isActive = sort?.column === column.id;
+              const head = sortable ? (
+                <button
+                  type="button"
+                  onClick={() => toggle(column)}
+                  className={cx(
+                    'inline-flex items-center gap-1 transition-colors hover:text-text',
+                    isActive && 'text-text',
+                  )}
+                >
+                  {narrow ? (column.compactHeader ?? column.header) : column.header}
+                  {isActive ? <Chevron up={sort?.direction === 'asc'} /> : null}
+                </button>
+              ) : narrow ? (
+                (column.compactHeader ?? column.header)
+              ) : (
+                column.header
+              );
               return (
                 <th
                   key={column.id}
@@ -362,22 +381,13 @@ export function Table<T>({
                     column.className,
                   )}
                 >
-                  {sortable ? (
-                    <button
-                      type="button"
-                      onClick={() => toggle(column)}
-                      className={cx(
-                        'inline-flex items-center gap-1 transition-colors hover:text-text',
-                        isActive && 'text-text',
-                      )}
-                    >
-                      {narrow ? (column.compactHeader ?? column.header) : column.header}
-                      {isActive ? <Chevron up={sort?.direction === 'asc'} /> : null}
-                    </button>
-                  ) : narrow ? (
-                    (column.compactHeader ?? column.header)
+                  {column.headerAccessory !== undefined && !stacked ? (
+                    <span className="inline-flex items-center gap-1">
+                      {head}
+                      {column.headerAccessory}
+                    </span>
                   ) : (
-                    column.header
+                    head
                   )}
                 </th>
               );

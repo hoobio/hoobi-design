@@ -32,3 +32,25 @@ test('collapsed rows render no panel, and an empty expansion matches none', () =
   assert.doesNotMatch(out, /data-expansion/);
   assert.equal(out, html());
 });
+
+test('a header accessory renders beside the sort button, not inside it', () => {
+  const out = html({
+    onSortChange() {},
+    columns: [
+      { id: 'key', header: 'key', primary: true, cell: (r) => r.key },
+      {
+        id: 'more',
+        header: 'more',
+        sortValue: (r) => r.key,
+        headerAccessory: createElement('i', { id: 'info' }, 'i'),
+        cell: () => 'x',
+      },
+    ],
+  });
+  const th = out.match(/<th[^>]*>(?:(?!<\/th>).)*id="info"(?:(?!<\/th>).)*<\/th>/s)?.[0] ?? '';
+  assert.match(
+    th,
+    /<span class="inline-flex items-center gap-1"><button[^>]*>.*<\/button><i id="info">i<\/i><\/span>/s,
+  );
+  assert.doesNotMatch(th, /<button[^>]*>(?:(?!<\/button>).)*id="info"/s);
+});

@@ -2198,6 +2198,17 @@ export function TablePage() {
                 priority: 100,
                 defaultDirection: 'desc',
                 sortValue: (r) => r.sizeGb,
+                headerAccessory: (
+                  <Tooltip text="Total size of the release files.">
+                    <button
+                      type="button"
+                      aria-label="About size"
+                      className="rounded-full px-1 text-text-mute hover:text-text"
+                    >
+                      i
+                    </button>
+                  </Tooltip>
+                ),
                 cell: (r) => `${r.sizeGb.toFixed(1)} GB`,
               },
               { id: 'indexer', header: 'indexer', priority: 10, cell: (r) => r.indexer },
@@ -2282,6 +2293,12 @@ export function TablePage() {
             'TableColumn<T>[]',
             '-',
             'id, header, cell; sortValue makes a column sortable; align, valign, primary, defaultDirection, className.',
+          ],
+          [
+            'column.headerAccessory',
+            'ReactNode',
+            '-',
+            'Rendered in the header cell after the header and its sort button, for a control of its own such as an info tooltip. Wide only.',
           ],
           [
             'column.valign',

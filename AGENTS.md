@@ -170,6 +170,8 @@ control. Added when mendarr's release picker needed sortable columns.
 
 `expansion` (`{ expanded, render }`, controlled like `sort`) renders `render(row)` under each row whose key is in `expanded`: a full-width row wide, the end of the row's card stacked, never counted in the progressive width. The toggle is the consumer's own control in a cell. Added for the Steward Sims leaderboard's per-spec builds.
 
+`headerAccessory` on a column renders in the header cell after the header and its sort button, never inside the button, so an info control there is not a button nested in a button. Wide only. Added for the Steward Sims leaderboard's info tooltips.
+
 Cells are vertically centred, so a one-line cell reads against the middle of a row a taller
 neighbour has stretched. `valign` on a column and `rowValign` on the table are the two escapes,
 `rowValign` ahead of a column where both are set, and `top` is for a cell whose content hangs from
