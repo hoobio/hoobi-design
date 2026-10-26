@@ -2153,8 +2153,9 @@ export function TablePage() {
     render: (r) => <div id={\`files-\${r.id}\`} className="px-3 pb-3">...</div>,
   }}
   columns={[
-    ...,
-    { id: 'files', header: 'files', hideLabel: true, cell: (r) => (
+    { id: 'size', header: 'size', priority: 100, ... },
+    { id: 'indexer', header: 'indexer', priority: 10, ... },
+    { id: 'files', header: 'files', priority: 100, hideLabel: true, cell: (r) => (
       <Button size="sm" variant="ghost" aria-expanded={expanded.has(r.title)}
         aria-controls={\`files-\${r.id}\`} onClick={() => toggle(r.title)}>3 files</Button>
     ) },
