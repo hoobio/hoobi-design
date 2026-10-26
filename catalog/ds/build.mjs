@@ -172,8 +172,14 @@ function bundleCss(declared) {
 async function bundleJs(components) {
   const shim = `const R = window.React;
 export const Fragment = R.Fragment;
-export function jsx(type, props, key) { return R.createElement(type, key === undefined ? props : { ...props, key }); }
-export const jsxs = jsx;`;
+function make(type, props, key, isStatic) {
+  const { children, ...rest } = props;
+  if (key !== undefined) rest.key = key;
+  if (children === undefined) return R.createElement(type, rest);
+  return isStatic && Array.isArray(children) ? R.createElement(type, rest, ...children) : R.createElement(type, rest, children);
+}
+export const jsx = (type, props, key) => make(type, props, key, false);
+export const jsxs = (type, props, key) => make(type, props, key, true);`;
   const [result] = await build({
     configFile: false,
     logLevel: 'warn',
@@ -431,7 +437,9 @@ function check(tokenSet) {
       else files.push(relative(root, full).split('\\').join('/'));
     }
   };
-  walk(out);
+  walk(root);
+  const css = readFileSync(join(out, 'components/bundle.css'), 'utf8');
+  const selector = (c) => `.${c.replace(/[:/[\].@%()#,!]/g, (m) => `\\${m}`)}`;
   const toolchain =
     /(^|\/)(package\.json|pnpm-lock\.yaml|package-lock\.json|tsconfig\.json|CLAUDE\.md|AGENTS\.md|node_modules)(\/|$)/;
   let total = 0;
@@ -450,6 +458,13 @@ function check(tokenSet) {
         if (size > 256 * 1024) errors.push(`${path}: preview over 256 KB`);
         if (!/^<!-- @dsCard [^\n]*height=\d+[^\n]*-->\n/.test(text))
           errors.push(`${path}: line 1 is not the marker`);
+        const classes = [...text.matchAll(/className: ["']([^"']*)["']/g)].flatMap((m) =>
+          m[1].split(/\s+/).filter(Boolean),
+        );
+        for (const c of new Set(classes)) {
+          if (!css.includes(selector(c)))
+            errors.push(`${path}: .${c} is not in bundle.css - use a class the catalog uses`);
+        }
       }
     }
   }

@@ -6,8 +6,7 @@ import css from '../../styles.css?raw';
  * styles.css is the single source of truth: `@theme static` is what Tailwind
  * compiles utilities from, so anything that reads tokens has to read THAT, not a
  * copy. Parsing it beats the old approach of probing a hidden DOM node for
- * computed values - that needed a browser, so it produced nothing under SSR, and
- * the design-system export is server-rendered.
+ * computed values - that needed a browser, so it produced nothing outside one.
  */
 function parseTheme(source: string): Record<string, string> {
   const body = source.replace(/\/\*[\s\S]*?\*\//g, '').match(/@theme static \{([\s\S]*?)\n\}/)?.[1];

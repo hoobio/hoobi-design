@@ -50,7 +50,7 @@ function subscribe(listener: () => void) {
   };
 }
 export function useUrl(): URL {
-  // The third snapshot is for the design-system export, which renders pages in Node.
+  // The third snapshot is for a render in Node, where there is no location.
   return new URL(
     useSyncExternalStore(
       subscribe,
