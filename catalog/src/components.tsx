@@ -984,8 +984,14 @@ export function PopoverPage() {
           [
             'placement',
             "'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'",
-            "'bottom-start'",
-            'Which corner it hangs from. Flipped to the opposite side when that one has no room, then clamped to the viewport.',
+            'by page side',
+            "Which corner it hangs from. Unset, it opens below, from the trigger's left edge in the left half of the viewport and its right edge in the right half. Flipped to the opposite side when that one has no room, then clamped to the viewport.",
+          ],
+          [
+            'maxHeight',
+            'number | string',
+            `'24rem'`,
+            'Tallest the panel grows, px or a CSS length; never past the viewport edge. Longer content scrolls inside the panel.',
           ],
           ['label', 'string', 'undefined', 'Names the panel, and the wrapped trigger.'],
         ]}
@@ -3174,12 +3180,31 @@ export function MenuPage() {
 
       <Demo
         title="Alignment"
-        note="The panel is fixed and placed off the trigger's rect when it opens, so no scroll-container ancestor can clip it. align='end' hangs it off the trigger's right edge - what a menu at the end of a toolbar wants."
+        note="The panel is fixed and placed off the trigger's rect when it opens, so no scroll-container ancestor can clip it. With align unset it hangs from the trigger's left edge in the left half of the viewport and its right edge in the right half. align='end' forces the right edge."
         code={`<Menu label="More" align="end" variant="ghost">...</Menu>`}
       >
         <Menu label="More" align="end" variant="ghost">
           <Menu.Item onClick={() => undefined}>Export</Menu.Item>
           <Menu.Item onClick={() => undefined}>Refresh</Menu.Item>
+        </Menu>
+      </Demo>
+
+      <Demo
+        title="Long menus"
+        note="The panel stops at maxHeight (24rem by default) or the viewport edge, whichever is nearer, and its rows scroll inside it."
+        code={`<Menu label="Realm" maxHeight={192}>
+  {realms.map((realm) => (
+    <Menu.Item key={realm} onClick={() => pick(realm)}>{realm}</Menu.Item>
+  ))}
+</Menu>`}
+      >
+        <Menu label="Realm" maxHeight={192}>
+          <Menu.Label>Realms</Menu.Label>
+          {Array.from({ length: 20 }, (_, i) => (
+            <Menu.Item key={i} onClick={() => undefined}>
+              Realm {i + 1}
+            </Menu.Item>
+          ))}
         </Menu>
       </Demo>
 
@@ -3201,8 +3226,14 @@ export function MenuPage() {
           [
             'align',
             `'start' | 'end'`,
-            `'start'`,
-            "Which of the panel's edges lines up with the trigger's.",
+            'by page side',
+            "Which of the panel's edges lines up with the trigger's. Unset, a trigger in the left half of the viewport gives 'start' and one in the right half 'end'. The panel flips above the trigger when there is no room below.",
+          ],
+          [
+            'maxHeight',
+            'number | string',
+            `'24rem'`,
+            'Tallest the panel grows, px or a CSS length; never past the viewport edge. Longer lists scroll inside the panel, Menu.Label rows with them.',
           ],
           ['disabled', 'boolean', 'false', 'Disables the trigger.'],
           ['children', 'ReactNode', 'required', 'Menu.Item / Menu.Label / Menu.Divider rows.'],

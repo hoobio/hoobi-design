@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { cx } from './cx.js';
-import { FLYOUT_RESET, placeFlyout, raiseFlyout, type FlyoutPlacement } from './flyout.js';
+import {
+  cssLength,
+  FLYOUT_MAX_HEIGHT,
+  FLYOUT_RESET,
+  placePanel,
+  raiseFlyout,
+  type FlyoutPlacement,
+} from './flyout.js';
 
 export type PopoverPlacement = FlyoutPlacement;
 
@@ -18,7 +25,10 @@ export interface PopoverProps {
   /** Controlled: pass both, or neither and the popover holds it. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Unset, the panel opens below and hangs from the trigger's left edge in the left half of the viewport, its right edge in the right half. */
   placement?: PopoverPlacement;
+  /** Tallest the panel grows before its content scrolls: px, or a CSS length. Default `24rem`, and never past the viewport edge. */
+  maxHeight?: number | string;
   /** Names the panel and the wrapped trigger for assistive tech. */
   label?: string;
   className?: string;
@@ -35,13 +45,14 @@ export function Popover({
   children,
   open: openProp,
   onOpenChange,
-  placement = 'bottom-start',
+  placement,
+  maxHeight = FLYOUT_MAX_HEIGHT,
   label,
   className,
 }: PopoverProps) {
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
-  const [place, setPlace] = useState({ top: 0, left: 0 });
+  const [place, setPlace] = useState({ top: 0, left: 0, maxHeight: cssLength(maxHeight) });
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -58,7 +69,7 @@ export function Popover({
     const lower = raiseFlyout(panel);
     const position = () => {
       const anchor = triggerRef.current?.getBoundingClientRect();
-      if (anchor) setPlace(placeFlyout(anchor, panel.getBoundingClientRect(), placement));
+      if (anchor) setPlace(placePanel(anchor, panel, placement, cssLength(maxHeight)));
     };
     position();
     const resize = new ResizeObserver(position);
@@ -71,7 +82,7 @@ export function Popover({
       window.removeEventListener('resize', position);
       lower();
     };
-  }, [open, placement]);
+  }, [open, placement, maxHeight]);
 
   useEffect(() => {
     if (!open) {

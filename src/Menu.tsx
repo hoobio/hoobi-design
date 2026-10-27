@@ -12,7 +12,7 @@ import {
 } from 'react';
 import { Button, type ButtonSize, type ButtonVariant } from './Button.js';
 import { cx } from './cx.js';
-import { FLYOUT_RESET, placeFlyout, raiseFlyout } from './flyout.js';
+import { cssLength, FLYOUT_MAX_HEIGHT, FLYOUT_RESET, placePanel, raiseFlyout } from './flyout.js';
 
 export interface MenuProps {
   /** The trigger's content. */
@@ -21,8 +21,10 @@ export interface MenuProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
-  /** 'start' (default) aligns the panel's left edge to the trigger's, 'end' its right. */
+  /** 'start' aligns the panel's left edge to the trigger's, 'end' its right. Unset, the trigger's half of the viewport decides: left half 'start', right half 'end'. */
   align?: 'start' | 'end';
+  /** Tallest the panel grows before its rows scroll: px, or a CSS length. Default `24rem`, and never past the viewport edge. */
+  maxHeight?: number | string;
   /** The trigger's dropdown chevron, on by default. `false` for a glyph trigger that already reads as a menu, such as an ellipsis. */
   chevron?: boolean;
   /** Menu.Item rows. */
@@ -162,13 +164,14 @@ export function Menu({
   variant = 'secondary',
   size = 'md',
   disabled = false,
-  align = 'start',
+  align,
+  maxHeight = FLYOUT_MAX_HEIGHT,
   chevron = true,
   children,
   className,
 }: MenuProps) {
   const [open, setOpen] = useState(false);
-  const [place, setPlace] = useState({ top: 0, left: 0 });
+  const [place, setPlace] = useState({ top: 0, left: 0, maxHeight: cssLength(maxHeight) });
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -180,7 +183,7 @@ export function Menu({
     const position = () => {
       const anchor = rootRef.current?.getBoundingClientRect();
       if (anchor) {
-        setPlace(placeFlyout(anchor, panel.getBoundingClientRect(), `bottom-${align}`));
+        setPlace(placePanel(anchor, panel, align && `bottom-${align}`, cssLength(maxHeight)));
       }
     };
     position();
@@ -194,7 +197,7 @@ export function Menu({
       window.removeEventListener('resize', position);
       lower();
     };
-  }, [open, align]);
+  }, [open, align, maxHeight]);
 
   useEffect(() => {
     if (!open) return;
