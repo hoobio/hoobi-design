@@ -1,5 +1,3 @@
 packages:
   - catalog
-# Dependency build scripts do not run in pnpm unless allowlisted; CI fails without this entry.
-allowBuilds:
-  esbuild: true
+ignoreScripts: true
