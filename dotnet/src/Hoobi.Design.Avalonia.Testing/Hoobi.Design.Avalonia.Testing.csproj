@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <Description>Headless guard probes for apps built on Hoobi.Design.Avalonia: hover and press flash, text centring.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless" />
+    <ProjectReference Include="..\Hoobi.Design.Avalonia\Hoobi.Design.Avalonia.csproj" />
+  </ItemGroup>
+
+</Project>

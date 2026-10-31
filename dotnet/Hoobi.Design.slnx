@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Hoobi.Design.Avalonia/Hoobi.Design.Avalonia.csproj" />
+    <Project Path="src/Hoobi.Design.Avalonia.Testing/Hoobi.Design.Avalonia.Testing.csproj" />
+    <Project Path="src/Hoobi.Desktop.Windows/Hoobi.Desktop.Windows.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Hoobi.Design.Gallery/Hoobi.Design.Gallery.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hoobi.Design.Avalonia.Tests/Hoobi.Design.Avalonia.Tests.csproj" />
+    <Project Path="tests/Hoobi.Desktop.Windows.Tests/Hoobi.Desktop.Windows.Tests.csproj" />
+  </Folder>
+</Solution>

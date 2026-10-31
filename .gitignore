@@ -4,3 +4,6 @@ dist/
 *.log
 .tw-check.css
 catalog/design-system/
+dotnet/**/bin/
+dotnet/**/obj/
+dotnet/artifacts/
