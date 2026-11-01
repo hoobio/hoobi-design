@@ -24,6 +24,37 @@
                 </hoobi:SettingsCard>
                 <hoobi:SettingsCard Header="Sign in to sync" Description="Needs a Store build." HeaderGlyph="{StaticResource Glyph.Lock}" IsEnabled="False" />
             </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="SettingsCard.Item fold, control in the header, Border.Row.Switch.Child and a nested fold" />
+            <StackPanel Classes="Rows">
+                <hoobi:SettingsCard Classes="Item" BorderThickness="0" IsClickEnabled="True" IsExpanded="True">
+                    <hoobi:SettingsCard.Header>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <TextBlock Text="Region" FontSize="{StaticResource ControlContentThemeFontSize}" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" SelectedIndex="0">
+                                <ComboBoxItem Content="Self-hosted" />
+                                <ComboBoxItem Content="bitwarden.com" />
+                            </ComboBox>
+                        </Grid>
+                    </hoobi:SettingsCard.Header>
+                    <hoobi:SettingsCard.ExpandedContent>
+                        <StackPanel Classes="Rows" Margin="0,1,0,0">
+                            <Border Classes="Row Switch Child">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Server URL" />
+                                    <TextBox PlaceholderText="https://bitwarden.company.com" />
+                                </StackPanel>
+                            </Border>
+                            <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Advanced" IsClickEnabled="True" IsExpanded="False" />
+                        </StackPanel>
+                    </hoobi:SettingsCard.ExpandedContent>
+                </hoobi:SettingsCard>
+                <Border Classes="Row Switch">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Unlock with Windows Hello" VerticalAlignment="Center" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
             <TextBlock Classes="GroupHeader" Text="SettingsCard.Highlighted" />
             <hoobi:SettingsCard Classes="Highlighted" Header="Lock after" Description="Locks the vault when the app is idle." HeaderGlyph="{StaticResource Glyph.Lock}">
                 <ComboBox SelectedIndex="0" Width="160">

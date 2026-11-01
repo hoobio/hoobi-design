@@ -37,6 +37,8 @@ public class SettingsCard : ContentControl
     {
         FocusableProperty.OverrideDefaultValue<SettingsCard>(false);
         IsClickEnabledProperty.Changed.AddClassHandler<SettingsCard>((card, e) => card.Focusable = e.GetNewValue<bool>());
+        HeaderIconProperty.Changed.AddClassHandler<SettingsCard>((card, _) => card.UpdateIcon());
+        HeaderGlyphProperty.Changed.AddClassHandler<SettingsCard>((card, _) => card.UpdateIcon());
         IsExpandedProperty.Changed.AddClassHandler<SettingsCard>((card, e) =>
         {
             var expanded = e.GetNewValue<bool?>();
@@ -114,6 +116,8 @@ public class SettingsCard : ContentControl
         base.OnApplyTemplate(e);
         _chevron = e.NameScope.Find<Visual>("PART_Chevron");
     }
+
+    private void UpdateIcon() => PseudoClasses.Set(":icon", HeaderIcon is not null || !string.IsNullOrEmpty(HeaderGlyph));
 
     internal void RaiseClick()
     {

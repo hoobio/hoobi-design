@@ -313,6 +313,7 @@
     <Thickness x:Key="HoobiPageTitleMargin">0,-2,0,0</Thickness>
     <Thickness x:Key="HoobiCardRowPadding">16,10</Thickness>
     <Thickness x:Key="SettingsExpanderItemPadding">16,8,16,8</Thickness>
+    <Thickness x:Key="SettingsExpanderIconItemPadding">58,8,16,8</Thickness>
     <x:Double x:Key="HoobiCardRowMinHeight">52</x:Double>
     <x:Double x:Key="HoobiNavItemHeight">36</x:Double>
     <Thickness x:Key="HoobiNavItemMargin">4,2</Thickness>
