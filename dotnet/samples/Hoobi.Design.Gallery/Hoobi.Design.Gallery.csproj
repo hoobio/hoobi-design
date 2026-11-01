@@ -13,8 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
     <ProjectReference Include="..\..\src\Hoobi.Design.Avalonia\Hoobi.Design.Avalonia.csproj" />
-    <!-- The title bar's Transparent fill is the hit-test surface for window dragging, not a colour choice. -->
-    <HoobiDesignChecksExclude Include="MainWindow.axaml" />
     <!-- The Tinted demo shows a consumer-supplied arbitrary hex fill on purpose. -->
     <HoobiDesignChecksExclude Include="Pages\ButtonsPage.axaml" />
   </ItemGroup>

@@ -58,6 +58,7 @@ public sealed class BuildChecksTests : IDisposable
               <!-- hex-ok: fixture brand colour -->
               <Color x:Key="FixtureColor">#FF112233</Color>
               <SolidColorBrush x:Key="FixtureBrush" Color="{StaticResource FixtureColor}" />
+              <SolidColorBrush x:Key="FixtureHitTest" Color="Transparent" />
               <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark" />
               </ResourceDictionary.ThemeDictionaries>

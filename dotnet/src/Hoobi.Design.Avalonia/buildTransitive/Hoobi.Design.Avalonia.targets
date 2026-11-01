@@ -20,8 +20,9 @@ var exempt = new Regex(@"<!--\s*hex-ok:\s*\S");
 var key = new Regex(@"\bx:Key=""([^""]+)""");
 var hex = new Regex(@"(?<=(?:^|[""'>])\s*)#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})(?=\s*(?:$|[""'<]))");
 var colourProperty = @"(?:Background|Foreground|Fill|Stroke|Color|\w+Brush|\w+Color)";
-var named = new Regex(@"(?<![\w:.])" + colourProperty + @"=""([A-Za-z]+)""");
-var setter = new Regex(@"Property=""(?:\w+\.)?" + colourProperty + @"""[^>]*?\bValue=""([A-Za-z]+)""");
+var namedColour = @"(?!Transparent"")([A-Za-z]+)";
+var named = new Regex(@"(?<![\w:.])" + colourProperty + @"=""" + namedColour + @"""");
+var setter = new Regex(@"Property=""(?:\w+\.)?" + colourProperty + @"""[^>]*?\bValue=""" + namedColour + @"""");
 var owned = WriteKeys == null && !string.IsNullOrEmpty(OwnedKeys) && File.Exists(OwnedKeys)
     ? new HashSet<string>(File.ReadAllLines(OwnedKeys), StringComparer.Ordinal)
     : new HashSet<string>(StringComparer.Ordinal);
