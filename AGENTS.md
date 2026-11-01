@@ -95,7 +95,12 @@ SettingRow / SettingGroup / SettingList (one surface level: rows on `bg-surface`
 `description`, `control`, `children`; `highlight` swaps the row's fill for the accent tint when a
 link calls it out) - LogViewer (level chips with counts, substring or /regex/
 search, a pinned context, Follow; the level set is the consumer's), TimeAxis (events on a shared
-time window, one lane per row - a cron schedule, a set of firings - not a chart library), Markdown
+time window, one lane per row - a cron schedule, a set of firings - not a chart library),
+FlowCanvas (a node graph for a workflow builder: HTML nodes over an SVG edge layer, orthogonal
+edges routed round every node with rounded corners only at a turn, siblings sharing one trunk,
+ports at a fixed offset from the node top so nodes at one y line up, drags snapped to the 8px grid
+and pulled level with a wired port within 12px; positions, edges and selection are the
+consumer's), Markdown
 (the subset Seerr renders - paragraphs, strong, em, lists - built as React nodes, never HTML;
 anything else, a link included, stays text; `inline` for a label), and the
 settings field set - FieldLabel

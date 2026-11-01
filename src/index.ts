@@ -51,6 +51,15 @@ export {
   type DescriptionListProps,
 } from './DescriptionList.js';
 export { FieldLabel, type FieldLabelProps } from './FieldLabel.js';
+export {
+  FlowCanvas,
+  type FlowCanvasProps,
+  type FlowConnection,
+  type FlowEdge,
+  type FlowNode,
+  type FlowPort,
+  type FlowSelection,
+} from './FlowCanvas.js';
 export { Input, type InputProps } from './Input.js';
 export {
   Menu,

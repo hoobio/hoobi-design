@@ -64,6 +64,7 @@ import {
   TimelinePage,
   TooltipPage,
 } from './components.js';
+import { FlowCanvasPage } from './flow.js';
 
 export interface Page {
   id: string;
@@ -415,6 +416,13 @@ export const PAGES: Page[] = [
     title: 'Time Axis',
     caption: 'Events on a shared time window, one lane per row: a schedule, a set of firings.',
     render: () => <TimeAxisPage />,
+  },
+  {
+    id: 'flow-canvas',
+    group: 'Layout',
+    title: 'Flow Canvas',
+    caption: 'Nodes and edges on a pannable canvas: the surface of a workflow builder.',
+    render: () => <FlowCanvasPage />,
   },
   {
     id: 'timeline',
