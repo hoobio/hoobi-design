@@ -8,6 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.VisualTree;
 
 namespace Hoobi.Design.Avalonia;
 
@@ -29,13 +31,24 @@ public class SettingsCard : ContentControl
 
     public static readonly StyledProperty<bool?> IsExpandedProperty = AvaloniaProperty.Register<SettingsCard, bool?>(nameof(IsExpanded), defaultBindingMode: BindingMode.TwoWay);
 
+    public static readonly StyledProperty<object?> PreviewProperty = AvaloniaProperty.Register<SettingsCard, object?>(nameof(Preview));
+
+    public static readonly AttachedProperty<bool> PreviewScopeProperty = AvaloniaProperty.RegisterAttached<SettingsCard, Control, bool>("PreviewScope");
+
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent = RoutedEvent.Register<SettingsCard, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
     private Visual? _chevron;
+    private Layoutable? _headerBlock;
+    private Layoutable? _previewHost;
+    private Layoutable? _preview;
+    private Layoutable? _icon;
+    private Layoutable? _content;
+    private bool _previewFits;
 
     static SettingsCard()
     {
         FocusableProperty.OverrideDefaultValue<SettingsCard>(false);
+        AffectsMeasure<SettingsCard>(PreviewProperty);
         IsClickEnabledProperty.Changed.AddClassHandler<SettingsCard>((card, e) => card.Focusable = e.GetNewValue<bool>());
         HeaderIconProperty.Changed.AddClassHandler<SettingsCard>((card, _) => card.UpdateIcon());
         HeaderGlyphProperty.Changed.AddClassHandler<SettingsCard>((card, _) => card.UpdateIcon());
@@ -99,6 +112,16 @@ public class SettingsCard : ContentControl
         set => SetValue(ExpandedContentProperty, value);
     }
 
+    public object? Preview
+    {
+        get => GetValue(PreviewProperty);
+        set => SetValue(PreviewProperty, value);
+    }
+
+    public static bool GetPreviewScope(Control element) => element.GetValue(PreviewScopeProperty);
+
+    public static void SetPreviewScope(Control element, bool value) => element.SetValue(PreviewScopeProperty, value);
+
     public bool IsClickEnabled
     {
         get => GetValue(IsClickEnabledProperty);
@@ -115,7 +138,60 @@ public class SettingsCard : ContentControl
     {
         base.OnApplyTemplate(e);
         _chevron = e.NameScope.Find<Visual>("PART_Chevron");
+        _headerBlock = e.NameScope.Find<Layoutable>("PART_HeaderBlock");
+        _previewHost = e.NameScope.Find<Layoutable>("PART_PreviewHost");
+        _preview = e.NameScope.Find<Layoutable>("PART_Preview");
+        _icon = e.NameScope.Find<Layoutable>("PART_Icon");
+        _content = e.NameScope.Find<Layoutable>("PART_Content");
     }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        if (Preview is null || _headerBlock is null || _preview is null || _previewHost is null)
+        {
+            ShowPreview(false);
+            return base.MeasureOverride(availableSize);
+        }
+
+        _headerBlock.Measure(Size.Infinity);
+        var header = _headerBlock.DesiredSize.Width;
+        _preview.Measure(Size.Infinity);
+        var preview = _preview.DesiredSize.Width + _previewHost.Margin.Left;
+        var size = base.MeasureOverride(availableSize);
+        var inner = availableSize.Width - BorderThickness.Left - BorderThickness.Right - Padding.Left - Padding.Right;
+        var taken = Taken(_icon) + Taken(_content) + Taken(_chevron as Layoutable);
+        _previewFits = double.IsInfinity(inner) || header + preview + taken <= inner;
+        UpdatePreviews();
+        return size;
+    }
+
+    private static double Taken(Layoutable? part) => part is { IsVisible: true } ? part.DesiredSize.Width : 0;
+
+    private void UpdatePreviews()
+    {
+        if (Scope() is not { } scope)
+        {
+            ShowPreview(_previewFits);
+            return;
+        }
+
+        var members = scope.GetVisualDescendants().OfType<SettingsCard>().Where(card => card.Preview is not null && card.Scope() == scope).ToList();
+        var show = members.All(card => card._previewFits);
+        foreach (var card in members)
+        {
+            card.ShowPreview(show);
+        }
+    }
+
+    private void ShowPreview(bool show)
+    {
+        if (_previewHost is not null)
+        {
+            _previewHost.IsVisible = show && Preview is not null;
+        }
+    }
+
+    private Control? Scope() => this.GetVisualAncestors().OfType<Control>().FirstOrDefault(GetPreviewScope);
 
     private void UpdateIcon() => PseudoClasses.Set(":icon", HeaderIcon is not null || !string.IsNullOrEmpty(HeaderGlyph));
 

@@ -77,7 +77,11 @@ public partial class DialogsPage : UserControl
 
 public partial class SettingsPage : UserControl
 {
-    public SettingsPage() => InitializeComponent();
+    public SettingsPage()
+    {
+        InitializeComponent();
+        PinnedStates.Apply(this);
+    }
 }
 
 public partial class LayoutPage : UserControl

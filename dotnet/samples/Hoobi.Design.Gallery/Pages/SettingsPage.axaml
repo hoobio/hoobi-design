@@ -10,9 +10,9 @@
             <hoobi:SettingsCard Header="Start at sign-in" Description="Opens in the tray when Windows starts." HeaderGlyph="{StaticResource Glyph.PowerButton}">
                 <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
             </hoobi:SettingsCard>
-            <TextBlock Classes="GroupHeader" Text="StackPanel.SettingsGroup, SettingsCard.FirstVisible, SettingsCard.LastVisible" />
+            <TextBlock Classes="GroupHeader" Text="StackPanel.SettingsGroup, SettingsCard.FirstVisible, SettingsCard.LastVisible, first card at :pointerover" />
             <StackPanel Classes="SettingsGroup">
-                <hoobi:SettingsCard Header="Addon folder" Description="D:\Games\World of Warcraft\Interface\AddOns" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" ActionGlyph="{StaticResource Glyph.ChevronRight}" />
+                <hoobi:SettingsCard Header="Addon folder" Description="D:\Games\World of Warcraft\Interface\AddOns" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" ActionGlyph="{StaticResource Glyph.ChevronRight}" Tag=":pointerover" />
                 <hoobi:SettingsCard Header="Release channel" HeaderGlyph="{StaticResource Glyph.Sync}">
                     <ComboBox SelectedIndex="0" Width="160">
                         <ComboBoxItem Content="Stable" />
@@ -54,6 +54,47 @@
                         <ToggleSwitch Grid.Column="1" IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
                     </Grid>
                 </Border>
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="SettingsCard.Preview in a SettingsCard.PreviewScope, wide and narrow" />
+            <StackPanel Classes="Rows">
+                <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Show Tags" IsClickEnabled="True" IsExpanded="True">
+                    <hoobi:SettingsCard.ExpandedContent>
+                        <StackPanel Classes="Rows" Margin="0,1,0,0" hoobi:SettingsCard.PreviewScope="True">
+                            <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Watchtower" Description="Tags weak, old or insecure passwords">
+                                <hoobi:SettingsCard.Preview>
+                                    <Border Classes="Badge"><TextBlock Text="Weak password" /></Border>
+                                </hoobi:SettingsCard.Preview>
+                                <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                            </hoobi:SettingsCard>
+                            <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Passkey" Description="Tags items that sign in with a passkey">
+                                <hoobi:SettingsCard.Preview>
+                                    <Border Classes="Badge"><TextBlock Text="Passkey" /></Border>
+                                </hoobi:SettingsCard.Preview>
+                                <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                            </hoobi:SettingsCard>
+                        </StackPanel>
+                    </hoobi:SettingsCard.ExpandedContent>
+                </hoobi:SettingsCard>
+            </StackPanel>
+            <StackPanel Classes="Rows" Width="420" HorizontalAlignment="Left">
+                <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Show Tags" IsClickEnabled="True" IsExpanded="True">
+                    <hoobi:SettingsCard.ExpandedContent>
+                        <StackPanel Classes="Rows" Margin="0,1,0,0" hoobi:SettingsCard.PreviewScope="True">
+                            <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Watchtower" Description="Tags weak, old or insecure passwords">
+                                <hoobi:SettingsCard.Preview>
+                                    <Border Classes="Badge"><TextBlock Text="Weak password" /></Border>
+                                </hoobi:SettingsCard.Preview>
+                                <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                            </hoobi:SettingsCard>
+                            <hoobi:SettingsCard Classes="Item" BorderThickness="0" Header="Passkey" Description="Tags items that sign in with a passkey">
+                                <hoobi:SettingsCard.Preview>
+                                    <Border Classes="Badge"><TextBlock Text="Passkey" /></Border>
+                                </hoobi:SettingsCard.Preview>
+                                <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                            </hoobi:SettingsCard>
+                        </StackPanel>
+                    </hoobi:SettingsCard.ExpandedContent>
+                </hoobi:SettingsCard>
             </StackPanel>
             <TextBlock Classes="GroupHeader" Text="SettingsCard.Highlighted" />
             <hoobi:SettingsCard Classes="Highlighted" Header="Lock after" Description="Locks the vault when the app is idle." HeaderGlyph="{StaticResource Glyph.Lock}">

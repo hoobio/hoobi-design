@@ -1399,10 +1399,10 @@
         <Setter Property="MinWidth" Value="26" />
         <Setter Property="Padding" Value="8,0" />
         <Setter Property="CornerRadius" Value="{StaticResource HoobiRadiusChip}" />
-        <Setter Property="Background" Value="{DynamicResource HoobiChipBrush}" />
+        <Setter Property="Background" Value="{DynamicResource HoobiAccentBrush}" />
     </Style>
     <Style Selector="Border.KeyCap > TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
         <Setter Property="FontSize" Value="{StaticResource CaptionTextBlockFontSize}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Center" />
