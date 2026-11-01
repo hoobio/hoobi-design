@@ -476,6 +476,8 @@ changes are **backwards compatible, ideally additive**: new props default to the
 behaviour, tokens are added rather than repurposed, and anything breaking is called out in the
 commit and shipped together with the consumer updates.
 
+**Consumers define no components, web or native.** A custom control, UserControl, ControlTheme or class style on a generic control in a consumer moves into hoobi-design. A variant of an existing component is a prop or class on that component. A new component needs a one-line justification in its commit. Only domain views that compose library components stay in the consumer. When a consumer's version of a component is better than the library's, the improvement becomes the library default for every consumer.
+
 ## Build and verification
 
 pnpm workspace: the root is the library, `catalog/` is the one workspace package and links the
@@ -576,7 +578,7 @@ The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`,
 Lab pool): npmAuthenticate -> pnpm install --frozen-lockfile -> typecheck -> build -> guard that the tag matches
 `package.json` version -> publish, skipped when that version is already on the feed. The same run then installs the .NET SDK, runs `dotnet test` on `Hoobi.Design.Avalonia.Tests` (the Windows test project cannot run on the Linux agent), packs the three projects with `-p:Version=<tag version>` and pushes the `.nupkg` files with `--skip-duplicate`. The NuGet version comes from `package.json` (`dotnet/Directory.Build.props`), so one bump releases npm and NuGet together.
 
-Consumers on GitHub Actions need an ADO PAT secret with Packaging (Read) for `dotnet restore`: the Hoobi feed rejects anonymous restore with 401.
+Consumers on GitHub Actions restore through OIDC, with no secret: each job that restores gets `id-token: write`, runs `azure/login` with the repo variables `ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID` and `ADO_HOOBI_TENANT_ID`, takes a token for the Azure DevOps resource (`499b84ac-1321-427f-aa17-267ca6975798`) and sets it as the `Hoobi` source password. The identity is the Entra app `hoobi-github-ado-nuget-pull` in the Hoobi tenant, with Reader on the feed and one flexible federated credential for every `hoobio` repo (`repository_owner_id` is in the expression because Entra rejects `sub` alone as mutable). The Hoobi feed rejects anonymous restore with 401.
 
 ADO feed versions are immutable: a wrong publish consumes the version number permanently, which the
 tag guard checks against. The build step is explicit rather than leaning on `prepublishOnly`,

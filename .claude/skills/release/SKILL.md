@@ -50,5 +50,7 @@ All three names must list the new version. Do not repin consumers before they do
 
 Avalonia consumers (steward-companion, earmark, command-palette-bitwarden): bump
 `Hoobi.Design.Avalonia` and `Hoobi.Desktop.Windows` in their `Directory.Packages.props` to the new
-version. Their GitHub Actions restore needs an ADO PAT secret with Packaging (Read): the Hoobi
+version. Their GitHub Actions restore authenticates through OIDC: the Entra app
+`hoobi-github-ado-nuget-pull` (Hoobi tenant, Reader on the feed, federated for every `hoobio` repo)
+with the repo variables `ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID` and `ADO_HOOBI_TENANT_ID`. The Hoobi
 feed rejects anonymous restore with 401.
