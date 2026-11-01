@@ -528,8 +528,7 @@ Every .NET Windows desktop app in the Hoobi family (Steward, Earmark, and new on
 ## Code style
 
 Strict TS, ESM, `.js` extensions on relative imports (NodeNext). Props interfaces exported and named
-`<Component>Props`. Self-documenting: no comment noise, comments only where the reason isn't in the
-code.
+`<Component>Props`.
 
 ## Library-only changes
 
@@ -658,8 +657,7 @@ the project build service, so that is the identity that needs Contributor on the
 Work directly on `main` and push directly to `main`. Standing permission, no worktrees, no PRs, no
 feature branches for this repo. Test directly: build it, link it into the consumer, look at it.
 
-Commits use conventional-commit + gitmoji. Never add AI-attribution trailers or `Co-Authored-By`
-lines.
+Commits use conventional-commit + gitmoji.
 
 A PR gets squash auto-complete from the `hoobi-design-pr-auto-complete` pipeline
 (`operations/pipelines/pr-auto-complete.yaml`, an optional build policy on `main` with no path
