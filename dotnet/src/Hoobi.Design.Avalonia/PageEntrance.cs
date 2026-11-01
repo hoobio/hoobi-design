@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Media.Transformation;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace Hoobi.Design.Avalonia;
@@ -18,6 +18,11 @@ public static class PageEntrance
             return Task.CompletedTask;
         }
 
+        if (page.RenderTransform is not TranslateTransform)
+        {
+            page.RenderTransform = new TranslateTransform();
+        }
+
         return new Animation
         {
             Duration = Duration,
@@ -25,8 +30,8 @@ public static class PageEntrance
             FillMode = FillMode.Forward,
             Children =
             {
-                new KeyFrame { Cue = new Cue(0), Setters = { new Setter(Visual.OpacityProperty, 0d), new Setter(Visual.RenderTransformProperty, TransformOperations.Parse("translateY(16px)")) } },
-                new KeyFrame { Cue = new Cue(1), Setters = { new Setter(Visual.OpacityProperty, 1d), new Setter(Visual.RenderTransformProperty, TransformOperations.Parse("translateY(0px)")) } },
+                new KeyFrame { Cue = new Cue(0), Setters = { new Setter(Visual.OpacityProperty, 0d), new Setter(TranslateTransform.YProperty, 16d) } },
+                new KeyFrame { Cue = new Cue(1), Setters = { new Setter(Visual.OpacityProperty, 1d), new Setter(TranslateTransform.YProperty, 0d) } },
             },
         }.RunAsync(page, cancellationToken);
     }

@@ -499,7 +499,7 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 - In Avalonia 12 a template's own value outranks a style setter that has no pseudo-class. Target the template part (`/template/ ContentPresenter#PART_ContentPresenter`).
 - An unscoped `Button:pointerover` override reaches the buttons inside flyouts. Name the element (`Button.Tinted:pointerover /template/ ContentPresenter#PART_ContentPresenter`).
 - A `Button.Flyout` closes on a second press of its button. An `AttachedFlyout` opened from `Click` does not.
-- Animate `RenderTransform`. Animating the `TranslateTransform` object throws `InvalidCastException`.
+- Animate a `TranslateTransform` property (`TranslateTransform.YProperty`) with the visual as the animation target, after setting a `TranslateTransform` as its `RenderTransform`. Animating `Visual.RenderTransformProperty` throws "No animator registered for the property RenderTransform", and the error is swallowed when the animation is fire-and-forget.
 - A `StyledProperty` change callback does not assign an inner `DataContext`.
 - Compiled bindings need `x:DataType` on the element or an ancestor.
 - Avalonia rounds .5 to even where WinUI rounds up. A WinUI layout that needs the round-up adds 0.01 (padding 15.01).
