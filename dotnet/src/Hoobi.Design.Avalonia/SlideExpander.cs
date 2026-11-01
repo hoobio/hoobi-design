@@ -56,8 +56,8 @@ public sealed class SlideExpander : Decorator
         Height = to;
         var slide = new Animation
         {
-            Duration = Motion.Duration,
-            Easing = Motion.Standard,
+            Duration = Motion.Expand,
+            Easing = expand ? Motion.Decelerate : Motion.Accelerate,
             Children =
             {
                 new KeyFrame { Cue = new Cue(0), Setters = { new Setter(HeightProperty, from) } },

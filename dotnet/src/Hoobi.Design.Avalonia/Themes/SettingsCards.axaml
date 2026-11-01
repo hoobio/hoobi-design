@@ -20,6 +20,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
+                        <StackPanel>
                         <Border
                             x:Name="PART_Fill"
                             Background="{TemplateBinding Background}"
@@ -61,14 +62,20 @@
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                                 <TextBlock
+                                    x:Name="PART_Chevron"
                                     Grid.Column="3"
                                     Classes="Glyph"
+                                    RenderTransform="rotate(0deg)"
                                     Margin="14,0,0,0"
                                     FontSize="14"
                                     Text="{TemplateBinding ActionGlyph}"
                                     IsVisible="{TemplateBinding ActionGlyph, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                             </Grid>
                         </Border>
+                        <hoobi:SlideExpander x:Name="PART_Slide">
+                            <ContentPresenter Content="{TemplateBinding ExpandedContent}" />
+                        </hoobi:SlideExpander>
+                        </StackPanel>
                     </Border>
                 </ControlTemplate>
             </Setter>
@@ -76,7 +83,13 @@
                 <Setter Property="ActionGlyph" Value="{StaticResource Glyph.ChevronDown}" />
             </Style>
             <Style Selector="^:expanded">
-                <Setter Property="ActionGlyph" Value="{StaticResource Glyph.ChevronUp}" />
+                <Setter Property="ActionGlyph" Value="{StaticResource Glyph.ChevronDown}" />
+            </Style>
+            <Style Selector="^:expanded /template/ TextBlock#PART_Chevron">
+                <Setter Property="RenderTransform" Value="rotate(180deg)" />
+            </Style>
+            <Style Selector="^:expanded /template/ hoobi|SlideExpander#PART_Slide">
+                <Setter Property="IsExpanded" Value="True" />
             </Style>
             <Style Selector="^[IsClickEnabled=True]:pointerover /template/ Border#PART_Fill">
                 <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />

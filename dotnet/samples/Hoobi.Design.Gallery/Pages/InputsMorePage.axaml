@@ -40,17 +40,18 @@
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="24,0,0,0" Spacing="8" MaxWidth="560" HorizontalAlignment="Left">
                 <TextBlock Classes="GroupHeader" Text="SettingsCard IsExpanded, SettingsCard.Item" />
                 <hoobi:SettingsCard Header="Professions" Description="Collapsed" HeaderGlyph="{StaticResource Glyph.Library}" IsClickEnabled="True" IsExpanded="False" />
-                <Border CornerRadius="{StaticResource ControlCornerRadius}" ClipToBounds="True">
-                    <StackPanel>
-                        <hoobi:SettingsCard Header="Installs" Description="Expanded" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" IsExpanded="True" CornerRadius="0" BorderThickness="0" />
-                        <hoobi:SettingsCard Classes="Item" Header="Retail" Description="D:\Games\World of Warcraft\_retail_">
-                            <Button Classes="Small" Content="Remove" />
-                        </hoobi:SettingsCard>
-                        <hoobi:SettingsCard Classes="Item" Header="Classic" Description="D:\Games\World of Warcraft\_classic_">
-                            <Button Classes="Small" Content="Remove" />
-                        </hoobi:SettingsCard>
-                    </StackPanel>
-                </Border>
+                <hoobi:SettingsCard Header="Installs" Description="Expanded" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" IsExpanded="True">
+                    <hoobi:SettingsCard.ExpandedContent>
+                        <StackPanel>
+                            <hoobi:SettingsCard Classes="Item" Header="Retail" Description="D:\Games\World of Warcraft\_retail_">
+                                <Button Classes="Small" Content="Remove" />
+                            </hoobi:SettingsCard>
+                            <hoobi:SettingsCard Classes="Item" Header="Classic" Description="D:\Games\World of Warcraft\_classic_">
+                                <Button Classes="Small" Content="Remove" />
+                            </hoobi:SettingsCard>
+                        </StackPanel>
+                    </hoobi:SettingsCard.ExpandedContent>
+                </hoobi:SettingsCard>
                 <TextBlock Classes="GroupHeader" Text="StackPanel.SettingsGroup > ContentPresenter (FirstVisible, LastVisible)" />
                 <ItemsControl>
                     <ItemsControl.ItemsPanel>

@@ -1,9 +1,11 @@
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Automation.Provider;
 using Avalonia.Data;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
@@ -20,6 +22,8 @@ public class SettingsCard : ContentControl
     public static readonly StyledProperty<string?> HeaderGlyphProperty = AvaloniaProperty.Register<SettingsCard, string?>(nameof(HeaderGlyph));
 
     public static readonly StyledProperty<string?> ActionGlyphProperty = AvaloniaProperty.Register<SettingsCard, string?>(nameof(ActionGlyph));
+
+    public static readonly StyledProperty<object?> ExpandedContentProperty = AvaloniaProperty.Register<SettingsCard, object?>(nameof(ExpandedContent));
 
     public static readonly StyledProperty<bool> IsClickEnabledProperty = AvaloniaProperty.Register<SettingsCard, bool>(nameof(IsClickEnabled));
 
@@ -75,6 +79,12 @@ public class SettingsCard : ContentControl
         set => SetValue(ActionGlyphProperty, value);
     }
 
+    public object? ExpandedContent
+    {
+        get => GetValue(ExpandedContentProperty);
+        set => SetValue(ExpandedContentProperty, value);
+    }
+
     public bool IsClickEnabled
     {
         get => GetValue(IsClickEnabledProperty);
@@ -85,6 +95,15 @@ public class SettingsCard : ContentControl
     {
         get => GetValue(IsExpandedProperty);
         set => SetValue(IsExpandedProperty, value);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (e.NameScope.Find<Visual>("PART_Chevron") is { } chevron && Motion.Enabled)
+        {
+            chevron.Transitions = [new TransformOperationsTransition { Property = RenderTransformProperty, Duration = Motion.Expand, Easing = Motion.Standard }];
+        }
     }
 
     internal void RaiseClick()

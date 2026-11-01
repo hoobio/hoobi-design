@@ -37,9 +37,51 @@ public sealed class PackageStylesTests(AvaloniaSession session)
             card.RaiseClick();
             AvaloniaSession.Pump();
             Assert.True(card.IsExpanded);
-            Assert.Equal(AvaloniaSession.Resource<string>("Glyph.ChevronUp"), card.ActionGlyph);
+            Assert.Equal(AvaloniaSession.Resource<string>("Glyph.ChevronDown"), card.ActionGlyph);
             var fill = card.GetVisualDescendants().OfType<Border>().Single(border => border.Name == "PART_Fill");
             Assert.Equal(AvaloniaSession.Resource<ISolidColorBrush>("HoobiSettingsExpandedHeaderBrush").Color, Assert.IsAssignableFrom<ISolidColorBrush>(fill.Background).Color);
+        }
+        finally
+        {
+            window.Close();
+        }
+    });
+
+    [Fact]
+    public void An_expanding_settings_card_slides_its_rows_open_and_closed() => session.Run(() =>
+    {
+        var card = new SettingsCard
+        {
+            Header = "Installs",
+            IsClickEnabled = true,
+            IsExpanded = false,
+            ExpandedContent = new Border { Height = 120 },
+        };
+        var window = Host(card);
+        try
+        {
+            var slide = card.GetVisualDescendants().OfType<SlideExpander>().Single();
+            AvaloniaSession.Pump();
+            Assert.Equal(0, slide.Bounds.Height);
+
+            card.RaiseClick();
+            var heights = new List<double>();
+            AvaloniaSession.WaitFor(() =>
+            {
+                AvaloniaSession.Pump(1);
+                heights.Add(slide.Bounds.Height);
+                return slide.Bounds.Height >= 120;
+            });
+            Assert.Contains(heights, height => height > 0 && height < 120);
+            AvaloniaSession.Pump();
+            Assert.Equal(120, slide.Bounds.Height);
+
+            card.RaiseClick();
+            AvaloniaSession.WaitFor(() =>
+            {
+                AvaloniaSession.Pump(1);
+                return slide.Bounds.Height == 0;
+            });
         }
         finally
         {
