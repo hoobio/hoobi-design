@@ -3,7 +3,7 @@
   "version": "0.53.4",
   "description": "Ayu Mirage dark-only React components and design tokens for Hoobi apps.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=22"
   },
