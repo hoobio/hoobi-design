@@ -1,6 +1,6 @@
 # @hoobi/design
 
-React components and design tokens for Hoobi apps.
+React components and design tokens for Hoobi apps. `dotnet/` holds the Avalonia theme and Windows helpers for the Hoobi desktop apps, published as the NuGet packages `Hoobi.Design.Avalonia`, `Hoobi.Design.Avalonia.Testing` and `Hoobi.Desktop.Windows`. See `AGENTS.md`.
 
 > **Design identity.** hoobi-design is a **dark-mode-preference** library using the **Ayu Mirage**
 > colour scheme heavily, with components, fonts and spacing **heavily influenced by WinUI 3
@@ -92,4 +92,4 @@ git push --follow-tags
 ```
 
 The `v*` tag fires the `hoobi-design` pipeline, which typechecks, builds, guards that the tag
-matches `package.json`, and publishes to the Hoobi feed.
+matches `package.json`, and publishes to the Hoobi feed. The same tag packs and pushes the three NuGet packages.

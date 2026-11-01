@@ -15,10 +15,12 @@ stays zero-dependency; one-off glyphs drawn by hand follow the 20px grid with 1.
 on the Fluent easing tokens (`--ease-decelerate` entering, `--ease-accelerate` leaving,
 `--ease-standard` in place; 150/250/300ms), layout on the 4px grid with 48px chrome heights.
 
-React component library and design tokens for Hoobi apps. Hanken Grotesk for text, Dank Mono for code.
-Published to the ADO Artifacts `Hoobi` feed and consumed by mendarr (and whatever comes next).
+React component library and design tokens for Hoobi apps, with an Avalonia theme and three NuGet packages for the Hoobi desktop apps (`dotnet/`). Hanken Grotesk for text, Dank Mono for code on the web.
+Published to the ADO Artifacts `Hoobi` feed (npm and NuGet) and consumed by mendarr on the web and by steward-companion, earmark and command-palette-bitwarden on the desktop.
 
-Zero runtime dependencies. Peer deps only: react >=19, react-dom >=19, tailwindcss >=4.3.
+The npm package has zero runtime dependencies. Peer deps only: react >=19, react-dom >=19, tailwindcss >=4.3.
+
+`Hoobi.Design.Avalonia` depends on Avalonia 12.1.4 and FluentAvaloniaUI 3.1.0. `Hoobi.Design.Avalonia.Testing` depends on Avalonia.Headless. `Hoobi.Desktop.Windows` has no package dependencies.
 
 ## Layout
 
@@ -27,6 +29,14 @@ styles.css                       # tokens (@theme static), @font-face, base laye
 fonts/                           # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2)
 src/*.tsx                        # one component per file, re-exported from src/index.ts
 catalog/                         # hand-rolled Vite reference page (see below)
+dotnet/                          # Hoobi.Design.slnx: the Avalonia theme, the Windows helpers, their tests and the gallery
+  src/Hoobi.Design.Avalonia/         # HoobiTheme (Themes/*.axaml), controls, fonts, buildTransitive props and targets
+  src/Hoobi.Design.Avalonia.Testing/ # HoverFlashProbe, TextCentring, HeadlessSession
+  src/Hoobi.Desktop.Windows/         # Store updates, start at sign-in, restart registration, single instance, watchdog
+  samples/Hoobi.Design.Gallery/      # the native catalog
+  tests/                             # one test project per package
+  build-tokens.mjs                   # styles.css to Themes/Tokens.axaml
+  tools/Measure-Memory.ps1           # working set sampler
 operations/pipelines/publish.yaml
 ```
 
@@ -297,6 +307,8 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
 | Title bar       | With custom `TitleBar.RightHeader` content, keep the non-client Passthrough region in sync yourself: the `TitleBar` control only recomputes its passthrough hole on its own `SizeChanged`, so content added, removed or resized inside `RightHeader` after that (a button appearing, a picker collapsing) leaves the hole stale and a click there drags the window instead of hitting the control. Recompute it on every layout change and on window activation. Verify a title-bar-region click by checking the passthrough region itself, not by driving the control with UI Automation's Invoke pattern, which bypasses non-client hit testing entirely and passes even when the region is wrong. |
 | Flyout buttons  | A button that opens a flyout, clicked while its window is inactive, needs the click deferred past activation settling (a flyout shown mid-activation opens then immediately closes); set an `OverlayInputPassThroughElement` so a click on another title-bar control switches flyouts in one click instead of two (close, then reopen); and ignore a reopen of the same flyout within roughly 300ms of it closing, since the overlay's dismissing press is what the pass-through delivers to the button, and without the guard that same click reopens what it just closed. |
 
+The Avalonia package encodes the Flyouts/menus and Dialogs rows in `Themes/Controls.axaml`, `Themes/Dialogs.axaml` and `AppDialogs` (see Avalonia packages). The Title bar row is WinUI specific; the Avalonia title bar is `HoobiWindowDecorations` with `ElementRole`.
+
 `--spacing: 4px` means every Tailwind spacing utility is `n * 4px`. Reach for the WinUI grid values
 (4 / 8 / 12 / 16 / 24 / 32) rather than odd numbers.
 
@@ -320,29 +332,106 @@ double-signalling a state that the border or the ring already shows.
 - Tone semantics: `warn` (yellow) = paused, a person must act; `success` (green) = done, the fix
   landed; `danger` = failure; `info` = in progress / informational.
 
-## Native ports (Avalonia)
+## Avalonia packages
 
-Steward and Earmark draw this design system natively in Avalonia, with styles that mirror the tokens
-in `styles.css`. These rules hold for every native port.
+`dotnet/` (`Hoobi.Design.slnx`) holds three NuGet packages. One `v*` tag publishes them with the npm package (see Publish process).
 
-- A state change animated by a `BrushTransition` goes between two brushes of the same RGB. A clear
-  rest state is the target colour at alpha 0 (`#00242936` under a `surface-raised` hover), not
-  `Transparent` or `#00FFFFFF`. Avalonia interpolates brush colours with straight (not
-  premultiplied) alpha, so a fade from clear white to an opaque Mirage colour passes through a
-  lighter colour, and the control flashes white on hover or press.
-- FluentAvalonia's clear theme brushes are white (`#00FFFFFF`, `SubtleFillColorTransparentBrush`).
-  A port that sets a hover or pressed brush to an opaque token also sets the matching rest brush.
-- Each native port has a headless guard test before its first page ships. The test walks the shell,
-  each page, each flyout and a gallery of the control types and button themes the app uses,
-  applies `:pointerover` and `:pressed`, and fails when a `BrushTransition` frame composited over
-  `bg` is lighter than both of its ends. The reference implementation is `FlyoutTests` in
-  steward-companion (`tests/Steward.Desktop.Tests/FlyoutTests.cs`); a new port copies it.
+| Package                         | Contents                                                                                                                                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Hoobi.Design.Avalonia`         | `HoobiTheme` (tokens, control themes, dialogs, settings cards, glyphs), the fonts, `UseHoobiDesign`, `AppDialogs`, `ColorShade`, `IdleMemory`, `ToastWindow`, `ForegroundGate`, `TrayMenuFocus`, `DialogIntent`, and the buildTransitive props and targets |
+| `Hoobi.Design.Avalonia.Testing` | `HoverFlashProbe`, `TextCentring`, `HeadlessSession`                                                                                                                                                                                  |
+| `Hoobi.Desktop.Windows`         | Windows plumbing (see Windows desktop apps)                                                                                                                                                                                           |
+
+### Consumer setup
+
+- `Directory.Packages.props` pins `Hoobi.Design.Avalonia`, `Hoobi.Desktop.Windows` and (in test projects) `Hoobi.Design.Avalonia.Testing` to exact versions. Avalonia and FluentAvaloniaUI are pinned to the versions the library uses.
+- `nuget.config` lists nuget.org and the Hoobi feed (`https://pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/nuget/v3/index.json`). A `packageSourceMapping` maps `Hoobi.*` to the Hoobi feed and `*` to nuget.org.
+- `App.axaml` holds `<hoobi:HoobiTheme />` in `Application.Styles` (`xmlns:hoobi="using:Hoobi.Design.Avalonia"`) and `RequestedThemeVariant="Dark"`.
+- The `AppBuilder` calls `.UseHoobiDesign()`. It registers the font collection, the emoji fallback, popup placement, the scroll indicator and the dialog resource scope.
+- A window with the Hoobi title bar sets `ExtendClientAreaToDecorationsHint="True"`, `ExtendClientAreaTitleBarHeightHint="{StaticResource TitleBarHeight}"` and `WindowDecorationsTheme` to `HoobiWindowDecorations` (minimise, maximise, close) or `HoobiCloseOnlyDecorations`. The drag area carries `chrome:WindowDecorationProperties.ElementRole="TitleBar"`. Content that takes clicks or a right-click (buttons, a picker) carries `ElementRole="User"`.
+
+### Tokens and native divergences
+
+`dotnet/build-tokens.mjs` generates `Themes/Tokens.axaml` from the `@theme static` block of `styles.css` (`node dotnet/build-tokens.mjs`). `check.mjs` fails when `Tokens.axaml` is stale. Hand edits to `Tokens.axaml` are lost on the next generation.
+
+The native theme differs from the web in these places:
+
+- Type sizes follow WinUI: caption 12, control content 13, body 14.
+- Code and keys use Cascadia Mono. Dank Mono is for the web.
+- Hanken Grotesk ships as static Regular, SemiBold and Bold TTFs, because Avalonia 12 does not map `FontWeight` onto a variable font's `wght` axis.
+- Text on an accent fill is `#181C26`.
+
+Value keys carry the `Hoobi` prefix (`HoobiBgBrush`, `HoobiAccentColor`). Control themes and resources that override FluentAvalonia or WinUI keep the WinUI names (`TitleBarHeight`, `CaptionTextBlockFontSize`).
+
+A button with its own fill takes the `Tinted` class. The hover and pressed fills come from `ColorShade.Hover` and `ColorShade.Pressed`, which mix the fill towards `HoobiBgColor`.
+
+### Gallery
+
+`samples/Hoobi.Design.Gallery` is the native catalog: every style key and control theme the package ships is on a page. `GalleryTests` renders every page, each open popup, the toast window and the window decorations to PNG files when `HOOBI_GALLERY_PNG_DIR` names a folder. Changed styles are looked at in those PNGs before commit, as the web catalog is looked at in the browser.
+
+### Consistency enforcement
+
+The `buildTransitive` targets run before `CoreCompile` in every consuming project and fail the build on:
+
+- `HOOBI001`: a literal colour in an `.axaml` file (hex, or a named colour in a colour property or setter). `Transparent` is allowed as a hit-test fill. A literal needs `<!-- hex-ok: reason -->` on the line above.
+- `HOOBI002`: an `x:Key` that the package already defines. The list of package-owned keys is generated when the package is packed.
+
+`HoobiDesignChecks=false` turns both checks off for a project. `HoobiDesignChecksExclude` removes named `.axaml` files from them.
+
+Every consumer runs `HoverFlashProbe` over its own pages and popups in its tests. Consumers stay on the current package version through Renovate. The rule in Library-only changes (library components are not mutated or restyled inside a consuming service) applies to native apps in full.
+
+### Hover and press rules
+
+- A state change animated by a `BrushTransition` goes between two brushes of the same RGB. A clear rest state is the target colour at alpha 0 (`#00242936` under a `surface-raised` hover), not `Transparent` or `#00FFFFFF`. Avalonia interpolates brush colours with straight (not premultiplied) alpha, so a fade from clear white to an opaque Mirage colour passes through a lighter colour, and the control flashes white on hover or press.
+- FluentAvalonia's clear theme brushes are white (`#00FFFFFF`, `SubtleFillColorTransparentBrush`). A style that sets a hover or pressed brush to an opaque token also sets the matching rest brush.
+- `HoverFlashProbe.Probe(root)` and `HoverFlashProbe.ProbePopups(top)` (from `Hoobi.Design.Avalonia.Testing`) apply `:pointerover` and `:pressed` to each templated control and report every `BrushTransition` frame composited over `bg` that is lighter than both of its ends. Every app runs it over the shell, each page, each flyout and the control types and button themes it uses, before its first page ships.
+
+### Memory
+
+`Hoobi.Design.Avalonia` ships GC defaults through its `buildTransitive` props:
+
+- `System.GC.Concurrent=false`, applied when the project does not set `ConcurrentGarbageCollection`.
+- `System.GC.ConserveMemory=5`.
+- `System.GC.Gen0MaxBudget=8388608` (8 MB). Without a cap the runtime sizes the gen0 budget from the L3 cache.
+
+An app overrides `Concurrent` with `<ConcurrentGarbageCollection>` in the project file, and `ConserveMemory` or `Gen0MaxBudget` with `<RuntimeHostConfigurationOption Update="System.GC.ConserveMemory" Value="7" />`. `HoobiDesignGcDefaults=false` removes all three.
+
+`IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds). It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
+
+Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the private working set, as Task Manager shows it. Measure with the app in the tray, and record the figures before and after a change in the app's `AGENTS.md`. Steward's reference figures: 4 to 15 MB private working set in the tray between passes against 128 MB before trimming, 7 to 14 ms of GC pause per trim, and about 100 MB of committed private bytes (Skia, ANGLE, the runtime) unchanged.
+
+### Avalonia and Windows rules
+
+- In Avalonia 12 a template's own value outranks a style setter that has no pseudo-class. Target the template part (`/template/ ContentPresenter#PART_ContentPresenter`).
+- An unscoped `Button:pointerover` override reaches the buttons inside flyouts. Name the element (`Button.Tinted:pointerover /template/ ContentPresenter#PART_ContentPresenter`).
+- A `Button.Flyout` closes on a second press of its button. An `AttachedFlyout` opened from `Click` does not.
+- Animate `RenderTransform`. Animating the `TranslateTransform` object throws `InvalidCastException`.
+- A `StyledProperty` change callback does not assign an inner `DataContext`.
+- Compiled bindings need `x:DataType` on the element or an ancestor.
+- Avalonia rounds .5 to even where WinUI rounds up. A WinUI layout that needs the round-up adds 0.01 (padding 15.01).
+- Variable fonts do not render per weight. Ship static TTFs.
+- FluentAvalonia resource names clash with unprefixed app keys. App keys carry the `Hoobi` prefix and are referenced with `StaticResource`.
+- Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), and shorten the open fade.
+- Avalonia's `Button.OnKeyUp` clicks on a Space key-up with no key-down, so a key held over from before a dialog opened can confirm it. `DialogIntent` (applied by `AppDialogs`) counts a press when its key-down came after the dialog opened.
+- A tray menu opens without focus; `TrayMenuFocus` gives it focus. `SetForegroundWindow` is refused to a process that did not receive the last input, and a tray click goes to Explorer, so `ForegroundGate.ForceForeground` borrows Explorer's input queue for the call.
+- An app that closes to the tray handles `WM_ENDSESSION` by quitting.
+- Hiding a window before the minimise animation ends cancels the animation.
+- The window is cloaked (DWM) until its first frame is composed, then uncloaked two animation frames later. Without it a white frame shows on open.
+- WinUI keeps the 1px top resize border outside its client area, and an extended client area draws over it. The shell content sits 1px down (`Margin.Top` of 1), and `AppDialogs` reads that margin to centre the dialog panel.
+- Drawn caption buttons are siblings of the window under its host, so a `Window:inactive` selector never matches them. The app sets an inactive class on them on open, activation and deactivation. Moving onto a caption button from the client area ends client tracking with a `WM_MOUSELEAVE` that clears the hover, so the window procedure hook posts a `WM_NCMOUSEMOVE` for the cursor position when `WM_MOUSELEAVE` arrives over a caption button.
+- A toast window is `WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW` and places itself by `PixelRect` per monitor. `ToastWindow` does both.
+- The first real window pays about 250 ms to load XAML. A hidden throwaway window created at startup pre-loads it.
+- `Microsoft.Win32.Registry` as a `PackageReference` fails with NU1510. The type is in the framework.
+- CommunityToolkit `[ObservableProperty]` on a field raises MVVMTK0045. Use partial properties.
+- FluentAvaloniaUI pulls in DataGrid, which is not trim-safe (IL2104). A trimmer run that trims nothing still lets `publish-clean` delete native DLLs.
+- Tests run with `dotnet test --project <csproj>`.
+- `Dispatcher.UIThread.RunJobs` does not fire dispatcher timers. A headless session pumps the dispatcher by hand (`HeadlessSession.Pump`, `HeadlessSession.WaitFor`).
+- Two target frameworks run test processes at the same time. Each test uses its own temp folder.
+- A `Mutex` is re-entrant on its owning thread. A single-instance test acquires the second instance on its own `Thread`.
 
 ## Windows desktop apps (.NET)
 
-Every .NET Windows desktop app in the Hoobi family (Steward, Earmark, and new ones) ships the same
-update and sign-in behaviour. The reference implementations are `WindowsStore.Windows.cs` in
-steward-companion and `Services/StoreUpdates.cs` and `StartupSettingsApplier.cs` in earmark.
+Every .NET Windows desktop app in the Hoobi family (Steward, Earmark, and new ones) ships the same update and sign-in behaviour. `Hoobi.Desktop.Windows` holds it: `StoreUpdater` (scan, check, install, restart registration), `StartAtSignIn` (startup task or Run value), `RestartRegistration`, `GitHubReleaseChecker`, `SingleInstance` (one process, a second launch shows the first), and `UiWatchdog` (restarts the app when the UI thread stops responding; `--restart-after=`). An app uses these types and does not copy them. The Bitwarden command palette companion has no Store or start-at-sign-in code and is exempt from this section.
 
 - A packaged (Microsoft Store) release build checks for updates through the Store, not GitHub. It
   runs `AppInstallManager.SearchForUpdatesAsync(<product id>, "")` first, because `StoreContext`
@@ -405,10 +494,22 @@ pnpm -C catalog dev      # Vite on :5173
 Open each changed page, check spacing/alignment/tones at desktop width and at 360px, and only then
 commit. A component that was never rendered is not verified.
 
+The .NET side builds and tests from `dotnet/`:
+
+```bash
+dotnet build Hoobi.Design.slnx -c Release
+dotnet test --project tests/Hoobi.Design.Avalonia.Tests -c Release
+dotnet test --project tests/Hoobi.Desktop.Windows.Tests -c Release
+dotnet pack src/Hoobi.Design.Avalonia -c Release -o artifacts   # likewise Hoobi.Design.Avalonia.Testing and Hoobi.Desktop.Windows
+HOOBI_GALLERY_PNG_DIR=<folder> dotnet test --project tests/Hoobi.Design.Avalonia.Tests -c Release   # gallery PNGs
+```
+
+A change to `.axaml`, a control theme or a native token is verified in the gallery PNGs as well: open each changed page's PNG and check spacing, alignment and tones, as for the web catalog. A style that was never rendered is not verified.
+
 `pnpm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
 literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
 lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
-in `catalog/src/pages.tsx`.
+in `catalog/src/pages.tsx`. It also fails when `Themes/Tokens.axaml` is stale against `styles.css`.
 
 Sanity-check token to utility generation after touching `styles.css`:
 
@@ -467,7 +568,9 @@ git push --follow-tags
 
 The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`, definition 23, Home
 Lab pool): npmAuthenticate -> pnpm install --frozen-lockfile -> typecheck -> build -> guard that the tag matches
-`package.json` version -> publish, skipped when that version is already on the feed.
+`package.json` version -> publish, skipped when that version is already on the feed. The same run then installs the .NET SDK, runs `dotnet test` on `Hoobi.Design.Avalonia.Tests` (the Windows test project cannot run on the Linux agent), packs the three projects with `-p:Version=<tag version>` and pushes the `.nupkg` files with `--skip-duplicate`. The NuGet version comes from `package.json` (`dotnet/Directory.Build.props`), so one bump releases npm and NuGet together.
+
+Consumers on GitHub Actions need an ADO PAT secret with Packaging (Read) for `dotnet restore`: the Hoobi feed rejects anonymous restore with 401.
 
 ADO feed versions are immutable: a wrong publish consumes the version number permanently, which the
 tag guard checks against. The build step is explicit rather than leaning on `prepublishOnly`,
