@@ -41,10 +41,9 @@ so one release publishes npm and NuGet together. The `publish` job runs `dotnet 
 Before the release PR merges, `dotnet build dotnet/Hoobi.Design.slnx -c Release` and the Avalonia
 and Windows test projects pass locally.
 
-Verify the packages landed (read-only, Hoobi org token from `~/.azure-profile`):
+Verify the packages landed (read-only, an `az` session signed in to the Hoobi org):
 
 ```powershell
-$env:AZURE_CONFIG_DIR = "$env:USERPROFILE\.azure-profile"
 $t = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv
 Invoke-RestMethod -Headers @{Authorization="Bearer $t"} -Uri 'https://feeds.dev.azure.com/Hoobi/Hoobi/_apis/packaging/Feeds/Hoobi/packages?protocolType=NuGet&packageNameQuery=Hoobi&api-version=7.1' | % value | % { "$($_.name) $($_.versions.version)" }
 ```
@@ -53,7 +52,4 @@ All three names must list the new version. Do not repin consumers before they do
 
 Avalonia consumers (steward-companion, earmark, command-palette-bitwarden): bump
 `Hoobi.Design.Avalonia` and `Hoobi.Desktop.Windows` in their `Directory.Packages.props` to the new
-version. Their GitHub Actions restore authenticates through OIDC: the Entra app
-`hoobi-github-ado-artifacts` (Hoobi tenant, Contributor on the feed, federated for every `hoobio`
-repo) with the repo secrets `ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID` and `ADO_HOOBI_TENANT_ID`. The
-Hoobi feed rejects anonymous restore with 401.
+version. Restore authenticates by OIDC with repository secrets; see the consumer repos.
