@@ -1,6 +1,6 @@
 import { useId, useMemo, useState, type ReactNode } from 'react';
 import { cx } from './cx.js';
-import { cronRuns, formatCronRelative, formatCronRun } from './cron.js';
+import { cronRuns, describeCron, formatCronRelative, formatCronRun } from './cron.js';
 import { FieldLabel } from './FieldLabel.js';
 import { ChevronIcon } from './icons.js';
 
@@ -145,6 +145,9 @@ export function CronInput({
         </p>
       ) : (
         <div className="flex flex-col gap-0.5">
+          <span className="text-caption text-text">
+            {describeCron(value) ?? <code>{value}</code>}
+          </span>
           <span className="text-caption text-text-mute">
             next {result.runs?.length === 1 ? 'run' : `${String(result.runs?.length ?? 0)} runs`}
           </span>

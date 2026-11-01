@@ -29,6 +29,7 @@ import {
   Rating,
   ReorderGrip,
   ReorderList,
+  RepeatList,
   RichTooltip,
   Section,
   Select,
@@ -2467,6 +2468,217 @@ export function ReorderListPage() {
             "Accessible name for a row's handle, and the name the live region announces.",
           ],
           ['label', 'string', 'undefined', 'aria-label for the list.'],
+        ]}
+      />
+    </>
+  );
+}
+
+interface Policy {
+  path: string;
+  audio: string;
+  subtitle: string;
+}
+
+interface Rule {
+  field: string;
+  op: string;
+  value: string;
+}
+
+export function RepeatListPage() {
+  const [policies, setPolicies] = useState<Policy[]>([
+    { path: '/media/anime/series', audio: 'jpn', subtitle: 'eng' },
+    { path: '/media/anime/movies', audio: 'jpn', subtitle: 'eng' },
+  ]);
+  const [rules, setRules] = useState<Rule[]>([
+    { field: 'status', op: 'eq', value: 'completed' },
+    { field: 'sizeLeft', op: 'eq', value: '0' },
+  ]);
+  return (
+    <>
+      <Import names="RepeatList" />
+      <Demo
+        title="One row of controls per item"
+        note="Each control passes hideLabel; the column labels are drawn once, at the cells' own widths. sm holds a code and does not grow, lg takes twice md's share of the rest. Narrow the window: a row wraps onto a second line instead of squeezing every control."
+        stack
+        code={`<RepeatList
+  items={policies}
+  onChange={setPolicies}
+  newItem={() => ({ path: '', audio: '', subtitle: '' })}
+  columns={['Folder', 'Audio', 'Subtitle']}
+  addLabel="Add folder"
+  minItems={1}
+  cells={(p, update) => [
+    { key: 'path', size: 'lg', node: <Input label="Folder" hideLabel mono value={p.path} onChange={(e) => update({ ...p, path: e.target.value })} /> },
+    { key: 'audio', size: 'sm', node: <Input label="Audio" hideLabel mono value={p.audio} onChange={...} /> },
+    { key: 'subtitle', size: 'sm', node: <Input label="Subtitle" hideLabel mono value={p.subtitle} onChange={...} /> },
+  ]}
+/>`}
+      >
+        <div className="w-full max-w-120">
+          <RepeatList
+            items={policies}
+            onChange={setPolicies}
+            newItem={() => ({ path: '', audio: '', subtitle: '' })}
+            columns={['Folder', 'Audio', 'Subtitle']}
+            addLabel="Add folder"
+            minItems={1}
+            removeLabel={(p) => `Remove ${p.path || 'folder'}`}
+            cells={(p, update) => [
+              {
+                key: 'path',
+                size: 'lg',
+                node: (
+                  <Input
+                    label="Folder"
+                    hideLabel
+                    mono
+                    placeholder="/media/anime/series"
+                    value={p.path}
+                    onChange={(e) => {
+                      update({ ...p, path: e.target.value });
+                    }}
+                  />
+                ),
+              },
+              {
+                key: 'audio',
+                size: 'sm',
+                node: (
+                  <Input
+                    label="Audio"
+                    hideLabel
+                    mono
+                    placeholder="jpn"
+                    value={p.audio}
+                    onChange={(e) => {
+                      update({ ...p, audio: e.target.value });
+                    }}
+                  />
+                ),
+              },
+              {
+                key: 'subtitle',
+                size: 'sm',
+                node: (
+                  <Input
+                    label="Subtitle"
+                    hideLabel
+                    mono
+                    placeholder="eng"
+                    value={p.subtitle}
+                    onChange={(e) => {
+                      update({ ...p, subtitle: e.target.value });
+                    }}
+                  />
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Demo>
+      <Demo
+        title="Conditions, with no header"
+        note="Without columns the placeholders and the options say what each control is. Inside a 360px panel the field and the test share the first line and the value takes the second."
+        stack
+        code={`<RepeatList items={rules} onChange={setRules} addLabel="Add condition" cells={(r, update) => [
+  { key: 'field', size: 'lg', node: <Select label="Field" hideLabel ... /> },
+  { key: 'op', node: <Select label="Test" hideLabel ... /> },
+  { key: 'value', node: <Input label="Value" hideLabel ... /> },
+]} />`}
+      >
+        <div className="w-full max-w-90 rounded-panel bg-surface p-3">
+          <RepeatList
+            items={rules}
+            onChange={setRules}
+            newItem={() => ({ field: 'status', op: 'eq', value: '' })}
+            addLabel="Add condition"
+            minItems={1}
+            cells={(r, update) => [
+              {
+                key: 'field',
+                size: 'lg',
+                node: (
+                  <Select
+                    label="Field"
+                    hideLabel
+                    value={r.field}
+                    onChange={(e) => {
+                      update({ ...r, field: e.target.value });
+                    }}
+                  >
+                    <option value="status">Status</option>
+                    <option value="sizeLeft">Size left</option>
+                    <option value="ageHours">Age (hours)</option>
+                  </Select>
+                ),
+              },
+              {
+                key: 'op',
+                node: (
+                  <Select
+                    label="Test"
+                    hideLabel
+                    value={r.op}
+                    onChange={(e) => {
+                      update({ ...r, op: e.target.value });
+                    }}
+                  >
+                    <option value="eq">is</option>
+                    <option value="ne">is not</option>
+                    <option value="gt">is more than</option>
+                  </Select>
+                ),
+              },
+              {
+                key: 'value',
+                node: (
+                  <Input
+                    label="Value"
+                    hideLabel
+                    placeholder="completed"
+                    value={r.value}
+                    onChange={(e) => {
+                      update({ ...r, value: e.target.value });
+                    }}
+                  />
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Demo>
+      <Props
+        rows={[
+          ['items', 'T[]', '-', 'The list, in order. The consumer owns it.'],
+          [
+            'onChange',
+            '(items: T[]) => void',
+            '-',
+            'The whole array after an edit, an add or a remove.',
+          ],
+          ['newItem', '() => T', '-', 'The item Add appends.'],
+          [
+            'cells',
+            '(item, update, index) => RepeatCell[]',
+            '-',
+            "One row's controls: { key, node, size? }. size is sm (fixed, a code or a number), md (default) or lg.",
+          ],
+          [
+            'columns',
+            'ReactNode[]',
+            'undefined',
+            'Labels drawn once above the rows at the cell widths.',
+          ],
+          ['addLabel', 'string', '-', 'The add button: "Add condition".'],
+          [
+            'removeLabel',
+            '(item, index) => string',
+            "'Remove row N'",
+            "A row's remove button name and tooltip.",
+          ],
+          ['minItems', 'number', '0', 'Remove is disabled while the list holds this many.'],
         ]}
       />
     </>

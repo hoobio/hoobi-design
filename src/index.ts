@@ -33,6 +33,7 @@ export {
 export { CopyField, type CopyFieldProps } from './CopyField.js';
 export {
   cronRuns,
+  describeCron,
   formatCronRelative,
   formatCronRun,
   parseCronField,
@@ -140,6 +141,12 @@ export {
   type ReorderHandleProps,
   type ReorderListProps,
 } from './ReorderList.js';
+export {
+  RepeatList,
+  type RepeatCell,
+  type RepeatCellSize,
+  type RepeatListProps,
+} from './RepeatList.js';
 export { RichTooltip, type RichTooltipProps } from './RichTooltip.js';
 export { Tooltip, type TooltipProps } from './Tooltip.js';
 export { UnsavedBar, type UnsavedBarProps } from './UnsavedBar.js';

@@ -56,6 +56,50 @@ export function parseCronField(field: string, min: number, max: number): Set<num
   return out;
 }
 
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const pad = (n: number) => String(n).padStart(2, '0');
+const num = (field: string, min: number, max: number): number | null => {
+  if (!/^\d+$/.test(field)) return null;
+  const n = Number(field);
+  return n >= min && n <= max ? n : null;
+};
+const every = (field: string): number | null => {
+  if (field === '*') return 1;
+  const step = /^\*\/(\d+)$/.exec(field);
+  return step && Number(step[1]) > 0 ? Number(step[1]) : null;
+};
+
+/**
+ * Plain words for the common shapes: `20 5 * * *` is "Every day at 05:20", `10 *​/6 * * *`
+ * "Every 6 hours at :10". Null for anything else, so the caller shows the expression.
+ */
+export function describeCron(expression: string): string | null {
+  const parts = expression.trim().split(/\s+/);
+  if (parts.length !== 5) return null;
+  const [minute, hour, day, month, weekday] = parts as [string, string, string, string, string];
+  if (month !== '*') return null;
+  const m = num(minute, 0, 59);
+  const h = num(hour, 0, 23);
+  if (day === '*' && weekday === '*') {
+    if (hour === '*') {
+      const by = every(minute);
+      if (by !== null) return by === 1 ? 'Every minute' : `Every ${String(by)} minutes`;
+    }
+    if (m === null) return null;
+    if (h !== null) return `Every day at ${pad(h)}:${pad(m)}`;
+    const hours = every(hour);
+    if (hours === null) return null;
+    return hours === 1 ? `Every hour at :${pad(m)}` : `Every ${String(hours)} hours at :${pad(m)}`;
+  }
+  if (m === null || h === null) return null;
+  const at = `${pad(h)}:${pad(m)}`;
+  const wd = num(weekday, 0, 7);
+  if (day === '*' && wd !== null) return `Every ${DAYS[wd % 7] as string} at ${at}`;
+  const d = num(day, 1, 31);
+  if (weekday === '*' && d !== null) return `On day ${String(d)} of every month at ${at}`;
+  return null;
+}
+
 /** Minutes in the search horizon: 366 days, so a yearly expression still resolves. */
 const HORIZON_MINUTES = 366 * 24 * 60;
 

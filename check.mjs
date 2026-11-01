@@ -53,6 +53,7 @@ const NON_VISUAL = new Set([
   'markFavicon',
   'tipAnchor',
   'cronRuns',
+  'describeCron',
   'parseCronField',
   'formatCronRun',
   'formatCronRelative',
