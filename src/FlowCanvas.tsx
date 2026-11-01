@@ -54,6 +54,15 @@ export interface FlowConnection {
   toPort: string;
 }
 
+export interface FlowViewport {
+  x: number;
+  y: number;
+  zoom: number;
+  width: number;
+  height: number;
+  center: { x: number; y: number };
+}
+
 export interface FlowCanvasProps {
   nodes: FlowNode[];
   edges: FlowEdge[];
@@ -61,6 +70,8 @@ export interface FlowCanvasProps {
   onSelect?: (sel: FlowSelection | null) => void;
   onMove?: (id: string, x: number, y: number) => void;
   onConnect?: (c: FlowConnection) => void;
+  /** The visible window on every pan, zoom and resize; `center` is where an added node lands in view. */
+  onViewportChange?: (view: FlowViewport) => void;
   onDelete?: (sel: FlowSelection) => void;
   readOnly?: boolean;
   /** Default fills the parent; never below 360px. */
@@ -191,11 +202,17 @@ export function labelPoint(points: Point[]): Point {
 
 /** The route when no clear one exists: out, one vertical run, in; a target behind goes under. */
 export function stepPoints(a: Point, b: Point): Point[] {
-  const x = a.x + STUB;
-  if (b.x >= a.x + STUB * 2) return [a, { x, y: a.y }, { x, y: b.y }, b];
+  const stub = stubFor(a, b);
+  const x = a.x + stub;
+  if (b.x > a.x) return [a, { x, y: a.y }, { x, y: b.y }, b];
   const y = Math.max(a.y, b.y) + STUB * 2;
-  return [a, { x, y: a.y }, { x, y }, { x: b.x - STUB, y }, { x: b.x - STUB, y: b.y }, b];
+  return [a, { x, y: a.y }, { x, y }, { x: b.x - stub, y }, { x: b.x - stub, y: b.y }, b];
 }
+
+const stubFor = (a: Point, b: Point) => {
+  const gap = b.x - a.x;
+  return gap > 0 && gap < STUB * 2 ? Math.max(8, gap / 2) : STUB;
+};
 
 type Entry = [cost: number, seq: number, state: number];
 
@@ -262,13 +279,15 @@ export function routeEdge(
   boxes: FlowBox[],
   shared: ReadonlySet<string> = new Set(),
 ): { points: Point[]; keys: string[] } | null {
-  const s = { x: a.x + STUB, y: a.y };
-  const t = { x: b.x - STUB, y: b.y };
+  const stub = stubFor(a, b);
+  const margin = Math.min(MARGIN, stub / 2);
+  const s = { x: a.x + stub, y: a.y };
+  const t = { x: b.x - stub, y: b.y };
   const walls = boxes.map((o) => ({
-    l: o.x - MARGIN,
-    r: o.x + o.w + MARGIN,
-    t: o.y - MARGIN,
-    b: o.y + o.h + MARGIN,
+    l: o.x - margin,
+    r: o.x + o.w + margin,
+    t: o.y - margin,
+    b: o.y + o.h + margin,
   }));
   const inside = (x: number, y: number) =>
     walls.some((o) => x > o.l && x < o.r && y > o.t && y < o.b);
@@ -493,6 +512,7 @@ export function FlowCanvas({
   onConnect,
   onDelete,
   readOnly = false,
+  onViewportChange,
   height,
   label = 'Flow canvas',
   className,
@@ -590,6 +610,36 @@ export function FlowCanvas({
       scale,
     });
   }, [setView]);
+
+  const [frame, setFrame] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const observer = new ResizeObserver(() => {
+      setFrame({ width: root.clientWidth, height: root.clientHeight });
+    });
+    observer.observe(root);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const onViewport = useRef(onViewportChange);
+  onViewport.current = onViewportChange;
+  useEffect(() => {
+    if (frame.width === 0) return;
+    onViewport.current?.({
+      x: view.x,
+      y: view.y,
+      zoom: view.scale,
+      width: frame.width,
+      height: frame.height,
+      center: {
+        x: snap((frame.width / 2 - view.x) / view.scale),
+        y: snap((frame.height / 2 - view.y) / view.scale),
+      },
+    });
+  }, [view, frame]);
 
   useEffect(() => {
     fit();

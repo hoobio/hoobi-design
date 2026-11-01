@@ -59,6 +59,7 @@ export {
   type FlowNode,
   type FlowPort,
   type FlowSelection,
+  type FlowViewport,
 } from './FlowCanvas.js';
 export { Input, type InputProps } from './Input.js';
 export {

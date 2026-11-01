@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Badge,
+  Button,
   Checkbox,
   FlowCanvas,
   type FlowEdge,
   type FlowNode,
   type FlowSelection,
+  type FlowViewport,
 } from '@hoobi/design';
 import { Demo, Import, Props } from './kit.js';
 
@@ -78,6 +80,25 @@ export function FlowCanvasPage() {
   const [edges, setEdges] = useState(EDGES);
   const [selected, setSelected] = useState<FlowSelection | null>(null);
   const [readOnly, setReadOnly] = useState(false);
+  const viewport = useRef<FlowViewport | null>(null);
+  const added = useRef(0);
+  const addNode = () => {
+    const center = viewport.current?.center ?? { x: 0, y: 0 };
+    const id = `added-${++added.current}`;
+    setNodes((ns) => [
+      ...ns,
+      {
+        id,
+        x: center.x - 112,
+        y: center.y - 32,
+        title: `Step ${added.current}`,
+        subtitle: 'Action',
+        inputs: [{ id: 'in' }],
+        outputs: [{ id: 'out' }],
+      },
+    ]);
+    setSelected({ kind: 'node', id });
+  };
 
   return (
     <>
@@ -95,18 +116,27 @@ export function FlowCanvasPage() {
   onMove={(id, x, y) => setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, x, y } : n)))}
   onConnect={(c) => setEdges((es) => [...es, { id: crypto.randomUUID(), ...c }])}
   onDelete={(sel) => (sel.kind === 'edge' ? removeEdge(sel.id) : removeNode(sel.id))}
+  onViewportChange={(v) => (viewport.current = v)}
   height={420}
-/>`}
+/>
+
+// Add node: drop it at the centre of what the canvas shows
+setNodes((ns) => [...ns, { id, x: viewport.current.center.x - 112, y: viewport.current.center.y - 32, ... }]);
+`}
       >
         <div className="px-2">
-          <Checkbox
-            label="readOnly"
-            checked={readOnly}
-            onChange={(e) => {
-              setReadOnly(e.target.checked);
-            }}
-            className="mb-2"
-          />
+          <div className="mb-2 flex items-center gap-3">
+            <Checkbox
+              label="readOnly"
+              checked={readOnly}
+              onChange={(e) => {
+                setReadOnly(e.target.checked);
+              }}
+            />
+            <Button size="sm" disabled={readOnly} onClick={addNode}>
+              Add node
+            </Button>
+          </div>
           <FlowCanvas
             label="Audio language workflow"
             nodes={nodes}
@@ -114,6 +144,9 @@ export function FlowCanvasPage() {
             selected={selected}
             readOnly={readOnly}
             height={420}
+            onViewportChange={(v) => {
+              viewport.current = v;
+            }}
             onSelect={setSelected}
             onMove={(id, x, y) => {
               setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, x, y } : n)));
@@ -186,6 +219,12 @@ export function FlowCanvasPage() {
             'boolean',
             'false',
             'No drag, connect or delete; select and pan still work.',
+          ],
+          [
+            'onViewportChange',
+            '(view: FlowViewport) => void',
+            '',
+            'The visible window on every pan, zoom and resize: x, y, zoom, width, height and center, the grid-snapped canvas point in the middle of the view, where an added node lands.',
           ],
           ['height', 'number | string', '100%', 'Fills the parent by default; never below 360px.'],
           ['label', 'string', 'Flow canvas', 'Names the canvas for assistive tech.'],

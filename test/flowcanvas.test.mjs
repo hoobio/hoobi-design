@@ -11,6 +11,7 @@ import {
   resolveConnection,
   roundedPath,
   routeEdge,
+  stepPoints,
   snap,
 } from '../dist/FlowCanvas.js';
 
@@ -102,6 +103,28 @@ test('a target above and behind its source is reached through the gap between th
   const { points } = routeEdge(a, b, [source, target]);
   assert.ok(points.slice(2).every((p) => p.y <= source.y));
   assert.deepEqual(points.at(-1), b);
+});
+
+test('a 40px gap between columns shrinks the stubs and keeps one vertical run in the middle', () => {
+  const source = box(0, 0);
+  const target = box(260, 32);
+  const a = portPoint(source, 220, 'out', 0);
+  const b = portPoint(target, 220, 'in', 0);
+  const { points } = routeEdge(a, b, [source, target]);
+  assert.deepEqual(
+    points.filter((p, i) => i === 0 || p.x !== points[i - 1].x || p.y !== points[i - 1].y),
+    [
+      { x: 220, y: 24 },
+      { x: 240, y: 24 },
+      { x: 240, y: 56 },
+      { x: 260, y: 56 },
+    ],
+  );
+  assert.equal(
+    roundedPath(points),
+    'M 220 24 L 232 24 Q 240 24 240 32 L 240 48 Q 240 56 248 56 L 260 56',
+  );
+  assert.equal(roundedPath(stepPoints(a, b)), roundedPath(points));
 });
 
 test('edges from one port share a trunk before they branch', () => {
