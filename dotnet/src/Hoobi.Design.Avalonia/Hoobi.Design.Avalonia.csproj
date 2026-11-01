@@ -8,16 +8,27 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <Description>Hoobi design system for Avalonia: Ayu Mirage tokens, fonts, FluentAvalonia overrides and control themes.</Description>
+    <HoobiDesignChecks>false</HoobiDesignChecks>
+    <HoobiDesignOwnedKeysOutput>$(BaseIntermediateOutputPath)Hoobi.Design.Avalonia.keys.txt</HoobiDesignOwnedKeysOutput>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="FluentAvaloniaUI" />
+    <InternalsVisibleTo Include="Hoobi.Design.Avalonia.Tests" />
   </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\Fonts\*.ttf" />
     <None Include="Assets\Fonts\*.txt" Pack="true" PackagePath="licenses\fonts\" />
+    <None Include="buildTransitive\*.props;buildTransitive\*.targets" Pack="true" PackagePath="buildTransitive\" />
+    <None Include="$(HoobiDesignOwnedKeysOutput)" Pack="true" PackagePath="buildTransitive\" Visible="false" />
   </ItemGroup>
+
+  <Import Project="buildTransitive\Hoobi.Design.Avalonia.targets" />
+
+  <Target Name="HoobiDesignOwnedKeys" BeforeTargets="CoreCompile" Inputs="@(AvaloniaXaml);buildTransitive\Hoobi.Design.Avalonia.targets" Outputs="$(HoobiDesignOwnedKeysOutput)">
+    <HoobiDesignCheck Files="@(AvaloniaXaml)" WriteKeys="$(HoobiDesignOwnedKeysOutput)" />
+  </Target>
 
 </Project>

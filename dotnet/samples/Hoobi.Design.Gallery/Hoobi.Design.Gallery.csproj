@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\src\Hoobi.Design.Avalonia\buildTransitive\Hoobi.Design.Avalonia.props" />
+
   <PropertyGroup>
+    <HoobiDesignOwnedKeys>$(MSBuildThisFileDirectory)..\..\src\Hoobi.Design.Avalonia\obj\Hoobi.Design.Avalonia.keys.txt</HoobiDesignOwnedKeys>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -10,6 +13,12 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
     <ProjectReference Include="..\..\src\Hoobi.Design.Avalonia\Hoobi.Design.Avalonia.csproj" />
+    <!-- The title bar's Transparent fill is the hit-test surface for window dragging, not a colour choice. -->
+    <HoobiDesignChecksExclude Include="MainWindow.axaml" />
+    <!-- The Tinted demo shows a consumer-supplied arbitrary hex fill on purpose. -->
+    <HoobiDesignChecksExclude Include="Pages\ButtonsPage.axaml" />
   </ItemGroup>
+
+  <Import Project="..\..\src\Hoobi.Design.Avalonia\buildTransitive\Hoobi.Design.Avalonia.targets" />
 
 </Project>

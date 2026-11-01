@@ -1,0 +1,74 @@
+<Project>
+
+  <PropertyGroup>
+    <HoobiDesignOwnedKeys Condition="'$(HoobiDesignOwnedKeys)' == ''">$(MSBuildThisFileDirectory)Hoobi.Design.Avalonia.keys.txt</HoobiDesignOwnedKeys>
+  </PropertyGroup>
+
+  <UsingTask TaskName="HoobiDesignCheck" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OwnedKeys ParameterType="System.String" />
+      <WriteKeys ParameterType="System.String" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+var comment = new Regex(@"<!--.*?-->", RegexOptions.Singleline);
+var exempt = new Regex(@"<!--\s*hex-ok:\s*\S");
+var key = new Regex(@"\bx:Key=""([^""]+)""");
+var hex = new Regex(@"(?<=(?:^|[""'>])\s*)#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})(?=\s*(?:$|[""'<]))");
+var colourProperty = @"(?:Background|Foreground|Fill|Stroke|Color|\w+Brush|\w+Color)";
+var named = new Regex(@"(?<![\w:.])" + colourProperty + @"=""([A-Za-z]+)""");
+var setter = new Regex(@"Property=""(?:\w+\.)?" + colourProperty + @"""[^>]*?\bValue=""([A-Za-z]+)""");
+var owned = WriteKeys == null && !string.IsNullOrEmpty(OwnedKeys) && File.Exists(OwnedKeys)
+    ? new HashSet<string>(File.ReadAllLines(OwnedKeys), StringComparer.Ordinal)
+    : new HashSet<string>(StringComparer.Ordinal);
+var keys = new SortedSet<string>(StringComparer.Ordinal);
+foreach (var item in Files)
+{
+    var path = item.GetMetadata("FullPath");
+    var lines = File.ReadAllLines(path);
+    var code = comment.Replace(string.Join("\n", lines), m => Regex.Replace(m.Value, "[^\n]", " ")).Split('\n');
+    for (var i = 0; i < code.Length; i++)
+    {
+        foreach (Match match in code[i].Contains("<ResourceDictionary") ? Enumerable.Empty<Match>() : key.Matches(code[i]).Cast<Match>())
+        {
+            keys.Add(match.Groups[1].Value);
+            if (owned.Contains(match.Groups[1].Value))
+            {
+                Log.LogError(null, "HOOBI002", null, path, i + 1, match.Index + 1, 0, 0, "x:Key \"{0}\" is defined by Hoobi.Design.Avalonia; change the design system instead of redefining its resource here.", match.Groups[1].Value);
+            }
+        }
+
+        if (WriteKeys != null || (i > 0 && exempt.IsMatch(lines[i - 1])))
+        {
+            continue;
+        }
+
+        var colour = new[] { hex.Match(code[i]), named.Match(code[i]), setter.Match(code[i]) }.FirstOrDefault(m => m.Success);
+        if (colour != null)
+        {
+            Log.LogError(null, "HOOBI001", null, path, i + 1, colour.Index + 1, 0, 0, "Literal colour \"{0}\": use a Hoobi token resource, or put <!-- hex-ok: reason --> on the line above.", colour.Groups[colour.Groups.Count - 1].Value);
+        }
+    }
+}
+
+if (WriteKeys != null)
+{
+    Directory.CreateDirectory(Path.GetDirectoryName(WriteKeys));
+    File.WriteAllLines(WriteKeys, keys);
+}
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="HoobiDesignCheck" BeforeTargets="CoreCompile" Condition="'$(HoobiDesignChecks)' != 'false'">
+    <ItemGroup>
+      <_HoobiDesignAxaml Include="@(AvaloniaXaml)" Exclude="@(HoobiDesignChecksExclude)" />
+    </ItemGroup>
+    <HoobiDesignCheck Files="@(_HoobiDesignAxaml)" OwnedKeys="$(HoobiDesignOwnedKeys)" Condition="'@(_HoobiDesignAxaml)' != ''" />
+  </Target>
+
+</Project>

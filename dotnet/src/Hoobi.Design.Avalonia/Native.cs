@@ -13,7 +13,50 @@ internal static partial class Native
     public static bool ClientAreaAnimation() =>
         !OperatingSystem.IsWindows() || !SystemParametersInfo(SpiGetClientAreaAnimation, 0, out var on, 0) || on != 0;
 
+    private const int ProcessPowerThrottling = 4;
+    private const uint PowerThrottlingExecutionSpeed = 0x1;
+
+    public static void EmptyWorkingSet()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            SetProcessWorkingSetSizeEx(GetCurrentProcess(), -1, -1, 0);
+        }
+    }
+
+    // Only the execution-speed throttle (EcoQoS), never Idle priority: Idle starves the UI thread a game waits on with a synchronous message.
+    public static void SetEfficiencyMode(bool enabled)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        var mask = enabled ? PowerThrottlingExecutionSpeed : 0;
+        var state = new PowerThrottlingState { Version = 1, ControlMask = mask, StateMask = mask };
+        SetProcessInformation(GetCurrentProcess(), ProcessPowerThrottling, ref state, (uint)Marshal.SizeOf<PowerThrottlingState>());
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PowerThrottlingState
+    {
+        public uint Version;
+        public uint ControlMask;
+        public uint StateMask;
+    }
+
     [LibraryImport("user32.dll", EntryPoint = "SystemParametersInfoW")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SystemParametersInfo(uint action, uint param, out uint value, uint winIni);
+
+    [LibraryImport("kernel32.dll")]
+    private static partial nint GetCurrentProcess();
+
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetProcessWorkingSetSizeEx(nint process, nint minimum, nint maximum, uint flags);
+
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetProcessInformation(nint process, int informationClass, ref PowerThrottlingState information, uint size);
 }
