@@ -1,0 +1,178 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  AVALONIA_TELEMETRY_OPTOUT: '1'
+  NUGET_FEED: https://pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/nuget/v3/index.json
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: hoobio/pipeline-tools/pipeline/github/step/release-please@353f3a7d09d9e63ae303631a4a4bb1ac83f97635 # v2.4.0
+        with:
+          app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
+          app-private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+
+  publish:
+    name: Publish npm and NuGet
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Check the tag matches react/package.json
+        env:
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          version=$(node -p "require('./react/package.json').version")
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::Tag $TAG does not match react/package.json version $version"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ secrets.ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID }}
+          tenant-id: ${{ secrets.ADO_HOOBI_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Authenticate to the Hoobi feed
+        run: |
+          token=$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv)
+          test -n "$token"
+          echo "::add-mask::$token"
+          password=$(printf %s "$token" | base64 -w0)
+          echo "::add-mask::$password"
+          for registry in //pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/npm/registry/ //pkgs.dev.azure.com/Hoobi/Hoobi/_packaging/Hoobi/npm/; do
+            printf '%s:username=ado\n%s:_password=%s\n%s:email=ado@example.com\n' "$registry" "$registry" "$password" "$registry" >> ~/.npmrc
+          done
+          echo "AZURE_DEVOPS_EXT_PAT=$token" >> "$GITHUB_ENV"
+          az extension add --name azure-devops --only-show-errors
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm fonts:fetch
+      - run: pnpm run typecheck
+      - run: pnpm run build
+
+      - name: npm publish
+        run: |
+          if npm view "@hoobi/design@$VERSION" version > /dev/null 2>&1; then
+            echo "@hoobi/design@$VERSION is already on the feed"
+          else
+            npm publish ./react
+          fi
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: dotnet/global.json
+
+      - name: Check fontconfig
+        run: dpkg -s libfontconfig1 > /dev/null || sudo apt-get install -y -qq libfontconfig1
+
+      - run: dotnet test --project tests/Hoobi.Design.Avalonia.Tests/Hoobi.Design.Avalonia.Tests.csproj -c Release
+        working-directory: dotnet
+
+      - name: dotnet pack
+        working-directory: dotnet
+        run: |
+          for project in src/Hoobi.Design.Avalonia src/Hoobi.Design.Avalonia.Testing src/Hoobi.Desktop.Windows; do
+            dotnet pack "$project" -c Release -p:Version="$VERSION" -o "$RUNNER_TEMP/nuget"
+          done
+
+      - name: dotnet nuget push
+        run: |
+          dotnet nuget add source "$NUGET_FEED" --name Hoobi --username ado --password "$AZURE_DEVOPS_EXT_PAT" --store-password-in-clear-text
+          dotnet nuget push "$RUNNER_TEMP/nuget/*.nupkg" --source Hoobi --api-key az --skip-duplicate
+
+  pages-build:
+    name: Build the catalog site
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ secrets.ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID }}
+          tenant-id: ${{ secrets.ADO_HOOBI_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Authenticate to the Hoobi feed
+        run: |
+          token=$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv)
+          test -n "$token"
+          echo "::add-mask::$token"
+          echo "AZURE_DEVOPS_EXT_PAT=$token" >> "$GITHUB_ENV"
+          az extension add --name azure-devops --only-show-errors
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm fonts:fetch
+      - run: pnpm run build
+      - run: pnpm -C catalog build
+
+      # Pages has no SPA fallback and the catalog routes on real paths, so every unknown path serves the app.
+      - run: cp catalog/dist/index.html catalog/dist/404.html
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: catalog/dist
+
+  pages-deploy:
+    name: Deploy the catalog site
+    needs: pages-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
