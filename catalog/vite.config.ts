@@ -4,8 +4,9 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 
-const libVersion = (JSON.parse(readFileSync('../react/package.json', 'utf8')) as { version: string })
-  .version;
+const libVersion = (
+  JSON.parse(readFileSync('../react/package.json', 'utf8')) as { version: string }
+).version;
 
 // One self-contained index.html: singlefile inlines JS + CSS, the raised inline
 // limit turns the four woff2 files into data: URIs so nothing is fetched.

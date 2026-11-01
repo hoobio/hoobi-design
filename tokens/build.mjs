@@ -17,7 +17,9 @@ const byte = (n) => n.toString(16).padStart(2, '0').toUpperCase();
 export function parseTokens(css) {
   const theme = css.match(THEME)?.[0].replace(/\/\*[\s\S]*?\*\//g, '');
   if (!theme) throw new Error('tokens: no @theme static block in tokens/tokens.css');
-  return Object.fromEntries([...theme.matchAll(/--([\w-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]));
+  return Object.fromEntries(
+    [...theme.matchAll(/--([\w-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]),
+  );
 }
 
 export function argb(vars, value) {
@@ -39,7 +41,8 @@ export function argb(vars, value) {
     const [a, pct] = [argb(vars, mix[1]), Number(mix[2])];
     if (mix[3] === 'transparent') return [Math.round((a[0] * pct) / 100), a[1], a[2], a[3]];
     const [b, p] = [argb(vars, mix[3]), pct / 100];
-    if (a[0] !== 255 || b[0] !== 255) throw new Error(`tokens: cannot mix translucent colours in ${value}`);
+    if (a[0] !== 255 || b[0] !== 255)
+      throw new Error(`tokens: cannot mix translucent colours in ${value}`);
     return [255, ...[1, 2, 3].map((i) => Math.round(a[i] * p + b[i] * (1 - p)))];
   }
   throw new Error(`tokens: cannot evaluate ${value}`);
@@ -115,7 +118,8 @@ export function literalColours(xaml) {
     .replace(/<!--[\s\S]*?-->/g, (c) => c.replace(/[^\n]/g, ' '))
     .split('\n')
     .flatMap((line, i) =>
-      /#[0-9a-f]{3,8}\b/i.test(line) || /Color="(?!\{|Transparent")[^"]*"|<Color[^>]*>(?!\{)/.test(line)
+      /#[0-9a-f]{3,8}\b/i.test(line) ||
+      /Color="(?!\{|Transparent")[^"]*"|<Color[^>]*>(?!\{)/.test(line)
         ? [`${i + 1}: ${line.trim()}`]
         : [],
     );
@@ -133,9 +137,14 @@ export function outputs() {
 export function check() {
   const errors = outputs()
     .filter(([path, text]) => read(path) !== text)
-    .map(([path]) => `${relative(root, path)}: stale against tokens/tokens.css - run node tokens/build.mjs`);
+    .map(
+      ([path]) =>
+        `${relative(root, path)}: stale against tokens/tokens.css - run node tokens/build.mjs`,
+    );
   for (const hit of literalColours(read(resourcesPath)))
-    errors.push(`${relative(root, resourcesPath)}:${hit}: literal colour - add a token to tokens/tokens.css`);
+    errors.push(
+      `${relative(root, resourcesPath)}:${hit}: literal colour - add a token to tokens/tokens.css`,
+    );
   return errors.map((e) => e.replace(/\\/g, '/'));
 }
 
