@@ -1,4 +1,4 @@
-<!-- Generated from styles.css @theme by dotnet/build-tokens.mjs; do not edit. -->
+<!-- Generated from tokens/tokens.css by tokens/build.mjs; do not edit. -->
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -50,10 +50,123 @@
     <SolidColorBrush x:Key="HoobiChipBrush" Color="{StaticResource HoobiChipColor}" />
     <Color x:Key="HoobiSmokeColor">#FF06070A</Color>
     <SolidColorBrush x:Key="HoobiSmokeBrush" Color="{StaticResource HoobiSmokeColor}" />
+    <Color x:Key="HoobiSmokeFillColor">#9906070A</Color>
+    <SolidColorBrush x:Key="HoobiSmokeFillBrush" Color="{StaticResource HoobiSmokeFillColor}" />
+    <Color x:Key="HoobiHighlightColor">#FF1E3047</Color>
+    <SolidColorBrush x:Key="HoobiHighlightBrush" Color="{StaticResource HoobiHighlightColor}" />
+    <Color x:Key="HoobiSuccessTintColor">#26BAE67E</Color>
+    <SolidColorBrush x:Key="HoobiSuccessTintBrush" Color="{StaticResource HoobiSuccessTintColor}" />
+    <Color x:Key="HoobiWarnTintColor">#26FFD580</Color>
+    <SolidColorBrush x:Key="HoobiWarnTintBrush" Color="{StaticResource HoobiWarnTintColor}" />
+    <Color x:Key="HoobiInfoTintColor">#26409FFF</Color>
+    <SolidColorBrush x:Key="HoobiInfoTintBrush" Color="{StaticResource HoobiInfoTintColor}" />
+    <Color x:Key="HoobiDangerTintColor">#26F28779</Color>
+    <SolidColorBrush x:Key="HoobiDangerTintBrush" Color="{StaticResource HoobiDangerTintColor}" />
+    <Color x:Key="HoobiSuccessBackgroundColor">#FF393D1B</Color>
+    <SolidColorBrush x:Key="HoobiSuccessBackgroundBrush" Color="{StaticResource HoobiSuccessBackgroundColor}" />
+    <Color x:Key="HoobiWarnBackgroundColor">#FF433519</Color>
+    <SolidColorBrush x:Key="HoobiWarnBackgroundBrush" Color="{StaticResource HoobiWarnBackgroundColor}" />
+    <Color x:Key="HoobiDangerBackgroundColor">#FF442726</Color>
+    <SolidColorBrush x:Key="HoobiDangerBackgroundBrush" Color="{StaticResource HoobiDangerBackgroundColor}" />
+    <Color x:Key="HoobiInfoBackgroundColor">#08FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiInfoBackgroundBrush" Color="{StaticResource HoobiInfoBackgroundColor}" />
+    <Color x:Key="HoobiGlowAccentColor">#1A409FFF</Color>
+    <SolidColorBrush x:Key="HoobiGlowAccentBrush" Color="{StaticResource HoobiGlowAccentColor}" />
+    <Color x:Key="HoobiGlowAccentClearColor">#00409FFF</Color>
+    <SolidColorBrush x:Key="HoobiGlowAccentClearBrush" Color="{StaticResource HoobiGlowAccentClearColor}" />
+    <Color x:Key="HoobiGlowPurpleColor">#12D4BFFF</Color>
+    <SolidColorBrush x:Key="HoobiGlowPurpleBrush" Color="{StaticResource HoobiGlowPurpleColor}" />
+    <Color x:Key="HoobiGlowPurpleClearColor">#00D4BFFF</Color>
+    <SolidColorBrush x:Key="HoobiGlowPurpleClearBrush" Color="{StaticResource HoobiGlowPurpleClearColor}" />
+    <Color x:Key="HoobiSurfaceRaisedClearColor">#00242936</Color>
+    <SolidColorBrush x:Key="HoobiSurfaceRaisedClearBrush" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
+    <Color x:Key="HoobiTextClearColor">#00CBCCC6</Color>
+    <SolidColorBrush x:Key="HoobiTextClearBrush" Color="{StaticResource HoobiTextClearColor}" />
+    <Color x:Key="HoobiChipClearColor">#0015181F</Color>
+    <SolidColorBrush x:Key="HoobiChipClearBrush" Color="{StaticResource HoobiChipClearColor}" />
+    <Color x:Key="HoobiAccentSecondaryColor">#E673D0FF</Color>
+    <SolidColorBrush x:Key="HoobiAccentSecondaryBrush" Color="{StaticResource HoobiAccentSecondaryColor}" />
+    <Color x:Key="HoobiAccentTertiaryColor">#CC73D0FF</Color>
+    <SolidColorBrush x:Key="HoobiAccentTertiaryBrush" Color="{StaticResource HoobiAccentTertiaryColor}" />
+    <Color x:Key="HoobiAccentDisabledColor">#FF2F5A85</Color>
+    <SolidColorBrush x:Key="HoobiAccentDisabledBrush" Color="{StaticResource HoobiAccentDisabledColor}" />
+    <Color x:Key="HoobiOnAccentDisabledColor">#FF8FB8DD</Color>
+    <SolidColorBrush x:Key="HoobiOnAccentDisabledBrush" Color="{StaticResource HoobiOnAccentDisabledColor}" />
+    <Color x:Key="HoobiTextDisabledColor">#FF4E5768</Color>
+    <SolidColorBrush x:Key="HoobiTextDisabledBrush" Color="{StaticResource HoobiTextDisabledColor}" />
+    <Color x:Key="HoobiBorderDisabledColor">#FF272D3A</Color>
+    <SolidColorBrush x:Key="HoobiBorderDisabledBrush" Color="{StaticResource HoobiBorderDisabledColor}" />
+    <Color x:Key="HoobiChipDisabledColor">#FF171C26</Color>
+    <SolidColorBrush x:Key="HoobiChipDisabledBrush" Color="{StaticResource HoobiChipDisabledColor}" />
+    <Color x:Key="HoobiWarnHoverColor">#FFFFE6B3</Color>
+    <SolidColorBrush x:Key="HoobiWarnHoverBrush" Color="{StaticResource HoobiWarnHoverColor}" />
+    <Color x:Key="HoobiDangerHoverColor">#FFF7ABA1</Color>
+    <SolidColorBrush x:Key="HoobiDangerHoverBrush" Color="{StaticResource HoobiDangerHoverColor}" />
+    <Color x:Key="HoobiSliderThumbHoverColor">#FFA6E1FF</Color>
+    <SolidColorBrush x:Key="HoobiSliderThumbHoverBrush" Color="{StaticResource HoobiSliderThumbHoverColor}" />
+    <Color x:Key="HoobiFlyoutAcrylicTintColor">#FF0C0E13</Color>
+    <SolidColorBrush x:Key="HoobiFlyoutAcrylicTintBrush" Color="{StaticResource HoobiFlyoutAcrylicTintColor}" />
+    <Color x:Key="HoobiFlyoutAcrylicFallbackColor">#FF111319</Color>
+    <SolidColorBrush x:Key="HoobiFlyoutAcrylicFallbackBrush" Color="{StaticResource HoobiFlyoutAcrylicFallbackColor}" />
+    <Color x:Key="HoobiFloatingAcrylicColor">#B8181C26</Color>
+    <SolidColorBrush x:Key="HoobiFloatingAcrylicBrush" Color="{StaticResource HoobiFloatingAcrylicColor}" />
+    <Color x:Key="HoobiCaptionCloseColor">#FFE81123</Color>
+    <SolidColorBrush x:Key="HoobiCaptionCloseBrush" Color="{StaticResource HoobiCaptionCloseColor}" />
+    <Color x:Key="HoobiCaptionClosePressedColor">#E6C42B1C</Color>
+    <SolidColorBrush x:Key="HoobiCaptionClosePressedBrush" Color="{StaticResource HoobiCaptionClosePressedColor}" />
+    <Color x:Key="HoobiDialogShadowColor">#66000000</Color>
+    <SolidColorBrush x:Key="HoobiDialogShadowBrush" Color="{StaticResource HoobiDialogShadowColor}" />
+    <Color x:Key="HoobiDialogFieldStrokeColor">#FF3A404D</Color>
+    <SolidColorBrush x:Key="HoobiDialogFieldStrokeBrush" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+    <Color x:Key="HoobiDialogFieldStrokeStrongColor">#FF9FA1A8</Color>
+    <SolidColorBrush x:Key="HoobiDialogFieldStrokeStrongBrush" Color="{StaticResource HoobiDialogFieldStrokeStrongColor}" />
+    <Color x:Key="HoobiDialogComboStrokeColor">#FF3F4452</Color>
+    <SolidColorBrush x:Key="HoobiDialogComboStrokeBrush" Color="{StaticResource HoobiDialogComboStrokeColor}" />
+    <Color x:Key="HoobiBlackClearColor">#00000000</Color>
+    <SolidColorBrush x:Key="HoobiBlackClearBrush" Color="{StaticResource HoobiBlackClearColor}" />
+    <Color x:Key="HoobiFluentSubtleTransparentColor">#00FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentSubtleTransparentBrush" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <Color x:Key="HoobiFluentSubtleSecondaryColor">#0FFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentSubtleSecondaryBrush" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+    <Color x:Key="HoobiFluentSubtleTertiaryColor">#0AFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentSubtleTertiaryBrush" Color="{StaticResource HoobiFluentSubtleTertiaryColor}" />
+    <Color x:Key="HoobiFluentDividerStrokeColor">#15FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentDividerStrokeBrush" Color="{StaticResource HoobiFluentDividerStrokeColor}" />
+    <Color x:Key="HoobiFluentControlTertiaryColor">#08FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlTertiaryBrush" Color="{StaticResource HoobiFluentControlTertiaryColor}" />
+    <Color x:Key="HoobiFluentControlDisabledColor">#0BFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlDisabledBrush" Color="{StaticResource HoobiFluentControlDisabledColor}" />
+    <Color x:Key="HoobiFluentControlAltSecondaryColor">#19000000</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlAltSecondaryBrush" Color="{StaticResource HoobiFluentControlAltSecondaryColor}" />
+    <Color x:Key="HoobiFluentControlAltQuarternaryColor">#12FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlAltQuarternaryBrush" Color="{StaticResource HoobiFluentControlAltQuarternaryColor}" />
+    <Color x:Key="HoobiFluentControlStrongStrokeColor">#8BFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlStrongStrokeBrush" Color="{StaticResource HoobiFluentControlStrongStrokeColor}" />
+    <Color x:Key="HoobiFluentControlStrongStrokeDisabledColor">#28FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlStrongStrokeDisabledBrush" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
+    <Color x:Key="HoobiFluentControlInputActiveColor">#B31E1E1E</Color>
+    <SolidColorBrush x:Key="HoobiFluentControlInputActiveBrush" Color="{StaticResource HoobiFluentControlInputActiveColor}" />
+    <Color x:Key="HoobiFluentTextPrimaryColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextPrimaryBrush" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+    <Color x:Key="HoobiFluentTextSecondaryColor">#C5FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextSecondaryBrush" Color="{StaticResource HoobiFluentTextSecondaryColor}" />
+    <Color x:Key="HoobiFluentTextDisabledColor">#5DFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextDisabledBrush" Color="{StaticResource HoobiFluentTextDisabledColor}" />
+    <Color x:Key="HoobiFluentTextInverseColor">#E4000000</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextInverseBrush" Color="{StaticResource HoobiFluentTextInverseColor}" />
+    <Color x:Key="HoobiFluentTextOnAccentColor">#FF000000</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextOnAccentBrush" Color="{StaticResource HoobiFluentTextOnAccentColor}" />
+    <Color x:Key="HoobiFluentTextOnAccentSecondaryColor">#80000000</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextOnAccentSecondaryBrush" Color="{StaticResource HoobiFluentTextOnAccentSecondaryColor}" />
+    <Color x:Key="HoobiFluentTextOnAccentDisabledColor">#87FFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiFluentTextOnAccentDisabledBrush" Color="{StaticResource HoobiFluentTextOnAccentDisabledColor}" />
     <CornerRadius x:Key="HoobiRadiusChip">4</CornerRadius>
     <CornerRadius x:Key="HoobiRadiusControl">4</CornerRadius>
     <CornerRadius x:Key="HoobiRadiusPanel">8</CornerRadius>
+    <BoxShadows x:Key="HoobiShadowFlyout">0 8 16 0 #47000000, 0 0 2 0 #3D000000</BoxShadows>
     <SplineEasing x:Key="HoobiEaseDecelerate" X1="0" Y1="0" X2="0" Y2="1" />
     <SplineEasing x:Key="HoobiEaseAccelerate" X1="1" Y1="0" X2="1" Y2="1" />
     <SplineEasing x:Key="HoobiEaseStandard" X1="0.33" Y1="0" X2="0.67" Y2="1" />
+    <SplineEasing x:Key="HoobiEasePointToPoint" X1="0.1" Y1="0.9" X2="0.2" Y2="1" />
+    <SplineEasing x:Key="HoobiEaseCollapse" X1="1" Y1="1" X2="0" Y2="1" />
 </ResourceDictionary>

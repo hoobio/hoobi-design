@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { readTokens, tokensPath } from '../tokens/build.mjs';
+import { check as checkTokens } from '../tokens/build.mjs';
 
 /**
  * Enforces the rules in AGENTS.md. Each check exists because the pattern it
@@ -99,11 +99,7 @@ for (const file of [
   }
 }
 
-if (readFileSync(tokensPath, 'utf8').replace(/\r\n/g, '\n') !== readTokens()) {
-  errors.push(
-    'dotnet/src/Hoobi.Design.Avalonia/Themes/Tokens.axaml: stale against styles.css - run node dotnet/build-tokens.mjs',
-  );
-}
+errors.push(...checkTokens());
 
 if (errors.length) {
   console.error(errors.join('\n'));

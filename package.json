@@ -11,6 +11,7 @@
     "build": "pnpm -C react run build",
     "typecheck": "pnpm -C react run typecheck",
     "test": "pnpm -C react test",
+    "tokens": "node tokens/build.mjs",
     "fonts:fetch": "pnpm -C react run fonts:fetch",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { build, createServer, transformWithOxc } from 'vite';
+import { argb } from '../../tokens/build.mjs';
 import EXAMPLES from './examples.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -61,28 +62,21 @@ function tokens() {
   const shadow = [];
   const families = {};
   const styles = new Map();
-  const hexOf = new Map(vars.filter(([, v]) => /^#[0-9a-f]{6}$/i.test(v)));
-  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  const mixed = (value) => {
-    const v = value
-      .replace(/var\(--([\w-]+)\)/g, (ref, n) => hexOf.get(n) ?? ref)
-      .replace(/#([0-9a-f])([0-9a-f])([0-9a-f])\b/gi, '#$1$1$2$2$3$3');
-    const m = v.match(/^color-mix\(in srgb, (#[0-9a-f]{6}) (\d+)%, (#[0-9a-f]{6})\)$/i);
-    if (!m) return null;
-    const [a, b, p] = [rgb(m[1]), rgb(m[3]), m[2] / 100];
-    const channel = (x, i) => Math.round(x * p + b[i] * (1 - p));
-    return `#${a.map((x, i) => channel(x, i).toString(16).padStart(2, '0')).join('')}`;
+  const byName = Object.fromEntries(vars);
+  const computed = (value) => {
+    const [a, ...rgb] = argb(byName, value);
+    const hex = (n) => n.toString(16).padStart(2, '0');
+    return `#${rgb.map(hex).join('')}${a === 255 ? '' : hex(a)}`;
   };
   for (const [name, value] of vars) {
     if (name.startsWith('color-')) {
-      const hex = /^#[0-9a-f]{3,8}$/i.test(value) ? value : mixed(value);
-      if (hex) colours.push({ name, value: hex.toLowerCase(), usage: need(name) });
-      else skipped.push(`\`--${name}\` (\`${value}\`): a computed colour has no token form`);
+      const hex = /^#[0-9a-f]{3,8}$/i.test(value) ? value : computed(value);
+      colours.push({ name, value: hex.toLowerCase(), usage: need(name) });
     } else if (name === 'spacing') spacing.push({ name, value, usage: need(name) });
     else if (name.startsWith('radius-')) radius.push({ name, value, usage: need(name) });
     else if (name.startsWith('shadow-')) shadow.push({ name, value, usage: need(name) });
     else if (name.startsWith('font-')) families[name.slice(5)] = value;
-    else if (name.startsWith('ease-'))
+    else if (name.startsWith('ease-') || name.startsWith('duration-'))
       skipped.push(`\`--${name}\` (\`${value}\`): the format has no motion family`);
     else if (name.startsWith('text-')) {
       const [base, part] = name.split('--');
@@ -121,7 +115,7 @@ function tokens() {
       package: '@hoobi/design',
       version,
       paths: {
-        tokens: ['react/styles.css'],
+        tokens: ['tokens/tokens.css'],
         fonts: fonts.map((f) => `react/${f.file}`),
         docs: ['AGENTS.md', 'catalog/src/pages.tsx', 'catalog/ds'],
       },

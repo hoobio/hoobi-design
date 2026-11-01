@@ -34,6 +34,66 @@
   /* Fluent's smoke (SmokeFillColorDefault #4D000000) tinted to the palette; black over a page this dark caps at a 1.36:1 dim, so the use site carries twice Fluent's alpha. */
   --color-smoke: color-mix(in srgb, var(--color-bg) 25%, #000);
 
+  --color-smoke-fill: color-mix(in srgb, var(--color-smoke) 60%, transparent);
+  /* The web's bg-accent/15 composited over bg: an opaque fill fades from surface without passing through a lighter frame. */
+  --color-highlight: color-mix(in srgb, var(--color-accent) 15%, var(--color-bg));
+  --color-success-tint: color-mix(in srgb, var(--color-success) 15%, transparent);
+  --color-warn-tint: color-mix(in srgb, var(--color-warn) 15%, transparent);
+  --color-info-tint: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  --color-danger-tint: color-mix(in srgb, var(--color-danger) 15%, transparent);
+  --color-success-background: #393d1b;
+  --color-warn-background: #433519;
+  --color-danger-background: #442726;
+  --color-info-background: var(--color-fluent-control-tertiary);
+  --color-glow-accent: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --color-glow-accent-clear: color-mix(in srgb, var(--color-accent) 0%, transparent);
+  --color-glow-purple: color-mix(in srgb, var(--color-accent-purple) 7%, transparent);
+  --color-glow-purple-clear: color-mix(in srgb, var(--color-accent-purple) 0%, transparent);
+  /* Clear rest states keep the RGB of the fill they fade to: Avalonia fades with straight alpha, so a fade from clear white flashes. */
+  --color-surface-raised-clear: color-mix(in srgb, var(--color-surface-raised) 0%, transparent);
+  --color-text-clear: color-mix(in srgb, var(--color-text) 0%, transparent);
+  --color-chip-clear: color-mix(in srgb, var(--color-chip) 0%, transparent);
+  --color-accent-secondary: color-mix(in srgb, var(--color-accent-hover) 90%, transparent);
+  --color-accent-tertiary: color-mix(in srgb, var(--color-accent-hover) 80%, transparent);
+  --color-accent-disabled: #2f5a85;
+  --color-on-accent-disabled: #8fb8dd;
+  --color-text-disabled: #4e5768;
+  --color-border-disabled: #272d3a;
+  --color-chip-disabled: #171c26;
+  --color-warn-hover: #ffe6b3;
+  --color-danger-hover: #f7aba1;
+  --color-slider-thumb-hover: #a6e1ff;
+  --color-flyout-acrylic-tint: #0c0e13;
+  --color-flyout-acrylic-fallback: #111319;
+  --color-floating-acrylic: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  --color-caption-close: #e81123;
+  --color-caption-close-pressed: #c42b1ce6;
+  --color-dialog-shadow: #00000066;
+  --color-dialog-field-stroke: #3a404d;
+  --color-dialog-field-stroke-strong: #9fa1a8;
+  --color-dialog-combo-stroke: #3f4452;
+  --color-black-clear: #00000000;
+
+  /* Fluent 2's dark-theme values, verbatim: the FluentAvalonia keys they override expect these exact ARGB values. */
+  --color-fluent-subtle-transparent: #ffffff00;
+  --color-fluent-subtle-secondary: #ffffff0f;
+  --color-fluent-subtle-tertiary: #ffffff0a;
+  --color-fluent-divider-stroke: #ffffff15;
+  --color-fluent-control-tertiary: #ffffff08;
+  --color-fluent-control-disabled: #ffffff0b;
+  --color-fluent-control-alt-secondary: #00000019;
+  --color-fluent-control-alt-quarternary: #ffffff12;
+  --color-fluent-control-strong-stroke: #ffffff8b;
+  --color-fluent-control-strong-stroke-disabled: #ffffff28;
+  --color-fluent-control-input-active: #1e1e1eb3;
+  --color-fluent-text-primary: #ffffff;
+  --color-fluent-text-secondary: #ffffffc5;
+  --color-fluent-text-disabled: #ffffff5d;
+  --color-fluent-text-inverse: #000000e4;
+  --color-fluent-text-on-accent: #000000;
+  --color-fluent-text-on-accent-secondary: #00000080;
+  --color-fluent-text-on-accent-disabled: #ffffff87;
+
   /* WinUI 3 works in device-independent pixels, so spacing and radii are px, not rem.
      Text stays rem so it still tracks the root size and user zoom. */
   --spacing: 4px;
@@ -75,6 +135,13 @@
   --ease-decelerate: cubic-bezier(0, 0, 0, 1);
   --ease-accelerate: cubic-bezier(1, 0, 1, 1);
   --ease-standard: cubic-bezier(0.33, 0, 0.67, 1);
+  --ease-point-to-point: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-collapse: cubic-bezier(1, 1, 0, 1);
+
+  --duration-faster: 83ms;
+  --duration-fast: 167ms;
+  --duration-normal: 250ms;
+  --duration-expand: 333ms;
 
   --font-sans:
     'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',

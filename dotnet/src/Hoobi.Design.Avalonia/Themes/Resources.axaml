@@ -5,9 +5,6 @@
     <FontFamily x:Key="HoobiDisplayFontFamily">avares://Hoobi.Design.Avalonia/Assets/Fonts#Hanken Grotesk</FontFamily>
     <FontFamily x:Key="HoobiMonoFontFamily">avares://Hoobi.Design.Avalonia/Assets/Fonts#Cascadia Mono</FontFamily>
 
-    <SplineEasing x:Key="HoobiEasePointToPoint" X1="0.1" Y1="0.9" X2="0.2" Y2="1" />
-    <SplineEasing x:Key="HoobiEaseCollapse" X1="1" Y1="1" X2="0" Y2="1" />
-
     <StaticResource x:Key="SystemAccentColor" ResourceKey="HoobiAccentColor" />
     <StaticResource x:Key="SystemAccentColorLight1" ResourceKey="HoobiAccentHoverColor" />
     <StaticResource x:Key="SystemAccentColorLight2" ResourceKey="HoobiAccentHoverColor" />
@@ -20,25 +17,21 @@
     <SolidColorBrush x:Key="SystemFillColorCautionBrush" Color="{StaticResource HoobiWarnColor}" />
     <SolidColorBrush x:Key="SystemFillColorCriticalBrush" Color="{StaticResource HoobiDangerColor}" />
     <SolidColorBrush x:Key="SystemFillColorAttentionBrush" Color="{StaticResource HoobiInfoColor}" />
-    <SolidColorBrush x:Key="SystemFillColorSuccessBackgroundBrush" Color="#FF393D1B" />
-    <SolidColorBrush x:Key="SystemFillColorCautionBackgroundBrush" Color="#FF433519" />
-    <SolidColorBrush x:Key="SystemFillColorCriticalBackgroundBrush" Color="#FF442726" />
-    <SolidColorBrush x:Key="SystemFillColorAttentionBackgroundBrush" Color="#08FFFFFF" />
+    <SolidColorBrush x:Key="SystemFillColorSuccessBackgroundBrush" Color="{StaticResource HoobiSuccessBackgroundColor}" />
+    <SolidColorBrush x:Key="SystemFillColorCautionBackgroundBrush" Color="{StaticResource HoobiWarnBackgroundColor}" />
+    <SolidColorBrush x:Key="SystemFillColorCriticalBackgroundBrush" Color="{StaticResource HoobiDangerBackgroundColor}" />
+    <SolidColorBrush x:Key="SystemFillColorAttentionBackgroundBrush" Color="{StaticResource HoobiInfoBackgroundColor}" />
 
     <RadialGradientBrush x:Key="HoobiGroundGlowTopLeft" Center="0%,0%" GradientOrigin="0%,0%" RadiusX="120%" RadiusY="90%">
-        <GradientStop Color="#1A409FFF" Offset="0.0" />
-        <GradientStop Color="#00409FFF" Offset="0.58" />
+        <GradientStop Color="{StaticResource HoobiGlowAccentColor}" Offset="0.0" />
+        <GradientStop Color="{StaticResource HoobiGlowAccentClearColor}" Offset="0.58" />
     </RadialGradientBrush>
     <RadialGradientBrush x:Key="HoobiGroundGlowTopRight" Center="100%,0%" GradientOrigin="100%,0%" RadiusX="100%" RadiusY="80%">
-        <GradientStop Color="#12D4BFFF" Offset="0.0" />
-        <GradientStop Color="#00D4BFFF" Offset="0.62" />
+        <GradientStop Color="{StaticResource HoobiGlowPurpleColor}" Offset="0.0" />
+        <GradientStop Color="{StaticResource HoobiGlowPurpleClearColor}" Offset="0.62" />
     </RadialGradientBrush>
-    <SolidColorBrush x:Key="HoobiSuccessTintBrush" Color="#26BAE67E" />
-    <SolidColorBrush x:Key="HoobiCautionTintBrush" Color="#26FFD580" />
-    <SolidColorBrush x:Key="HoobiInfoTintBrush" Color="#26409FFF" />
-    <SolidColorBrush x:Key="HoobiCriticalTintBrush" Color="#26F28779" />
-    <!-- The web's bg-accent/15 composited over bg: an opaque fill fades from surface without passing through a lighter frame. -->
-    <SolidColorBrush x:Key="HoobiHighlightBrush" Color="#FF1E3047" />
+    <SolidColorBrush x:Key="HoobiCautionTintBrush" Color="{StaticResource HoobiWarnTintColor}" />
+    <SolidColorBrush x:Key="HoobiCriticalTintBrush" Color="{StaticResource HoobiDangerTintColor}" />
 
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseAltBrush" Color="{StaticResource HoobiBgColor}" />
@@ -51,7 +44,7 @@
     <SolidColorBrush x:Key="LayerFillColorAltBrush" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="{StaticResource HoobiSurfaceColor}" />
     <SolidColorBrush x:Key="CardBackgroundFillColorSecondaryBrush" Color="{StaticResource HoobiSurfaceColor}" />
-    <SolidColorBrush x:Key="CardBackgroundFillColorTertiaryBrush" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="CardBackgroundFillColorTertiaryBrush" Color="{StaticResource HoobiFluentControlAltQuarternaryColor}" />
     <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{StaticResource HoobiSurfaceColor}" />
     <SolidColorBrush x:Key="ExpanderContentBackground" Color="{StaticResource HoobiSurfaceColor}" />
     <SolidColorBrush x:Key="ExpanderBackground" Color="{StaticResource HoobiSurfaceColor}" />
@@ -59,28 +52,28 @@
     <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="{StaticResource HoobiTextDimColor}" />
     <SolidColorBrush x:Key="TextFillColorTertiaryBrush" Color="{StaticResource HoobiTextMuteColor}" />
-    <SolidColorBrush x:Key="TextFillColorDisabledBrush" Color="#FF4E5768" />
-    <SolidColorBrush x:Key="TextFillColorInverseBrush" Color="#E4000000" />
+    <SolidColorBrush x:Key="TextFillColorDisabledBrush" Color="{StaticResource HoobiTextDisabledColor}" />
+    <SolidColorBrush x:Key="TextFillColorInverseBrush" Color="{StaticResource HoobiFluentTextInverseColor}" />
     <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="NavigationViewItemForeground" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="AccentTextFillColorPrimaryBrush" Color="{StaticResource HoobiAccentHoverColor}" />
-    <SolidColorBrush x:Key="AccentTextFillColorSecondaryBrush" Color="#E673D0FF" />
-    <SolidColorBrush x:Key="AccentTextFillColorTertiaryBrush" Color="#CC73D0FF" />
+    <SolidColorBrush x:Key="AccentTextFillColorSecondaryBrush" Color="{StaticResource HoobiAccentSecondaryColor}" />
+    <SolidColorBrush x:Key="AccentTextFillColorTertiaryBrush" Color="{StaticResource HoobiAccentTertiaryColor}" />
     <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#E673D0FF" />
-    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#CC73D0FF" />
-    <SolidColorBrush x:Key="HoobiSegmentedTrackBrush" Color="#19000000" />
+    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{StaticResource HoobiAccentSecondaryColor}" />
+    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="{StaticResource HoobiAccentTertiaryColor}" />
+    <SolidColorBrush x:Key="HoobiSegmentedTrackBrush" Color="{StaticResource HoobiFluentControlAltSecondaryColor}" />
 
-    <SolidColorBrush x:Key="SubtleFillColorTransparentBrush" Color="#00FFFFFF" />
-    <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#0FFFFFFF" />
-    <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="#0AFFFFFF" />
-    <SolidColorBrush x:Key="SubtleFillColorDisabledBrush" Color="#00FFFFFF" />
-    <SolidColorBrush x:Key="DividerStrokeColorDefaultBrush" Color="#15FFFFFF" />
-    <SolidColorBrush x:Key="ControlAltFillColorQuarternaryBrush" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="SubtleFillColorTransparentBrush" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+    <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="{StaticResource HoobiFluentSubtleTertiaryColor}" />
+    <SolidColorBrush x:Key="SubtleFillColorDisabledBrush" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <SolidColorBrush x:Key="DividerStrokeColorDefaultBrush" Color="{StaticResource HoobiFluentDividerStrokeColor}" />
+    <SolidColorBrush x:Key="ControlAltFillColorQuarternaryBrush" Color="{StaticResource HoobiFluentControlAltQuarternaryColor}" />
 
-    <SolidColorBrush x:Key="ControlFillColorTransparentBrush" Color="#0015181F" />
+    <SolidColorBrush x:Key="ControlFillColorTransparentBrush" Color="{StaticResource HoobiChipClearColor}" />
     <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="{StaticResource HoobiSurfaceColor}" />
     <SolidColorBrush x:Key="ControlFillColorSecondaryBrush" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="ControlFillColorTertiaryBrush" Color="{StaticResource HoobiChipColor}" />
@@ -90,16 +83,16 @@
     <SolidColorBrush x:Key="ControlStrokeColorSecondaryBrush" Color="Transparent" />
     <SolidColorBrush x:Key="ControlElevationBorderBrush" Color="Transparent" />
 
-    <SolidColorBrush x:Key="MenuFlyoutItemBackground" Color="#00FFFFFF" />
-    <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver" Color="#0FFFFFFF" />
-    <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPressed" Color="#0AFFFFFF" />
-    <SolidColorBrush x:Key="MenuFlyoutSeparatorBackground" Color="#15FFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackground" Color="#00FFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#0FFFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="#0AFFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#0FFFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#0AFFFFFF" />
-    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPressed" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="MenuFlyoutItemBackground" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+    <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPressed" Color="{StaticResource HoobiFluentSubtleTertiaryColor}" />
+    <SolidColorBrush x:Key="MenuFlyoutSeparatorBackground" Color="{StaticResource HoobiFluentDividerStrokeColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackground" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="{StaticResource HoobiFluentSubtleTertiaryColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="{StaticResource HoobiFluentSubtleTertiaryColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPressed" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
 
     <SolidColorBrush x:Key="ButtonBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{StaticResource HoobiSurfaceRaisedColor}" />
@@ -108,7 +101,7 @@
     <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource HoobiTextColor}" />
-    <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#FF4E5768" />
+    <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{StaticResource HoobiTextDisabledColor}" />
     <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent" />
     <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Transparent" />
     <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="Transparent" />
@@ -117,26 +110,26 @@
     <SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="{StaticResource HoobiAccentHoverColor}" />
-    <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="AccentButtonForeground" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#FF8FB8DD" />
+    <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="{StaticResource HoobiOnAccentDisabledColor}" />
     <SolidColorBrush x:Key="AccentButtonBorderBrush" Color="Transparent" />
     <SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="Transparent" />
     <SolidColorBrush x:Key="AccentButtonBorderBrushPressed" Color="Transparent" />
     <SolidColorBrush x:Key="AccentButtonBorderBrushDisabled" Color="Transparent" />
 
     <SolidColorBrush x:Key="HoobiCautionButtonBackground" Color="{StaticResource HoobiWarnColor}" />
-    <SolidColorBrush x:Key="HoobiCautionButtonBackgroundPointerOver" Color="#FFFFE6B3" />
-    <SolidColorBrush x:Key="HoobiCautionButtonBackgroundPressed" Color="#FFFFE6B3" />
+    <SolidColorBrush x:Key="HoobiCautionButtonBackgroundPointerOver" Color="{StaticResource HoobiWarnHoverColor}" />
+    <SolidColorBrush x:Key="HoobiCautionButtonBackgroundPressed" Color="{StaticResource HoobiWarnHoverColor}" />
     <SolidColorBrush x:Key="HoobiCautionButtonForeground" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="HoobiCriticalButtonBackground" Color="{StaticResource HoobiDangerColor}" />
-    <SolidColorBrush x:Key="HoobiCriticalButtonBackgroundPointerOver" Color="#FFF7ABA1" />
-    <SolidColorBrush x:Key="HoobiCriticalButtonBackgroundPressed" Color="#FFF7ABA1" />
+    <SolidColorBrush x:Key="HoobiCriticalButtonBackgroundPointerOver" Color="{StaticResource HoobiDangerHoverColor}" />
+    <SolidColorBrush x:Key="HoobiCriticalButtonBackgroundPressed" Color="{StaticResource HoobiDangerHoverColor}" />
     <SolidColorBrush x:Key="HoobiCriticalButtonForeground" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="HoobiClearButtonBackground" Color="#00242936" />
-    <SolidColorBrush x:Key="HoobiClearTextBrush" Color="#00CBCCC6" />
+    <SolidColorBrush x:Key="HoobiClearButtonBackground" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
+    <SolidColorBrush x:Key="HoobiClearTextBrush" Color="{StaticResource HoobiTextClearColor}" />
 
     <SolidColorBrush x:Key="ComboBoxBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource HoobiSurfaceRaisedColor}" />
@@ -155,7 +148,7 @@
     <SolidColorBrush x:Key="ComboBoxForegroundPointerOver" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="ComboBoxForegroundPressed" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="{StaticResource HoobiTextColor}" />
-    <SolidColorBrush x:Key="ComboBoxForegroundDisabled" Color="#FF4E5768" />
+    <SolidColorBrush x:Key="ComboBoxForegroundDisabled" Color="{StaticResource HoobiTextDisabledColor}" />
     <SolidColorBrush x:Key="ComboBoxHeaderForeground" Color="{StaticResource HoobiTextDimColor}" />
     <SolidColorBrush x:Key="ComboBoxItemForegroundSelected" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedUnfocused" Color="{StaticResource HoobiAccentHoverColor}" />
@@ -163,30 +156,30 @@
     <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedPressed" Color="{StaticResource HoobiAccentHoverColor}" />
     <Thickness x:Key="ComboBoxDropdownBorderThickness">0</Thickness>
 
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseFill" Color="#19000000" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillPointerOver" Color="#0BFFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillPressed" Color="#12FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillDisabled" Color="#00FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseStroke" Color="#8BFFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePointerOver" Color="#8BFFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePressed" Color="#28FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeDisabled" Color="#28FFFFFF" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseFill" Color="{StaticResource HoobiFluentControlAltSecondaryColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillPointerOver" Color="{StaticResource HoobiFluentControlDisabledColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillPressed" Color="{StaticResource HoobiFluentControlAltQuarternaryColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseFillDisabled" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseStroke" Color="{StaticResource HoobiFluentControlStrongStrokeColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePointerOver" Color="{StaticResource HoobiFluentControlStrongStrokeColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePressed" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeDisabled" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphFill" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPressed" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillDisabled" Color="#FF8FB8DD" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphStroke" Color="#00000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePointerOver" Color="#00000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePressed" Color="#00000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokeDisabled" Color="#00000000" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillDisabled" Color="{StaticResource HoobiOnAccentDisabledColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphStroke" Color="{StaticResource HoobiBlackClearColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePointerOver" Color="{StaticResource HoobiBlackClearColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePressed" Color="{StaticResource HoobiBlackClearColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokeDisabled" Color="{StaticResource HoobiBlackClearColor}" />
 
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUnchecked" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" Color="{StaticResource HoobiChipColor}" />
@@ -195,19 +188,19 @@
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" Color="{StaticResource HoobiBorderColor}" />
-    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" Color="#FF272D3A" />
+    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" Color="{StaticResource HoobiBorderDisabledColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" Color="#FF8FB8DD" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" Color="{StaticResource HoobiOnAccentDisabledColor}" />
 
     <SolidColorBrush x:Key="ToggleSwitchFillOff" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="ToggleSwitchFillOffPointerOver" Color="{StaticResource HoobiChipColor}" />
@@ -221,64 +214,62 @@
     <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="ToggleSwitchFillOnDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="ToggleSwitchFillOnDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="{StaticResource HoobiAccentColor}" />
     <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
     <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="ToggleSwitchStrokeOnDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnDisabled" Color="{StaticResource HoobiAccentDisabledColor}" />
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPressed" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnDisabled" Color="#FF8FB8DD" />
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnDisabled" Color="{StaticResource HoobiOnAccentDisabledColor}" />
 
     <SolidColorBrush x:Key="ContentDialogBackground" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="DialogButtonBackgroundPointerOver" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="DialogButtonBackgroundPressed" Color="{StaticResource HoobiSurfaceColor}" />
-    <SolidColorBrush x:Key="ContentDialogSmokeFill" Color="#9906070A" />
+    <SolidColorBrush x:Key="ContentDialogSmokeFill" Color="{StaticResource HoobiSmokeFillColor}" />
     <SolidColorBrush x:Key="ContentDialogTopOverlay" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="ContentDialogBorderBrush" Color="Transparent" />
 
     <SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource HoobiChipColor}" />
-    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="#FF171C26" />
+    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource HoobiChipDisabledColor}" />
     <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{StaticResource HoobiAccentColor}" />
-    <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="#FF272D3A" />
+    <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="{StaticResource HoobiBorderDisabledColor}" />
     <SolidColorBrush x:Key="TextControlElevationBorderBrush" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="TextControlElevationBorderFocusedBrush" Color="{StaticResource HoobiAccentColor}" />
     <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
     <SolidColorBrush x:Key="TextControlForeground" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource HoobiTextColor}" />
-    <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="#FF4E5768" />
+    <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource HoobiTextDisabledColor}" />
     <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{StaticResource HoobiTextMuteColor}" />
     <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="{StaticResource HoobiTextMuteColor}" />
     <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="{StaticResource HoobiTextMuteColor}" />
-    <SolidColorBrush x:Key="TextControlPlaceholderForegroundDisabled" Color="#FF4E5768" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundDisabled" Color="{StaticResource HoobiTextDisabledColor}" />
     <SolidColorBrush x:Key="TextControlHeaderForeground" Color="{StaticResource HoobiTextDimColor}" />
-    <SolidColorBrush x:Key="TextControlHeaderForegroundDisabled" Color="#FF4E5768" />
+    <SolidColorBrush x:Key="TextControlHeaderForegroundDisabled" Color="{StaticResource HoobiTextDisabledColor}" />
     <SolidColorBrush x:Key="TextControlButtonForeground" Color="{StaticResource HoobiTextDimColor}" />
     <SolidColorBrush x:Key="TextControlButtonForegroundPointerOver" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="TextControlButtonForegroundPressed" Color="{StaticResource HoobiAccentHoverColor}" />
-    <SolidColorBrush x:Key="TextControlButtonBackground" Color="#00242936" />
+    <SolidColorBrush x:Key="TextControlButtonBackground" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
     <SolidColorBrush x:Key="TextControlButtonBackgroundPointerOver" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="TextControlButtonBackgroundPressed" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <x:Double x:Key="TextBoxIconFontSize">16</x:Double>
 
-    <SolidColorBrush x:Key="InfoBarErrorSeverityBackgroundBrush" Color="#FF442726" />
-    <SolidColorBrush x:Key="InfoBarWarningSeverityBackgroundBrush" Color="#FF433519" />
-    <SolidColorBrush x:Key="InfoBarSuccessSeverityBackgroundBrush" Color="#FF393D1B" />
-    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#08FFFFFF" />
+    <SolidColorBrush x:Key="InfoBarErrorSeverityBackgroundBrush" Color="{StaticResource HoobiDangerBackgroundColor}" />
+    <SolidColorBrush x:Key="InfoBarWarningSeverityBackgroundBrush" Color="{StaticResource HoobiWarnBackgroundColor}" />
+    <SolidColorBrush x:Key="InfoBarSuccessSeverityBackgroundBrush" Color="{StaticResource HoobiSuccessBackgroundColor}" />
+    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="{StaticResource HoobiInfoBackgroundColor}" />
     <SolidColorBrush x:Key="InfoBarErrorSeverityIconBackground" Color="{StaticResource HoobiDangerColor}" />
     <SolidColorBrush x:Key="InfoBarWarningSeverityIconBackground" Color="{StaticResource HoobiWarnColor}" />
     <SolidColorBrush x:Key="InfoBarSuccessSeverityIconBackground" Color="{StaticResource HoobiSuccessColor}" />
     <SolidColorBrush x:Key="InfoBarInformationalSeverityIconBackground" Color="{StaticResource HoobiInfoColor}" />
     <SolidColorBrush x:Key="InfoBadgeBackground" Color="{StaticResource HoobiAccentColor}" />
 
-    <Color x:Key="HoobiFlyoutAcrylicTintColor">#FF0C0E13</Color>
-    <Color x:Key="HoobiFlyoutAcrylicFallbackColor">#FF111319</Color>
     <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="Transparent" />
@@ -293,16 +284,16 @@
     <Thickness x:Key="FlyoutBorderThemeThickness">0</Thickness>
     <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">0</Thickness>
 
-    <SolidColorBrush x:Key="CaptionButtonBackground" Color="#00242936" />
-    <SolidColorBrush x:Key="CaptionButtonBackgroundInactive" Color="#00242936" />
+    <SolidColorBrush x:Key="CaptionButtonBackground" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
+    <SolidColorBrush x:Key="CaptionButtonBackgroundInactive" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
     <SolidColorBrush x:Key="CaptionButtonBackgroundPointerOver" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="CaptionButtonBackgroundPressed" Color="{StaticResource HoobiSurfaceColor}" />
     <SolidColorBrush x:Key="CaptionButtonForeground" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="CaptionButtonForegroundInactive" Color="{StaticResource HoobiTextMuteColor}" />
     <SolidColorBrush x:Key="CaptionButtonForegroundPointerOver" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="CaptionButtonForegroundPressed" Color="{StaticResource HoobiTextColor}" />
-    <SolidColorBrush x:Key="HoobiCaptionCloseBackgroundPointerOver" Color="#FFE81123" />
-    <SolidColorBrush x:Key="HoobiCaptionCloseBackgroundPressed" Color="#E6C42B1C" />
+    <SolidColorBrush x:Key="HoobiCaptionCloseBackgroundPointerOver" Color="{StaticResource HoobiCaptionCloseColor}" />
+    <SolidColorBrush x:Key="HoobiCaptionCloseBackgroundPressed" Color="{StaticResource HoobiCaptionClosePressedColor}" />
 
     <x:Double x:Key="TitleBarHeight">48</x:Double>
     <x:Double x:Key="HoobiCaptionButtonWidth">48</x:Double>
@@ -327,97 +318,97 @@
     <x:Double x:Key="BodyTextBlockFontSize">14</x:Double>
     <x:Double x:Key="SubtitleTextBlockFontSize">20</x:Double>
 
-    <SolidColorBrush x:Key="HoobiSettingsCardStrokeBrush" Color="#19000000" />
-    <SolidColorBrush x:Key="HoobiToastWindowBackground" Color="#00242936" />
+    <SolidColorBrush x:Key="HoobiSettingsCardStrokeBrush" Color="{StaticResource HoobiFluentControlAltSecondaryColor}" />
+    <SolidColorBrush x:Key="HoobiToastWindowBackground" Color="{StaticResource HoobiSurfaceRaisedClearColor}" />
     <SolidColorBrush x:Key="HoobiSettingsExpandedHeaderBrush" Color="{StaticResource HoobiSurfaceRaisedColor}" />
-    <SolidColorBrush x:Key="HoobiSliderThumbPointerOverBrush" Color="#FFA6E1FF" />
+    <SolidColorBrush x:Key="HoobiSliderThumbPointerOverBrush" Color="{StaticResource HoobiSliderThumbHoverColor}" />
     <SolidColorBrush x:Key="HoobiFloatingPanelBrush" Color="{StaticResource HoobiBgColor}" />
-    <SolidColorBrush x:Key="HoobiFloatingPanelAcrylicBrush" Color="#B8181C26" />
+    <SolidColorBrush x:Key="HoobiFloatingPanelAcrylicBrush" Color="{StaticResource HoobiFloatingAcrylicColor}" />
     <Thickness x:Key="HoobiDividerBleed">-12,0</Thickness>
-    <DropShadowEffect x:Key="HoobiDialogShadow" OffsetX="0" OffsetY="8" BlurRadius="32" Color="#66000000" />
-    <BoxShadows x:Key="HoobiFlyoutShadow">0 8 16 0 #47000000, 0 0 2 0 #3D000000</BoxShadows>
+    <DropShadowEffect x:Key="HoobiDialogShadow" OffsetX="0" OffsetY="8" BlurRadius="32" Color="{StaticResource HoobiDialogShadowColor}" />
+    <StaticResource x:Key="HoobiFlyoutShadow" ResourceKey="HoobiShadowFlyout" />
 
     <ResourceDictionary x:Key="HoobiDialogScopeResources">
-        <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#E673D0FF" />
-        <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#CC73D0FF" />
-        <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FF000000" />
-        <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#80000000" />
-        <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="#28FFFFFF" />
-        <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#87FFFFFF" />
-        <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#0BFFFFFF" />
-        <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#5DFFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUnchecked" Color="#19000000" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" Color="#0BFFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedPressed" Color="#12FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedDisabled" Color="#00FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="#8BFFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" Color="#8BFFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" Color="#28FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" Color="#28FFFFFF" />
+        <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="{StaticResource HoobiAccentSecondaryColor}" />
+        <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="{StaticResource HoobiAccentTertiaryColor}" />
+        <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="{StaticResource HoobiFluentTextOnAccentColor}" />
+        <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="{StaticResource HoobiFluentTextOnAccentSecondaryColor}" />
+        <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
+        <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="{StaticResource HoobiFluentTextOnAccentDisabledColor}" />
+        <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{StaticResource HoobiFluentControlDisabledColor}" />
+        <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{StaticResource HoobiFluentTextDisabledColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUnchecked" Color="{StaticResource HoobiFluentControlAltSecondaryColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" Color="{StaticResource HoobiFluentControlDisabledColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedPressed" Color="{StaticResource HoobiFluentControlAltQuarternaryColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillUncheckedDisabled" Color="{StaticResource HoobiFluentSubtleTransparentColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="{StaticResource HoobiFluentControlStrongStrokeColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" Color="{StaticResource HoobiFluentControlStrongStrokeColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" Color="{StaticResource HoobiFluentControlStrongStrokeDisabledColor}" />
     </ResourceDictionary>
 
     <ResourceDictionary x:Key="HoobiDialogResources">
         <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
         <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
         <Thickness x:Key="TextControlThemePadding">10,5,6,5</Thickness>
-        <SolidColorBrush x:Key="TextControlBackground" Color="#0FFFFFFF" />
-        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#15FFFFFF" />
+        <SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource HoobiFluentDividerStrokeColor}" />
         <LinearGradientBrush x:Key="TextControlBackgroundFocused" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#B31E1E1E" />
-            <GradientStop Offset="0.9375" Color="#B31E1E1E" />
-            <GradientStop Offset="0.9375" Color="#FF73D0FF" />
-            <GradientStop Offset="1" Color="#FF73D0FF" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiFluentControlInputActiveColor}" />
+            <GradientStop Offset="0.9375" Color="{StaticResource HoobiFluentControlInputActiveColor}" />
+            <GradientStop Offset="0.9375" Color="{StaticResource HoobiAccentHoverColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiAccentHoverColor}" />
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="#0BFFFFFF" />
+        <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource HoobiFluentControlDisabledColor}" />
         <LinearGradientBrush x:Key="TextControlBorderBrush" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF9FA1A8" />
-            <GradientStop Offset="1" Color="#FF9FA1A8" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeStrongColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiDialogFieldStrokeStrongColor}" />
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="TextControlBorderBrushPointerOver" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF9FA1A8" />
-            <GradientStop Offset="1" Color="#FF9FA1A8" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeStrongColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiDialogFieldStrokeStrongColor}" />
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="TextControlBorderBrushFocused" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF3A404D" />
-            <GradientStop Offset="0.96875" Color="#FF73D0FF" />
-            <GradientStop Offset="1" Color="#FF73D0FF" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiAccentHoverColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiAccentHoverColor}" />
         </LinearGradientBrush>
         <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="Transparent" />
-        <SolidColorBrush x:Key="TextControlForeground" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="TextControlForegroundFocused" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="#5DFFFFFF" />
-        <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="#C5FFFFFF" />
-        <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="#C5FFFFFF" />
-        <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="#C5FFFFFF" />
-        <SolidColorBrush x:Key="TextControlPlaceholderForegroundDisabled" Color="#5DFFFFFF" />
+        <SolidColorBrush x:Key="TextControlForeground" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource HoobiFluentTextDisabledColor}" />
+        <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{StaticResource HoobiFluentTextSecondaryColor}" />
+        <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="{StaticResource HoobiFluentTextSecondaryColor}" />
+        <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="{StaticResource HoobiFluentTextSecondaryColor}" />
+        <SolidColorBrush x:Key="TextControlPlaceholderForegroundDisabled" Color="{StaticResource HoobiFluentTextDisabledColor}" />
         <Thickness x:Key="ComboBoxBorderThemeThickness">1</Thickness>
-        <SolidColorBrush x:Key="ComboBoxBackground" Color="#0FFFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="#15FFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="#08FFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxBackgroundDisabled" Color="#0BFFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="#0FFFFFFF" />
+        <SolidColorBrush x:Key="ComboBoxBackground" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
+        <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource HoobiFluentDividerStrokeColor}" />
+        <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="{StaticResource HoobiFluentControlTertiaryColor}" />
+        <SolidColorBrush x:Key="ComboBoxBackgroundDisabled" Color="{StaticResource HoobiFluentControlDisabledColor}" />
+        <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="{StaticResource HoobiFluentSubtleSecondaryColor}" />
         <LinearGradientBrush x:Key="ComboBoxBorderBrush" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#FF3F4452" />
-            <GradientStop Offset="0.96875" Color="#FF3F4452" />
-            <GradientStop Offset="0.96875" Color="#FF3A404D" />
-            <GradientStop Offset="1" Color="#FF3A404D" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiDialogComboStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogComboStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="ComboBoxBorderBrushPointerOver" StartPoint="0,0" EndPoint="0,32">
-            <GradientStop Offset="0" Color="#FF3F4452" />
-            <GradientStop Offset="0.96875" Color="#FF3F4452" />
-            <GradientStop Offset="0.96875" Color="#FF3A404D" />
-            <GradientStop Offset="1" Color="#FF3A404D" />
+            <GradientStop Offset="0" Color="{StaticResource HoobiDialogComboStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogComboStrokeColor}" />
+            <GradientStop Offset="0.96875" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
+            <GradientStop Offset="1" Color="{StaticResource HoobiDialogFieldStrokeColor}" />
         </LinearGradientBrush>
         <SolidColorBrush x:Key="ComboBoxBorderBrushDisabled" Color="Transparent" />
-        <SolidColorBrush x:Key="ComboBoxForeground" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxForegroundPointerOver" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxForegroundPressed" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="ComboBoxForeground" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="ComboBoxForegroundPointerOver" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="ComboBoxForegroundPressed" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
+        <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="{StaticResource HoobiFluentTextPrimaryColor}" />
     </ResourceDictionary>
 </ResourceDictionary>
