@@ -110,7 +110,7 @@ function tokens() {
     version: 1,
     meta: {
       source: 'git',
-      repo: 'https://dev.azure.com/Hoobi/Hoobi/_git/hoobi-design',
+      repo: 'https://github.com/hoobio/hoobi-design',
       ref: `${tag ?? 'main'}@${sha}`,
       package: '@hoobi/design',
       version,

@@ -12,7 +12,7 @@
     <Product>Hoobi Design</Product>
     <Copyright>Copyright (c) Hoobi $([System.DateTime]::Now.Year)</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <RepositoryUrl>https://dev.azure.com/Hoobi/Hoobi/_git/hoobi-design</RepositoryUrl>
+    <RepositoryUrl>https://github.com/hoobio/hoobi-design</RepositoryUrl>
     <IsPackable>false</IsPackable>
     <Version Condition="'$(Version)' == ''">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../react/package.json')), '"version":\s*"([^"]+)"').Groups[1].Value)</Version>
   </PropertyGroup>
