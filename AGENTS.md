@@ -28,7 +28,7 @@ The npm package has zero runtime dependencies. Peer deps only: react >=19, react
 
 ```
 styles.css                       # tokens (@theme static), @font-face, base layer, utilities
-fonts/                           # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2)
+fonts/                           # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2, fetched, gitignored)
 src/*.tsx                        # one component per file, re-exported from src/index.ts
 catalog/                         # hand-rolled Vite reference page (see below)
 dotnet/                          # Hoobi.Design.slnx: the Avalonia theme, the Windows helpers, their tests and the gallery
@@ -577,8 +577,16 @@ library through `workspace:*`. One `pnpm install` at the root installs both; the
 pnpm install --frozen-lockfile
 pnpm run typecheck
 pnpm run build
-npm pack --dry-run     # must list dist/, styles.css, fonts/ and nothing else
+npm pack --dry-run     # must list dist/, styles.css, fonts/, LICENSE and nothing else
 ```
+
+Dank Mono is licensed and is not in the repo or its history. The three woff2 files are the
+universal package `hoobi-design-fonts-dankmono` 1.0.0 on the Hoobi feed. `pnpm fonts:fetch`
+downloads them into `fonts/` (gitignored) when `az` is signed in to the Hoobi org, and prints a
+message and does nothing otherwise; mono text then falls back to Cascadia Mono or the system
+monospace. The pipelines download the package before the build and fail when it is missing, so
+the published npm package always ships the files. `fonts:fetch` fails too when `CI` or `TF_BUILD`
+is set.
 
 **Validate visually before pushing.** Every modified component (and any page its change touches)
 gets looked at in the catalog dev server with the browser - not reasoned about, looked at:

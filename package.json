@@ -28,6 +28,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit && node check.mjs",
     "test": "node --test \"test/*.test.mjs\"",
+    "fonts:fetch": "node fetch-fonts.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepublishOnly": "npm run build"

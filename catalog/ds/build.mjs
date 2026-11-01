@@ -94,15 +94,17 @@ function tokens() {
       styles.set(base, style);
     } else throw new Error(`styles.css --${name} has no family in catalog/ds/build.mjs`);
   }
-  const fonts = [...read('styles.css').matchAll(/@font-face\s*\{([^}]*)\}/g)].map(([, b]) => {
-    const get = (k) => b.match(new RegExp(`${k}:\\s*([^;]+);`))?.[1].trim();
-    return {
-      family: get('font-family').replace(/['"]/g, ''),
-      file: get('src').match(/url\('\.\/(fonts\/[^']+)'\)/)[1],
-      weight: get('font-weight'),
-      style: get('font-style'),
-    };
-  }).filter((f) => existsSync(join(repo, f.file)));
+  const fonts = [...read('styles.css').matchAll(/@font-face\s*\{([^}]*)\}/g)]
+    .map(([, b]) => {
+      const get = (k) => b.match(new RegExp(`${k}:\\s*([^;]+);`))?.[1].trim();
+      return {
+        family: get('font-family').replace(/['"]/g, ''),
+        file: get('src').match(/url\('\.\/(fonts\/[^']+)'\)/)[1],
+        weight: get('font-weight'),
+        style: get('font-style'),
+      };
+    })
+    .filter((f) => existsSync(join(repo, f.file)));
   const typeStyles = [...styles.entries()].map(([base, s]) => ({
     ...s,
     fontWeight: s.fontWeight ?? 400,
