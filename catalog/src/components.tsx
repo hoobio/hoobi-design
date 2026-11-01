@@ -59,7 +59,7 @@ import {
   highlight,
   useFold,
 } from './kit.js';
-import posterUrl from './poster.jpg';
+import posterUrl from './mirage-art.png';
 
 export function ButtonPage() {
   return (
@@ -1170,13 +1170,13 @@ export function CardPage() {
         title="Mirage"
         note="The scoped material: the card's own fill becomes the artwork, blurred and tinted towards surface-raised. Text stays readable; the colour comes along."
         stack
-        code={`<Card title="The Odyssey" mirage="url(/poster.jpg)">
+        code={`<Card title="Artwork" mirage="url(/poster.jpg)">
   ...
 </Card>`}
       >
-        <Card title="The Odyssey" mirage={`url(${posterUrl})`} className="w-full">
+        <Card title="Artwork" mirage={`url(${posterUrl})`} className="w-full">
           <p className="text-body text-text-dim">
-            The poster, melted into the card - the issue-card treatment.
+            The artwork, melted into the card - the issue-card treatment.
           </p>
         </Card>
       </Demo>

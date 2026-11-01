@@ -2,7 +2,7 @@ import { useContext, type CSSProperties, type ReactNode } from 'react';
 import { Alert, Badge, Button, Card, Menu, Popover, Select } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, Snippet } from './kit.js';
 import { colour, token } from './tokens.js';
-import posterUrl from './poster.jpg';
+import posterUrl from './mirage-art.png';
 
 const GROUPS: { group: string; note: string; names: string[] }[] = [
   {
@@ -370,8 +370,8 @@ export function Mirage() {
 
       <h3 className="mt-8 text-body-strong text-text">In miniature</h3>
       <p className="mt-1 text-caption text-text-dim">
-        The default hues, then a movie poster - raw and as mirage. A 500px poster blurred into the
-        backdrop an app would show behind that film.
+        The default hues, then a poster-sized artwork - raw and as mirage. A 500px image blurred
+        into the backdrop an app would show behind it.
       </p>
       <div className="mt-3 flex flex-wrap gap-3">
         <div

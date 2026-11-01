@@ -669,6 +669,8 @@ workflow on each release tag only. Pages has no rewrite rule, so the deploy copi
 (`catalog/src/dotnet.tsx`) shows four gallery PNGs from `catalog/src/gallery/`; refresh them from
 `HOOBI_GALLERY_PNG_DIR` when the native look changes.
 
+The mirage demo artwork `catalog/src/mirage-art.png` is drawn by `node catalog/mirage-art.mjs`, so no third-party image ships in the repo.
+
 ## Claude Design System sync
 
 The library is also a Claude **Design System** artifact, "Hoobi Design"

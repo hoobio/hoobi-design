@@ -1,7 +1,7 @@
 import { useEffect, type MouseEvent } from 'react';
 import { Section, Shell, Toaster } from '@hoobi/design';
 import { DEMO_TEXTURE, ShellDemoContext, navigateTo, setQuery, useUrl } from './kit.js';
-import posterUrl from './poster.jpg';
+import posterUrl from './mirage-art.png';
 import { GROUPS, PAGES, type Page } from './pages.js';
 
 type NavType = 'pinned' | 'rail' | 'top';
