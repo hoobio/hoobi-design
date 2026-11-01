@@ -5,8 +5,13 @@
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>true</IsPackable>
     <Description>Windows plumbing shared by Hoobi desktop apps: Microsoft Store updates, start at sign-in, restart registration, single instance, UI watchdog.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hoobi.Desktop.Windows.Tests" />
+  </ItemGroup>
 
 </Project>

@@ -5,11 +5,13 @@
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);CA1707;CA2201</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <Using Include="Xunit" />
     <ProjectReference Include="..\..\src\Hoobi.Desktop.Windows\Hoobi.Desktop.Windows.csproj" />
   </ItemGroup>
 

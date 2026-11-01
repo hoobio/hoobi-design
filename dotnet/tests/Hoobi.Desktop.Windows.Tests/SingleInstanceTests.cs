@@ -1,0 +1,77 @@
+namespace Hoobi.Desktop.Windows.Tests;
+
+public sealed class SingleInstanceTests
+{
+    [Fact]
+    public async Task SecondLaunch_IsRefused_AndSignalsTheFirstToShow()
+    {
+        var name = $"HoobiDesignTest.{Guid.NewGuid():N}";
+        using var shown = new ManualResetEventSlim();
+
+        await Task.Run(() =>
+        {
+            Assert.True(SingleInstance.TryAcquire(name, showRunning: true, TimeSpan.Zero, out var first));
+            using (first)
+            {
+                first.ListenForShow(shown.Set);
+
+                var second = Task.Run(() => SingleInstance.TryAcquire(name, showRunning: true, TimeSpan.Zero, out _), TestContext.Current.CancellationToken).GetAwaiter().GetResult();
+
+                Assert.False(second);
+                Assert.True(shown.Wait(TimeSpan.FromSeconds(5)));
+            }
+        }, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task SecondLaunch_WithoutShowRunning_DoesNotSignal()
+    {
+        var name = $"HoobiDesignTest.{Guid.NewGuid():N}";
+        using var shown = new ManualResetEventSlim();
+
+        await Task.Run(() =>
+        {
+            Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var first));
+            using (first)
+            {
+                first.ListenForShow(shown.Set);
+
+                var second = Task.Run(() => SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out _), TestContext.Current.CancellationToken).GetAwaiter().GetResult();
+
+                Assert.False(second);
+                Assert.False(shown.Wait(TimeSpan.FromMilliseconds(300)));
+            }
+        }, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task AfterTheFirstDisposes_ANewLaunchAcquires()
+    {
+        var name = $"HoobiDesignTest.{Guid.NewGuid():N}";
+
+        await Task.Run(() =>
+        {
+            Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var first));
+            first.Dispose();
+
+            Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var again));
+            again.Dispose();
+        }, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task AbandonedMutex_CountsAsAcquired()
+    {
+        var name = $"HoobiDesignTest.{Guid.NewGuid():N}";
+        using var abandoned = new Mutex(initiallyOwned: false, $"Local\\{name}");
+        var owner = new Thread(() => abandoned.WaitOne());
+        owner.Start();
+        owner.Join();
+
+        await Task.Run(() =>
+        {
+            Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var instance));
+            instance.Dispose();
+        }, TestContext.Current.CancellationToken);
+    }
+}
