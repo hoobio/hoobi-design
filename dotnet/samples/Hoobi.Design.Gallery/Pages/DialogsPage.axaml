@@ -1,0 +1,17 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.DialogsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Dialogs and toasts" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="AppDialogs.ShowAsync, FAContentDialog.Hoobi" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="FormDialogButton" Classes="ShowsDialog" Content="Show a form dialog" />
+                <Button x:Name="MessageDialogButton" Classes="ShowsDialog" Content="Show a message" />
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="ToastWindow" />
+            <Button x:Name="ToastButton" HorizontalAlignment="Left" Content="Show a toast" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

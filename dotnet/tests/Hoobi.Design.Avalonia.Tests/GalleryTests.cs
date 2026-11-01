@@ -4,10 +4,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+
+using FluentAvalonia.UI.Controls;
 
 using Hoobi.Design.Avalonia.Testing;
 using Hoobi.Design.Gallery;
@@ -18,6 +21,8 @@ public sealed partial class GalleryTests(AvaloniaSession session)
 {
     private static readonly string[] Decorations = ["HoobiWindowDecorations", "HoobiCloseOnlyDecorations"];
     private static readonly bool[] States = [true, false];
+    private static readonly string[] StyledFiles = ["Controls.axaml", "Dialogs.axaml", "SettingsCards.axaml"];
+    private const string DialogShot = "dialog";
 
     public static TheoryData<string> PageNames => [.. MainWindow.Pages.Select(page => page.Name)];
 
@@ -33,9 +38,9 @@ public sealed partial class GalleryTests(AvaloniaSession session)
                 window.Navigate(name);
                 AvaloniaSession.Pump();
                 flashes.UnionWith(HoverFlashProbe.Probe(window));
-                foreach (var _ in OpenEachPopup(window))
+                foreach (var popup in OpenEachPopup(window))
                 {
-                    flashes.UnionWith(HoverFlashProbe.ProbePopups(window));
+                    flashes.UnionWith(popup == DialogShot ? HoverFlashProbe.Probe(window) : HoverFlashProbe.ProbePopups(window));
                 }
             }
         }
@@ -43,6 +48,10 @@ public sealed partial class GalleryTests(AvaloniaSession session)
         {
             window.Close();
         }
+
+        var toast = ShowToast();
+        flashes.UnionWith(HoverFlashProbe.Probe(toast));
+        toast.Hide();
 
         foreach (var key in Decorations)
         {
@@ -87,8 +96,13 @@ public sealed partial class GalleryTests(AvaloniaSession session)
                 window.Navigate(name);
                 AvaloniaSession.Pump();
                 seen.AddRange(Elements(window));
-                foreach (var _ in OpenEachPopup(window))
+                foreach (var shot in OpenEachPopup(window))
                 {
+                    if (shot == DialogShot)
+                    {
+                        seen.AddRange(Elements(window));
+                    }
+
                     foreach (var popup in window.OpenedPopups)
                     {
                         seen.AddRange(Elements((Visual)popup.Child!));
@@ -105,7 +119,7 @@ public sealed partial class GalleryTests(AvaloniaSession session)
             }
 
             var decorations = new[] { window.WindowDecorationsTheme, closeOnly.WindowDecorationsTheme };
-            var themes = Controls().Resources.Where(entry => entry.Value is ControlTheme).ToList();
+            var themes = LibraryStyles().SelectMany(styles => styles.Resources).Where(entry => entry.Value is ControlTheme).ToList();
             var missing = themes
                 .Where(entry => entry.Key is Type type
                     ? !seen.Any(type.IsInstanceOfType)
@@ -151,6 +165,10 @@ public sealed partial class GalleryTests(AvaloniaSession session)
         {
             window.Close();
         }
+
+        var toast = ShowToast();
+        Save(toast, Path.Combine(directory, "ToastWindow.png"));
+        toast.Hide();
 
         foreach (var key in Decorations)
         {
@@ -201,6 +219,19 @@ public sealed partial class GalleryTests(AvaloniaSession session)
             AvaloniaSession.Pump();
         }
 
+        foreach (var button in page.GetVisualDescendants().OfType<Button>().Where(button => button.Classes.Contains("ShowsDialog")).ToList())
+        {
+            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            AvaloniaSession.WaitFor(() => Dialog(window) is { IsLoaded: true });
+            var settled = DateTime.UtcNow.AddMilliseconds(400);
+            AvaloniaSession.WaitFor(() => DateTime.UtcNow > settled);
+            AvaloniaSession.Pump();
+            yield return DialogShot;
+            Dialog(window)!.Hide();
+            AvaloniaSession.WaitFor(() => Dialog(window) is null);
+            AvaloniaSession.Pump();
+        }
+
         foreach (var target in page.GetVisualDescendants().OfType<Control>().Where(control => ToolTip.GetTip(control) is not null && control.IsEffectivelyEnabled).ToList())
         {
             var centre = target.TranslatePoint(new Point(target.Bounds.Width / 2, target.Bounds.Height / 2), window)!.Value;
@@ -221,14 +252,28 @@ public sealed partial class GalleryTests(AvaloniaSession session)
 
     private static IEnumerable<StyledElement> Elements(Visual root) => root.GetSelfAndVisualDescendants().OfType<StyledElement>();
 
-    private static Styles Controls() =>
+    private static FAContentDialog? Dialog(Window window) => window.GetVisualDescendants().OfType<FAContentDialog>().FirstOrDefault();
+
+    private static ToastWindow ShowToast()
+    {
+        ToastWindow.Show(null, "Copied the password");
+        var toast = ToastWindow.Current!;
+        var card = (Border)toast.Content!;
+        // The headless render timer never advances the fade, so the shot skips it.
+        card.Transitions = null;
+        card.Opacity = 1;
+        AvaloniaSession.Pump();
+        return toast;
+    }
+
+    private static IEnumerable<Styles> LibraryStyles() =>
         Application.Current!.Styles.OfType<HoobiTheme>().Single()
-            .Select(style => style is StyleInclude include ? include.Loaded : style).OfType<Styles>()
-            .Single(styles => styles.Resources.ContainsKey("DefaultButtonStyle"));
+            .Select(style => style is StyleInclude include ? include.Loaded : style).OfType<Styles>();
 
     private static IReadOnlyList<(string Type, string[] Classes)> ClassSelectors()
     {
-        var text = File.ReadAllText(Path.Combine(AvaloniaSession.DotnetRoot(), "src", "Hoobi.Design.Avalonia", "Themes", "Controls.axaml"));
+        var themes = Path.Combine(AvaloniaSession.DotnetRoot(), "src", "Hoobi.Design.Avalonia", "Themes");
+        var text = string.Concat(StyledFiles.Select(file => File.ReadAllText(Path.Combine(themes, file))));
         return [.. SelectorAttribute().Matches(text)
             .Select(match => match.Groups[1].Value)
             .Where(selector => !selector.StartsWith('^'))

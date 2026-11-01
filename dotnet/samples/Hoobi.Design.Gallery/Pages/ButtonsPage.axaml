@@ -3,7 +3,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer>
-        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+        <Grid Margin="{StaticResource HoobiPageGutter}" ColumnDefinitions="Auto,*">
+        <StackPanel Spacing="8">
             <TextBlock Text="Buttons" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
             <Grid ColumnDefinitions="240,220,220">
                 <TextBlock Classes="GroupHeader" Text="Theme or class" Margin="0,12,0,0" />
@@ -102,5 +103,37 @@
                 <DropDownButton Grid.Column="2" Content="Sort" IsEnabled="False" />
             </Grid>
         </StackPanel>
+        <StackPanel Grid.Column="1" Margin="24,48,0,0" Spacing="8">
+            <TextBlock Classes="GroupHeader" Text="Button.Tinted, ToggleButton.Tinted" />
+            <TextBlock Classes="FieldLabel" Text="Rest, pointerover, pressed" />
+            <Grid x:Name="TintedTiles" ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                <Grid.Styles>
+                    <Style Selector="Button.Tinted, ToggleButton.Tinted">
+                        <Setter Property="Width" Value="56" />
+                        <Setter Property="Height" Value="56" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Foreground" Value="{DynamicResource HoobiBgBrush}" />
+                        <Setter Property="FontFamily" Value="{StaticResource HoobiIconFontFamily}" />
+                        <Setter Property="FontSize" Value="24" />
+                    </Style>
+                </Grid.Styles>
+                <TextBlock Classes="FieldLabel" Text="Danger" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="Tinted" Background="{DynamicResource SystemFillColorCriticalBrush}" Content="{StaticResource Glyph.Dismiss}" />
+                <Button Grid.Column="2" Classes="Tinted" Tag=":pointerover" Background="{DynamicResource SystemFillColorCriticalBrush}" Content="{StaticResource Glyph.Dismiss}" />
+                <Button Grid.Column="3" Classes="Tinted" Tag=":pointerover :pressed" Background="{DynamicResource SystemFillColorCriticalBrush}" Content="{StaticResource Glyph.Dismiss}" />
+                <TextBlock Grid.Row="1" Classes="FieldLabel" Text="Accent" VerticalAlignment="Center" />
+                <Button Grid.Row="1" Grid.Column="1" Classes="Tinted" Background="{DynamicResource AccentFillColorDefaultBrush}" Content="{StaticResource Glyph.Game}" />
+                <Button Grid.Row="1" Grid.Column="2" Classes="Tinted" Tag=":pointerover" Background="{DynamicResource AccentFillColorDefaultBrush}" Content="{StaticResource Glyph.Game}" />
+                <Button Grid.Row="1" Grid.Column="3" Classes="Tinted" Tag=":pointerover :pressed" Background="{DynamicResource AccentFillColorDefaultBrush}" Content="{StaticResource Glyph.Game}" />
+                <TextBlock Grid.Row="2" Classes="FieldLabel" Text="Hex, toggle" VerticalAlignment="Center" />
+                <ToggleButton Grid.Row="2" Grid.Column="1" Classes="Tinted" Background="#FFD4BFFF" Content="{StaticResource Glyph.StarFilled}" />
+                <ToggleButton Grid.Row="2" Grid.Column="2" Classes="Tinted" Tag=":pointerover" Background="#FFD4BFFF" Content="{StaticResource Glyph.StarFilled}" />
+                <ToggleButton Grid.Row="2" Grid.Column="3" Classes="Tinted" Tag=":pointerover :pressed" Background="#FFD4BFFF" Content="{StaticResource Glyph.StarFilled}" />
+            </Grid>
+        </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

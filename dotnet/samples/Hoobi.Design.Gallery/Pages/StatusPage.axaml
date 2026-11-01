@@ -2,7 +2,8 @@
     x:Class="Hoobi.Design.Gallery.StatusPage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ui="using:FluentAvalonia.UI.Controls">
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia">
     <ScrollViewer>
         <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
             <TextBlock Text="Status" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
@@ -35,6 +36,12 @@
                     <Arc StartAngle="-90" SweepAngle="72" StrokeThickness="3" StrokeLineCap="Round" />
                     <TextBlock Text="2" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Panel>
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="ProgressRing, Spinner.IsSpinning" />
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <hoobi:ProgressRing />
+                <hoobi:ProgressRing Width="16" Height="16" />
+                <TextBlock Classes="Icon" Text="{StaticResource Glyph.Sync}" hoobi:Spinner.IsSpinning="True" />
             </StackPanel>
             <TextBlock Classes="GroupHeader" Text="FAInfoBar" />
             <StackPanel Spacing="8" MaxWidth="720" HorizontalAlignment="Left">

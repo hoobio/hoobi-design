@@ -16,6 +16,9 @@ public partial class MainWindow : Window
         ("Rows and surfaces", () => new SurfacesPage()),
         ("Status", () => new StatusPage()),
         ("Flyouts and menus", () => new FlyoutsPage()),
+        ("Dialogs and toasts", () => new DialogsPage()),
+        ("Settings cards", () => new SettingsPage()),
+        ("Layout and motion", () => new LayoutPage()),
         ("Window chrome", () => new ChromePage()),
     ];
 

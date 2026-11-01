@@ -1,0 +1,72 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.LayoutPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Layout and motion" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="CardWrapPanel, CardWrapPanel.IsFullRow, CrossfadeImage" />
+            <hoobi:CardWrapPanel MinItemWidth="260" Spacing="8">
+                <Border Classes="Row" CornerRadius="{StaticResource OverlayCornerRadius}" hoobi:CardWrapPanel.IsFullRow="True">
+                    <TextBlock Text="A full-row group header" />
+                </Border>
+                <Border CornerRadius="{StaticResource OverlayCornerRadius}" ClipToBounds="True" Height="96">
+                    <Panel>
+                        <hoobi:CrossfadeImage>
+                            <DrawingImage>
+                                <GeometryDrawing Brush="{DynamicResource HoobiAccentFillBrush}" Geometry="M0,0 H160 V90 H0 Z" />
+                            </DrawingImage>
+                        </hoobi:CrossfadeImage>
+                        <TextBlock Text="Headphones" Margin="16,12" />
+                    </Panel>
+                </Border>
+                <Border Classes="Row" CornerRadius="{StaticResource OverlayCornerRadius}">
+                    <TextBlock Text="Speakers" />
+                </Border>
+                <Border Classes="Row" CornerRadius="{StaticResource OverlayCornerRadius}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Microphone" />
+                        <TextBlock Classes="Caption" Text="A taller card sets the row height." Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
+            </hoobi:CardWrapPanel>
+            <TextBlock Classes="GroupHeader" Text="GlidingWrapPanel" />
+            <ItemsControl x:Name="Chips">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <hoobi:GlidingWrapPanel ItemSpacing="8" LineSpacing="8" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Border Classes="Badge">
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Classes="GroupHeader" Text="SlideExpander" />
+            <Border Classes="Group" MaxWidth="480" HorizontalAlignment="Left">
+                <StackPanel Classes="Rows">
+                    <Border Classes="Row Switch">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Show the rules" VerticalAlignment="Center" />
+                            <ToggleSwitch x:Name="ExpandSwitch" Grid.Column="1" IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                        </Grid>
+                    </Border>
+                    <hoobi:SlideExpander IsExpanded="{Binding #ExpandSwitch.IsChecked}">
+                        <Border Classes="Row">
+                            <TextBlock Text="Route Discord to the headset when it opens." TextWrapping="Wrap" />
+                        </Border>
+                    </hoobi:SlideExpander>
+                </StackPanel>
+            </Border>
+            <TextBlock Classes="GroupHeader" Text="DitheredRadialGradient" />
+            <Panel Height="120" MaxWidth="480" HorizontalAlignment="Left" Background="{DynamicResource HoobiBgBrush}">
+                <hoobi:DitheredRadialGradient Fill="{DynamicResource HoobiGroundGlowTopLeft}" />
+                <hoobi:DitheredRadialGradient Fill="{DynamicResource HoobiGroundGlowTopRight}" />
+            </Panel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

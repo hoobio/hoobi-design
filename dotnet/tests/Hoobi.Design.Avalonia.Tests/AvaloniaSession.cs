@@ -4,6 +4,8 @@ using Avalonia;
 using Avalonia.Headless;
 using Avalonia.Styling;
 
+using FluentAvalonia.UI.Controls;
+
 using Hoobi.Design.Avalonia;
 using Hoobi.Design.Avalonia.Testing;
 using Hoobi.Design.Gallery;
@@ -32,6 +34,12 @@ public sealed class AvaloniaSession : IDisposable
     public static void Pump(int passes = 5) => HeadlessSession.Pump(passes);
 
     public static void WaitFor(Func<bool> condition) => Assert.True(HeadlessSession.WaitFor(condition));
+
+    public static void CloseDialog(FAContentDialog dialog, Task shown)
+    {
+        dialog.Hide();
+        WaitFor(() => shown.IsCompleted);
+    }
 
     public void Dispose() => _session.Dispose();
 }

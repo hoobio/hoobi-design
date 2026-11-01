@@ -34,6 +34,7 @@ public static class HoobiDesign
         _registered = true;
         PopupPlacement.Register();
         ScrollIndicator.Register();
+        DialogResourceScope.Register();
         // The drawn caption buttons sit beside the window under its host, outside the window's own text options.
         Control.LoadedEvent.AddClassHandler<TopLevel>((top, _) =>
         {

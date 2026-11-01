@@ -1,7 +1,8 @@
 <UserControl
     x:Class="Hoobi.Design.Gallery.TextPage"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia">
     <ScrollViewer>
         <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
             <TextBlock Text="Text and input" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
@@ -51,7 +52,7 @@
             </Grid>
 
             <TextBlock Classes="GroupHeader" Text="Input" />
-            <Grid ColumnDefinitions="240,300,300" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+            <Grid ColumnDefinitions="240,300,300" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
                 <TextBlock Classes="FieldHeader" Text="TextBlock.FieldHeader" Grid.Column="1" />
                 <TextBlock Classes="FieldHeader ComboBox" Text="TextBlock.FieldHeader.ComboBox" Grid.Column="2" />
                 <TextBlock Grid.Row="1" Classes="FieldLabel" Text="TextBox" VerticalAlignment="Center" />
@@ -60,6 +61,8 @@
                 <TextBlock Grid.Row="2" Classes="FieldLabel" Text="TextBox placeholder" VerticalAlignment="Center" />
                 <TextBox Grid.Row="2" Grid.Column="1" PlaceholderText="Search addons" Margin="0,0,16,0" />
                 <TextBox Grid.Row="2" Grid.Column="2" PlaceholderText="Search addons" IsEnabled="False" Margin="0,0,16,0" />
+                <TextBlock Grid.Row="3" Classes="FieldLabel" Text="HoldToReveal" VerticalAlignment="Center" />
+                <TextBox Grid.Row="3" Grid.Column="1" Classes="revealPasswordButton" PasswordChar="●" Text="correct horse" Margin="0,0,16,0" hoobi:HoldToReveal.IsEnabled="True" />
             </Grid>
         </StackPanel>
     </ScrollViewer>

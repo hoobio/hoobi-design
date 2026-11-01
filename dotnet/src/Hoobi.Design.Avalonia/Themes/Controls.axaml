@@ -454,6 +454,16 @@
         <Setter Property="CornerRadius" Value="0" />
     </Style>
 
+    <!-- FluentAvalonia's pointerover replaces a local fill with the neutral hover brush, so a coloured button shades its own fill instead. -->
+    <Style Selector="Button.Tinted:pointerover /template/ ContentPresenter#PART_ContentPresenter, ToggleButton.Tinted:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{Binding $parent[TemplatedControl].Background, Converter={x:Static hoobi:ColorShade.Hover}}" />
+        <Setter Property="Foreground" Value="{Binding $parent[TemplatedControl].Foreground}" />
+    </Style>
+    <Style Selector="Button.Tinted:pressed /template/ ContentPresenter#PART_ContentPresenter, ToggleButton.Tinted:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{Binding $parent[TemplatedControl].Background, Converter={x:Static hoobi:ColorShade.Pressed}}" />
+        <Setter Property="Foreground" Value="{Binding $parent[TemplatedControl].Foreground}" />
+    </Style>
+
     <Style Selector="HyperlinkButton /template/ ContentPresenter#ContentPresenter">
         <Setter Property="Transitions">
             <Transitions>
@@ -663,6 +673,16 @@
     </Style>
     <Style Selector="MenuItem:selected:not(:pointerover):not(:focus-visible) /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource MenuFlyoutItemBackground}" />
+    </Style>
+
+    <Style Selector="hoobi|ProgressRing">
+        <Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="MinWidth" Value="16" />
+        <Setter Property="MinHeight" Value="16" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="ui|FAInfoBar">

@@ -15,4 +15,6 @@
     <sty:FluentAvaloniaTheme PreferSystemTheme="False" PreferUserAccentColor="False" CustomAccentColor="{StaticResource HoobiAccentColor}" UseSystemFontOnWindows="False" />
     <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/Controls.axaml" />
     <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/ScrollBarHitArea.axaml" />
+    <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/Dialogs.axaml" />
+    <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/SettingsCards.axaml" />
 </Styles>

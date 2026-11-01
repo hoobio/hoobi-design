@@ -158,6 +158,40 @@ public sealed class TextCentringTests(AvaloniaSession session)
         }
     });
 
+    [Fact]
+    public void Accent_button_text_is_semibold_in_a_dialog() => session.Run(() =>
+    {
+        var accent = AvaloniaSession.Resource<ControlTheme>("AccentButtonStyle");
+        var window = Show(new TextBlock { Text = Caps });
+        var dialog = new FAContentDialog { Title = Caps, Content = Caps, PrimaryButtonText = "Save", CloseButtonText = "Close" };
+        var closeOnly = new FAContentDialog { Title = Caps, CloseButtonText = "Close", DefaultButton = FAContentDialogButton.Close };
+        try
+        {
+            foreach (var shown in new[] { dialog, closeOnly })
+            {
+                var task = AppDialogs.ShowAsync(shown, window);
+                try
+                {
+                    AvaloniaSession.WaitFor(() => shown.IsLoaded);
+                    Dispatcher.UIThread.RunJobs();
+                    var accented = shown.GetVisualDescendants().OfType<Button>()
+                        .Where(button => button.IsVisible && (button.Theme == accent || button.Classes.Contains("accent")))
+                        .ToList();
+                    Assert.NotEmpty(accented);
+                    Assert.All(accented, button => Assert.Equal(FontWeight.SemiBold, Label(button).FontWeight));
+                }
+                finally
+                {
+                    AvaloniaSession.CloseDialog(shown, task);
+                }
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    });
+
     private static TextBlock Label(Button button) => button.GetVisualDescendants().OfType<TextBlock>().First(text => !string.IsNullOrEmpty(text.Text));
 
     private static Gaps Measure(string name, string text)

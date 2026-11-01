@@ -1,0 +1,33 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.SettingsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8" MaxWidth="900" HorizontalAlignment="Left">
+            <TextBlock Text="Settings cards" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="SettingsCard" />
+            <hoobi:SettingsCard Header="Start at sign-in" Description="Opens in the tray when Windows starts." HeaderGlyph="{StaticResource Glyph.PowerButton}">
+                <ToggleSwitch IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+            </hoobi:SettingsCard>
+            <TextBlock Classes="GroupHeader" Text="StackPanel.SettingsGroup, SettingsCard.FirstVisible, SettingsCard.LastVisible" />
+            <StackPanel Classes="SettingsGroup">
+                <hoobi:SettingsCard Header="Addon folder" Description="D:\Games\World of Warcraft\Interface\AddOns" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" ActionGlyph="{StaticResource Glyph.ChevronRight}" />
+                <hoobi:SettingsCard Header="Release channel" HeaderGlyph="{StaticResource Glyph.Sync}">
+                    <ComboBox SelectedIndex="0" Width="160">
+                        <ComboBoxItem Content="Stable" />
+                        <ComboBoxItem Content="Pre-release" />
+                    </ComboBox>
+                </hoobi:SettingsCard>
+                <hoobi:SettingsCard Header="Check for updates" Description="Every 30 minutes." HeaderGlyph="{StaticResource Glyph.Refresh}">
+                    <ToggleSwitch OnContent="{x:Null}" OffContent="{x:Null}" />
+                </hoobi:SettingsCard>
+                <hoobi:SettingsCard Header="Sign in to sync" Description="Needs a Store build." HeaderGlyph="{StaticResource Glyph.Lock}" IsEnabled="False" />
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="SettingsCard.FirstVisible.LastVisible" />
+            <StackPanel Classes="SettingsGroup">
+                <hoobi:SettingsCard Header="About" Description="Version 12.1.4" HeaderGlyph="{StaticResource Glyph.Info}" IsClickEnabled="True" ActionGlyph="{StaticResource Glyph.OpenInNewWindow}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
