@@ -5,8 +5,6 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace Hoobi.Design.Avalonia;
 
@@ -42,13 +40,6 @@ public static class PopupPlacement
             }
         });
         InputElement.PointerMovedEvent.AddClassHandler<TopLevel>(TrackPointer, RoutingStrategies.Tunnel, handledEventsToo: true);
-        ComboBox.IsDropDownOpenProperty.Changed.AddClassHandler<ComboBox>((combo, _) =>
-        {
-            if (combo.IsDropDownOpen)
-            {
-                OverlayDropDown(combo);
-            }
-        });
     }
 
     private static void TrackPointer(TopLevel top, PointerEventArgs e)
@@ -67,27 +58,5 @@ public static class PopupPlacement
         {
             placement.AnchorRectangle = new Rect(_pointer.X - 0.5, _pointer.Y - ToolTipGap, 1, 2 * ToolTipGap);
         }
-    }
-
-    private static void OverlayDropDown(ComboBox combo)
-    {
-        if (combo.GetVisualDescendants().OfType<Popup>().FirstOrDefault(popup => popup.Name == "PART_Popup") is not { } popup)
-        {
-            return;
-        }
-
-        popup.Placement = PlacementMode.AnchorAndGravity;
-        popup.PlacementAnchor = PopupAnchor.TopLeft;
-        popup.PlacementGravity = PopupGravity.BottomRight;
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (combo.IsDropDownOpen
-                && combo.ContainerFromIndex(Math.Max(0, combo.SelectedIndex)) is Control item
-                && popup.Child is { } child
-                && item.TranslatePoint(default, child) is { } at)
-            {
-                popup.VerticalOffset = (combo.Bounds.Height - item.Bounds.Height) / 2 - at.Y;
-            }
-        }, DispatcherPriority.Loaded);
     }
 }

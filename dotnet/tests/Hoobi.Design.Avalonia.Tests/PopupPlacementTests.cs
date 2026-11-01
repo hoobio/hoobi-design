@@ -87,19 +87,21 @@ public sealed class PopupPlacementTests(AvaloniaSession session)
     });
 
     [Fact]
-    public void A_combo_box_list_opens_with_the_selected_item_over_the_box() => session.Run(() =>
+    public void A_combo_box_list_opens_4px_below_the_box_aligned_to_its_left_edge() => session.Run(() =>
     {
         var combo = new ComboBox { Width = 150, ItemsSource = Sources, SelectedIndex = 1, Margin = new Thickness(100, 300, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
         var window = new Window { Width = 800, Height = 800, Content = combo };
         window.Show();
         AvaloniaSession.Pump(6);
+        var popup = combo.GetVisualDescendants().OfType<Popup>().Single();
+        popup.ShouldUseOverlayLayer = true;
         combo.IsDropDownOpen = true;
         AvaloniaSession.Pump(6);
 
-        var item = combo.GetVisualDescendants().OfType<Popup>().Single().Child!.GetVisualDescendants().OfType<ComboBoxItem>().ElementAt(1);
-        var itemCentre = item.TranslatePoint(new Point(0, item.Bounds.Height / 2), window)!.Value.Y;
-        var boxCentre = combo.TranslatePoint(new Point(0, combo.Bounds.Height / 2), window)!.Value.Y;
-        Assert.Equal(boxCentre, itemCentre, 1);
+        var list = popup.Child!.TranslatePoint(default, window)!.Value;
+        var box = combo.TranslatePoint(default, window)!.Value;
+        Assert.True(list.Y >= box.Y + combo.Bounds.Height + 4 - 0.5, $"list at {list}, box at {box} {combo.Bounds.Size}");
+        Assert.Equal(box.X, list.X, 0.5);
         combo.IsDropDownOpen = false;
         window.Close();
     });
