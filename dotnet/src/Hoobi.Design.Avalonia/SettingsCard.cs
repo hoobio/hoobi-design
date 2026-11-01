@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Automation.Provider;
+using Avalonia.Data;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -22,12 +23,20 @@ public class SettingsCard : ContentControl
 
     public static readonly StyledProperty<bool> IsClickEnabledProperty = AvaloniaProperty.Register<SettingsCard, bool>(nameof(IsClickEnabled));
 
+    public static readonly StyledProperty<bool?> IsExpandedProperty = AvaloniaProperty.Register<SettingsCard, bool?>(nameof(IsExpanded), defaultBindingMode: BindingMode.TwoWay);
+
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent = RoutedEvent.Register<SettingsCard, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
     static SettingsCard()
     {
         FocusableProperty.OverrideDefaultValue<SettingsCard>(false);
         IsClickEnabledProperty.Changed.AddClassHandler<SettingsCard>((card, e) => card.Focusable = e.GetNewValue<bool>());
+        IsExpandedProperty.Changed.AddClassHandler<SettingsCard>((card, e) =>
+        {
+            var expanded = e.GetNewValue<bool?>();
+            card.PseudoClasses.Set(":expanded", expanded == true);
+            card.PseudoClasses.Set(":collapsed", expanded == false);
+        });
     }
 
     public event EventHandler<RoutedEventArgs> Click
@@ -72,7 +81,21 @@ public class SettingsCard : ContentControl
         set => SetValue(IsClickEnabledProperty, value);
     }
 
-    internal void RaiseClick() => RaiseEvent(new RoutedEventArgs(ClickEvent, this));
+    public bool? IsExpanded
+    {
+        get => GetValue(IsExpandedProperty);
+        set => SetValue(IsExpandedProperty, value);
+    }
+
+    internal void RaiseClick()
+    {
+        if (IsExpanded is { } expanded)
+        {
+            SetCurrentValue(IsExpandedProperty, !expanded);
+        }
+
+        RaiseEvent(new RoutedEventArgs(ClickEvent, this));
+    }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {

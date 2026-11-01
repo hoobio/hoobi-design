@@ -1,0 +1,116 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.SurfacesMorePage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <Grid Margin="{StaticResource HoobiPageGutter}" ColumnDefinitions="440,*" RowDefinitions="Auto,*">
+            <TextBlock Grid.ColumnSpan="2" Classes="PageTitle" Text="Text, badges and slots" />
+            <StackPanel Grid.Row="1" Spacing="8">
+                <TextBlock Classes="GroupHeader" Text="TextBlock.PageTitle, Dim, Mute, Warn, EmptyState" />
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <TextBlock Text="Primary" />
+                    <TextBlock Classes="Dim" Text="Dim" />
+                    <TextBlock Classes="Mute" Text="Mute" />
+                    <TextBlock Classes="Warn" Text="Warn" />
+                </StackPanel>
+                <Border Classes="Inset">
+                    <TextBlock Classes="EmptyState Dim" Text="No devices yet. Plug one in and it shows here." />
+                </Border>
+                <TextBlock Classes="GroupHeader" Text="Border.Badge.Solid, Border.Dot" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Border Classes="Badge Solid"><TextBlock Text="Added by you" VerticalAlignment="Center" /></Border>
+                    <Border Classes="Badge Solid"><TextBlock Text="Unsaved" VerticalAlignment="Center" /></Border>
+                    <Panel Width="32" Height="32">
+                        <Border Classes="Tile" />
+                        <Border Classes="Dot" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-3,-3">
+                            <TextBlock Text="{StaticResource Glyph.Lock}" Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                        </Border>
+                    </Panel>
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="Border.Inset, Border.Slot, ContentPresenter.Lifted" />
+                <Border Classes="Row" CornerRadius="{StaticResource OverlayCornerRadius}">
+                    <StackPanel Spacing="8">
+                        <Border Classes="Inset">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <TextBlock Classes="DragHandle" />
+                                <TextBlock Text="Discord goes to Headphones" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="Slot">
+                            <TextBlock Classes="Mute" Text="Drop here" />
+                        </Border>
+                        <ContentPresenter Classes="Lifted">
+                            <ContentPresenter.Content>
+                                <Border Classes="Inset">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Classes="DragHandle" />
+                                        <TextBlock Text="Spotify goes to Speakers" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
+                    </StackPanel>
+                </Border>
+                <TextBlock Classes="GroupHeader" Text="Border.Divider" />
+                <Border Classes="Row" Padding="12" CornerRadius="{StaticResource OverlayCornerRadius}">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Above the hairline" />
+                        <Border Classes="Divider" />
+                        <TextBlock Text="Below the hairline" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="24,0,0,0" Spacing="8">
+                <TextBlock Classes="GroupHeader" Text="Border.Row.Hairline" />
+                <Border Classes="Group" Width="420" HorizontalAlignment="Left">
+                    <StackPanel>
+                        <Border Classes="Row Hairline"><TextBlock Text="WeakAuras" VerticalAlignment="Center" /></Border>
+                        <Border Classes="Row Hairline"><TextBlock Text="Details" VerticalAlignment="Center" /></Border>
+                        <Border Classes="Row Hairline"><TextBlock Text="Plater" VerticalAlignment="Center" /></Border>
+                    </StackPanel>
+                </Border>
+                <TextBlock Classes="GroupHeader" Text="Border.Avatar, Border.Avatar.Small, Border.Tile.Small" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Border Classes="Avatar"><TextBlock Text="HB" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                    <Border Classes="Avatar Small"><TextBlock Text="HB" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                    <Border Classes="Tile Small"><TextBlock Classes="Mute Caption" Text="G" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="ProgressBar.Thin" />
+                <ProgressBar Classes="Thin" Width="320" HorizontalAlignment="Left" Value="40" />
+                <ProgressBar Classes="Thin" Width="320" HorizontalAlignment="Left" IsIndeterminate="True" />
+                <TextBlock Classes="GroupHeader" Text="Border.Alert, Alert.Success, Alert.Info, Alert.Danger" />
+                <Border Classes="Alert Info" Width="560" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                        <TextBlock Classes="Glyph" FontSize="16" Text="{StaticResource Glyph.Info}" />
+                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="A new version is ready" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock Classes="Dim" Text="Restart to install 2.4.0." TextWrapping="Wrap" />
+                        </StackPanel>
+                        <Button Grid.Column="2" Classes="Small" Content="Restart" VerticalAlignment="Center" />
+                        <Button Grid.Column="3" Theme="{StaticResource IconButtonStyle}" Width="28" Height="28" MinHeight="0" VerticalAlignment="Center" AutomationProperties.Name="Dismiss">
+                            <Path Classes="CloseGlyph" />
+                        </Button>
+                    </Grid>
+                </Border>
+                <Border Classes="Alert Success" Width="560" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <TextBlock Classes="Glyph" FontSize="16" Text="{StaticResource Glyph.CheckCircle}" />
+                        <TextBlock Grid.Column="1" Text="Synced 42 addons" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+                <Border Classes="Alert" Width="560" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <TextBlock Classes="Glyph" FontSize="16" Text="{StaticResource Glyph.Warning}" />
+                        <TextBlock Grid.Column="1" Text="World of Warcraft is running" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+                <Border Classes="Alert Danger" Width="560" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <TextBlock Classes="Glyph" FontSize="16" Text="{StaticResource Glyph.Offline}" />
+                        <TextBlock Grid.Column="1" Text="The sync server is offline" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -377,7 +377,60 @@ Value keys carry the `Hoobi` prefix (`HoobiBgBrush`, `HoobiAccentColor`). Contro
 
 Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`. Every popup surface takes the Mirage acrylic by default, plain `FlyoutPresenter` included; `FlyoutPresenter.Tinted` is kept and changes nothing.
 
+- `NavButtonStyle` and `.Selected` (`HoobiNavItemHeight`, `HoobiNavItemMargin`)
+- `TextBlock.NavGlyph`
+- `Button.Small`
+- `Button.DropDown`
+- `Button.Fill`
+- `Button.ColumnHeader`
+- `Button.Round`, `Button.Round.Accent` and `.Compact`
+- `Button.Row`
+- `Button.Tile` and `Button.Tile.XLarge`
+- `Border.Tile.Small`
+- `ToggleButton.GlyphPick`
+- `ToggleButton.Swatch`
+- `ToggleButton.Chevron`
+- `TextBlock.Chevron` and `.Expanded`
+- `TextBlock.DragHandle`
+- `MenuItem.Danger`
+- `TextBlock.PageTitle`
+- `TextBlock.Dim`
+- `TextBlock.Mute`
+- `TextBlock.EmptyState`
+- `Border.Divider` (`HoobiDividerBleed`)
+- `Border.Badge.Solid`
+- `Border.Dot`
+- `Border.Inset`
+- `Border.Slot`
+- `ContentPresenter.Lifted`
+- `Border.Row.Hairline`
+- `Border.Avatar` and `.Small`
+- `ProgressBar.Thin`
+- `TextBox.Code`
+- `FAContentDialog.Bare`
+- `Border.Alert.Success` and `Border.Alert.Info`
+- `SliderStyle` (the default horizontal `Slider`), `SliderFillButtonStyle`, `Slider.OverMeter`, `Slider.Seek`
+- `FloatingPanelStyle` and `.Acrylic` (`HoobiFloatingPanelBrush`, `HoobiFloatingPanelAcrylicBrush`)
+- `SettingsCard.IsExpanded` (`HoobiSettingsExpandedHeaderBrush`)
+- `SettingsCard.Item`
+- `ScrollViewer.NarrowScrollBand`
+
 A button with its own fill takes the `Tinted` class. The hover and pressed fills come from `ColorShade.Hover` and `ColorShade.Pressed`, which mix the fill towards `HoobiBgColor`.
+
+Components and helpers:
+
+- `LevelMeter` (`Levels`, `Hold`, `Volume`, `WarnAt`, `DangerAt`, `Position`)
+- `RichTextBlock` (`Blocks`, `LinkClicked`, `LinkCommand`), `RichBlock`, `RichBlockKind`, `RichRun`
+- `TextHighlight.Start` and `TextHighlight.Length`
+- `IconImage` (`FallbackSource`, `Failed`)
+- `ImageLoader` (`Load`, `Scaling`) and `RemoteImage` (`MarkFailed`, `HasFailed`, `Failed`)
+- `Tone`, `Toned.Tone`, `Toned.BrushKeyFor`, `Toned.ButtonThemeKeyFor`, `Toned.GlyphKeyFor`, `Toned.ClassFor`
+- `ToneConverters.Brush`, `ToneConverters.ButtonTheme`, `ToneConverters.Glyph`, `ToneConverters.Initials`
+- `PageEntrance.PlayAsync`
+- `HoverSubmenu.IsEnabled`
+- `Motion.Decelerate`, `Motion.Accelerate`, `Motion.SubmenuDelay`
+- `HoobiChrome.Cloak`, `HoobiChrome.DoubleClickTime`, `HoobiChrome.MinimiseThenHide`, `HoobiChrome.ApplyTransparency`
+- `ToastWindow.Show(source, text, Tone)` and `ToastWindow.Tone`
 
 ### Gallery
 
@@ -416,21 +469,6 @@ An app overrides `Concurrent` with `<ConcurrentGarbageCollection>` in the projec
 `IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds), or for every window of the app with `IdleMemory.ForApplication(lifetime)`, which follows windows opened later and treats the app as idle when no window is active and visible. It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass; it can be called from any thread and runs the trim on the UI thread. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. `Dispose` turns EcoQoS off. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
 
 Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the private working set, as Task Manager shows it. Measure with the app in the tray, and record the figures before and after a change in the app's `AGENTS.md`. Steward's reference figures: 4 to 15 MB private working set in the tray between passes against 128 MB before trimming, 7 to 14 ms of GC pause per trim, and about 100 MB of committed private bytes (Skia, ANGLE, the runtime) unchanged.
-
-Components and helpers:
-
-- `LevelMeter` (`Levels`, `Hold`, `Volume`, `WarnAt`, `DangerAt`, `Position`)
-- `RichTextBlock` (`Blocks`, `LinkClicked`, `LinkCommand`), `RichBlock`, `RichBlockKind`, `RichRun`
-- `TextHighlight.Start` and `TextHighlight.Length`
-- `IconImage` (`FallbackSource`, `Failed`)
-- `ImageLoader` (`Load`, `Scaling`) and `RemoteImage` (`MarkFailed`, `HasFailed`, `Failed`)
-- `Tone`, `Toned.Tone`, `Toned.BrushKeyFor`, `Toned.ButtonThemeKeyFor`, `Toned.GlyphKeyFor`, `Toned.ClassFor`
-- `ToneConverters.Brush`, `ToneConverters.ButtonTheme`, `ToneConverters.Glyph`, `ToneConverters.Initials`
-- `PageEntrance.PlayAsync`
-- `HoverSubmenu.IsEnabled`
-- `Motion.Decelerate`, `Motion.Accelerate`, `Motion.SubmenuDelay`
-- `HoobiChrome.Cloak`, `HoobiChrome.DoubleClickTime`, `HoobiChrome.MinimiseThenHide`, `HoobiChrome.ApplyTransparency`
-- `ToastWindow.Show(source, text, Tone)` and `ToastWindow.Tone`
 
 ### Avalonia and Windows rules
 

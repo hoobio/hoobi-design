@@ -133,6 +133,7 @@
     <SolidColorBrush x:Key="HoobiCriticalButtonBackgroundPressed" Color="#FFF7ABA1" />
     <SolidColorBrush x:Key="HoobiCriticalButtonForeground" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="HoobiClearButtonBackground" Color="#00242936" />
+    <SolidColorBrush x:Key="HoobiClearTextBrush" Color="#00CBCCC6" />
 
     <SolidColorBrush x:Key="ComboBoxBackground" Color="{StaticResource HoobiChipColor}" />
     <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource HoobiSurfaceRaisedColor}" />
@@ -153,6 +154,10 @@
     <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="{StaticResource HoobiTextColor}" />
     <SolidColorBrush x:Key="ComboBoxForegroundDisabled" Color="#FF4E5768" />
     <SolidColorBrush x:Key="ComboBoxHeaderForeground" Color="{StaticResource HoobiTextDimColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelected" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedUnfocused" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedPressed" Color="{StaticResource HoobiAccentHoverColor}" />
     <Thickness x:Key="ComboBoxDropdownBorderThickness">0</Thickness>
 
     <SolidColorBrush x:Key="RadioButtonOuterEllipseFill" Color="#19000000" />
@@ -163,18 +168,18 @@
     <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePointerOver" Color="#8BFFFFFF" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePressed" Color="#28FFFFFF" />
     <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeDisabled" Color="#28FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill" Color="{StaticResource HoobiAccentHoverColor}" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" Color="#E673D0FF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPressed" Color="#CC73D0FF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillDisabled" Color="#28FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke" Color="{StaticResource HoobiAccentHoverColor}" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" Color="#E673D0FF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePressed" Color="#CC73D0FF" />
-    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" Color="#28FFFFFF" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphFill" Color="#FF000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver" Color="#FF000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPressed" Color="#FF000000" />
-    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillDisabled" Color="#FF000000" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPressed" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePressed" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphFill" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPressed" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="RadioButtonCheckGlyphFillDisabled" Color="#FF8FB8DD" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphStroke" Color="#00000000" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePointerOver" Color="#00000000" />
     <SolidColorBrush x:Key="RadioButtonCheckGlyphStrokePressed" Color="#00000000" />
@@ -210,6 +215,18 @@
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="{StaticResource HoobiTextDimColor}" />
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPointerOver" Color="{StaticResource HoobiTextDimColor}" />
     <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPressed" Color="{StaticResource HoobiTextDimColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchFillOnDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="{StaticResource HoobiAccentHoverColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="{StaticResource HoobiAccentColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnDisabled" Color="#FF2F5A85" />
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPressed" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnDisabled" Color="#FF8FB8DD" />
 
     <SolidColorBrush x:Key="ContentDialogBackground" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="DialogButtonBackgroundPointerOver" Color="{StaticResource HoobiBorderColor}" />
@@ -294,6 +311,8 @@
     <Thickness x:Key="HoobiCardRowPadding">16,10</Thickness>
     <Thickness x:Key="SettingsExpanderItemPadding">16,8,16,8</Thickness>
     <x:Double x:Key="HoobiCardRowMinHeight">52</x:Double>
+    <x:Double x:Key="HoobiNavItemHeight">36</x:Double>
+    <Thickness x:Key="HoobiNavItemMargin">4,2</Thickness>
     <CornerRadius x:Key="HoobiGroupTopCornerRadius">8,8,0,0</CornerRadius>
     <CornerRadius x:Key="HoobiGroupMiddleCornerRadius">0</CornerRadius>
     <CornerRadius x:Key="HoobiGroupBottomCornerRadius">0,0,8,8</CornerRadius>
@@ -307,6 +326,11 @@
 
     <SolidColorBrush x:Key="HoobiSettingsCardStrokeBrush" Color="#19000000" />
     <SolidColorBrush x:Key="HoobiToastWindowBackground" Color="#00242936" />
+    <SolidColorBrush x:Key="HoobiSettingsExpandedHeaderBrush" Color="{StaticResource HoobiSurfaceRaisedColor}" />
+    <SolidColorBrush x:Key="HoobiSliderThumbPointerOverBrush" Color="#FFA6E1FF" />
+    <SolidColorBrush x:Key="HoobiFloatingPanelBrush" Color="{StaticResource HoobiBgColor}" />
+    <SolidColorBrush x:Key="HoobiFloatingPanelAcrylicBrush" Color="#B8181C26" />
+    <Thickness x:Key="HoobiDividerBleed">-12,0</Thickness>
     <DropShadowEffect x:Key="HoobiDialogShadow" OffsetX="0" OffsetY="8" BlurRadius="32" Color="#66000000" />
     <BoxShadows x:Key="HoobiFlyoutShadow">0 8 16 0 #47000000, 0 0 2 0 #3D000000</BoxShadows>
 
@@ -327,18 +351,6 @@
         <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" Color="#8BFFFFFF" />
         <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" Color="#28FFFFFF" />
         <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" Color="#28FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="#FF73D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="#E673D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="#CC73D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" Color="#28FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="#FF73D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#E673D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="#CC73D0FF" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" Color="#28FFFFFF" />
-        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="#FF000000" />
-        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="#FF000000" />
-        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="#80000000" />
-        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" Color="#87FFFFFF" />
     </ResourceDictionary>
 
     <ResourceDictionary x:Key="HoobiDialogResources">

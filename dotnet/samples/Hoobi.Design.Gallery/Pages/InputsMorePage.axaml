@@ -1,0 +1,94 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.InputsMorePage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia">
+    <ScrollViewer>
+        <Grid Margin="{StaticResource HoobiPageGutter}" ColumnDefinitions="440,*" RowDefinitions="Auto,*">
+            <TextBlock Grid.ColumnSpan="2" Classes="PageTitle" Text="Sliders, codes and expanders" />
+            <StackPanel Grid.Row="1" Spacing="8">
+                <TextBlock Classes="GroupHeader" Text="SliderStyle (the default Slider)" />
+                <TextBlock Classes="FieldLabel" Text="Rest, thumb pointerover, disabled" />
+                <Slider Theme="{StaticResource SliderStyle}" Width="320" HorizontalAlignment="Left" Value="40" />
+                <Slider x:Name="HoverSlider" Width="320" HorizontalAlignment="Left" Value="60" />
+                <Slider Width="320" HorizontalAlignment="Left" Value="25" IsEnabled="False" />
+                <TextBlock Classes="FieldLabel" Text="Slider.Seek, Slider.OverMeter over a ProgressBar.Thin" />
+                <Slider Classes="Seek" Width="320" HorizontalAlignment="Left" Value="70" />
+                <Panel Width="320" HorizontalAlignment="Left">
+                    <ProgressBar Classes="Thin" Margin="7,0" VerticalAlignment="Center" Value="55" />
+                    <Slider Classes="OverMeter" Value="55" />
+                </Panel>
+                <TextBlock Classes="GroupHeader" Text="TextBox.Code" />
+                <TextBlock Classes="FieldLabel" Text="Rest, focus, disabled" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBox Classes="Code" Width="128" Text="123 456" />
+                    <TextBox Classes="Code" Width="128" Text="123 4" Tag=":focus" />
+                    <TextBox Classes="Code" Width="128" Text="123 456" IsEnabled="False" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="FloatingPanelStyle, FloatingPanelStyle.Acrylic" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <ContentControl Theme="{StaticResource FloatingPanelStyle}" Width="200" Height="96">
+                        <Border Classes="Row" CornerRadius="{StaticResource ControlCornerRadius}"><TextBlock Text="Headphones" /></Border>
+                    </ContentControl>
+                    <ContentControl Theme="{StaticResource FloatingPanelStyle}" Classes="Acrylic" Width="200" Height="96">
+                        <Border Classes="Row" CornerRadius="{StaticResource ControlCornerRadius}"><TextBlock Text="Speakers" /></Border>
+                    </ContentControl>
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="FAContentDialog.Bare" />
+                <Button x:Name="BareDialogButton" Classes="ShowsDialog" Content="Show a bare dialog" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="24,0,0,0" Spacing="8" MaxWidth="560" HorizontalAlignment="Left">
+                <TextBlock Classes="GroupHeader" Text="SettingsCard IsExpanded, SettingsCard.Item" />
+                <hoobi:SettingsCard Header="Professions" Description="Collapsed" HeaderGlyph="{StaticResource Glyph.Library}" IsClickEnabled="True" IsExpanded="False" />
+                <Border CornerRadius="{StaticResource ControlCornerRadius}" ClipToBounds="True">
+                    <StackPanel>
+                        <hoobi:SettingsCard Header="Installs" Description="Expanded" HeaderGlyph="{StaticResource Glyph.Folder}" IsClickEnabled="True" IsExpanded="True" CornerRadius="0" BorderThickness="0" />
+                        <hoobi:SettingsCard Classes="Item" Header="Retail" Description="D:\Games\World of Warcraft\_retail_">
+                            <Button Classes="Small" Content="Remove" />
+                        </hoobi:SettingsCard>
+                        <hoobi:SettingsCard Classes="Item" Header="Classic" Description="D:\Games\World of Warcraft\_classic_">
+                            <Button Classes="Small" Content="Remove" />
+                        </hoobi:SettingsCard>
+                    </StackPanel>
+                </Border>
+                <TextBlock Classes="GroupHeader" Text="StackPanel.SettingsGroup > ContentPresenter (FirstVisible, LastVisible)" />
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Classes="SettingsGroup" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border Classes="Row"><TextBlock Text="{Binding}" /></Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <x:String>Headphones</x:String>
+                    <x:String>Speakers</x:String>
+                    <x:String>Monitor</x:String>
+                </ItemsControl>
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Classes="SettingsGroup" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border Classes="Row"><TextBlock Text="{Binding}" /></Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <x:String>Only device</x:String>
+                </ItemsControl>
+                <TextBlock Classes="GroupHeader" Text="Selection on one accent" />
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <ToggleSwitch IsChecked="True" />
+                    <ToggleSwitch IsChecked="True" IsEnabled="False" />
+                    <CheckBox IsChecked="True" Content="Checked" />
+                    <RadioButton IsChecked="True" Content="Chosen" />
+                    <NumericUpDown Value="12" Width="120" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -136,6 +136,12 @@
     <Style Selector="ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#CloseButton">
         <Setter Property="Grid.Row" Value="2" />
     </Style>
+    <Style Selector="ui|FAContentDialog.Hoobi.Bare /template/ ContentControl#Title, ui|FAContentDialog.Hoobi.Bare /template/ Grid#DialogSpace > Border">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="ui|FAContentDialog.Hoobi.Bare:not(:disabled) /template/ ScrollViewer#ContentScrollViewer > Border, ui|FAContentDialog.Hoobi.Bare:disabled /template/ ScrollViewer#ContentScrollViewer > Border">
+        <Setter Property="Padding" Value="0" />
+    </Style>
     <Style Selector="ui|FAContentDialog.Hoobi TextBlock.FieldHeader:disabled">
         <Setter Property="Foreground" Value="{DynamicResource TextControlHeaderForegroundDisabled}" />
     </Style>

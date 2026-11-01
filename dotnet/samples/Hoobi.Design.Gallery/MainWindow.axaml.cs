@@ -11,18 +11,21 @@ public partial class MainWindow : Window
     public static readonly IReadOnlyList<(string Name, Func<Control> Create)> Pages =
     [
         ("Buttons", () => new ButtonsPage()),
+        ("Navigation and actions", () => new ActionsPage()),
         ("Selection", () => new SelectionPage()),
         ("Text and input", () => new TextPage()),
+        ("Sliders, codes and expanders", () => new InputsMorePage()),
         ("Rows and surfaces", () => new SurfacesPage()),
+        ("Text, badges and slots", () => new SurfacesMorePage()),
         ("Status", () => new StatusPage()),
         ("Flyouts and menus", () => new FlyoutsPage()),
         ("Dialogs and toasts", () => new DialogsPage()),
         ("Settings cards", () => new SettingsPage()),
         ("Layout and motion", () => new LayoutPage()),
+        ("Components", () => new ComponentsPage()),
         ("Window chrome", () => new ChromePage()),
     ];
 
-        ("Components", () => new ComponentsPage()),
     public MainWindow()
     {
         InitializeComponent();

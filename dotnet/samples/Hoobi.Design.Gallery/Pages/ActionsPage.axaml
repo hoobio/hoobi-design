@@ -1,0 +1,150 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.ActionsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <Grid Margin="{StaticResource HoobiPageGutter}" ColumnDefinitions="Auto,*" RowDefinitions="Auto,*">
+            <TextBlock Grid.ColumnSpan="2" Classes="PageTitle" Text="Navigation and actions" />
+            <StackPanel Grid.Row="1" Spacing="8" Width="480">
+                <TextBlock Classes="GroupHeader" Text="NavButtonStyle, NavButtonStyle.Selected" />
+                <TextBlock Classes="FieldLabel" Text="Rest, pointerover, pressed, selected, selected pointerover, disabled" />
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <StackPanel Width="48">
+                        <Button Theme="{StaticResource NavButtonStyle}"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Speaker}" /></Button>
+                        <Button Theme="{StaticResource NavButtonStyle}" Tag=":pointerover"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Routing}" /></Button>
+                        <Button Theme="{StaticResource NavButtonStyle}" Tag=":pointerover :pressed"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.AppsList}" /></Button>
+                        <Button Theme="{StaticResource NavButtonStyle}" Classes="Selected"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Game}" /></Button>
+                        <Button Theme="{StaticResource NavButtonStyle}" Classes="Selected" Tag=":pointerover"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Sync}" /></Button>
+                        <Button Theme="{StaticResource NavButtonStyle}" IsEnabled="False"><TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Library}" /></Button>
+                    </StackPanel>
+                    <StackPanel Width="200">
+                        <Button Theme="{StaticResource NavButtonStyle}" Classes="Selected">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Speaker}" />
+                                <TextBlock Text="Devices" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Theme="{StaticResource NavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Classes="NavGlyph" Text="{StaticResource Glyph.Routing}" />
+                                <TextBlock Text="Rules" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="Button.Small, Button.Fill, Button.Row" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Classes="Small" Content="Retry" />
+                    <Button Classes="Small" Theme="{StaticResource AccentButtonStyle}" Content="Update available" />
+                    <Button Classes="Small" Content="Retry" IsEnabled="False" />
+                </StackPanel>
+                <Border Classes="Row" Width="400" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Classes="Fill" Content="Rest" />
+                        <Button Classes="Fill" Tag=":pointerover" Content="Hover" />
+                        <Button Classes="Fill" Tag=":pointerover :pressed" Content="Pressed" />
+                        <Button Classes="Fill" IsEnabled="False" Content="Disabled" />
+                    </StackPanel>
+                </Border>
+                <StackPanel Width="400" HorizontalAlignment="Left" Spacing="4">
+                    <Button Classes="Row" Content="Discord goes to Headphones" />
+                    <Button Classes="Row" Tag=":pointerover" Content="Spotify goes to Speakers" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="Button.DropDown, TextBlock.Chevron, MenuItem.Danger" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Classes="DropDown" Content="Retail">
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                <MenuItem Header="Rename" />
+                                <MenuItem Classes="Danger" Header="Remove install" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button Classes="DropDown" Tag=":pointerover :flyout-open">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Classic" VerticalAlignment="Center" />
+                            <TextBlock Classes="Chevron" Transitions="{x:Null}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="DropDown" IsEnabled="False">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Classic" VerticalAlignment="Center" />
+                            <TextBlock Classes="Chevron" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="24,0,0,0" Spacing="8">
+                <TextBlock Classes="GroupHeader" Text="Button.ColumnHeader" />
+                <StackPanel Orientation="Horizontal" Spacing="24" Margin="4,0,0,0">
+                    <Button Classes="ColumnHeader">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="Name" />
+                            <TextBlock Classes="Glyph" Text="{StaticResource Glyph.ChevronUp}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="ColumnHeader" Tag=":pointerover">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="Version" />
+                            <TextBlock Classes="Glyph" Text="{StaticResource Glyph.ChevronDown}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="Button.Round, Button.Round.Accent, Button.Round.Compact" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Classes="Round" Content="{StaticResource Glyph.ChevronUp}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                    <Button Classes="Round" Tag=":pointerover" Content="{StaticResource Glyph.ChevronUp}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                    <Button Classes="Round Accent" Content="{StaticResource Glyph.CheckMark}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                    <Button Classes="Round Compact" Content="{StaticResource Glyph.ChevronUp}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                    <Button Classes="Round Accent Compact" Content="{StaticResource Glyph.CheckMark}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                    <Button Classes="Round Accent" IsEnabled="False" Content="{StaticResource Glyph.CheckMark}" FontFamily="{StaticResource HoobiIconFontFamily}" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="Button.Tile, Button.Tile.XLarge (with Tinted)" />
+                <TextBlock Classes="FieldLabel" Text="Rest, pointerover, pressed, plain, disabled" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <StackPanel.Styles>
+                        <Style Selector="Button.Tile">
+                            <Setter Property="FontFamily" Value="{StaticResource HoobiIconFontFamily}" />
+                            <Setter Property="FontSize" Value="28" />
+                        </Style>
+                        <Style Selector="Button.Tile.Tinted">
+                            <Setter Property="Foreground" Value="{DynamicResource HoobiBgBrush}" />
+                            <Setter Property="Background" Value="{DynamicResource HoobiAccentBrush}" />
+                        </Style>
+                    </StackPanel.Styles>
+                    <Button Classes="Tile Tinted" Content="{StaticResource Glyph.Speaker}" />
+                    <Button Classes="Tile Tinted" Tag=":pointerover" Content="{StaticResource Glyph.Speaker}" />
+                    <Button Classes="Tile Tinted" Tag=":pointerover :pressed" Content="{StaticResource Glyph.Speaker}" />
+                    <Button Classes="Tile" Content="{StaticResource Glyph.Speaker}" />
+                    <Button Classes="Tile" IsEnabled="False" Content="{StaticResource Glyph.Speaker}" />
+                    <Button Classes="Tile XLarge Tinted" Content="{StaticResource Glyph.Game}" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="ToggleButton.GlyphPick" />
+                <TextBlock Classes="FieldLabel" Text="Rest, pointerover, checked, disabled" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ToggleButton Classes="GlyphPick" Content="{StaticResource Glyph.Speaker}" />
+                    <ToggleButton Classes="GlyphPick" Tag=":pointerover" Content="{StaticResource Glyph.Speaker}" />
+                    <ToggleButton Classes="GlyphPick" IsChecked="True" Content="{StaticResource Glyph.Speaker}" />
+                    <ToggleButton Classes="GlyphPick" IsEnabled="False" Content="{StaticResource Glyph.Speaker}" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="ToggleButton.Swatch (with Tinted)" />
+                <TextBlock Classes="FieldLabel" Text="Rest, pointerover, checked, checked pointerover, disabled" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ToggleButton Classes="Swatch Tinted" Background="{DynamicResource HoobiAccentPurpleBrush}" />
+                    <ToggleButton Classes="Swatch Tinted" Tag=":pointerover" Background="{DynamicResource HoobiAccentGreenBrush}" />
+                    <ToggleButton Classes="Swatch Tinted" IsChecked="True" Background="{DynamicResource HoobiAccentOrangeBrush}" />
+                    <ToggleButton Classes="Swatch Tinted" IsChecked="True" Tag=":pointerover" Background="{DynamicResource HoobiAccentCyanBrush}" />
+                    <ToggleButton Classes="Swatch Tinted" IsEnabled="False" Background="{DynamicResource HoobiAccentRedBrush}" />
+                </StackPanel>
+                <TextBlock Classes="GroupHeader" Text="ToggleButton.Chevron, TextBlock.Chevron.Expanded, TextBlock.DragHandle" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <ToggleButton Classes="Chevron Disclosure"><TextBlock Classes="Chevron" /></ToggleButton>
+                    <ToggleButton Classes="Chevron Disclosure" IsChecked="True"><TextBlock Classes="Chevron" Transitions="{x:Null}" /></ToggleButton>
+                    <TextBlock Classes="Chevron Expanded" />
+                    <TextBlock Classes="DragHandle" />
+                    <TextBlock Classes="DragHandle" Tag=":pointerover" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
