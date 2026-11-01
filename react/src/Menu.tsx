@@ -73,8 +73,8 @@ const PANEL =
 const SUBMENU_HOVER_DELAY_MS = 200;
 const DRILL_DOWN_QUERY = '(pointer: coarse), (max-width: 40rem)';
 
-/** Set by an open Menu so its items can close it; a no-op for a row used on its own. */
-const MenuCloseContext = createContext<() => void>(() => undefined);
+/** Set by an open Menu (or Shell.User's menu) so its items can close it; a no-op for a row used on its own. */
+export const MenuCloseContext = createContext<() => void>(() => undefined);
 
 /** True when a sibling row has an icon, so icon-less rows reserve the same gutter. */
 const MenuGutterContext = createContext(false);

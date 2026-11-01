@@ -15,6 +15,7 @@ import { cx } from './cx.js';
 import { ChevronIcon } from './icons.js';
 import { tipAnchor } from './tip.js';
 import {
+  MenuCloseContext,
   MenuDivider,
   MenuGutter,
   MenuItem,
@@ -849,15 +850,21 @@ function ShellUser({
   // Sign-out is red by default everywhere, as the library's standard danger affordance.
   const menuContent =
     menu || onSignOut ? (
-      <MenuGutter>
-        {menu}
-        {menu && onSignOut ? <MenuDivider /> : null}
-        {onSignOut ? (
-          <MenuItem tone="danger" onClick={onSignOut}>
-            Sign out
-          </MenuItem>
-        ) : null}
-      </MenuGutter>
+      <MenuCloseContext.Provider
+        value={() => {
+          setOpen(false);
+        }}
+      >
+        <MenuGutter>
+          {menu}
+          {menu && onSignOut ? <MenuDivider /> : null}
+          {onSignOut ? (
+            <MenuItem tone="danger" onClick={onSignOut}>
+              Sign out
+            </MenuItem>
+          ) : null}
+        </MenuGutter>
+      </MenuCloseContext.Provider>
     ) : undefined;
 
   if (menuContent) {
