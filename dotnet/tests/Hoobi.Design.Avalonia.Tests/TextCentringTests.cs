@@ -46,6 +46,9 @@ public sealed class TextCentringTests(AvaloniaSession session)
             Padding = new Thickness(10, 8),
             Text = text,
         }),
+        ["TextBox mono 13"] = text => Self(new TextBox { Height = 32, Width = 300, FontSize = 13, FontFamily = AvaloniaSession.Resource<FontFamily>("HoobiMonoFontFamily"), Text = text }),
+        ["KeyValue row mono caption"] = text => KeyValueMono(text, 12, double.NaN),
+        ["KeyValue row mono 13 in 36"] = text => KeyValueMono(text, 13, 36),
         ["Button"] = text => Self(new Button { Content = text }),
         ["Button accent"] = text => Self(new Button { Content = text, Theme = AvaloniaSession.Resource<ControlTheme>("AccentButtonStyle") }),
         ["ToggleButton"] = text => Self(new ToggleButton { Content = text }),
@@ -257,6 +260,22 @@ public sealed class TextCentringTests(AvaloniaSession session)
         Math.Abs((int)(a & 0xFF) - (int)(b & 0xFF)) + Math.Abs((int)((a >> 8) & 0xFF) - (int)((b >> 8) & 0xFF)) + Math.Abs((int)((a >> 16) & 0xFF) - (int)((b >> 16) & 0xFF));
 
     private static Sample Self(Control control) => new(control, () => control);
+
+    private static Sample KeyValueMono(string text, double size, double height)
+    {
+        var row = new Border
+        {
+            Classes = { "Row", "KeyValue" },
+            Width = 300,
+            Child = new TextBlock { Text = text, FontSize = size, FontFamily = AvaloniaSession.Resource<FontFamily>("HoobiMonoFontFamily"), VerticalAlignment = VerticalAlignment.Center },
+        };
+        if (!double.IsNaN(height))
+        {
+            row.Height = height;
+        }
+
+        return Self(row);
+    }
 
     private static Sample InBox(Control text)
     {

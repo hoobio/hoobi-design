@@ -107,6 +107,16 @@
     <Style Selector="StackPanel.SettingsGroup > hoobi|SettingsCard.FirstVisible.LastVisible">
         <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
     </Style>
+    <Style Selector="hoobi|SettingsCard">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.5" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="hoobi|SettingsCard.Highlighted">
+        <Setter Property="Background" Value="{DynamicResource HoobiHighlightBrush}" />
+    </Style>
     <Style Selector="hoobi|SettingsCard ToggleSwitch">
         <Setter Property="Margin" Value="0,-1,-12,-1" />
     </Style>

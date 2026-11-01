@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -12,12 +13,11 @@ using Hoobi.Design.Avalonia;
 
 namespace Hoobi.Design.Gallery;
 
-public partial class ButtonsPage : UserControl
+internal static class PinnedStates
 {
-    public ButtonsPage()
+    public static void Apply(Control root)
     {
-        InitializeComponent();
-        foreach (var tile in TintedTiles.Children.OfType<Control>().Where(tile => tile.Tag is string))
+        foreach (var tile in root.GetLogicalDescendants().OfType<Control>().Where(tile => tile.Tag is string tag && tag.StartsWith(':')))
         {
             tile.Loaded += (_, _) =>
             {
@@ -35,6 +35,15 @@ public partial class ButtonsPage : UserControl
     }
 }
 
+public partial class ButtonsPage : UserControl
+{
+    public ButtonsPage()
+    {
+        InitializeComponent();
+        PinnedStates.Apply(this);
+    }
+}
+
 public partial class DialogsPage : UserControl
 {
     public DialogsPage()
@@ -42,7 +51,8 @@ public partial class DialogsPage : UserControl
         InitializeComponent();
         FormDialogButton.Click += async (_, _) => await AppDialogs.ShowAsync(NewFormDialog(), TopLevel.GetTopLevel(this)!);
         MessageDialogButton.Click += async (_, _) => await AppDialogs.ShowMessageAsync(TopLevel.GetTopLevel(this)!, "Remove WeakAuras?", "Its saved variables stay in the WTF folder.", "Remove", "Cancel");
-        ToastButton.Click += (_, _) => ToastWindow.Show(TopLevel.GetTopLevel(this), "Copied the password");
+        DangerDialogButton.Click += async (_, _) => await AppDialogs.ShowAsync(new FAContentDialog { Title = "Delete the login?", Content = "It moves to the vault's trash.", PrimaryButtonText = "Delete", CloseButtonText = "Cancel", Classes = { "Danger" } }, TopLevel.GetTopLevel(this)!);
+        ToastButton.Click +=(_, _) => ToastWindow.Show(TopLevel.GetTopLevel(this), "Copied the password");
     }
 
     public static FAContentDialog NewFormDialog() => new()
@@ -96,7 +106,11 @@ public partial class SurfacesPage : UserControl
 
 public partial class StatusPage : UserControl
 {
-    public StatusPage() => InitializeComponent();
+    public StatusPage()
+    {
+        InitializeComponent();
+        Chord.ItemsSource = new[] { "Ctrl", "Shift", "B" };
+    }
 }
 
 public partial class FlyoutsPage : UserControl

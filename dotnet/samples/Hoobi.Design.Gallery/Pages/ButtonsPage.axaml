@@ -133,6 +133,45 @@
                 <ToggleButton Grid.Row="2" Grid.Column="2" Classes="Tinted" Tag=":pointerover" Background="#FFD4BFFF" Content="{StaticResource Glyph.StarFilled}" />
                 <ToggleButton Grid.Row="2" Grid.Column="3" Classes="Tinted" Tag=":pointerover :pressed" Background="#FFD4BFFF" Content="{StaticResource Glyph.StarFilled}" />
             </Grid>
+            <TextBlock Classes="GroupHeader" Text="ToggleButton.Disclosure" />
+            <TextBlock Classes="FieldLabel" Text="Rest, pointerover, checked, pressed, disabled" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <ToggleButton Classes="Disclosure" Content="More" />
+                <ToggleButton Classes="Disclosure" Tag=":pointerover" Content="More" />
+                <ToggleButton Classes="Disclosure" IsChecked="True" Content="More" />
+                <ToggleButton Classes="Disclosure" Tag=":pointerover :pressed" Content="More" />
+                <ToggleButton Classes="Disclosure" IsEnabled="False" IsChecked="True" Content="More" />
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="SubtleButtonStyle.RowOverlay" />
+            <TextBlock Classes="FieldLabel" Text="Rest, pointerover, pressed, disabled" />
+            <Border Classes="Group" Width="320" HorizontalAlignment="Left">
+                <StackPanel Classes="Rows">
+                    <Panel>
+                        <Border Classes="Row">
+                            <TextBlock Text="Vault" />
+                        </Border>
+                        <Button Theme="{StaticResource SubtleButtonStyle}" Classes="RowOverlay" />
+                    </Panel>
+                    <Panel>
+                        <Border Classes="Row">
+                            <TextBlock Text="Vault" />
+                        </Border>
+                        <Button Theme="{StaticResource SubtleButtonStyle}" Classes="RowOverlay" Tag=":pointerover" />
+                    </Panel>
+                    <Panel>
+                        <Border Classes="Row">
+                            <TextBlock Text="Vault" />
+                        </Border>
+                        <Button Theme="{StaticResource SubtleButtonStyle}" Classes="RowOverlay" Tag=":pointerover :pressed" />
+                    </Panel>
+                    <Panel>
+                        <Border Classes="Row">
+                            <TextBlock Text="Vault" />
+                        </Border>
+                        <Button Theme="{StaticResource SubtleButtonStyle}" Classes="RowOverlay" IsEnabled="False" />
+                    </Panel>
+                </StackPanel>
+            </Border>
         </StackPanel>
         </Grid>
     </ScrollViewer>

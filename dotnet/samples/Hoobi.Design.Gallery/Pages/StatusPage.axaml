@@ -19,6 +19,15 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="ItemsControl.KeyCaps, Border.KeyCap" />
+            <Border Classes="Row" HorizontalAlignment="Left" CornerRadius="{StaticResource OverlayCornerRadius}">
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <ItemsControl x:Name="Chord" Classes="KeyCaps" VerticalAlignment="Center" />
+                    <Border Classes="KeyCap" VerticalAlignment="Center">
+                        <TextBlock Text="Esc" />
+                    </Border>
+                </StackPanel>
+            </Border>
             <TextBlock Classes="GroupHeader" Text="Border.Alert, Border.Alert.Danger" />
             <Border Classes="Alert" HorizontalAlignment="Left">
                 <TextBlock Text="The game is running, so updates wait until it closes." />

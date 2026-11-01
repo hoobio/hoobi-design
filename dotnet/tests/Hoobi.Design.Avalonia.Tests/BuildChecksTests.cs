@@ -87,6 +87,8 @@ public sealed class BuildChecksTests : IDisposable
         Assert.Contains("\"System.GC.Concurrent\": false", defaults, StringComparison.Ordinal);
         Assert.Contains("\"System.GC.ConserveMemory\": 5", defaults, StringComparison.Ordinal);
         Assert.Contains("\"System.GC.Gen0MaxBudget\": 8388608", defaults, StringComparison.Ordinal);
+        var licences = Path.Combine(consumer, "bin", "Debug", "net10.0", "licenses", "fonts");
+        Assert.Equal(["LICENSE-FluentSystemIcons.txt", "OFL-CascadiaCode.txt", "OFL-HankenGrotesk.txt"], Directory.GetFiles(licences).Select(Path.GetFileName).Order(StringComparer.Ordinal));
 
         AssertBuild(0, "build", consumer, "--no-restore", "-p:ConserveSeven=true", "-p:ConcurrentGarbageCollection=true");
         var overridden = File.ReadAllText(runtimeConfig);

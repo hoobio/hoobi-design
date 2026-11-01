@@ -354,6 +354,9 @@ double-signalling a state that the border or the ring already shows.
 - `App.axaml` holds `<hoobi:HoobiTheme />` in `Application.Styles` (`xmlns:hoobi="using:Hoobi.Design.Avalonia"`) and `RequestedThemeVariant="Dark"`.
 - The `AppBuilder` calls `.UseHoobiDesign()`. It registers the font collection, the emoji fallback, popup placement, the scroll indicator and the dialog resource scope.
 - A window with the Hoobi title bar sets `ExtendClientAreaToDecorationsHint="True"`, `ExtendClientAreaTitleBarHeightHint="{StaticResource TitleBarHeight}"` and `WindowDecorationsTheme` to `HoobiWindowDecorations` (minimise, maximise, close) or `HoobiCloseOnlyDecorations`. The drag area carries `chrome:WindowDecorationProperties.ElementRole="TitleBar"`. Content that takes clicks or a right-click (buttons, a picker) carries `ElementRole="User"`.
+- A title row with its own context menu carries `ElementRole="User"` (so a right-click reaches that menu, not the system menu) and drags through `HoobiChrome.AttachDragHandle(row)`. A plain drag area keeps the `TitleBar` role.
+- `HoobiChrome.CentreOnScreenOf(window, point)` centres a window on the screen that holds the point.
+- The font licences are copied to `licenses/fonts/` in the output and publish folders.
 - The window calls `HoobiChrome.Attach(this, onSessionEnding)` after `InitializeComponent`. It sets the 1px top margin on the content root, keeps the caption buttons' `inactive` class in step with activation, reposts the caption hover after `WM_MOUSELEAVE`, cloaks the window until its first frame, and posts `onSessionEnding` to the UI thread once on `WM_QUERYENDSESSION` or `WM_ENDSESSION`. Disposing the result removes the handlers. It does nothing on other platforms. An app does not copy this code.
 
 ### Tokens and native divergences
@@ -368,6 +371,8 @@ The native theme differs from the web in these places:
 - Text on an accent fill is `#181C26`.
 
 Value keys carry the `Hoobi` prefix (`HoobiBgBrush`, `HoobiAccentColor`). Control themes and resources that override FluentAvalonia or WinUI keep the WinUI names (`TitleBarHeight`, `CaptionTextBlockFontSize`).
+
+Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`.
 
 A button with its own fill takes the `Tinted` class. The hover and pressed fills come from `ColorShade.Hover` and `ColorShade.Pressed`, which mix the fill towards `HoobiBgColor`.
 
@@ -402,7 +407,7 @@ Every consumer runs `HoverFlashProbe` over its own pages and popups in its tests
 
 An app overrides `Concurrent` with `<ConcurrentGarbageCollection>` in the project file, and `ConserveMemory` or `Gen0MaxBudget` with `<RuntimeHostConfigurationOption Update="System.GC.ConserveMemory" Value="7" />`. `HoobiDesignGcDefaults=false` removes all three.
 
-`IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds). It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass; it can be called from any thread and runs the trim on the UI thread. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. `Dispose` turns EcoQoS off. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
+`IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds), or for every window of the app with `IdleMemory.ForApplication(lifetime)`, which follows windows opened later and treats the app as idle when no window is active and visible. It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass; it can be called from any thread and runs the trim on the UI thread. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. `Dispose` turns EcoQoS off. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
 
 Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the private working set, as Task Manager shows it. Measure with the app in the tray, and record the figures before and after a change in the app's `AGENTS.md`. Steward's reference figures: 4 to 15 MB private working set in the tray between passes against 128 MB before trimming, 7 to 14 ms of GC pause per trim, and about 100 MB of committed private bytes (Skia, ANGLE, the runtime) unchanged.
 
@@ -417,7 +422,7 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 - Avalonia rounds .5 to even where WinUI rounds up. A WinUI layout that needs the round-up adds 0.01 (padding 15.01).
 - Variable fonts do not render per weight. Ship static TTFs.
 - FluentAvalonia resource names clash with unprefixed app keys. App keys carry the `Hoobi` prefix and are referenced with `StaticResource`.
-- Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), and shorten the open fade.
+- Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), return `None` and release the queue when the owner closes, and shorten the open fade.
 - Avalonia's `Button.OnKeyUp` clicks on a Space key-up with no key-down, so a key held over from before a dialog opened can confirm it. `DialogIntent` (applied by `AppDialogs`) counts a press when its key-down came after the dialog opened.
 - A tray menu opens without focus; `TrayMenuFocus` gives it focus. `SetForegroundWindow` is refused to a process that did not receive the last input, and a tray click goes to Explorer, so `ForegroundGate.ForceForeground` borrows Explorer's input queue for the call.
 - An app that closes to the tray quits on `WM_QUERYENDSESSION` or `WM_ENDSESSION`: it passes its quit to `HoobiChrome.Attach` as `onSessionEnding`.

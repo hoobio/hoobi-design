@@ -75,7 +75,7 @@
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Bottom"
                                             Background="{TemplateBinding Background}">
-                                        <Grid Name="CommandSpace" ColumnDefinitions="*,0.5*,0.5*,*">
+                                        <Grid Name="CommandSpace" ColumnDefinitions="*,0.5*,0.5*,*" RowDefinitions="Auto,Auto,Auto">
                                             <hoobi:DialogCommandButton Name="PrimaryButton"
                                                                        Content="{TemplateBinding PrimaryButtonText}"
                                                                        IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}"
@@ -93,6 +93,7 @@
                                                                        VerticalContentAlignment="Center"
                                                                        IsVisible="False" />
                                             <Button Name="CloseButton"
+                                                    Theme="{DynamicResource DialogCloseButtonStyle}"
                                                     Content="{TemplateBinding CloseButtonText}"
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Stretch"
@@ -121,8 +122,19 @@
     <Style Selector="ui|FAContentDialog.Hoobi:secondary:close /template/ Button#SecondaryButton">
         <Setter Property="Margin" Value="0,0,6,0" />
     </Style>
+    <Style Selector="ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#PrimaryButton, ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#SecondaryButton, ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#CloseButton">
+        <Setter Property="Grid.Column" Value="0" />
+        <Setter Property="Grid.ColumnSpan" Value="4" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+    <Style Selector="ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#PrimaryButton">
+        <Setter Property="Margin" Value="0" />
+    </Style>
     <Style Selector="ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#SecondaryButton">
-        <Setter Property="Margin" Value="6,0,6,0" />
+        <Setter Property="Grid.Row" Value="1" />
+    </Style>
+    <Style Selector="ui|FAContentDialog.Hoobi:primary:secondary:close /template/ Button#CloseButton">
+        <Setter Property="Grid.Row" Value="2" />
     </Style>
     <Style Selector="ui|FAContentDialog.Hoobi TextBlock.FieldHeader:disabled">
         <Setter Property="Foreground" Value="{DynamicResource TextControlHeaderForegroundDisabled}" />

@@ -137,6 +137,98 @@ public sealed class IdleMemoryTests(AvaloniaSession session)
     [Fact]
     public void TrimNow_does_not_throw() => IdleMemory.TrimNow();
 
+    [Fact]
+    public void ForApplication_needs_a_lifetime() =>
+        Assert.Throws<ArgumentNullException>(() => IdleMemory.ForApplication(null!));
+
+    [Fact]
+    public void Application_mode_turns_efficiency_mode_on_only_once_no_window_is_visible() => session.Run(() =>
+    {
+        var (first, time, trims, efficiency, memory) = AttachApplication();
+        using (memory)
+        {
+            var second = Shown();
+            Hide(first);
+            Assert.False(efficiency());
+
+            Hide(second);
+            Assert.True(efficiency());
+            Advance(time, Delay);
+            Assert.Equal(1, trims());
+            first.Close();
+            second.Close();
+        }
+    });
+
+    [Fact]
+    public void Application_mode_does_not_trim_while_a_window_opened_later_is_active() => session.Run(() =>
+    {
+        var (first, time, trims, _, memory) = AttachApplication();
+        using (memory)
+        {
+            var second = Shown();
+            second.Activate();
+            AvaloniaSession.Pump();
+            Assert.True(second.IsActive);
+            Hide(first);
+            Advance(time, Delay);
+            Assert.Equal(0, trims());
+
+            Hide(second);
+            Advance(time, Delay);
+            Assert.Equal(1, trims());
+            first.Close();
+            second.Close();
+        }
+    });
+
+    [Fact]
+    public void Application_mode_trims_after_the_last_window_closes() => session.Run(() =>
+    {
+        var (first, time, trims, efficiency, memory) = AttachApplication();
+        using (memory)
+        {
+            first.Close();
+            AvaloniaSession.Pump();
+            Assert.True(efficiency());
+            Advance(time, Delay);
+            Assert.Equal(1, trims());
+        }
+    });
+
+    [Fact]
+    public void Application_mode_stops_following_windows_once_disposed() => session.Run(() =>
+    {
+        var (first, time, trims, efficiency, memory) = AttachApplication();
+        memory.Dispose();
+        var second = Shown();
+        Hide(second);
+        Hide(first);
+        Advance(time, Delay);
+        Assert.Equal(0, trims());
+        Assert.False(efficiency());
+        first.Close();
+        second.Close();
+    });
+
+    private static Window Shown()
+    {
+        var window = new Window { Width = 200, Height = 200 };
+        window.Show();
+        AvaloniaSession.Pump();
+        return window;
+    }
+
+    private static (Window Window, ManualTime Time, Func<int> Trims, Func<bool> Efficiency, IdleMemory Memory) AttachApplication()
+    {
+        var window = Shown();
+        var time = new ManualTime();
+        var trims = 0;
+        var efficiency = false;
+        var memory = new IdleMemory([window], follow: true, Delay, time, () => trims++, on => efficiency = on);
+        return (window, time, () => trims, () => efficiency, memory);
+    }
+
     private static (Window Window, ManualTime Time, Func<int> Trims, Func<bool> Efficiency, IdleMemory Memory) Attach()
     {
         var window = new Window { Width = 200, Height = 200 };

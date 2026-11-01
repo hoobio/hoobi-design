@@ -7,4 +7,8 @@
     <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="8388608" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)..\licenses\fonts\*.txt" Link="licenses\fonts\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
 </Project>

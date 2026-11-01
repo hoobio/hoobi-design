@@ -44,6 +44,8 @@ public static class AppDialogs
         _current = done.Task;
         var dismissed = false;
         DialogIntent? intent = null;
+        var ownerClosed = new TaskCompletionSource();
+        void OnOwnerClosed(object? sender, EventArgs e) => ownerClosed.TrySetResult();
         // FluentAvalonia's close path throws on a dialog that was never shown, so a Hide() while it waits here is cancelled and remembered.
         void CancelWhileQueued(FAContentDialog sender, FAContentDialogClosingEventArgs args)
         {
@@ -52,10 +54,16 @@ public static class AppDialogs
         }
 
         dialog.Closing += CancelWhileQueued;
+        owner.Closed += OnOwnerClosed;
         try
         {
             await previous.ConfigureAwait(true);
             await ForegroundGate.For(owner).WhenReleased.ConfigureAwait(true);
+            if (ownerClosed.Task.IsCompleted)
+            {
+                return FAContentDialogResult.None;
+            }
+
             if (owner.Content is Layoutable { Margin.Top: > 0 } root)
             {
                 // WinUI centres the panel below the 1px top border and rounds a half pixel up, where Avalonia rounds it to even.
@@ -104,10 +112,18 @@ public static class AppDialogs
             }
 
             intent = new DialogIntent(dialog, owner);
-            return intent.Result(await dialog.ShowAsync(owner).ConfigureAwait(true));
+            var shown = dialog.ShowAsync(owner);
+            // A dialog whose owner closes never finishes ShowAsync, which would hold every later dialog in the queue.
+            if (await Task.WhenAny(shown, ownerClosed.Task).ConfigureAwait(true) != shown)
+            {
+                return FAContentDialogResult.None;
+            }
+
+            return intent.Result(await shown.ConfigureAwait(true));
         }
         finally
         {
+            owner.Closed -= OnOwnerClosed;
             intent?.Detach();
             done.SetResult();
         }
@@ -171,7 +187,7 @@ public static class AppDialogs
     private static void AccentPrimaryButton(FAContentDialog dialog)
     {
         if (dialog.GetVisualDescendants().OfType<Button>().FirstOrDefault(button => button.Name == "PrimaryButton") is { Theme: null } primary
-            && Resource("AccentButtonStyle") is ControlTheme accent)
+            && Resource(dialog.Classes.Contains("Danger") ? "CriticalButtonStyle" : "AccentButtonStyle") is ControlTheme accent)
         {
             primary.Theme = accent;
         }

@@ -44,7 +44,12 @@
                     <Button.Flyout>
                         <MenuFlyout Placement="BottomEdgeAlignedLeft">
                             <MenuItem Header="Open folder" InputGesture="Ctrl+O" />
-                            <MenuItem Header="Check for updates" />
+                            <MenuItem Header="Check for updates">
+                                <MenuItem.Icon>
+                                    <TextBlock Classes="Icon" Text="{StaticResource Glyph.Sync}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Show in tray" ToggleType="CheckBox" IsChecked="True" InputGesture="Ctrl+T" />
                             <Separator />
                             <MenuItem Header="Sort by">
                                 <MenuItem Header="Name" />

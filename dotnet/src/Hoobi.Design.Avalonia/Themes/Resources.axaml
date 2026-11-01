@@ -30,10 +30,12 @@
         <GradientStop Color="#12D4BFFF" Offset="0.0" />
         <GradientStop Color="#00D4BFFF" Offset="0.62" />
     </RadialGradientBrush>
-    <SolidColorBrush x:Key="HoobiSuccessTintBrush" Color="#21BAE67E" />
-    <SolidColorBrush x:Key="HoobiCautionTintBrush" Color="#21FFD580" />
-    <SolidColorBrush x:Key="HoobiInfoTintBrush" Color="#21409FFF" />
-    <SolidColorBrush x:Key="HoobiCriticalTintBrush" Color="#21F28779" />
+    <SolidColorBrush x:Key="HoobiSuccessTintBrush" Color="#26BAE67E" />
+    <SolidColorBrush x:Key="HoobiCautionTintBrush" Color="#26FFD580" />
+    <SolidColorBrush x:Key="HoobiInfoTintBrush" Color="#26409FFF" />
+    <SolidColorBrush x:Key="HoobiCriticalTintBrush" Color="#26F28779" />
+    <!-- The web's bg-accent/15 composited over bg: an opaque fill fades from surface without passing through a lighter frame. -->
+    <SolidColorBrush x:Key="HoobiHighlightBrush" Color="#FF1E3047" />
 
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{StaticResource HoobiBgColor}" />
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseAltBrush" Color="{StaticResource HoobiBgColor}" />

@@ -52,7 +52,7 @@
             </Grid>
 
             <TextBlock Classes="GroupHeader" Text="Input" />
-            <Grid ColumnDefinitions="240,300,300" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+            <Grid ColumnDefinitions="240,300,300" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
                 <TextBlock Classes="FieldHeader" Text="TextBlock.FieldHeader" Grid.Column="1" />
                 <TextBlock Classes="FieldHeader ComboBox" Text="TextBlock.FieldHeader.ComboBox" Grid.Column="2" />
                 <TextBlock Grid.Row="1" Classes="FieldLabel" Text="TextBox" VerticalAlignment="Center" />
@@ -63,6 +63,21 @@
                 <TextBox Grid.Row="2" Grid.Column="2" PlaceholderText="Search addons" IsEnabled="False" Margin="0,0,16,0" />
                 <TextBlock Grid.Row="3" Classes="FieldLabel" Text="HoldToReveal" VerticalAlignment="Center" />
                 <TextBox Grid.Row="3" Grid.Column="1" Classes="revealPasswordButton" PasswordChar="●" Text="correct horse" Margin="0,0,16,0" hoobi:HoldToReveal.IsEnabled="True" />
+                <TextBox Grid.Row="3" Grid.Column="2" Classes="revealPasswordButton" PasswordChar="●" Text="correct horse" Margin="0,0,16,0" RevealPassword="True" />
+                <TextBlock Grid.Row="4" Classes="FieldLabel" Text="TextBox.Invalid" VerticalAlignment="Center" />
+                <TextBox Grid.Row="4" Grid.Column="1" Classes="Invalid" Text="sonarr:89" Margin="0,0,16,0" />
+                <TextBox Grid.Row="4" Grid.Column="2" Classes="Invalid" Text="sonarr:89" IsEnabled="False" Margin="0,0,16,0" />
+                <TextBlock Grid.Row="5" Classes="FieldLabel" Text="ComboBox.Invalid" VerticalAlignment="Center" />
+                <ComboBox Grid.Row="5" Grid.Column="1" Classes="Invalid" PlaceholderText="Pick a vault" Width="200" />
+                <ComboBox Grid.Row="5" Grid.Column="2" Classes="Invalid" PlaceholderText="Pick a vault" Width="200" IsEnabled="False" />
+                <TextBlock Grid.Row="6" Classes="FieldLabel" Text="TextBox.Multiline" />
+                <TextBox Grid.Row="6" Grid.Column="1" Classes="Multiline" Text="Route Discord to the headset when it opens." Margin="0,0,16,0" />
+                <TextBox Grid.Row="6" Grid.Column="2" Classes="Multiline" PlaceholderText="Notes" IsEnabled="False" Margin="0,0,16,0" />
+                <TextBlock Grid.Row="7" Classes="FieldLabel" Text="NumericUpDown" VerticalAlignment="Center" />
+                <NumericUpDown Grid.Row="7" Grid.Column="1" Value="30" Minimum="1" Maximum="120" Width="120" HorizontalAlignment="Left" />
+                <NumericUpDown Grid.Row="7" Grid.Column="2" Value="30" Width="120" HorizontalAlignment="Left" IsEnabled="False" />
+                <TextBlock Grid.Row="8" Classes="FieldLabel" Text="TextBox, HoobiMonoFontFamily" VerticalAlignment="Center" />
+                <TextBox Grid.Row="8" Grid.Column="1" Text="*/15 * * * *" FontFamily="{StaticResource HoobiMonoFontFamily}" Margin="0,0,16,0" />
             </Grid>
         </StackPanel>
     </ScrollViewer>

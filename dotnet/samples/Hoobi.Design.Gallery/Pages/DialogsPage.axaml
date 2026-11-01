@@ -9,6 +9,7 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Button x:Name="FormDialogButton" Classes="ShowsDialog" Content="Show a form dialog" />
                 <Button x:Name="MessageDialogButton" Classes="ShowsDialog" Content="Show a message" />
+                <Button x:Name="DangerDialogButton" Classes="ShowsDialog" Content="Show a danger dialog" />
             </StackPanel>
             <TextBlock Classes="GroupHeader" Text="ToastWindow" />
             <Button x:Name="ToastButton" HorizontalAlignment="Left" Content="Show a toast" />

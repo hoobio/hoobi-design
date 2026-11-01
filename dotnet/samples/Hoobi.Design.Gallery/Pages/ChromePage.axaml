@@ -7,6 +7,13 @@
             <TextBlock Text="Window chrome" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
             <TextBlock Classes="GroupHeader" Text="HoobiWindowDecorations, CaptionButtonTheme" />
             <TextBlock Classes="Body" TextWrapping="Wrap" MaxWidth="640" HorizontalAlignment="Left" Text="This window uses HoobiWindowDecorations: a 48px title bar with minimise, maximise and close drawn with CaptionButtonTheme." />
+            <TextBlock Classes="GroupHeader" Text="CaptionButtonTheme.Icon, CaptionButtonTheme.Icon.Danger, inactive" />
+            <StackPanel Orientation="Horizontal" Height="48" Background="{DynamicResource HoobiBgBrush}" HorizontalAlignment="Left">
+                <Button Theme="{StaticResource CaptionButtonTheme}" Classes="CaptionButton Icon" Content="{StaticResource Glyph.Pin}" ToolTip.Tip="Pin" />
+                <Button Theme="{StaticResource CaptionButtonTheme}" Classes="CaptionButton Icon Danger" Content="{StaticResource Glyph.Delete}" ToolTip.Tip="Delete" />
+                <Button Theme="{StaticResource CaptionButtonTheme}" Classes="CaptionButton Icon inactive" Content="{StaticResource Glyph.Pin}" />
+                <Button Theme="{StaticResource CaptionButtonTheme}" Classes="CaptionButton Icon Danger inactive" Content="{StaticResource Glyph.Delete}" />
+            </StackPanel>
             <TextBlock Classes="GroupHeader" Text="HoobiCloseOnlyDecorations" />
             <Button x:Name="CloseOnlyButton" Content="Open a close-only window" HorizontalAlignment="Left" />
         </StackPanel>

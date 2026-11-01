@@ -13,6 +13,7 @@ public static class SegoeMetrics
     private static readonly Dictionary<string, Metrics> Calibrations = new()
     {
         ["Hanken Grotesk"] = new(Ascent: 1.000, Descent: 0.303, TargetAscent: 2210d / 2048, TargetDescent: 514d / 2048, CapHeight: 0.697),
+        ["Cascadia Mono"] = new(Ascent: 1900d / 2048, Descent: 480d / 2048, TargetAscent: 2210d / 2048, TargetDescent: 514d / 2048, CapHeight: 1420d / 2048),
         ["FluentSystemIcons-Resizable"] = new(Ascent: 1.000, Descent: 0.000, TargetAscent: 1.000, TargetDescent: 0.000, InkScale: 5d / 4),
     };
 

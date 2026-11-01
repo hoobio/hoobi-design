@@ -24,6 +24,13 @@
                 </hoobi:SettingsCard>
                 <hoobi:SettingsCard Header="Sign in to sync" Description="Needs a Store build." HeaderGlyph="{StaticResource Glyph.Lock}" IsEnabled="False" />
             </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="SettingsCard.Highlighted" />
+            <hoobi:SettingsCard Classes="Highlighted" Header="Lock after" Description="Locks the vault when the app is idle." HeaderGlyph="{StaticResource Glyph.Lock}">
+                <ComboBox SelectedIndex="0" Width="160">
+                    <ComboBoxItem Content="5 minutes" />
+                    <ComboBoxItem Content="Never" />
+                </ComboBox>
+            </hoobi:SettingsCard>
             <TextBlock Classes="GroupHeader" Text="SettingsCard.FirstVisible.LastVisible" />
             <StackPanel Classes="SettingsGroup">
                 <hoobi:SettingsCard Header="About" Description="Version 12.1.4" HeaderGlyph="{StaticResource Glyph.Info}" IsClickEnabled="True" ActionGlyph="{StaticResource Glyph.OpenInNewWindow}" />

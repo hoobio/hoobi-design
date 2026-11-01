@@ -44,6 +44,69 @@ public sealed class DialogTests(AvaloniaSession session)
     });
 
     [Fact]
+    public void Closing_the_owner_of_an_open_dialog_releases_the_queue_for_the_next_window() => session.Run(() =>
+    {
+        var first = new Window { Width = 800, Height = 600 };
+        first.Show();
+        var orphan = new FAContentDialog { Title = "Orphan", CloseButtonText = "Close" };
+        var orphanShown = AppDialogs.ShowAsync(orphan, first);
+        AvaloniaSession.WaitFor(() => orphan.IsLoaded);
+
+        first.Close();
+        AvaloniaSession.WaitFor(() => orphanShown.IsCompleted);
+
+        var second = new Window { Width = 800, Height = 600 };
+        second.Show();
+        var next = new FAContentDialog { Title = "Next", CloseButtonText = "Close" };
+        var nextShown = AppDialogs.ShowAsync(next, second);
+        AvaloniaSession.WaitFor(() => next.IsLoaded);
+        AvaloniaSession.CloseDialog(next, nextShown);
+        second.Close();
+
+        Assert.Equal(FAContentDialogResult.None, orphanShown.Result);
+    });
+
+    [Fact]
+    public void Three_buttons_stack_full_width_and_close_never_takes_the_accent() => session.Run(() =>
+    {
+        var window = new Window { Width = 1280, Height = 820 };
+        window.Show();
+        var dialog = new FAContentDialog { Title = "Title", PrimaryButtonText = "Remove the saved variables too", SecondaryButtonText = "Keep the folder", CloseButtonText = "Cancel", DefaultButton = FAContentDialogButton.Close };
+        var shown = AppDialogs.ShowAsync(dialog, window);
+        AvaloniaSession.WaitFor(() => dialog.IsLoaded);
+        AvaloniaSession.Pump();
+
+        var buttons = dialog.GetVisualDescendants().OfType<Button>().Where(button => button.Name is "PrimaryButton" or "SecondaryButton" or "CloseButton").ToDictionary(button => button.Name!);
+        var widths = buttons.Values.Select(button => button.Bounds.Width).Distinct().ToList();
+        var rows = buttons.Values.Select(button => button.TranslatePoint(default, dialog)!.Value.Y).Distinct().Count();
+        var space = dialog.GetVisualDescendants().OfType<Grid>().Single(grid => grid.Name == "CommandSpace").Bounds.Width;
+        var close = buttons["CloseButton"].Theme;
+        AvaloniaSession.CloseDialog(dialog, shown);
+        window.Close();
+
+        Assert.Single(widths);
+        Assert.Equal(space, widths[0]);
+        Assert.Equal(3, rows);
+        Assert.Same(AvaloniaSession.Resource<ControlTheme>("DialogCloseButtonStyle"), close);
+    });
+
+    [Fact]
+    public void A_danger_dialog_themes_its_primary_as_critical() => session.Run(() =>
+    {
+        var window = new Window { Width = 1280, Height = 820 };
+        window.Show();
+        var dialog = new FAContentDialog { Title = "Delete the item?", PrimaryButtonText = "Delete", CloseButtonText = "Cancel", Classes = { "Danger" } };
+        var shown = AppDialogs.ShowAsync(dialog, window);
+        AvaloniaSession.WaitFor(() => dialog.IsLoaded);
+        AvaloniaSession.Pump();
+        var primary = dialog.GetVisualDescendants().OfType<Button>().First(button => button.Name == "PrimaryButton").Theme;
+        AvaloniaSession.CloseDialog(dialog, shown);
+        window.Close();
+
+        Assert.Same(AvaloniaSession.Resource<ControlTheme>("CriticalButtonStyle"), primary);
+    });
+
+    [Fact]
     public void A_dialog_hidden_while_queued_is_never_shown_and_returns_none() => session.Run(() =>
     {
         var window = new Window { Width = 1280, Height = 820 };

@@ -43,6 +43,12 @@
                                     <TextBlock Grid.Column="1" Classes="Caption" Text="12.1.4" VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
+                            <Border Classes="Row KeyValue">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Border.Row.KeyValue, mono" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Classes="Caption" FontFamily="{StaticResource HoobiMonoFontFamily}" Text="9F2C-41AB" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
                             <Button Theme="{StaticResource AddRowButtonStyle}" Content="Add a folder" />
                         </StackPanel>
                     </Border>
@@ -61,6 +67,28 @@
                                 <TextBlock Text="Plater" />
                             </Border>
                         </ItemsControl>
+                    </Border>
+                    <TextBlock Classes="GroupHeader" Text="Border.Row.Highlighted" />
+                    <Border Classes="Group">
+                        <StackPanel Classes="Rows">
+                            <Border Classes="Row">
+                                <TextBlock Text="Unlock with Windows Hello" />
+                            </Border>
+                            <Border Classes="Row Highlighted">
+                                <TextBlock Text="Lock after" />
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Classes="GroupHeader" Text="Border.Group.Highlighted" />
+                    <Border Classes="Group Highlighted">
+                        <StackPanel Classes="Rows">
+                            <Border Classes="Row">
+                                <TextBlock Text="Server url" />
+                            </Border>
+                            <Border Classes="Row">
+                                <TextBlock Text="Email" />
+                            </Border>
+                        </StackPanel>
                     </Border>
                     <TextBlock Classes="GroupHeader" Text="Border.Tile, Border.Tile.Large" />
                     <StackPanel Orientation="Horizontal" Spacing="12">

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -19,6 +20,61 @@ public static class HoobiChrome
         }
 
         return new Attachment(window, root, onSessionEnding);
+    }
+
+    public static IDisposable AttachDragHandle(Control handle)
+    {
+        ArgumentNullException.ThrowIfNull(handle);
+        return new DragHandle(handle);
+    }
+
+    public static void CentreOnScreenOf(Window window, PixelPoint anchor)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        if (window.Screens.ScreenFromPoint(anchor) is not { } screen)
+        {
+            return;
+        }
+
+        var area = screen.WorkingArea;
+        var size = PixelSize.FromSize(window.ClientSize, screen.Scaling);
+        window.Position = new PixelPoint(area.X + ((area.Width - size.Width) / 2), area.Y + ((area.Height - size.Height) / 2));
+    }
+
+    private sealed class DragHandle : IDisposable
+    {
+        private readonly Control _handle;
+
+        public DragHandle(Control handle)
+        {
+            _handle = handle;
+            handle.PointerPressed += OnPressed;
+        }
+
+        public void Dispose() => _handle.PointerPressed -= OnPressed;
+
+        private void OnPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (TopLevel.GetTopLevel(_handle) is not Window window
+                || !e.GetCurrentPoint(_handle).Properties.IsLeftButtonPressed
+                || (e.Source as Visual)?.GetSelfAndVisualAncestors().TakeWhile(visual => visual != _handle).Any(visual => visual is InputElement { Focusable: true }) == true)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            if (e.ClickCount == 2)
+            {
+                if (window.CanMaximize)
+                {
+                    window.WindowState = window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                }
+
+                return;
+            }
+
+            window.BeginMoveDrag(e);
+        }
     }
 
     private sealed class Attachment : IDisposable

@@ -68,6 +68,18 @@
                     <ComboBoxItem Content="CurseForge" />
                 </ComboBox>
             </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="TabStrip" VerticalAlignment="Center" />
+                <TabStrip Grid.Column="1" SelectedIndex="0">
+                    <TabStripItem Content="Logins" />
+                    <TabStripItem Content="Cards" />
+                    <TabStripItem Content="Notes" />
+                </TabStrip>
+                <TabStrip Grid.Column="2" SelectedIndex="0" IsEnabled="False">
+                    <TabStripItem Content="Logins" />
+                    <TabStripItem Content="Cards" />
+                </TabStrip>
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
