@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.55.0](https://github.com/hoobio/hoobi-design/compare/v0.54.0...v0.55.0) (2026-11-01)
+
+
+### Features
+
+* ✨ Menu.Sub for nested submenus, cascading with a mouse and drilling down in place on touch or narrow screens ([fb19b47](https://github.com/hoobio/hoobi-design/commit/fb19b4720aabf936e4eadab2e04b43ef111d5fcd))
+
 ## [0.54.0](https://github.com/hoobio/hoobi-design/compare/v0.53.4...v0.54.0) (2026-11-01)
 
 
