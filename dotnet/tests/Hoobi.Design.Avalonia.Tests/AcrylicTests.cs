@@ -18,8 +18,88 @@ public sealed class AcrylicTests(AvaloniaSession session)
     private static Color Ground => AvaloniaSession.Resource<Color>("HoobiBgColor");
 
     [Fact]
-    public void The_tint_is_the_dark_tint_at_57_percent() => session.Run(() =>
-        Assert.Equal(Color.Parse("#930C0E13"), Acrylic.Composite(Tint, null)));
+    public void The_tint_is_the_dark_tint_at_82_percent() => session.Run(() =>
+        Assert.Equal(Color.Parse("#D10C0E13"), Acrylic.Composite(Tint, null)));
+
+    [Theory]
+    [InlineData(true, true, true, true)]
+    [InlineData(false, true, true, false)]
+    [InlineData(true, false, true, false)]
+    [InlineData(true, true, false, false)]
+    public void Only_a_windowed_popup_on_windows_11_with_transparency_effects_asks_for_the_system_acrylic(bool windowedPopup, bool windows11, bool transparencyEffects, bool requested) =>
+        Assert.Equal(requested, Acrylic.RequestsNative(windowedPopup, windows11, transparencyEffects));
+
+    [Theory]
+    [InlineData(true, true, "AcrylicBlur", AcrylicMode.Native)]
+    [InlineData(false, true, "AcrylicBlur", AcrylicMode.Fallback)]
+    [InlineData(true, true, "Transparent", AcrylicMode.Blur)]
+    [InlineData(true, true, "None", AcrylicMode.Blur)]
+    [InlineData(true, false, "AcrylicBlur", AcrylicMode.Blur)]
+    [InlineData(false, false, "Transparent", AcrylicMode.Fallback)]
+    public void The_surface_takes_the_system_acrylic_only_when_the_window_got_it(bool active, bool requested, string actual, AcrylicMode mode) =>
+        Assert.Equal(mode, Acrylic.Choose(active, requested, actual switch
+        {
+            "AcrylicBlur" => WindowTransparencyLevel.AcrylicBlur,
+            "Transparent" => WindowTransparencyLevel.Transparent,
+            _ => WindowTransparencyLevel.None,
+        }));
+
+    [Fact]
+    public void The_popup_surface_probe_accepts_the_native_tint_fill() => session.Run(() =>
+    {
+        var combo = NewCombo();
+        var window = new Window { Width = 400, Height = 460, Content = combo };
+        window.Show();
+        AvaloniaSession.Pump();
+        combo.IsDropDownOpen = true;
+        AvaloniaSession.Pump();
+
+        OpenList(combo).Background = new SolidColorBrush(Acrylic.Composite(Tint, null));
+        Assert.Empty(Hoobi.Design.Avalonia.Testing.PopupSurfaceProbe.CheckOpen(window));
+        combo.IsDropDownOpen = false;
+        window.Close();
+    });
+
+    [Fact]
+    public void A_submenu_takes_the_acrylic_and_the_probe_checks_it() => session.Run(() =>
+    {
+        var sub = new MenuItem { Header = "Sort by", Items = { new MenuItem { Header = "Name" }, new MenuItem { Header = "Updated" } } };
+        var menu = new MenuFlyout { Items = { sub } };
+        var button = new Button { Content = "More", Flyout = menu };
+        var window = new Window { Width = 400, Height = 400, Content = button };
+        window.Show();
+        AvaloniaSession.Pump();
+        menu.ShowAt(button);
+        AvaloniaSession.Pump();
+
+        Assert.Empty(Hoobi.Design.Avalonia.Testing.PopupSurfaceProbe.CheckOpen(window));
+        sub.IsSubMenuOpen = true;
+        AvaloniaSession.Pump();
+        var surface = Assert.IsType<Border>(sub.GetVisualDescendants().OfType<Popup>().Single(popup => popup.IsOpen).Child);
+        Assert.True(Acrylic.GetIsEnabled(surface));
+        Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+        menu.Hide();
+        window.Close();
+    });
+
+    [Fact]
+    public void A_combo_box_list_draws_nothing_in_its_rounded_corners() => session.Run(() =>
+    {
+        var combo = NewCombo();
+        var window = new Window { Width = 400, Height = 460, Background = Brushes.White, Content = combo };
+        window.Show();
+        AvaloniaSession.Pump();
+        combo.IsDropDownOpen = true;
+        AvaloniaSession.Pump();
+
+        var list = OpenList(combo);
+        using var frame = window.CaptureRenderedFrame()!;
+        var origin = list.TranslatePoint(default, window)!.Value;
+        var corner = Mean(frame, (int)origin.X, (int)(origin.Y + list.Bounds.Height) - 1, 1, 1);
+        Assert.All(corner, channel => Assert.True(channel >= 250, $"corner pixel {string.Join(",", corner)}"));
+        combo.IsDropDownOpen = false;
+        window.Close();
+    });
 
     [Fact]
     public void Saturation_follows_the_css_matrix() =>

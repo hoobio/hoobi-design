@@ -17,12 +17,13 @@ public enum AcrylicMode
 {
     Blur,
     Fallback,
+    Native,
 }
 
 public static class Acrylic
 {
-    // Mirage tints with --color-bg at 72%, which is this window's own ground, so a flyout over plain page vanished into it; this darker tint at 57.5% keeps it apart.
-    public const double TintOpacity = 0.575;
+    // The system acrylic can sit over a white window on the desktop, and 82% is the lowest tint that keeps danger text above 4.5:1 there; 57.5% failed over light in-app content too.
+    public const double TintOpacity = 0.82;
     public const double BlurSigma = 24;
     public const double Saturation = 1.4;
     // Avalonia.Skia 12.1.3 turns a blur radius into a sigma as 0.288675 * radius + 0.5, so this is CSS blur(24px).
@@ -59,6 +60,13 @@ public static class Acrylic
     public static void SetIsEnabled(Control presenter, bool value) => presenter.SetValue(IsEnabledProperty, value);
 
     public static AcrylicMode GetMode(Control presenter) => presenter.GetValue(ModeProperty);
+
+    public static bool RequestsNative(bool windowedPopup, bool windows11, bool transparencyEffects) => windowedPopup && windows11 && transparencyEffects;
+
+    public static AcrylicMode Choose(bool active, bool requested, WindowTransparencyLevel actual) =>
+        !active ? AcrylicMode.Fallback
+        : requested && actual == WindowTransparencyLevel.AcrylicBlur ? AcrylicMode.Native
+        : AcrylicMode.Blur;
 
     public static Color Composite(Color tint, Color? under) => under is { } ground
         ? Color.FromRgb(Mix(tint.R, ground.R), Mix(tint.G, ground.G), Mix(tint.B, ground.B))
@@ -138,13 +146,15 @@ public static class Acrylic
     private static Color Resource(Control presenter, string key) =>
         presenter.TryFindResource(key, presenter.ActualThemeVariant, out var value) && value is Color color ? color : Colors.Transparent;
 
-    // hoobi-design's Mirage flyout, drawn here rather than asked of the OS: the page behind is this app's own window, Linux and macOS popups get no tinted blur, and Avalonia has no saturate effect.
+    // The OS blur is used where Avalonia can give it to a popup window; an overlay popup, Linux, macOS and Windows 10 get no tinted blur from the OS, so the app window is blurred here.
     private sealed class Surface : IDisposable
     {
         private readonly Control _presenter;
         private readonly TopLevel _top;
         private readonly WindowBase? _owner;
         private readonly IDisposable? _activation;
+        private readonly IDisposable? _level;
+        private readonly bool _requested;
         private WriteableBitmap? _bitmap;
         private PixelRect _applied;
         private bool _active;
@@ -161,6 +171,18 @@ public static class Acrylic
                 window.PositionChanged += OnLayoutUpdated;
             }
 
+            _requested = RequestsNative(_top is PopupRoot, OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000), HoobiChrome.TransparencyEnabled());
+            if (_requested)
+            {
+                _top.TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Transparent];
+                if (_top.TryGetPlatformHandle() is { HandleDescriptor: "HWND", Handle: var handle })
+                {
+                    HoobiChromeInterop.RoundCorners(handle);
+                }
+
+                _level = _top.GetObservable(TopLevel.ActualTransparencyLevelProperty).Subscribe(new AnonymousObserver<WindowTransparencyLevel>(_ => Apply(force: true)));
+            }
+
             _activation = _owner?.GetObservable(WindowBase.IsActiveProperty).Subscribe(new AnonymousObserver<bool>(_ => Apply(force: true)));
             Apply(force: true);
         }
@@ -174,6 +196,7 @@ public static class Acrylic
             }
 
             _activation?.Dispose();
+            _level?.Dispose();
             _bitmap?.Dispose();
             _bitmap = null;
         }
@@ -193,12 +216,16 @@ public static class Acrylic
             (_applied, _active) = (rect, active);
             var tint = Resource(_presenter, "HoobiFlyoutAcrylicTintColor");
             var fallback = Resource(_presenter, "HoobiFlyoutAcrylicFallbackColor");
-            var mode = active ? AcrylicMode.Blur : AcrylicMode.Fallback;
+            var mode = Choose(active, _requested, _top.ActualTransparencyLevel);
             _presenter.SetValue(ModeProperty, mode);
             // A tooltip opens on every hover, too often to render and blur the window behind it each time.
-            _presenter.SetValue(Border.BackgroundProperty, mode == AcrylicMode.Blur && _presenter is not ToolTip && Snapshot(rect, scale, tint, fallback) is { } snapshot
-                ? new ImageBrush(snapshot) { Stretch = Stretch.Fill }
-                : new SolidColorBrush(mode == AcrylicMode.Blur ? Composite(tint, fallback) : fallback));
+            _presenter.SetValue(Border.BackgroundProperty, mode switch
+            {
+                AcrylicMode.Native => new SolidColorBrush(Composite(tint, null)),
+                AcrylicMode.Blur when _presenter is not ToolTip && Snapshot(rect, scale, tint, fallback) is { } snapshot => new ImageBrush(snapshot) { Stretch = Stretch.Fill },
+                AcrylicMode.Blur => new SolidColorBrush(Composite(tint, fallback)),
+                _ => new SolidColorBrush(fallback),
+            });
         }
 
         private WriteableBitmap? Snapshot(PixelRect rect, double scale, Color tint, Color fallback)

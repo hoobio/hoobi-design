@@ -14,6 +14,10 @@ internal static partial class HoobiChromeInterop
     private const int HtMaxButton = 9;
     private const int HtClose = 20;
     private const int DwmwaCloak = 13;
+    private const int DwmwaWindowCornerPreference = 33;
+    private const int DwmwcpRound = 2;
+    private const int DwmwaBorderColor = 34;
+    private const int DwmwaColorNone = unchecked((int)0xFFFFFFFE);
 
     public static void RepostCaptionButtonMove(nint handle)
     {
@@ -34,6 +38,14 @@ internal static partial class HoobiChromeInterop
     {
         var value = cloaked ? 1 : 0;
         _ = DwmSetWindowAttribute(handle, DwmwaCloak, ref value, sizeof(int));
+    }
+
+    public static void RoundCorners(nint handle)
+    {
+        var round = DwmwcpRound;
+        _ = DwmSetWindowAttribute(handle, DwmwaWindowCornerPreference, ref round, sizeof(int));
+        var none = DwmwaColorNone;
+        _ = DwmSetWindowAttribute(handle, DwmwaBorderColor, ref none, sizeof(int));
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -56,7 +56,7 @@ public static class HoobiChrome
         return acrylic;
     }
 
-    private static bool TransparencyEnabled() =>
+    internal static bool TransparencyEnabled() =>
         !OperatingSystem.IsWindows()
         || Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "EnableTransparency", 1) is not 0;
 

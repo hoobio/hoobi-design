@@ -47,25 +47,42 @@ public static class PopupSurfaceProbe
         var violations = new SortedSet<string>(StringComparer.Ordinal);
         foreach (var child in top.OpenedPopups.Select(popup => popup.Child).OfType<Control>())
         {
-            var surface = child.GetSelfAndVisualDescendants().OfType<Control>().FirstOrDefault(Acrylic.GetIsEnabled);
-            if (surface is null)
+            Check(child, violations);
+            foreach (var item in child.GetVisualDescendants().OfType<MenuItem>().Where(item => item.ItemCount > 0 && item.IsEffectivelyEnabled))
             {
-                violations.Add($"{Describe(child)}: no Acrylic.IsEnabled on the popup surface");
-                continue;
-            }
-
-            var fill = Fill(surface);
-            var area = surface.Bounds.Width * surface.Bounds.Height;
-            foreach (var cover in surface.GetVisualDescendants().OfType<Control>().Where(control => control.IsEffectivelyVisible))
-            {
-                if (Fill(cover) is ISolidColorBrush { Color.A: > 0 } brush && !ReferenceEquals(brush, fill) && cover.Bounds.Width * cover.Bounds.Height >= area * 0.9)
+                item.IsSubMenuOpen = true;
+                HeadlessSession.Pump();
+                if (item.GetVisualDescendants().OfType<Popup>().FirstOrDefault(popup => popup.IsOpen)?.Child is Control submenu)
                 {
-                    violations.Add($"{Describe(child)}: {Describe(cover)} covers the acrylic with {brush.Color}");
+                    Check(submenu, violations);
                 }
+
+                item.IsSubMenuOpen = false;
+                HeadlessSession.Pump();
             }
         }
 
         return [.. violations];
+    }
+
+    private static void Check(Control child, SortedSet<string> violations)
+    {
+        var surface = child.GetSelfAndVisualDescendants().OfType<Control>().FirstOrDefault(Acrylic.GetIsEnabled);
+        if (surface is null)
+        {
+            violations.Add($"{Describe(child)}: no Acrylic.IsEnabled on the popup surface");
+            return;
+        }
+
+        var fill = Fill(surface);
+        var area = surface.Bounds.Width * surface.Bounds.Height;
+        foreach (var cover in surface.GetVisualDescendants().OfType<Control>().Where(control => control.IsEffectivelyVisible))
+        {
+            if (Fill(cover) is ISolidColorBrush { Color.A: > 0 } brush && !ReferenceEquals(brush, fill) && cover.Bounds.Width * cover.Bounds.Height >= area * 0.9)
+            {
+                violations.Add($"{Describe(child)}: {Describe(cover)} covers the acrylic with {brush.Color}");
+            }
+        }
     }
 
     private static void Collect(TopLevel top, SortedSet<string> violations)
