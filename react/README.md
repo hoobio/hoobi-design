@@ -68,7 +68,7 @@ Everything is a Tailwind v4 `@theme` token in `styles.css`, so `bg-surface`, `te
 ## Catalog
 
 `catalog/` is a hand-rolled Vite reference page covering every token, the type ramp and every
-component variant, tone, size and state, with copyable JSX for each.
+component variant, tone, size and state, with copyable JSX for each. From the repo root:
 
 ```bash
 pnpm run build
@@ -86,8 +86,10 @@ content reaches the bottom edge.
 
 ## Publish process
 
+From the repo root:
+
 ```bash
-pnpm version minor
+pnpm -C react version minor
 git push --follow-tags
 ```
 
