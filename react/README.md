@@ -86,12 +86,7 @@ content reaches the bottom edge.
 
 ## Publish process
 
-From the repo root:
-
-```bash
-pnpm -C react version minor
-git push --follow-tags
-```
-
-The `v*` tag fires the `hoobi-design` pipeline, which typechecks, builds, guards that the tag
-matches `package.json`, and publishes to the Hoobi feed. The same tag packs and pushes the three NuGet packages.
+release-please owns the version. Each push to `main` updates one release PR; merging it stamps
+`react/package.json`, tags `v<version>` and runs the `publish` job, which typechecks, builds and
+publishes to the Hoobi feed. The same release packs and pushes the three NuGet packages and deploys
+the catalog to GitHub Pages.

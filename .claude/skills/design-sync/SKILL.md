@@ -1,6 +1,6 @@
 ---
 name: design-sync
-description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artifact (https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB) - build the files with catalog/ds/build.mjs, then publish them with the Artifact tool. Run after a library release (pnpm version + tag push), or when asked to "sync the design system" or "update the design system artifact".
+description: Sync @hoobi/design to the "Hoobi Design" Claude Design System artifact (https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB) - build the files with catalog/ds/build.mjs, then publish them with the Artifact tool. Run after a library release (the release-please PR merged and published), or when asked to "sync the design system" or "update the design system artifact".
 ---
 
 # design-sync
@@ -11,8 +11,8 @@ so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
 - **Target:** "Hoobi Design", https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB. Its content is
   files under `project/`; everything else in the artifact belongs to the Design System type and is
   refused.
-- **When:** after a release (`pnpm -C react version` + `git push --follow-tags`), once the publish pipeline
-  is green. The system shows what consumers can `pnpm add`, so never sync unreleased `main` unless
+- **When:** after a release (the release-please PR merged), once the `publish` job of the `Release`
+  workflow is green. The system shows what consumers can `pnpm add`, so never sync unreleased `main` unless
   explicitly asked to preview.
 - **Mode:** the index carries `"editing": "code"`, so the page is read-only and every change comes
   from this repo. Keep it on every sync.
