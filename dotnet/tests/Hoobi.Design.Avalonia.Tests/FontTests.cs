@@ -20,6 +20,22 @@ public sealed class FontTests(AvaloniaSession session)
     });
 
     [Fact]
+    public void A_shown_window_renders_grayscale_text() => session.Run(() =>
+    {
+        var window = new Window { Width = 200, Height = 100, Content = new TextBlock { Text = "Text" } };
+        window.Show();
+        AvaloniaSession.Pump();
+        try
+        {
+            Assert.Equal(TextRenderingMode.Antialias, TextOptions.GetTextRenderingMode(window));
+        }
+        finally
+        {
+            window.Close();
+        }
+    });
+
+    [Fact]
     public void The_default_family_is_the_embedded_hanken_grotesk() => session.Run(() =>
     {
         Assert.True(FontManager.Current.TryGetGlyphTypeface(new Typeface(FontFamily.Default), out var typeface));

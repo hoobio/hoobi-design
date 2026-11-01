@@ -212,7 +212,7 @@
     <SolidColorBrush x:Key="ContentDialogBackground" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="DialogButtonBackgroundPointerOver" Color="{StaticResource HoobiBorderColor}" />
     <SolidColorBrush x:Key="DialogButtonBackgroundPressed" Color="{StaticResource HoobiSurfaceColor}" />
-    <SolidColorBrush x:Key="ContentDialogSmokeFill" Color="{StaticResource HoobiSmokeColor}" Opacity="0.6" />
+    <SolidColorBrush x:Key="ContentDialogSmokeFill" Color="#9906070A" />
     <SolidColorBrush x:Key="ContentDialogTopOverlay" Color="{StaticResource HoobiSurfaceRaisedColor}" />
     <SolidColorBrush x:Key="ContentDialogBorderBrush" Color="Transparent" />
 
