@@ -66,6 +66,7 @@ import {
   TooltipPage,
 } from './components.js';
 import { FlowCanvasPage } from './flow.js';
+import { DotnetPage } from './dotnet.js';
 
 export interface Page {
   id: string;
@@ -579,6 +580,13 @@ export const PAGES: Page[] = [
     caption: 'The whole class-joining approach, in one line.',
     render: () => <CxPage />,
   },
+  {
+    id: 'dotnet',
+    group: '.NET',
+    title: 'Avalonia',
+    caption: 'Hoobi.Design.Avalonia, its testing probes and Hoobi.Desktop.Windows.',
+    render: () => <DotnetPage />,
+  },
 ];
 
 export const GROUPS = [
@@ -593,4 +601,5 @@ export const GROUPS = [
   'Progress',
   'Visual Elements',
   'Utilities',
+  '.NET',
 ];

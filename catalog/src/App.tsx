@@ -92,7 +92,7 @@ export function App() {
               <Shell.MenuLabel>@hoobi/design v{__LIB_VERSION__}</Shell.MenuLabel>
               <Shell.MenuItem
                 onClick={() => {
-                  open('https://dev.azure.com/Hoobi/Hoobi/_git/hoobi-design', '_blank');
+                  open('https://github.com/hoobio/hoobi-design', '_blank');
                 }}
               >
                 Repository
