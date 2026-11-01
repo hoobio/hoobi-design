@@ -65,16 +65,19 @@ public sealed class PackageStylesTests(AvaloniaSession session)
             var slide = card.GetVisualDescendants().OfType<SlideExpander>().Single();
             AvaloniaSession.Pump();
             Assert.Equal(0, slide.Bounds.Height);
+            double Offset() => slide.Child!.IsVisible ? slide.Child.RenderTransform?.Value.M32 ?? 0 : double.NaN;
 
             card.RaiseClick();
-            var heights = Frames(clock, () => slide.Bounds.Height);
-            Assert.Contains(heights, height => height > 0 && height < 120);
-            Assert.Equal(120, heights[^1]);
+            var opening = Frames(clock, Offset);
+            Assert.Equal(120, slide.Bounds.Height);
+            Assert.True(opening.Any(offset => offset < -1 && offset > -120), string.Join(",", opening));
+            Assert.InRange(opening.FindIndex(offset => offset == 0) * 16, 320, 350);
 
             card.RaiseClick();
-            heights = Frames(clock, () => slide.Bounds.Height);
-            Assert.Contains(heights, height => height > 0 && height < 120);
-            Assert.Equal(0, heights[^1]);
+            var closing = Frames(clock, Offset);
+            Assert.Contains(closing, offset => offset < -1 && offset > -120);
+            Assert.InRange(closing.FindIndex(double.IsNaN) * 16, 160, 190);
+            Assert.Equal(0, slide.Bounds.Height);
         }
         finally
         {

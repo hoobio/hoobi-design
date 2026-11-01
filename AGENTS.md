@@ -13,7 +13,9 @@ Fluent 2's answer is the default: icons are Fluent System Icons - consumers inst
 `@fluentui/react-icons` (20px/Regular variants) and pass them as ReactNodes, the library itself
 stays zero-dependency; one-off glyphs drawn by hand follow the 20px grid with 1.5px strokes. Motion
 on the Fluent easing tokens (`--ease-decelerate` entering, `--ease-accelerate` leaving,
-`--ease-standard` in place; 150/250/300ms), layout on the 4px grid with 48px chrome heights.
+`--ease-standard` in place) and WinUI's durations (83/167/250ms, plus 333ms for expanders and
+lists), layout on the 4px grid with 48px chrome heights. The web `styles.css` still uses 150ms in
+places and is not yet on this set.
 
 React component library and design tokens for Hoobi apps, with an Avalonia theme and three NuGet packages for the Hoobi desktop apps (`dotnet/`). Hanken Grotesk for text, Dank Mono for code on the web.
 Published to the ADO Artifacts `Hoobi` feed (npm and NuGet) and consumed by mendarr on the web and by steward-companion, earmark and command-palette-bitwarden on the desktop.
@@ -375,7 +377,7 @@ The native theme differs from the web in these places:
 
 Value keys carry the `Hoobi` prefix (`HoobiBgBrush`, `HoobiAccentColor`). Control themes and resources that override FluentAvalonia or WinUI keep the WinUI names (`TitleBarHeight`, `CaptionTextBlockFontSize`).
 
-Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`. Every popup surface takes the Mirage acrylic by default, plain `FlyoutPresenter` included; `FlyoutPresenter.Tinted` is kept and changes nothing. Folds use `SlideExpander` (250 ms, decelerate in, accelerate out, snaps under reduced motion); `SettingsCard.ExpandedContent` hosts its rows in one, so `IsExpanded` animates by default.
+Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`. Every popup surface takes the Mirage acrylic by default, plain `FlyoutPresenter` included; `FlyoutPresenter.Tinted` is kept and changes nothing. Folds use `SlideExpander`, which moves its content as WinUI's Expander does: the fold takes its full height at once and the content slides down from above over 333 ms (`0,0,0,1`), then slides up over 167 ms (`1,1,0,1`) before the fold closes; it snaps under reduced motion. `SettingsCard.ExpandedContent` hosts its rows in one, so `IsExpanded` animates by default, and the card's chevron turns on the same timings.
 
 - `NavButtonStyle` and `.Selected` (`HoobiNavItemHeight`, `HoobiNavItemMargin`)
 - `TextBlock.NavGlyph`
@@ -428,11 +430,30 @@ Components and helpers:
 - `ToneConverters.Brush`, `ToneConverters.ButtonTheme`, `ToneConverters.Glyph`, `ToneConverters.Initials`
 - `PageEntrance.PlayAsync`
 - `HoverSubmenu.IsEnabled`
-- `Motion.Decelerate`, `Motion.Accelerate`, `Motion.SubmenuDelay`
+- `Motion.Faster`, `Motion.Fast`, `Motion.Normal`, `Motion.Expand`, `Motion.Decelerate`, `Motion.Accelerate`, `Motion.PointToPoint`, `Motion.Collapse`, `Motion.SubmenuDelay` (`Motion.Duration`, 150 ms, is obsolete)
 - `HoobiChrome.Cloak`, `HoobiChrome.DoubleClickTime`, `HoobiChrome.MinimiseThenHide`, `HoobiChrome.ApplyTransparency`
 - `ToastWindow.Show(source, text, Tone)` and `ToastWindow.Tone`
 
 ### Gallery
+
+### Motion
+
+Anything that animates in WinUI 3 animates the same way here, with WinUI's duration and easing; an approximation is named as one.
+
+| WinUI name                                     | Value           | Key                                            |
+| ---------------------------------------------- | --------------- | ---------------------------------------------- |
+| `ControlFasterAnimationDuration`               | 83 ms           | `Motion.Faster`, `HoobiDurationFaster`         |
+| `ControlFastAnimationDuration`                 | 167 ms          | `Motion.Fast`, `HoobiDurationFast`             |
+| `ControlNormalAnimationDuration`               | 250 ms          | `Motion.Normal`, `HoobiDurationNormal`         |
+| Expander and list reorder                      | 333 ms          | `Motion.Expand`, `HoobiDurationExpand`         |
+| `ControlFastOutSlowInKeySpline`                | `0,0,0,1`       | `Motion.Decelerate`, `HoobiEaseDecelerate`     |
+| Accelerate                                     | `1,0,1,1`       | `Motion.Accelerate`, `HoobiEaseAccelerate`     |
+| Point to point (nav, split view, list reorder) | `0.1,0.9,0.2,1` | `Motion.PointToPoint`, `HoobiEasePointToPoint` |
+| Expander collapse                              | `1,1,0,1`       | `Motion.Collapse`, `HoobiEaseCollapse`         |
+
+Every duration is zero when Windows turns off client-area animation (`Motion.Enabled`). Package XAML reads the durations through `{x:Static hoobi:Motion.*}`; the `HoobiDuration*` resources are set from `Motion` when `HoobiTheme` loads.
+
+Where the values apply: ToggleSwitch knob size and fill fades 83 ms, knob slide 167 ms (WinUI uses a `RepositionThemeAnimation` with no value in its XAML, so 167 ms `0,0,0,1` is an approximation); the FluentAvalonia Slider thumb scales over 250 ms on hover and press and 167 ms back; dialogs scale over 250 ms in and 167 ms out and fade over 83 ms both ways; folds and chevrons open over 333 ms and close over 167 ms; Segmented items press over 167 ms `0,0,0,1`; scroll bars expand over 167 ms and fade over 83 ms; `GlidingWrapPanel` moves over 333 ms `0.1,0.9,0.2,1`; the NavigationView pane fades over FluentAvalonia's 350 and 120 ms with `0.1,0.9,0.2,1`. Popup, flyout and ToolTip animations are FluentAvalonia's.
 
 `samples/Hoobi.Design.Gallery` is the native catalog: every style key and control theme the package ships is on a page. `GalleryTests` renders every page, each open popup, the toast window and the window decorations to PNG files when `HOOBI_GALLERY_PNG_DIR` names a folder. Changed styles are looked at in those PNGs before commit, as the web catalog is looked at in the browser.
 
@@ -481,7 +502,7 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 - Avalonia rounds .5 to even where WinUI rounds up. A WinUI layout that needs the round-up adds 0.01 (padding 15.01).
 - Variable fonts do not render per weight. Ship static TTFs.
 - FluentAvalonia resource names clash with unprefixed app keys. App keys carry the `Hoobi` prefix and are referenced with `StaticResource`.
-- Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), return `None` and release the queue when the owner closes, and shorten the open fade.
+- Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), return `None` and release the queue when the owner closes, and shorten the open and close fades to 83 ms.
 - Avalonia's `Button.OnKeyUp` clicks on a Space key-up with no key-down, so a key held over from before a dialog opened can confirm it. `DialogIntent` (applied by `AppDialogs`) counts a press when its key-down came after the dialog opened.
 - A tray menu opens without focus; `TrayMenuFocus` gives it focus. `SetForegroundWindow` is refused to a process that did not receive the last input, and a tray click goes to Explorer, so `ForegroundGate.ForceForeground` borrows Explorer's input queue for the call.
 - An app that closes to the tray quits on `WM_QUERYENDSESSION` or `WM_ENDSESSION`: it passes its quit to `HoobiChrome.Attach` as `onSessionEnding`.

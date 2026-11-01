@@ -40,7 +40,7 @@ public sealed class ToastWindow : Window
             Margin = new Thickness(24, 24, 24, 16),
             Padding = new Thickness(12, 10),
             Opacity = 0,
-            Transitions = [new DoubleTransition { Property = OpacityProperty, Duration = FadeFor, Easing = Motion.Standard }],
+            Transitions = [new DoubleTransition { Property = OpacityProperty, Duration = Motion.Enabled ? FadeFor : TimeSpan.Zero, Easing = Motion.Standard }],
             Child = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Children = { _glyph, _message } },
         };
         _card.Bind(Border.BackgroundProperty, _card.GetResourceObservable("LayerFillColorAltBrush"));

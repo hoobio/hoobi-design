@@ -31,6 +31,8 @@ public class SettingsCard : ContentControl
 
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent = RoutedEvent.Register<SettingsCard, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
+    private Visual? _chevron;
+
     static SettingsCard()
     {
         FocusableProperty.OverrideDefaultValue<SettingsCard>(false);
@@ -38,6 +40,16 @@ public class SettingsCard : ContentControl
         IsExpandedProperty.Changed.AddClassHandler<SettingsCard>((card, e) =>
         {
             var expanded = e.GetNewValue<bool?>();
+            if (card._chevron is { } chevron)
+            {
+                chevron.Transitions = [new TransformOperationsTransition
+                {
+                    Property = RenderTransformProperty,
+                    Duration = expanded == true ? Motion.Expand : Motion.Fast,
+                    Easing = expanded == true ? Motion.Decelerate : Motion.Collapse,
+                }];
+            }
+
             card.PseudoClasses.Set(":expanded", expanded == true);
             card.PseudoClasses.Set(":collapsed", expanded == false);
         });
@@ -100,10 +112,7 @@ public class SettingsCard : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (e.NameScope.Find<Visual>("PART_Chevron") is { } chevron && Motion.Enabled)
-        {
-            chevron.Transitions = [new TransformOperationsTransition { Property = RenderTransformProperty, Duration = Motion.Expand, Easing = Motion.Standard }];
-        }
+        _chevron = e.NameScope.Find<Visual>("PART_Chevron");
     }
 
     internal void RaiseClick()

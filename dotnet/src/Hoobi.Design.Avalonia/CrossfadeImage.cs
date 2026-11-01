@@ -11,7 +11,7 @@ public sealed class CrossfadeImage : TransitioningContentControl
 {
     public CrossfadeImage()
     {
-        PageTransition = Motion.Enabled ? new CrossFade(Motion.Duration) : null;
+        PageTransition = Motion.Enabled ? new CrossFade(Motion.Fast) : null;
         ContentTemplate = new FuncDataTemplate<IImage>((image, _) =>
         {
             var view = new Image { Source = image, Stretch = Stretch.UniformToFill };

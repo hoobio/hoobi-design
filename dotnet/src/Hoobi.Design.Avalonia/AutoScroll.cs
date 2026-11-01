@@ -197,7 +197,7 @@ public static class AutoScroll
         };
         if (Motion.Enabled)
         {
-            circle.Transitions = [new DoubleTransition { Property = Visual.OpacityProperty, Duration = Motion.Duration }];
+            circle.Transitions = [new DoubleTransition { Property = Visual.OpacityProperty, Duration = Motion.Faster }];
         }
 
         Canvas.SetLeft(circle, point.X - MarkerSize / 2);

@@ -322,15 +322,15 @@
                         <Border Name="PART_Fill" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
                             <Border.Transitions>
                                 <Transitions>
-                                    <BrushTransition Property="Background" Duration="0:0:0.083" />
+                                    <BrushTransition Property="Background" Duration="{x:Static hoobi:Motion.Faster}" />
                                 </Transitions>
                             </Border.Transitions>
                         </Border>
                         <Border Name="PART_Hover" Margin="1,3" Background="{DynamicResource SubtleFillColorTransparentBrush}" CornerRadius="{TemplateBinding CornerRadius}">
                             <Border.Transitions>
                                 <Transitions>
-                                    <BrushTransition Property="Background" Duration="0:0:0.083" />
-                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.167" />
+                                    <BrushTransition Property="Background" Duration="{x:Static hoobi:Motion.Faster}" />
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="{x:Static hoobi:Motion.Fast}" Easing="{StaticResource HoobiEaseDecelerate}" />
                                 </Transitions>
                             </Border.Transitions>
                         </Border>
@@ -709,7 +709,7 @@
         <Setter Property="Opacity" Value="0" />
         <Setter Property="Transitions">
             <Transitions>
-                <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                <DoubleTransition Property="Opacity" Duration="{x:Static hoobi:Motion.Faster}" />
             </Transitions>
         </Setter>
     </Style>
@@ -757,7 +757,50 @@
     <Style Selector="HyperlinkButton /template/ ContentPresenter#ContentPresenter">
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.083" />
+                <BrushTransition Property="Background" Duration="{x:Static hoobi:Motion.Faster}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="ToggleSwitch">
+        <Setter Property="KnobTransitions">
+            <Transitions>
+                <DoubleTransition Property="Canvas.Left" Duration="{x:Static hoobi:Motion.Fast}" Easing="{StaticResource HoobiEaseDecelerate}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="ToggleSwitch:checked /template/ Ellipse#SwitchKnobOn, ToggleSwitch:checked /template/ Ellipse#SwitchKnobOff, ToggleSwitch:unchecked /template/ Ellipse#SwitchKnobOn, ToggleSwitch:unchecked /template/ Ellipse#SwitchKnobOff">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Width" Duration="{x:Static hoobi:Motion.Faster}" Easing="{StaticResource HoobiEaseDecelerate}" />
+                <DoubleTransition Property="Height" Duration="{x:Static hoobi:Motion.Faster}" Easing="{StaticResource HoobiEaseDecelerate}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Thumb:not(:pointerover):not(:pressed) /template/ Ellipse#SliderInnerThumb">
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="{x:Static hoobi:Motion.Fast}" Easing="{StaticResource HoobiEaseDecelerate}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Thumb:pointerover /template/ Ellipse#SliderInnerThumb, Thumb:pressed /template/ Ellipse#SliderInnerThumb">
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="{x:Static hoobi:Motion.Normal}" Easing="{StaticResource HoobiEaseDecelerate}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="ui|FANavigationView:not(:panenotoverlaying) /template/ Border#ShadowCaster">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="{StaticResource HoobiEasePointToPoint}" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="ui|FANavigationView:panenotoverlaying /template/ Border#ShadowCaster">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.12" Easing="{StaticResource HoobiEasePointToPoint}" />
             </Transitions>
         </Setter>
     </Style>
@@ -769,8 +812,8 @@
     <Style Selector="ToggleSwitch:pointerover:unchecked /template/ Border#OuterBorder, ToggleSwitch:pressed:unchecked /template/ Border#OuterBorder">
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.083" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.083" />
+                <BrushTransition Property="Background" Duration="{x:Static hoobi:Motion.Faster}" Easing="{StaticResource HoobiEaseDecelerate}" />
+                <BrushTransition Property="BorderBrush" Duration="{x:Static hoobi:Motion.Faster}" Easing="{StaticResource HoobiEaseDecelerate}" />
             </Transitions>
         </Setter>
     </Style>
@@ -1020,12 +1063,17 @@
         <Setter Property="RenderTransform" Value="rotate(0deg)" />
         <Setter Property="Transitions">
             <Transitions>
-                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="{StaticResource HoobiEaseStandard}" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="{x:Static hoobi:Motion.Fast}" Easing="{StaticResource HoobiEaseCollapse}" />
             </Transitions>
         </Setter>
     </Style>
     <Style Selector="TextBlock.Chevron.Expanded, Button.DropDown:flyout-open TextBlock.Chevron, ToggleButton.Chevron:checked TextBlock.Chevron">
         <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="{x:Static hoobi:Motion.Expand}" Easing="{StaticResource HoobiEaseDecelerate}" />
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="TextBlock.DragHandle">
         <Setter Property="FontFamily" Value="{StaticResource HoobiIconFontFamily}" />

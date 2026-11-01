@@ -5,6 +5,9 @@
     <FontFamily x:Key="HoobiDisplayFontFamily">avares://Hoobi.Design.Avalonia/Assets/Fonts#Hanken Grotesk</FontFamily>
     <FontFamily x:Key="HoobiMonoFontFamily">avares://Hoobi.Design.Avalonia/Assets/Fonts#Cascadia Mono</FontFamily>
 
+    <SplineEasing x:Key="HoobiEasePointToPoint" X1="0.1" Y1="0.9" X2="0.2" Y2="1" />
+    <SplineEasing x:Key="HoobiEaseCollapse" X1="1" Y1="1" X2="0" Y2="1" />
+
     <StaticResource x:Key="SystemAccentColor" ResourceKey="HoobiAccentColor" />
     <StaticResource x:Key="SystemAccentColorLight1" ResourceKey="HoobiAccentHoverColor" />
     <StaticResource x:Key="SystemAccentColorLight2" ResourceKey="HoobiAccentHoverColor" />

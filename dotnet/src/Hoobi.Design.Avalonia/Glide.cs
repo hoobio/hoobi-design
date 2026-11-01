@@ -122,8 +122,8 @@ public static class Glide
         child.ZIndex = Math.Abs(dx) > Epsilon && Math.Abs(dy) > Epsilon ? 1 : 0;
         var animation = new Animation
         {
-            Duration = Motion.Duration,
-            Easing = Motion.Standard,
+            Duration = Motion.Expand,
+            Easing = Motion.PointToPoint,
             Children =
             {
                 new KeyFrame { Cue = new Cue(0), Setters = { new Setter(TranslateTransform.XProperty, dx), new Setter(TranslateTransform.YProperty, dy) } },

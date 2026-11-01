@@ -17,7 +17,7 @@ public static class AppDialogs
 {
     private static Task _current = Task.CompletedTask;
 
-    private static bool _openFadeShortened;
+    private static ControlTheme? _fadesShortened;
 
     public static Func<Key, bool> IsKeyHeld { get; set; } = AppDialogsInterop.IsKeyHeld;
 
@@ -83,7 +83,7 @@ public static class AppDialogs
             }
 
             dialog.Closing -= CancelWhileQueued;
-            ShortenOpenFade();
+            ShortenFades();
             dialog.Classes.Add("Hoobi");
             // The app's ButtonBackgroundPointerOver matches ContentDialogBackground, so a hovered Cancel would vanish into the dialog.
             dialog.Resources["ButtonBackgroundPointerOver"] = Resource("DialogButtonBackgroundPointerOver");
@@ -166,18 +166,18 @@ public static class AppDialogs
         (fallback ?? dialog).Focus();
     }
 
-    // FluentAvalonia fades the dialog in over 250ms with its scale; WinUI fades it over ControlFasterAnimationDuration (83ms) and scales over 250ms, and a second app animation on the same Opacity fights the theme's.
-    private static void ShortenOpenFade()
+    // FluentAvalonia fades the dialog with its scale (250ms in, 167ms out); WinUI fades both ways over ControlFasterAnimationDuration (83ms), and a second app animation on the same Opacity fights the theme's.
+    private static void ShortenFades()
     {
-        if (_openFadeShortened || Resource(typeof(FAContentDialog)) is not ControlTheme theme)
+        if (Resource(typeof(FAContentDialog)) is not ControlTheme theme || theme == _fadesShortened)
         {
             return;
         }
 
-        _openFadeShortened = true;
+        _fadesShortened = theme;
         foreach (var animation in theme.Children.OfType<Style>().SelectMany(style => style.Animations).OfType<Animation>())
         {
-            if (animation.Duration == TimeSpan.FromMilliseconds(250) && animation.Children.Any(frame => frame.Setters.OfType<Setter>().Any(setter => setter.Property == Visual.OpacityProperty)))
+            if ((animation.Duration == TimeSpan.FromMilliseconds(250) || animation.Duration == TimeSpan.FromMilliseconds(167)) && animation.Children.Any(frame => frame.Setters.OfType<Setter>().Any(setter => setter.Property == Visual.OpacityProperty)))
             {
                 animation.Duration = TimeSpan.FromMilliseconds(83);
             }

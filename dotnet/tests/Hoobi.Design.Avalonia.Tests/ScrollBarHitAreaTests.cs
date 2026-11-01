@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -153,6 +154,11 @@ public sealed class ScrollBarHitAreaTests(AvaloniaSession session)
         window.CaptureRenderedFrame()?.Dispose();
         if (expanded)
         {
+            foreach (var part in viewer.GetVisualDescendants().Where(part => part is Thumb or Shape { Name: "ThumbVisual" }))
+            {
+                part.Transitions = null;
+            }
+
             foreach (var bar in viewer.GetVisualDescendants().OfType<ScrollBar>())
             {
                 typeof(ScrollBar).GetProperty(nameof(ScrollBar.IsExpanded))!.SetValue(bar, true);
