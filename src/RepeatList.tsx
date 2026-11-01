@@ -31,9 +31,9 @@ export interface RepeatListProps<T> {
 }
 
 const SIZES: Record<RepeatCellSize, string> = {
-  sm: 'shrink-0 grow-0 basis-18',
+  sm: 'shrink-0 grow-0 basis-15',
   md: 'grow basis-24',
-  lg: 'grow-[2] basis-24',
+  lg: 'grow-[2] basis-28',
 };
 
 function Cells({ cells }: { cells: { key: string; node: ReactNode; size?: RepeatCellSize }[] }) {

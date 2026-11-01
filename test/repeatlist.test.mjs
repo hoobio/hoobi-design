@@ -24,8 +24,8 @@ test('one row per item, each with its own remove, and one add at the end', () =>
   const out = html();
   assert.equal(out.match(/aria-label="Remove row \d"/g)?.length, 2);
   assert.equal(out.match(/Add folder/g)?.length, 1);
-  assert.match(out, /grow-\[2\] basis-24/);
-  assert.match(out, /basis-18/);
+  assert.match(out, /grow-\[2\] basis-28/);
+  assert.match(out, /basis-15/);
 });
 
 test('remove is disabled at minItems, and the header uses the cell widths', () => {
