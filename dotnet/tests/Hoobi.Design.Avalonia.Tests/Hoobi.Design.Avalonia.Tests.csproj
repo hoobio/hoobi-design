@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <SelfContained>false</SelfContained>
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +16,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <ProjectReference Include="..\..\src\Hoobi.Design.Avalonia.Testing\Hoobi.Design.Avalonia.Testing.csproj" />
     <ProjectReference Include="..\..\samples\Hoobi.Design.Gallery\Hoobi.Design.Gallery.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

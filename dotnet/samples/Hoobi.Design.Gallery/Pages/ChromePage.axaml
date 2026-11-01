@@ -1,0 +1,14 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.ChromePage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Window chrome" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="HoobiWindowDecorations, CaptionButtonTheme" />
+            <TextBlock Classes="Body" TextWrapping="Wrap" MaxWidth="640" HorizontalAlignment="Left" Text="This window uses HoobiWindowDecorations: a 48px title bar with minimise, maximise and close drawn with CaptionButtonTheme." />
+            <TextBlock Classes="GroupHeader" Text="HoobiCloseOnlyDecorations" />
+            <Button x:Name="CloseOnlyButton" Content="Open a close-only window" HorizontalAlignment="Left" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

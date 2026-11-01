@@ -1,0 +1,106 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.ButtonsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Buttons" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="GroupHeader" Text="Theme or class" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="1" Classes="GroupHeader" Text="Rest" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="2" Classes="GroupHeader" Text="Disabled" Margin="0,12,0,0" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="Button" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Save" />
+                <Button Grid.Column="2" Content="Save" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="DefaultButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource DefaultButtonStyle}" Content="Save" />
+                <Button Grid.Column="2" Theme="{StaticResource DefaultButtonStyle}" Content="Save" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="AccentButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource AccentButtonStyle}" Content="Install" />
+                <Button Grid.Column="2" Theme="{StaticResource AccentButtonStyle}" Content="Install" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="Button.accent" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="accent" Content="Install" />
+                <Button Grid.Column="2" Classes="accent" Content="Install" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="CriticalButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource CriticalButtonStyle}" Content="Delete" />
+                <Button Grid.Column="2" Theme="{StaticResource CriticalButtonStyle}" Content="Delete" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="CautionButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource CautionButtonStyle}" Content="Restart" />
+                <Button Grid.Column="2" Theme="{StaticResource CautionButtonStyle}" Content="Restart" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="SubtleButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource SubtleButtonStyle}" Content="Cancel" />
+                <Button Grid.Column="2" Theme="{StaticResource SubtleButtonStyle}" Content="Cancel" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="MenuRowButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource MenuRowButtonStyle}" Content="Open folder" Margin="0,0,16,0" />
+                <Button Grid.Column="2" Theme="{StaticResource MenuRowButtonStyle}" Content="Open folder" IsEnabled="False" Margin="0,0,16,0" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="IconButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource IconButtonStyle}" Content="{StaticResource Glyph.Edit}" ToolTip.Tip="Edit" />
+                <Button Grid.Column="2" Theme="{StaticResource IconButtonStyle}" Content="{StaticResource Glyph.Edit}" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="DangerIconButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource DangerIconButtonStyle}" Content="{StaticResource Glyph.Delete}" ToolTip.Tip="Delete" />
+                <Button Grid.Column="2" Theme="{StaticResource DangerIconButtonStyle}" Content="{StaticResource Glyph.Delete}" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="AddRowButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource AddRowButtonStyle}" Content="Add a folder" Margin="0,0,16,0" />
+                <Button Grid.Column="2" Theme="{StaticResource AddRowButtonStyle}" Content="Add a folder" IsEnabled="False" Margin="0,0,16,0" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="CaptionLinkButtonStyle" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource CaptionLinkButtonStyle}" Content="Learn more" />
+                <Button Grid.Column="2" Theme="{StaticResource CaptionLinkButtonStyle}" Content="Learn more" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="DialogCloseButtonStyle.accent" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Theme="{StaticResource DialogCloseButtonStyle}" Classes="accent" Content="Close" />
+                <Button Grid.Column="2" Theme="{StaticResource DialogCloseButtonStyle}" Classes="accent" Content="Close" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="HyperlinkButton" VerticalAlignment="Center" />
+                <HyperlinkButton Grid.Column="1" Content="Release notes" />
+                <HyperlinkButton Grid.Column="2" Content="Release notes" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="ToggleButton" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <ToggleButton Content="Off" />
+                    <ToggleButton Content="On" IsChecked="True" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <ToggleButton Content="Off" IsEnabled="False" />
+                    <ToggleButton Content="On" IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="SplitButton" VerticalAlignment="Center" />
+                <SplitButton Grid.Column="1" Content="Update" />
+                <SplitButton Grid.Column="2" Content="Update" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="DropDownButton" VerticalAlignment="Center" />
+                <DropDownButton Grid.Column="1" Content="Sort" />
+                <DropDownButton Grid.Column="2" Content="Sort" IsEnabled="False" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

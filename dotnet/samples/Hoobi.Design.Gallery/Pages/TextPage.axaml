@@ -1,0 +1,66 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.TextPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Text and input" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="Type ramp" />
+            <Grid ColumnDefinitions="240,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                <TextBlock Classes="FieldLabel" Text="TextBlock.Caption" />
+                <TextBlock Grid.Column="1" Classes="Caption" Text="Updated 3 minutes ago" />
+                <TextBlock Grid.Row="1" Classes="FieldLabel" Text="TextBlock.Body" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Classes="Body" Text="Steward keeps your addons current." />
+                <TextBlock Grid.Row="2" Classes="FieldLabel" Text="TextBlock.BodyStrong" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Classes="BodyStrong" Text="Three updates ready" />
+                <TextBlock Grid.Row="3" Classes="FieldLabel" Text="TextBlock.GroupHeader" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Classes="GroupHeader" Text="Connections" Margin="0" />
+                <TextBlock Grid.Row="4" Classes="FieldLabel" Text="TextBlock.FieldLabel" />
+                <TextBlock Grid.Row="4" Grid.Column="1" Classes="FieldLabel" Text="Server url" />
+                <TextBlock Grid.Row="5" Classes="FieldLabel" Text="TextBlock.Warn" />
+                <TextBlock Grid.Row="5" Grid.Column="1" Classes="Warn" Text="The folder is read-only" />
+                <TextBlock Grid.Row="6" Classes="FieldLabel" Text="Display, SemiBold, Bold" />
+                <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Spacing="16">
+                    <TextBlock Text="Library" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" />
+                    <TextBlock Text="Bold" FontWeight="Bold" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Grid.Row="7" Classes="FieldLabel" Text="HoobiMonoFontFamily" />
+                <TextBlock Grid.Row="7" Grid.Column="1" Text="*/15 * * * *" FontFamily="{StaticResource HoobiMonoFontFamily}" />
+            </Grid>
+
+            <TextBlock Classes="GroupHeader" Text="Glyphs" />
+            <Grid ColumnDefinitions="240,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                <TextBlock Classes="FieldLabel" Text="TextBlock.Glyph" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                    <TextBlock Classes="Glyph" Text="{StaticResource Glyph.Setting}" FontSize="16" />
+                    <TextBlock Classes="Glyph" Text="{StaticResource Glyph.Search}" FontSize="16" />
+                    <TextBlock Classes="Glyph" Text="{StaticResource Glyph.Globe}" FontSize="16" />
+                </StackPanel>
+                <TextBlock Grid.Row="1" Classes="FieldLabel" Text="TextBlock.Icon" VerticalAlignment="Center" />
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                    <TextBlock Classes="Icon" Text="{StaticResource Glyph.Folder}" />
+                    <TextBlock Classes="Icon" Text="{StaticResource Glyph.Lock}" />
+                </StackPanel>
+                <TextBlock Grid.Row="2" Classes="FieldLabel" Text="TextBlock.Icon.Accent" VerticalAlignment="Center" />
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                    <TextBlock Classes="Icon Accent" Text="{StaticResource Glyph.Sync}" />
+                    <TextBlock Classes="Icon Accent" Text="{StaticResource Glyph.Download}" />
+                </StackPanel>
+                <TextBlock Grid.Row="3" Classes="FieldLabel" Text="Path.CloseGlyph" VerticalAlignment="Center" />
+                <Path Grid.Row="3" Grid.Column="1" Classes="CloseGlyph" HorizontalAlignment="Left" />
+            </Grid>
+
+            <TextBlock Classes="GroupHeader" Text="Input" />
+            <Grid ColumnDefinitions="240,300,300" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                <TextBlock Classes="FieldHeader" Text="TextBlock.FieldHeader" Grid.Column="1" />
+                <TextBlock Classes="FieldHeader ComboBox" Text="TextBlock.FieldHeader.ComboBox" Grid.Column="2" />
+                <TextBlock Grid.Row="1" Classes="FieldLabel" Text="TextBox" VerticalAlignment="Center" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="http://sonarr:8989" Margin="0,0,16,0" />
+                <TextBox Grid.Row="1" Grid.Column="2" Text="http://sonarr:8989" IsEnabled="False" Margin="0,0,16,0" />
+                <TextBlock Grid.Row="2" Classes="FieldLabel" Text="TextBox placeholder" VerticalAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1" PlaceholderText="Search addons" Margin="0,0,16,0" />
+                <TextBox Grid.Row="2" Grid.Column="2" PlaceholderText="Search addons" IsEnabled="False" Margin="0,0,16,0" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

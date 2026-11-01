@@ -1,0 +1,48 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.StatusPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:FluentAvalonia.UI.Controls">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Status" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <TextBlock Classes="GroupHeader" Text="Border.Badge, Border.Badge.Accent, TextBlock.BadgeIcon" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Border Classes="Badge">
+                    <TextBlock Text="Ignored" VerticalAlignment="Center" />
+                </Border>
+                <Border Classes="Badge Accent">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Classes="BadgeIcon" Text="{StaticResource Glyph.Download}" />
+                        <TextBlock Text="Update" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="Border.Alert, Border.Alert.Danger" />
+            <Border Classes="Alert" HorizontalAlignment="Left">
+                <TextBlock Text="The game is running, so updates wait until it closes." />
+            </Border>
+            <Border Classes="Alert Danger" HorizontalAlignment="Left">
+                <TextBlock Text="The addon folder could not be read." />
+            </Border>
+            <TextBlock Classes="GroupHeader" Text="Panel.Ring, Panel.Ring.Warn" />
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <Panel Classes="Ring">
+                    <Arc StartAngle="-90" SweepAngle="252" StrokeThickness="3" StrokeLineCap="Round" />
+                    <TextBlock Text="7" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Panel>
+                <Panel Classes="Ring Warn">
+                    <Arc StartAngle="-90" SweepAngle="72" StrokeThickness="3" StrokeLineCap="Round" />
+                    <TextBlock Text="2" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Panel>
+            </StackPanel>
+            <TextBlock Classes="GroupHeader" Text="FAInfoBar" />
+            <StackPanel Spacing="8" MaxWidth="720" HorizontalAlignment="Left">
+                <ui:FAInfoBar IsOpen="True" IsClosable="True" Severity="Informational" Title="Sync" Message="Your settings are in sync." />
+                <ui:FAInfoBar IsOpen="True" IsClosable="True" Severity="Success" Title="Updated" Message="Twelve addons updated." />
+                <ui:FAInfoBar IsOpen="True" IsClosable="True" Severity="Warning" Title="Paused" Message="Updates wait while the game runs." />
+                <ui:FAInfoBar IsOpen="True" IsClosable="True" Severity="Error" Title="Failed" Message="The download failed." />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

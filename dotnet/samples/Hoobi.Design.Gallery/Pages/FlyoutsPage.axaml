@@ -1,0 +1,86 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.FlyoutsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Flyouts and menus" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="GroupHeader" Text="Class or control" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="1" Classes="GroupHeader" Text="Rest" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="2" Classes="GroupHeader" Text="Disabled" Margin="0,12,0,0" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="FlyoutPresenter.Tinted" VerticalAlignment="Center" />
+                <Button x:Name="TintedFlyoutButton" Grid.Column="1" Content="Account">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="Tinted">
+                            <StackPanel Width="220" Spacing="4" Margin="8">
+                                <TextBlock Classes="BodyStrong" Text="Hoobi" />
+                                <TextBlock Classes="Caption" Text="Signed in" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button Grid.Column="2" Content="Account" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="FlyoutPresenter.Tinted.Flush.Below" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Installs">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="Tinted Flush Below">
+                            <StackPanel Width="220">
+                                <Button Theme="{StaticResource MenuRowButtonStyle}" Content="Retail" />
+                                <Button Theme="{StaticResource MenuRowButtonStyle}" Content="Classic" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button Grid.Column="2" Content="Installs" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="MenuFlyout" VerticalAlignment="Center" />
+                <Button x:Name="MenuFlyoutButton" Grid.Column="1" Content="More">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Open folder" InputGesture="Ctrl+O" />
+                            <MenuItem Header="Check for updates" />
+                            <Separator />
+                            <MenuItem Header="Sort by">
+                                <MenuItem Header="Name" />
+                                <MenuItem Header="Updated" />
+                            </MenuItem>
+                            <MenuItem Header="Disabled item" IsEnabled="False" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+                <Button Grid.Column="2" Content="More" IsEnabled="False" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="ContextMenu" VerticalAlignment="Center" />
+                <Border x:Name="ContextMenuHost" Grid.Column="1" Classes="Tile" Width="200" Height="32" HorizontalAlignment="Left">
+                    <Border.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" />
+                            <MenuItem Header="Paste" />
+                        </ContextMenu>
+                    </Border.ContextMenu>
+                    <TextBlock Text="Right-click here" Classes="Caption" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="ToolTip" VerticalAlignment="Center" />
+                <Button x:Name="ToolTipButton" Grid.Column="1" Content="Hover me" ToolTip.Tip="Last checked 3 minutes ago" />
+                <Button Grid.Column="2" Content="Hover me" IsEnabled="False" ToolTip.Tip="Disabled" ToolTip.ShowOnDisabled="True" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="ComboBox list" VerticalAlignment="Center" />
+                <ComboBox x:Name="FlyoutCombo" Grid.Column="1" Width="200" SelectedIndex="0">
+                    <ComboBoxItem Content="Hourly" />
+                    <ComboBoxItem Content="Daily" />
+                    <ComboBoxItem Content="Weekly" />
+                </ComboBox>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

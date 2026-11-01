@@ -1,0 +1,42 @@
+<Window
+    x:Class="Hoobi.Design.Gallery.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chrome="using:Avalonia.Controls.Chrome"
+    Title="Hoobi Design Gallery"
+    Width="1280"
+    Height="800"
+    MinWidth="720"
+    MinHeight="560"
+    WindowStartupLocation="CenterScreen"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaTitleBarHeightHint="{StaticResource TitleBarHeight}"
+    WindowDecorationsTheme="{StaticResource HoobiWindowDecorations}"
+    Background="{DynamicResource HoobiBgBrush}">
+    <Grid x:Name="Root" RowDefinitions="48,*">
+        <Grid
+            x:Name="AppTitleBar"
+            ZIndex="1"
+            Background="Transparent"
+            ColumnDefinitions="Auto,*,144"
+            chrome:WindowDecorationProperties.ElementRole="TitleBar">
+            <TextBlock Text="Hoobi Design Gallery" FontSize="12" Margin="14,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False" />
+            <Button
+                x:Name="PagePicker"
+                Grid.Column="1"
+                Margin="16,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Content="Go to page"
+                chrome:WindowDecorationProperties.ElementRole="User">
+                <Button.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedLeft" />
+                </Button.Flyout>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="1" ColumnDefinitions="200,*">
+            <StackPanel x:Name="Nav" Margin="8,0,8,8" Spacing="2" />
+            <ContentControl x:Name="Page" Grid.Column="1" />
+        </Grid>
+    </Grid>
+</Window>

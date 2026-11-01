@@ -1,0 +1,73 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.SelectionPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Selection" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="GroupHeader" Text="Control or theme" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="1" Classes="GroupHeader" Text="Rest" Margin="0,12,0,0" />
+                <TextBlock Grid.Column="2" Classes="GroupHeader" Text="Disabled" Margin="0,12,0,0" />
+            </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="CheckBox" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <CheckBox Content="Off" />
+                    <CheckBox Content="On" IsChecked="True" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <CheckBox Content="Off" IsEnabled="False" />
+                    <CheckBox Content="On" IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="RadioButton" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <RadioButton GroupName="rest" Content="Retail" />
+                    <RadioButton GroupName="rest" Content="Classic" IsChecked="True" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <RadioButton GroupName="disabled" Content="Retail" IsEnabled="False" />
+                    <RadioButton GroupName="disabled" Content="Classic" IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="ToggleSwitch" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16">
+                    <ToggleSwitch />
+                    <ToggleSwitch IsChecked="True" OnContent="On" OffContent="Off" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="16">
+                    <ToggleSwitch IsEnabled="False" />
+                    <ToggleSwitch IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="SegmentedStyle" VerticalAlignment="Center" />
+                <ListBox Grid.Column="1" Theme="{StaticResource SegmentedStyle}" SelectedIndex="0" HorizontalAlignment="Left">
+                    <ListBoxItem Content="All" />
+                    <ListBoxItem Content="Updates" />
+                    <ListBoxItem Content="Ignored" />
+                </ListBox>
+                <ListBox Grid.Column="2" Theme="{StaticResource SegmentedStyle}" SelectedIndex="0" HorizontalAlignment="Left" IsEnabled="False">
+                    <ListBoxItem Content="All" />
+                    <ListBoxItem Content="Updates" />
+                    <ListBoxItem Content="Ignored" />
+                </ListBox>
+            </Grid>
+            <Grid ColumnDefinitions="240,300,300">
+                <TextBlock Classes="FieldLabel" Text="ComboBox" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="1" Width="200" SelectedIndex="1">
+                    <ComboBoxItem Content="All sources" />
+                    <ComboBoxItem Content="CurseForge" />
+                    <ComboBoxItem Content="GitHub" />
+                </ComboBox>
+                <ComboBox Grid.Column="2" Width="200" SelectedIndex="1" IsEnabled="False">
+                    <ComboBoxItem Content="All sources" />
+                    <ComboBoxItem Content="CurseForge" />
+                </ComboBox>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

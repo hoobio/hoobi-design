@@ -5,6 +5,7 @@
     <IsPackable>true</IsPackable>
     <IsTrimmable>true</IsTrimmable>
     <IsAotCompatible>true</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <Description>Hoobi design system for Avalonia: Ayu Mirage tokens, fonts, FluentAvalonia overrides and control themes.</Description>
   </PropertyGroup>
@@ -12,6 +13,11 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="FluentAvaloniaUI" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Fonts\*.ttf" />
+    <None Include="Assets\Fonts\*.txt" Pack="true" PackagePath="licenses\fonts\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
+import { readTokens, tokensPath } from './dotnet/build-tokens.mjs';
 
 /**
  * Enforces the rules in AGENTS.md. Each check exists because the pattern it
@@ -95,6 +96,12 @@ for (const file of [
   for (const m of text.matchAll(/<([a-z][a-z0-9]*)[^>]*?title=/gs)) {
     errors.push(`${file}: native title= on <${m[1]}> - use Tooltip`);
   }
+}
+
+if (readFileSync(tokensPath, 'utf8').replace(/\r\n/g, '\n') !== readTokens()) {
+  errors.push(
+    'dotnet/src/Hoobi.Design.Avalonia/Themes/Tokens.axaml: stale against styles.css - run node dotnet/build-tokens.mjs',
+  );
 }
 
 if (errors.length) {

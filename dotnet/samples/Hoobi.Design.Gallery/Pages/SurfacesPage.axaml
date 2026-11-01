@@ -1,0 +1,78 @@
+<UserControl
+    x:Class="Hoobi.Design.Gallery.SurfacesPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource HoobiPageGutter}" Spacing="8">
+            <TextBlock Text="Rows and surfaces" FontFamily="{StaticResource HoobiDisplayFontFamily}" FontSize="26" FontWeight="SemiBold" Margin="{StaticResource HoobiPageTitleMargin}" />
+            <Grid ColumnDefinitions="*,24,*">
+                <StackPanel>
+                    <TextBlock Classes="GroupHeader" Text="Border.Group, StackPanel.Rows, Border.Row" />
+                    <Border Classes="Group">
+                        <StackPanel Classes="Rows">
+                            <Border Classes="Row">
+                                <TextBlock Text="Border.Row" />
+                            </Border>
+                            <Border Classes="Row Field">
+                                <Grid ColumnDefinitions="*,200">
+                                    <TextBlock Text="Border.Row.Field" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1" PlaceholderText="http://sonarr:8989" />
+                                </Grid>
+                            </Border>
+                            <Border Classes="Row Edit">
+                                <StackPanel>
+                                    <TextBlock Classes="FieldLabel" Text="Border.Row.Edit TextBlock.FieldLabel" />
+                                    <TextBox Text="-1001234567890" />
+                                </StackPanel>
+                            </Border>
+                            <Border Classes="Row Switch">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Border.Row.Switch" VerticalAlignment="Center" />
+                                    <ToggleSwitch Grid.Column="1" IsChecked="True" OnContent="{x:Null}" OffContent="{x:Null}" />
+                                </Grid>
+                            </Border>
+                            <Border Classes="Row Switch Child">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Border.Row.Switch.Child" VerticalAlignment="Center" />
+                                    <ToggleSwitch Grid.Column="1" OnContent="{x:Null}" OffContent="{x:Null}" />
+                                </Grid>
+                            </Border>
+                            <Border Classes="Row KeyValue">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Border.Row.KeyValue" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Classes="Caption" Text="12.1.4" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <Button Theme="{StaticResource AddRowButtonStyle}" Content="Add a folder" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Classes="GroupHeader" Text="ItemsControl.Rows" />
+                    <Border Classes="Group">
+                        <ItemsControl Classes="Rows">
+                            <Border Classes="Row">
+                                <TextBlock Text="Details" />
+                            </Border>
+                            <Border Classes="Row">
+                                <TextBlock Text="WeakAuras" />
+                            </Border>
+                            <Border Classes="Row">
+                                <TextBlock Text="Plater" />
+                            </Border>
+                        </ItemsControl>
+                    </Border>
+                    <TextBlock Classes="GroupHeader" Text="Border.Tile, Border.Tile.Large" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Classes="Tile">
+                            <TextBlock Classes="Icon" Text="{StaticResource Glyph.Folder}" HorizontalAlignment="Center" />
+                        </Border>
+                        <Border Classes="Tile Large">
+                            <TextBlock Classes="Icon Accent" Text="{StaticResource Glyph.Game}" HorizontalAlignment="Center" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

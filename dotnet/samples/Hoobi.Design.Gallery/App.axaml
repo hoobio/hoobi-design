@@ -1,0 +1,11 @@
+<Application
+    x:Class="Hoobi.Design.Gallery.App"
+    Name="Hoobi Design Gallery"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hoobi="using:Hoobi.Design.Avalonia"
+    RequestedThemeVariant="Dark">
+    <Application.Styles>
+        <hoobi:HoobiTheme />
+    </Application.Styles>
+</Application>

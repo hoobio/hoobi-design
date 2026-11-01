@@ -1,0 +1,59 @@
+<!-- Generated from styles.css @theme by dotnet/build-tokens.mjs; do not edit. -->
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="HoobiBgColor">#FF181C26</Color>
+    <SolidColorBrush x:Key="HoobiBgBrush" Color="{StaticResource HoobiBgColor}" />
+    <Color x:Key="HoobiSurfaceColor">#FF1F2430</Color>
+    <SolidColorBrush x:Key="HoobiSurfaceBrush" Color="{StaticResource HoobiSurfaceColor}" />
+    <Color x:Key="HoobiSurfaceRaisedColor">#FF242936</Color>
+    <SolidColorBrush x:Key="HoobiSurfaceRaisedBrush" Color="{StaticResource HoobiSurfaceRaisedColor}" />
+    <Color x:Key="HoobiBorderColor">#FF343B4C</Color>
+    <SolidColorBrush x:Key="HoobiBorderBrush" Color="{StaticResource HoobiBorderColor}" />
+    <Color x:Key="HoobiTextColor">#FFCBCCC6</Color>
+    <SolidColorBrush x:Key="HoobiTextBrush" Color="{StaticResource HoobiTextColor}" />
+    <Color x:Key="HoobiTextDimColor">#FF8A9199</Color>
+    <SolidColorBrush x:Key="HoobiTextDimBrush" Color="{StaticResource HoobiTextDimColor}" />
+    <Color x:Key="HoobiTextMuteColor">#FF707A8C</Color>
+    <SolidColorBrush x:Key="HoobiTextMuteBrush" Color="{StaticResource HoobiTextMuteColor}" />
+    <Color x:Key="HoobiAccentBlueColor">#FF73D0FF</Color>
+    <SolidColorBrush x:Key="HoobiAccentBlueBrush" Color="{StaticResource HoobiAccentBlueColor}" />
+    <Color x:Key="HoobiAccentRedColor">#FFF28779</Color>
+    <SolidColorBrush x:Key="HoobiAccentRedBrush" Color="{StaticResource HoobiAccentRedColor}" />
+    <Color x:Key="HoobiAccentCyanColor">#FF95E6CB</Color>
+    <SolidColorBrush x:Key="HoobiAccentCyanBrush" Color="{StaticResource HoobiAccentCyanColor}" />
+    <Color x:Key="HoobiAccentYellowColor">#FFFFD580</Color>
+    <SolidColorBrush x:Key="HoobiAccentYellowBrush" Color="{StaticResource HoobiAccentYellowColor}" />
+    <Color x:Key="HoobiAccentOrangeColor">#FFFFA759</Color>
+    <SolidColorBrush x:Key="HoobiAccentOrangeBrush" Color="{StaticResource HoobiAccentOrangeColor}" />
+    <Color x:Key="HoobiAccentPurpleColor">#FFD4BFFF</Color>
+    <SolidColorBrush x:Key="HoobiAccentPurpleBrush" Color="{StaticResource HoobiAccentPurpleColor}" />
+    <Color x:Key="HoobiAccentGreenColor">#FFBAE67E</Color>
+    <SolidColorBrush x:Key="HoobiAccentGreenBrush" Color="{StaticResource HoobiAccentGreenColor}" />
+    <Color x:Key="HoobiAccentColor">#FF409FFF</Color>
+    <SolidColorBrush x:Key="HoobiAccentBrush" Color="{StaticResource HoobiAccentColor}" />
+    <Color x:Key="HoobiAccentHoverColor">#FF73D0FF</Color>
+    <SolidColorBrush x:Key="HoobiAccentHoverBrush" Color="{StaticResource HoobiAccentHoverColor}" />
+    <Color x:Key="HoobiOnAccentColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiOnAccentBrush" Color="{StaticResource HoobiOnAccentColor}" />
+    <Color x:Key="HoobiAccentFillColor">#FF357AC2</Color>
+    <SolidColorBrush x:Key="HoobiAccentFillBrush" Color="{StaticResource HoobiAccentFillColor}" />
+    <Color x:Key="HoobiSuccessColor">#FFBAE67E</Color>
+    <SolidColorBrush x:Key="HoobiSuccessBrush" Color="{StaticResource HoobiSuccessColor}" />
+    <Color x:Key="HoobiWarnColor">#FFFFD580</Color>
+    <SolidColorBrush x:Key="HoobiWarnBrush" Color="{StaticResource HoobiWarnColor}" />
+    <Color x:Key="HoobiDangerColor">#FFF28779</Color>
+    <SolidColorBrush x:Key="HoobiDangerBrush" Color="{StaticResource HoobiDangerColor}" />
+    <Color x:Key="HoobiInfoColor">#FF73D0FF</Color>
+    <SolidColorBrush x:Key="HoobiInfoBrush" Color="{StaticResource HoobiInfoColor}" />
+    <Color x:Key="HoobiChipColor">#FF15181F</Color>
+    <SolidColorBrush x:Key="HoobiChipBrush" Color="{StaticResource HoobiChipColor}" />
+    <Color x:Key="HoobiSmokeColor">#FF06070A</Color>
+    <SolidColorBrush x:Key="HoobiSmokeBrush" Color="{StaticResource HoobiSmokeColor}" />
+    <CornerRadius x:Key="HoobiRadiusChip">4</CornerRadius>
+    <CornerRadius x:Key="HoobiRadiusControl">4</CornerRadius>
+    <CornerRadius x:Key="HoobiRadiusPanel">8</CornerRadius>
+    <SplineEasing x:Key="HoobiEaseDecelerate" X1="0" Y1="0" X2="0" Y2="1" />
+    <SplineEasing x:Key="HoobiEaseAccelerate" X1="1" Y1="0" X2="1" Y2="1" />
+    <SplineEasing x:Key="HoobiEaseStandard" X1="0.33" Y1="0" X2="0.67" Y2="1" />
+</ResourceDictionary>

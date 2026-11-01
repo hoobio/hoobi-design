@@ -1,0 +1,18 @@
+<Styles
+    x:Class="Hoobi.Design.Avalonia.HoobiTheme"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sty="using:FluentAvalonia.Styling">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Hoobi.Design.Avalonia/Themes/Tokens.axaml" />
+                <ResourceInclude Source="avares://Hoobi.Design.Avalonia/Themes/Resources.axaml" />
+                <ResourceInclude Source="avares://Hoobi.Design.Avalonia/Themes/Glyphs.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+    <sty:FluentAvaloniaTheme PreferSystemTheme="False" PreferUserAccentColor="False" CustomAccentColor="{StaticResource HoobiAccentColor}" UseSystemFontOnWindows="False" />
+    <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/Controls.axaml" />
+    <StyleInclude Source="avares://Hoobi.Design.Avalonia/Themes/ScrollBarHitArea.axaml" />
+</Styles>
