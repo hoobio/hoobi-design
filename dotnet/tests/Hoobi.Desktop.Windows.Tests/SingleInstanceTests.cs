@@ -13,12 +13,33 @@ public sealed class SingleInstanceTests
             Assert.True(SingleInstance.TryAcquire(name, showRunning: true, TimeSpan.Zero, out var first));
             using (first)
             {
-                first.ListenForShow(shown.Set);
+                var posted = 0;
+                first.ListenForShow(
+                    action =>
+                    {
+                        Interlocked.Increment(ref posted);
+                        action();
+                    },
+                    shown.Set);
 
                 Assert.False(AcquireOnAnotherThread(name, showRunning: true));
                 Assert.True(shown.Wait(TimeSpan.FromSeconds(5)));
+                Assert.Equal(1, Volatile.Read(ref posted));
             }
         }, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public void Dispose_FromANonOwningThread_ClosesWithoutThrowing()
+    {
+        var name = $"HoobiDesignTest.{Guid.NewGuid():N}";
+        SingleInstance? instance = null;
+        var owner = new Thread(() => Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out instance)));
+        owner.Start();
+        owner.Join();
+
+        instance!.Dispose();
+        Assert.True(AcquireOnAnotherThread(name, showRunning: false));
     }
 
     [Fact]
@@ -32,7 +53,7 @@ public sealed class SingleInstanceTests
             Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var first));
             using (first)
             {
-                first.ListenForShow(shown.Set);
+                first.ListenForShow(action => action(), shown.Set);
 
                 Assert.False(AcquireOnAnotherThread(name, showRunning: false));
                 Assert.False(shown.Wait(TimeSpan.FromMilliseconds(300)));

@@ -64,6 +64,22 @@ public sealed class BuildChecksTests : IDisposable
               </ResourceDictionary.ThemeDictionaries>
             </ResourceDictionary>
             """);
+        File.WriteAllText(Path.Combine(consumer, "Local.axaml"), """
+            <UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sty="using:FluentAvalonia.Styling">
+              <UserControl.Resources>
+                <x:Double x:Key="ContentDialogMinWidth">520</x:Double>
+              </UserControl.Resources>
+              <UserControl.Styles>
+                <Style Selector="#Add" />
+                <sty:FluentAvaloniaTheme PreferUserAccentColor="False" />
+              </UserControl.Styles>
+              <StackPanel>
+                <TextBlock Text="#1234" />
+                <TextBlock>#100</TextBlock>
+                <Border BoxShadow="None" />
+              </StackPanel>
+            </UserControl>
+            """);
 
         var runtimeConfig = Path.Combine(consumer, "bin", "Debug", "net10.0", "Consumer.runtimeconfig.json");
         AssertBuild(0, "build", consumer);
@@ -85,15 +101,27 @@ public sealed class BuildChecksTests : IDisposable
               <Color x:Key="FixtureHex">#123</Color>
               <SolidColorBrush x:Key="FixtureNamed" Color="White" />
               <x:Double x:Key="HoobiBgColor">1</x:Double>
+              <LinearGradientBrush x:Key="FixtureGradient"><GradientStop Color="#123456" Offset="0" /></LinearGradientBrush>
+              <BoxShadows x:Key="FixtureShadows">0 8 16 0 #47000000</BoxShadows>
+              <ControlTheme x:Key="FixtureTheme" TargetType="Border"><Setter Property="BoxShadow" Value="0 0 2 0 #3D000000" /></ControlTheme>
+              <ControlTheme x:Key="FixtureTextBox" TargetType="TextBox"><Setter Property="PlaceholderForeground" Value="#123456" /></ControlTheme>
+              <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                  <x:Double x:Key="HoobiTextColor">1</x:Double>
+                </ResourceDictionary>
+              </ResourceDictionary.ThemeDictionaries>
             </ResourceDictionary>
             """);
         var failed = AssertBuild(1, "build", consumer, "--no-restore");
-        Assert.Contains("Bad.axaml(2,", failed, StringComparison.Ordinal);
-        Assert.Contains("Bad.axaml(3,", failed, StringComparison.Ordinal);
-        Assert.Contains("Bad.axaml(4,", failed, StringComparison.Ordinal);
-        Assert.Equal(2, Count(failed, "error HOOBI001"));
-        Assert.Equal(1, Count(failed, "error HOOBI002"));
+        foreach (var line in new[] { 2, 3, 4, 5, 6, 7, 8, 11 })
+        {
+            Assert.Contains($"Bad.axaml({line},", failed, StringComparison.Ordinal);
+        }
+
+        Assert.Equal(6, Count(failed, "error HOOBI001"));
+        Assert.Equal(2, Count(failed, "error HOOBI002"));
         Assert.DoesNotContain("Clean.axaml(", failed, StringComparison.Ordinal);
+        Assert.DoesNotContain("Local.axaml(", failed, StringComparison.Ordinal);
 
         AssertBuild(0, "build", consumer, "--no-restore", "-p:HoobiDesignChecks=false");
         AssertBuild(0, "build", consumer, "--no-restore", "-p:ExcludeBad=true");

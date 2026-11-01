@@ -4,8 +4,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -178,6 +180,22 @@ public sealed partial class GalleryTests(AvaloniaSession session)
                 Save(preview, Path.Combine(directory, $"{key} {(active ? "active" : "inactive")}.png"));
                 preview.Close();
             }
+        }
+    });
+
+    [Fact]
+    public void The_toast_shadow_gutter_takes_no_pointer_hits_and_the_card_casts_the_flyout_shadow() => session.Run(() =>
+    {
+        var toast = ShowToast();
+        try
+        {
+            var card = (Border)toast.Content!;
+            Assert.Equal(AvaloniaSession.Resource<BoxShadows>("HoobiFlyoutShadow"), card.BoxShadow);
+            Assert.Null(toast.InputHitTest(new Point(4, 4)));
+        }
+        finally
+        {
+            toast.Hide();
         }
     });
 

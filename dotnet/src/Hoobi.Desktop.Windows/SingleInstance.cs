@@ -47,13 +47,21 @@ public sealed class SingleInstance : IDisposable
         return true;
     }
 
-    public void ListenForShow(Action show) =>
-        _showWait = ThreadPool.RegisterWaitForSingleObject(_show, (_, _) => show(), null, Timeout.Infinite, executeOnlyOnce: false);
+    public void ListenForShow(Action<Action> postToUiThread, Action show) =>
+        _showWait = ThreadPool.RegisterWaitForSingleObject(_show, (_, _) => postToUiThread(show), null, Timeout.Infinite, executeOnlyOnce: false);
 
     public void Dispose()
     {
         _showWait?.Unregister(null);
-        _mutex.ReleaseMutex();
+        try
+        {
+            _mutex.ReleaseMutex();
+        }
+        // Only the acquiring thread can release the mutex; from another thread the handles still close, and the owner's exit abandons it, which TryAcquire accepts.
+        catch (ApplicationException)
+        {
+        }
+
         _mutex.Dispose();
         _show.Dispose();
     }

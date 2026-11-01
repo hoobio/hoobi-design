@@ -37,6 +37,18 @@ public sealed class StoreUpdaterTests
     }
 
     [Fact]
-    public void HasUpdates_IsFalseBeforeACheck() =>
-        Assert.False(new StoreUpdater("PRODUCT", "App", (_, _) => { }).HasUpdates);
+    public void HasUpdates_IsFalseBeforeACheck()
+    {
+        using var updater = new StoreUpdater("PRODUCT", "App", (_, _) => { });
+        Assert.False(updater.HasUpdates);
+    }
+
+    [Fact]
+    public async Task WatchQueueAsync_BeforeACheck_FollowsNothing()
+    {
+        using var updater = new StoreUpdater("PRODUCT", "App", (_, _) => { });
+        var calls = 0;
+        await updater.WatchQueueAsync(_ => calls++, _ => calls++);
+        Assert.Equal(0, calls);
+    }
 }

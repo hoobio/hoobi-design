@@ -30,6 +30,8 @@ public sealed class ToastWindow : Window
         SizeToContent = SizeToContent.WidthAndHeight;
         TransparencyLevelHint = [WindowTransparencyLevel.Transparent];
         this.Bind(BackgroundProperty, this.GetResourceObservable("HoobiToastWindowBackground"));
+        // The window template lays a transparent hit-test panel under the whole client area, so the shadow gutter would take clicks; the toast holds nothing to click.
+        IsHitTestVisible = false;
         _glyph = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Classes = { "Icon" } };
         _glyph.Bind(TextBlock.TextProperty, _glyph.GetResourceObservable("Glyph.CheckMark"));
         _glyph.Bind(TextBlock.ForegroundProperty, _glyph.GetResourceObservable("SystemFillColorSuccessBrush"));
@@ -45,6 +47,7 @@ public sealed class ToastWindow : Window
         };
         _card.Bind(Border.BackgroundProperty, _card.GetResourceObservable("LayerFillColorAltBrush"));
         _card.Bind(Border.CornerRadiusProperty, _card.GetResourceObservable("OverlayCornerRadius"));
+        _card.Bind(Border.BoxShadowProperty, _card.GetResourceObservable("HoobiFlyoutShadow"));
         Content = _card;
         ToastWindowInterop.MakeNonActivating(this);
         _hideTimer.Tick += (_, _) => FadeOut();

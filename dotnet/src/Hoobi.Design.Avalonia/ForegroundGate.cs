@@ -12,7 +12,7 @@ public sealed class ForegroundGate
 
     private TaskCompletionSource _released = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    public ForegroundGate() => _released.SetResult();
+    private ForegroundGate() => _released.SetResult();
 
     public bool IsHeld => !_released.Task.IsCompleted;
 

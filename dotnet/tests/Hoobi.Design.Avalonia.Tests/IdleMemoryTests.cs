@@ -80,6 +80,31 @@ public sealed class IdleMemoryTests(AvaloniaSession session)
     });
 
     [Fact]
+    public void Background_work_reported_off_the_ui_thread_trims_on_it() => session.Run(() =>
+    {
+        var (window, _, trims, _, memory) = Attach();
+        using (memory)
+        {
+            window.Hide();
+            Task.Run(memory.NotifyBackgroundWorkCompleted, TestContext.Current.CancellationToken).GetAwaiter().GetResult();
+            AvaloniaSession.Pump();
+            Assert.Equal(1, trims());
+            window.Close();
+        }
+    });
+
+    [Fact]
+    public void Dispose_turns_efficiency_mode_off() => session.Run(() =>
+    {
+        var (window, _, _, efficiency, memory) = Attach();
+        Hide(window);
+        Assert.True(efficiency());
+        memory.Dispose();
+        Assert.False(efficiency());
+        window.Close();
+    });
+
+    [Fact]
     public void A_trim_that_fires_while_the_window_is_active_does_nothing() => session.Run(() =>
     {
         var (window, time, trims, _, memory) = Attach();

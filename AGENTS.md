@@ -343,7 +343,7 @@ double-signalling a state that the border or the ring already shows.
 
 | Package                         | Contents                                                                                                                                                                                                                              |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Hoobi.Design.Avalonia`         | `HoobiTheme` (tokens, control themes, dialogs, settings cards, glyphs), the fonts, `UseHoobiDesign`, `AppDialogs`, `ColorShade`, `IdleMemory`, `ToastWindow`, `ForegroundGate`, `TrayMenuFocus`, `DialogIntent`, and the buildTransitive props and targets |
+| `Hoobi.Design.Avalonia`         | `HoobiTheme` (tokens, control themes, dialogs, settings cards, glyphs), the fonts, `UseHoobiDesign`, `AppDialogs`, `ColorShade`, `HoobiChrome`, `IdleMemory`, `ToastWindow`, `ForegroundGate`, `TrayMenuFocus`, `DialogIntent`, and the buildTransitive props and targets |
 | `Hoobi.Design.Avalonia.Testing` | `HoverFlashProbe`, `TextCentring`, `HeadlessSession`                                                                                                                                                                                  |
 | `Hoobi.Desktop.Windows`         | Windows plumbing (see Windows desktop apps)                                                                                                                                                                                           |
 
@@ -354,6 +354,7 @@ double-signalling a state that the border or the ring already shows.
 - `App.axaml` holds `<hoobi:HoobiTheme />` in `Application.Styles` (`xmlns:hoobi="using:Hoobi.Design.Avalonia"`) and `RequestedThemeVariant="Dark"`.
 - The `AppBuilder` calls `.UseHoobiDesign()`. It registers the font collection, the emoji fallback, popup placement, the scroll indicator and the dialog resource scope.
 - A window with the Hoobi title bar sets `ExtendClientAreaToDecorationsHint="True"`, `ExtendClientAreaTitleBarHeightHint="{StaticResource TitleBarHeight}"` and `WindowDecorationsTheme` to `HoobiWindowDecorations` (minimise, maximise, close) or `HoobiCloseOnlyDecorations`. The drag area carries `chrome:WindowDecorationProperties.ElementRole="TitleBar"`. Content that takes clicks or a right-click (buttons, a picker) carries `ElementRole="User"`.
+- The window calls `HoobiChrome.Attach(this, onSessionEnding)` after `InitializeComponent`. It sets the 1px top margin on the content root, keeps the caption buttons' `inactive` class in step with activation, reposts the caption hover after `WM_MOUSELEAVE`, cloaks the window until its first frame, and posts `onSessionEnding` to the UI thread once on `WM_QUERYENDSESSION` or `WM_ENDSESSION`. Disposing the result removes the handlers. It does nothing on other platforms. An app does not copy this code.
 
 ### Tokens and native divergences
 
@@ -378,8 +379,8 @@ A button with its own fill takes the `Tinted` class. The hover and pressed fills
 
 The `buildTransitive` targets run before `CoreCompile` in every consuming project and fail the build on:
 
-- `HOOBI001`: a literal colour in an `.axaml` file (hex, or a named colour in a colour property or setter). `Transparent` is allowed as a hit-test fill. A literal needs `<!-- hex-ok: reason -->` on the line above.
-- `HOOBI002`: an `x:Key` that the package already defines. The list of package-owned keys is generated when the package is packed.
+- `HOOBI001`: a literal colour in an `.axaml` file: a hex or named colour in a colour property (`*Background`, `*Foreground`, `*Fill`, `*Stroke`, `*Color`, `*Brush`) as an attribute, a setter `Value` or a property element, the content of a `Color` or `SolidColorBrush` element, or a hex inside a `BoxShadow` or `BoxShadows` value. Hex in other places (a `#Name` selector, text) is not a colour. `Transparent` is allowed as a hit-test fill. A literal needs `<!-- hex-ok: reason -->` on the line above.
+- `HOOBI002`: an `x:Key` that the package already defines, at app scope: in a file whose root is a `ResourceDictionary` or `Styles`, or in `Application.Resources`, `Styles.Resources`, `Style.Resources` or `ControlTheme.Resources`. A key in an element's own `Resources` or `Styles` (a control, window or dialog, such as `ContentDialogMinWidth` in `FAContentDialog.Resources`) is a local override and is allowed. The list of package-owned keys is generated when the package is packed.
 
 `HoobiDesignChecks=false` turns both checks off for a project. `HoobiDesignChecksExclude` removes named `.axaml` files from them.
 
@@ -401,7 +402,7 @@ Every consumer runs `HoverFlashProbe` over its own pages and popups in its tests
 
 An app overrides `Concurrent` with `<ConcurrentGarbageCollection>` in the project file, and `ConserveMemory` or `Gen0MaxBudget` with `<RuntimeHostConfigurationOption Update="System.GC.ConserveMemory" Value="7" />`. `HoobiDesignGcDefaults=false` removes all three.
 
-`IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds). It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
+`IdleMemory` trims a resident app that spends most of its time in the tray. Create it with the main window (`new IdleMemory(window)`; the delay defaults to 3 seconds). It trims when the window loses activation or is hidden and stays that way for the delay, and `NotifyBackgroundWorkCompleted()` trims after a background pass; it can be called from any thread and runs the trim on the UI thread. A trim runs when the window is not active or not visible. A trim is a blocking, compacting, aggressive collection with the large object heap compacted, followed by `EmptyWorkingSet`. While the window is hidden the process runs in EcoQoS, which throttles execution speed only. `Dispose` turns EcoQoS off. Idle priority is never used: it starves the UI thread, and a game that waits on the app with a synchronous message stalls.
 
 Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the private working set, as Task Manager shows it. Measure with the app in the tray, and record the figures before and after a change in the app's `AGENTS.md`. Steward's reference figures: 4 to 15 MB private working set in the tray between passes against 128 MB before trimming, 7 to 14 ms of GC pause per trim, and about 100 MB of committed private bytes (Skia, ANGLE, the runtime) unchanged.
 
@@ -419,11 +420,11 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 - Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), and shorten the open fade.
 - Avalonia's `Button.OnKeyUp` clicks on a Space key-up with no key-down, so a key held over from before a dialog opened can confirm it. `DialogIntent` (applied by `AppDialogs`) counts a press when its key-down came after the dialog opened.
 - A tray menu opens without focus; `TrayMenuFocus` gives it focus. `SetForegroundWindow` is refused to a process that did not receive the last input, and a tray click goes to Explorer, so `ForegroundGate.ForceForeground` borrows Explorer's input queue for the call.
-- An app that closes to the tray handles `WM_ENDSESSION` by quitting.
+- An app that closes to the tray quits on `WM_QUERYENDSESSION` or `WM_ENDSESSION`: it passes its quit to `HoobiChrome.Attach` as `onSessionEnding`.
 - Hiding a window before the minimise animation ends cancels the animation.
-- The window is cloaked (DWM) until its first frame is composed, then uncloaked two animation frames later. Without it a white frame shows on open.
-- WinUI keeps the 1px top resize border outside its client area, and an extended client area draws over it. The shell content sits 1px down (`Margin.Top` of 1), and `AppDialogs` reads that margin to centre the dialog panel.
-- Drawn caption buttons are siblings of the window under its host, so a `Window:inactive` selector never matches them. The app sets an inactive class on them on open, activation and deactivation. Moving onto a caption button from the client area ends client tracking with a `WM_MOUSELEAVE` that clears the hover, so the window procedure hook posts a `WM_NCMOUSEMOVE` for the cursor position when `WM_MOUSELEAVE` arrives over a caption button.
+- The window is cloaked (DWM) until its first frame is composed, then uncloaked two animation frames later. Without it a white frame shows on open. `HoobiChrome` does this for a window that is not yet shown when it is attached.
+- WinUI keeps the 1px top resize border outside its client area, and an extended client area draws over it. The shell content sits 1px down (`Margin.Top` of 1, set by `HoobiChrome`), and `AppDialogs` reads that margin to centre the dialog panel.
+- Drawn caption buttons are siblings of the window under its host, so a `Window:inactive` selector never matches them. `HoobiChrome` sets an inactive class on them on open, activation and deactivation. Moving onto a caption button from the client area ends client tracking with a `WM_MOUSELEAVE` that clears the hover, so `HoobiChrome`'s window procedure hook posts a `WM_NCMOUSEMOVE` for the cursor position when `WM_MOUSELEAVE` arrives over a caption button.
 - A toast window is `WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW` and places itself by `PixelRect` per monitor. `ToastWindow` does both.
 - The first real window pays about 250 ms to load XAML. A hidden throwaway window created at startup pre-loads it.
 - `Microsoft.Win32.Registry` as a `PackageReference` fails with NU1510. The type is in the framework.
@@ -436,7 +437,7 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 
 ## Windows desktop apps (.NET)
 
-Every .NET Windows desktop app in the Hoobi family (Steward, Earmark, and new ones) ships the same update and sign-in behaviour. `Hoobi.Desktop.Windows` holds it: `StoreUpdater` (scan, check, install, restart registration), `StartAtSignIn` (startup task or Run value), `RestartRegistration`, `GitHubReleaseChecker`, `SingleInstance` (one process, a second launch shows the first), and `UiWatchdog` (restarts the app when the UI thread stops responding; `--restart-after=`). An app uses these types and does not copy them. The Bitwarden command palette companion has no Store or start-at-sign-in code and is exempt from this section.
+Every .NET Windows desktop app in the Hoobi family (Steward, Earmark, and new ones) ships the same update and sign-in behaviour. `Hoobi.Desktop.Windows` holds it: `StoreUpdater` (scan, check, install with one install in flight at a time, restart registration, and `WatchQueueAsync`, which follows an update the Store queued from the scan to its progress and outcome), `StartAtSignIn` (startup task or Run value), `RestartRegistration`, `GitHubReleaseChecker`, `SingleInstance` (one process, a second launch shows the first; `ListenForShow` takes the UI-thread post, as `UiWatchdog` does), and `UiWatchdog` (restarts the app when the UI thread stops responding; `--restart-after=`). An app uses these types and does not copy them. The Bitwarden command palette companion has no Store or start-at-sign-in code and is exempt from this section.
 
 - A packaged (Microsoft Store) release build checks for updates through the Store, not GitHub. It
   runs `AppInstallManager.SearchForUpdatesAsync(<product id>, "")` first, because `StoreContext`

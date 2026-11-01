@@ -66,7 +66,7 @@ public sealed class UiWatchdog(
             Thread.Sleep(Interval);
             while (_stage < 2)
             {
-                if (++missed >= MissedBeatsBeforeRestart)
+                if (++missed >= MissedBeatsBeforeRestart && !Debugger.IsAttached)
                 {
                     Restart(_stage == 0 ? "UI thread" : "render thread");
                     return;

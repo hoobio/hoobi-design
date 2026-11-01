@@ -14,44 +14,106 @@
       <Using Namespace="System.IO" />
       <Using Namespace="System.Linq" />
       <Using Namespace="System.Text.RegularExpressions" />
+      <Using Namespace="System.Xml" />
+      <Using Namespace="System.Xml.Linq" />
       <Code Type="Fragment" Language="cs"><![CDATA[
-var comment = new Regex(@"<!--.*?-->", RegexOptions.Singleline);
+var xaml = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
 var exempt = new Regex(@"<!--\s*hex-ok:\s*\S");
-var key = new Regex(@"\bx:Key=""([^""]+)""");
-var hex = new Regex(@"(?<=(?:^|[""'>])\s*)#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})(?=\s*(?:$|[""'<]))");
-var colourProperty = @"(?:Background|Foreground|Fill|Stroke|Color|\w+Brush|\w+Color)";
-var namedColour = @"(?!Transparent"")([A-Za-z]+)";
-var named = new Regex(@"(?<![\w:.])" + colourProperty + @"=""" + namedColour + @"""");
-var setter = new Regex(@"Property=""(?:\w+\.)?" + colourProperty + @"""[^>]*?\bValue=""" + namedColour + @"""");
+var hexLiteral = @"#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})\b";
+var hex = new Regex(@"^\s*" + hexLiteral + @"\s*$");
+var shadowHex = new Regex(@"(?<![\w#])" + hexLiteral);
+var named = new Regex(@"^\s*(?!(?i:Transparent|True|False)\s*$)[A-Za-z]+\s*$");
+var colourProperty = new Regex(@"^(?:\w*Background|\w*Foreground|\w*Fill|\w*Stroke|\w*Color|\w+Brush)$");
+var shadowProperty = new Regex(@"^BoxShadows?$");
+var appScopeOwners = new HashSet<string>(StringComparer.Ordinal) { "Application", "Styles", "Style", "ControlTheme", "ResourceDictionary" };
 var owned = WriteKeys == null && !string.IsNullOrEmpty(OwnedKeys) && File.Exists(OwnedKeys)
     ? new HashSet<string>(File.ReadAllLines(OwnedKeys), StringComparer.Ordinal)
     : new HashSet<string>(StringComparer.Ordinal);
 var keys = new SortedSet<string>(StringComparer.Ordinal);
+
+string Literal(string property, string value)
+{
+    var name = property.Substring(property.LastIndexOf('.') + 1);
+    if (shadowProperty.IsMatch(name))
+    {
+        var match = shadowHex.Match(value);
+        return match.Success ? match.Value : null;
+    }
+
+    return colourProperty.IsMatch(name) && (hex.IsMatch(value) || named.IsMatch(value)) ? value.Trim() : null;
+}
+
+bool AppScoped(XElement element)
+{
+    for (var ancestor = element.Parent; ancestor != null; ancestor = ancestor.Parent)
+    {
+        var name = ancestor.Name.LocalName;
+        var dot = name.IndexOf('.');
+        if (dot > 0 && (name.EndsWith(".Resources", StringComparison.Ordinal) || name.EndsWith(".Styles", StringComparison.Ordinal)) && !appScopeOwners.Contains(name.Substring(0, dot)))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 foreach (var item in Files)
 {
     var path = item.GetMetadata("FullPath");
     var lines = File.ReadAllLines(path);
-    var code = comment.Replace(string.Join("\n", lines), m => Regex.Replace(m.Value, "[^\n]", " ")).Split('\n');
-    for (var i = 0; i < code.Length; i++)
+    XDocument document;
+    try
     {
-        foreach (Match match in code[i].Contains("<ResourceDictionary") ? Enumerable.Empty<Match>() : key.Matches(code[i]).Cast<Match>())
+        document = XDocument.Load(path, LoadOptions.SetLineInfo);
+    }
+    // The Avalonia XAML compiler reports a malformed file with its own position.
+    catch (XmlException)
+    {
+        continue;
+    }
+
+    void Report(IXmlLineInfo at, string literal)
+    {
+        var line = at.LineNumber;
+        if (literal != null && !(line > 1 && exempt.IsMatch(lines[line - 2])))
         {
-            keys.Add(match.Groups[1].Value);
-            if (owned.Contains(match.Groups[1].Value))
+            Log.LogError(null, "HOOBI001", null, path, line, at.LinePosition, 0, 0, "Literal colour \"{0}\": use a Hoobi token resource, or put <!-- hex-ok: reason --> on the line above.", literal);
+        }
+    }
+
+    foreach (var element in document.Descendants())
+    {
+        var key = element.Attribute(xaml + "Key");
+        if (key != null && !(element.Name.LocalName == "ResourceDictionary" && element.Parent?.Name.LocalName == "ResourceDictionary.ThemeDictionaries"))
+        {
+            keys.Add(key.Value);
+            if (owned.Contains(key.Value) && AppScoped(element))
             {
-                Log.LogError(null, "HOOBI002", null, path, i + 1, match.Index + 1, 0, 0, "x:Key \"{0}\" is defined by Hoobi.Design.Avalonia; change the design system instead of redefining its resource here.", match.Groups[1].Value);
+                IXmlLineInfo at = key;
+                Log.LogError(null, "HOOBI002", null, path, at.LineNumber, at.LinePosition, 0, 0, "x:Key \"{0}\" is defined by Hoobi.Design.Avalonia at app scope; change the design system, or scope the override to the element's own Resources.", key.Value);
             }
         }
 
-        if (WriteKeys != null || (i > 0 && exempt.IsMatch(lines[i - 1])))
+        if (WriteKeys != null)
         {
             continue;
         }
 
-        var colour = new[] { hex.Match(code[i]), named.Match(code[i]), setter.Match(code[i]) }.FirstOrDefault(m => m.Success);
-        if (colour != null)
+        foreach (var attribute in element.Attributes().Where(attribute => attribute.Name.Namespace == XNamespace.None))
         {
-            Log.LogError(null, "HOOBI001", null, path, i + 1, colour.Index + 1, 0, 0, "Literal colour \"{0}\": use a Hoobi token resource, or put <!-- hex-ok: reason --> on the line above.", colour.Groups[colour.Groups.Count - 1].Value);
+            Report(attribute, Literal(attribute.Name.LocalName, attribute.Value));
+        }
+
+        if (element.Name.LocalName == "Setter" && element.Attribute("Property") is { } property && element.Attribute("Value") is { } value)
+        {
+            Report(value, Literal(property.Value, value.Value));
+        }
+
+        var content = element.Name.LocalName == "SolidColorBrush" ? "Color" : element.Name.LocalName;
+        if (!element.HasElements && element.Nodes().OfType<XText>().FirstOrDefault() is { } text)
+        {
+            Report(text, Literal(content, text.Value));
         }
     }
 }

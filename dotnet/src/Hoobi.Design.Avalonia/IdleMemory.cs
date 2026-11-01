@@ -47,7 +47,17 @@ public sealed class IdleMemory : IDisposable
         Native.EmptyWorkingSet();
     }
 
-    public void NotifyBackgroundWorkCompleted() => TrimIfIdle();
+    public void NotifyBackgroundWorkCompleted()
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            TrimIfIdle();
+        }
+        else
+        {
+            Dispatcher.UIThread.Post(TrimIfIdle);
+        }
+    }
 
     public void Dispose()
     {
@@ -55,6 +65,7 @@ public sealed class IdleMemory : IDisposable
         _window.Deactivated -= OnDeactivated;
         _window.PropertyChanged -= OnPropertyChanged;
         _timer.Dispose();
+        _efficiency(false);
     }
 
     private void Schedule() => _timer.Change(_delay, Timeout.InfiniteTimeSpan);

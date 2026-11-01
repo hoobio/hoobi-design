@@ -306,6 +306,7 @@
     <SolidColorBrush x:Key="HoobiSettingsCardStrokeBrush" Color="#19000000" />
     <SolidColorBrush x:Key="HoobiToastWindowBackground" Color="#00242936" />
     <DropShadowEffect x:Key="HoobiDialogShadow" OffsetX="0" OffsetY="8" BlurRadius="32" Color="#66000000" />
+    <BoxShadows x:Key="HoobiFlyoutShadow">0 8 16 0 #47000000, 0 0 2 0 #3D000000</BoxShadows>
 
     <ResourceDictionary x:Key="HoobiDialogScopeResources">
         <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#E673D0FF" />

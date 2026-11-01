@@ -10,7 +10,9 @@ public sealed record StoreUpdateCheck(int Count, bool CanInstallSilently);
 
 public sealed record StoreInstallOutcome(string State, bool Completed, bool Cancelled);
 
-public sealed class StoreUpdater(string productId, string appName, LogSink log)
+public sealed record StoreQueueOutcome(string State, bool Completed, bool Failed);
+
+public sealed class StoreUpdater(string productId, string appName, LogSink log) : IDisposable
 {
     private const int ClassNotRegistered = unchecked((int)0x80040154);
     private const int ClassNotAvailable = unchecked((int)0x80040111);
@@ -20,6 +22,10 @@ public sealed class StoreUpdater(string productId, string appName, LogSink log)
     private IReadOnlyList<StorePackageUpdate> _updates = [];
     private bool _storeOff;
     private bool _installManagerOff;
+    private Task<StoreInstallOutcome?>? _install;
+    private StoreQueueItem? _queueItem;
+    private Action<StoreUpdateProgress>? _queueProgress;
+    private Action<StoreQueueOutcome>? _queueFinished;
 
     public bool HasUpdates => _context is not null && _updates.Count > 0;
 
@@ -83,7 +89,48 @@ public sealed class StoreUpdater(string productId, string appName, LogSink log)
         return new StoreUpdateCheck(updates.Count, context.CanSilentlyDownloadStorePackageUpdates);
     }
 
-    public async Task<StoreInstallOutcome?> InstallAsync(nint ownerWindow, Action<StoreUpdateProgress>? report = null)
+    public Task<StoreInstallOutcome?> InstallAsync(nint ownerWindow, Action<StoreUpdateProgress>? report = null) =>
+        _install is { IsCompleted: false } running ? running : _install = InstallCoreAsync(ownerWindow, report);
+
+    public async Task WatchQueueAsync(Action<StoreUpdateProgress> report, Action<StoreQueueOutcome> finished)
+    {
+        // The finished install's queue item outlives the restart and read as installing forever (29 Sep 2026).
+        if (_context is not { } context || _queueItem is not null || _updates.Count == 0 || _install is { IsCompleted: false })
+        {
+            return;
+        }
+
+        try
+        {
+            var items = await context.GetAssociatedStoreQueueItemsAsync().AsTask().ConfigureAwait(false);
+            if (_queueItem is not null || items.FirstOrDefault(item => item.InstallKind == StoreQueueItemKind.Update) is not { } item)
+            {
+                return;
+            }
+
+            _queueItem = item;
+            _queueProgress = report;
+            _queueFinished = finished;
+            item.StatusChanged += OnQueueItemStatusChanged;
+            log("Store update: following an update the Microsoft Store queued", null);
+            OnQueueItemStatusChanged(item, null);
+        }
+        catch (Exception ex)
+        {
+            log("Store update queue check failed", ex);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_queueItem is { } item)
+        {
+            item.StatusChanged -= OnQueueItemStatusChanged;
+            _queueItem = null;
+        }
+    }
+
+    private async Task<StoreInstallOutcome?> InstallCoreAsync(nint ownerWindow, Action<StoreUpdateProgress>? report)
     {
         if (_context is not { } context || _updates.Count == 0)
         {
@@ -101,12 +148,7 @@ public sealed class StoreUpdater(string productId, string appName, LogSink log)
                 : context.RequestDownloadAndInstallStorePackageUpdatesAsync(_updates);
             if (report is not null)
             {
-                operation.Progress = (_, status) => report(StoreUpdateProgress.From(
-                    ToPhase(status.PackageUpdateState),
-                    status.PackageDownloadProgress,
-                    status.PackageBytesDownloaded,
-                    status.PackageDownloadSizeInBytes,
-                    appName));
+                operation.Progress = (_, status) => report(ToProgress(status));
             }
 
             var result = await operation.AsTask().ConfigureAwait(false);
@@ -136,6 +178,44 @@ public sealed class StoreUpdater(string productId, string appName, LogSink log)
         {
             log($"RegisterApplicationRestart failed: 0x{result:X8}", null);
         }
+    }
+
+    private StoreUpdateProgress ToProgress(StorePackageUpdateStatus status) => StoreUpdateProgress.From(
+        ToPhase(status.PackageUpdateState),
+        status.PackageDownloadProgress,
+        status.PackageBytesDownloaded,
+        status.PackageDownloadSizeInBytes,
+        appName);
+
+    private void OnQueueItemStatusChanged(StoreQueueItem item, object? args)
+    {
+        var status = item.GetCurrentStatus();
+        var waiting = status.PackageInstallState is StoreQueueItemState.Paused
+            || (status.PackageInstallState is StoreQueueItemState.Active && status.UpdateStatus.PackageUpdateState is StorePackageUpdateState.Pending);
+        // The Store kept a Pending Update item for Steward with no update available to StoreContext (29 Sep 2026).
+        if (waiting && _updates.Count == 0)
+        {
+            return;
+        }
+
+        switch (status.PackageInstallState)
+        {
+            case StoreQueueItemState.Active:
+                _queueProgress?.Invoke(ToProgress(status.UpdateStatus));
+                return;
+            case StoreQueueItemState.Paused:
+                _queueProgress?.Invoke(StoreUpdateProgress.From(AppUpdatePhase.Pending, 0, 0, 0, appName));
+                return;
+        }
+
+        item.StatusChanged -= OnQueueItemStatusChanged;
+        _queueItem = null;
+        var outcome = new StoreQueueOutcome(
+            status.PackageInstallExtendedState.ToString(),
+            status.PackageInstallState is StoreQueueItemState.Completed,
+            status.PackageInstallState is StoreQueueItemState.Error);
+        log($"Store update: queued update finished {outcome.State}", null);
+        _queueFinished?.Invoke(outcome);
     }
 
     private async Task ScanAllAppsAsync(AppInstallManager manager)
