@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.55.1](https://github.com/hoobio/hoobi-design/compare/v0.55.0...v0.55.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* 🐛 selecting a row in the Shell.User menu closes the menu, as a Menu dropdown does ([21410e7](https://github.com/hoobio/hoobi-design/commit/21410e7e20620388f4de326c1ea9975ed0736aac))
+* 🐛 show the nav scroll cues only on the collapsed rail, so the last row above the footer is no longer smeared by a fade over a visible scrollbar ([553d69c](https://github.com/hoobio/hoobi-design/commit/553d69c362306fc118af02a629b2b1aab31dc7a4))
+
 ## [0.55.0](https://github.com/hoobio/hoobi-design/compare/v0.54.0...v0.55.0) (2026-11-01)
 
 
