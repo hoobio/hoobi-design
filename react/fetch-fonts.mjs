@@ -1,12 +1,14 @@
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const files = ['DankMono-Regular.woff2', 'DankMono-Italic.woff2', 'DankMono-Bold.woff2'];
+const fonts = join(dirname(fileURLToPath(import.meta.url)), 'fonts');
 const strict = Boolean(process.env.CI || process.env.TF_BUILD);
 
-if (files.every((f) => existsSync(join('fonts', f)))) {
+if (files.every((f) => existsSync(join(fonts, f)))) {
   console.log('fonts: Dank Mono already in fonts/');
   process.exit(0);
 }
@@ -47,6 +49,6 @@ if (result.status !== 0) {
   process.exit(0);
 }
 
-for (const f of files) copyFileSync(join(temp, f), join('fonts', f));
+for (const f of files) copyFileSync(join(temp, f), join(fonts, f));
 rmSync(temp, { recursive: true, force: true });
 console.log('fonts: Dank Mono copied into fonts/');

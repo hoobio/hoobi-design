@@ -1,4 +1,4 @@
-import css from '../../styles.css?raw';
+import css from '../../react/styles.css?raw';
 
 /**
  * The design tokens, parsed from styles.css at build time.

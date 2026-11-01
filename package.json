@@ -1,0 +1,21 @@
+{
+  "name": "hoobi-design-workspace",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.16.1",
+  "scripts": {
+    "build": "pnpm -C react run build",
+    "typecheck": "pnpm -C react run typecheck",
+    "test": "pnpm -C react test",
+    "fonts:fetch": "pnpm -C react run fonts:fetch",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}

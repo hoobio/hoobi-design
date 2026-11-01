@@ -1,3 +1,4 @@
 packages:
+  - react
   - catalog
 ignoreScripts: true

@@ -67,7 +67,7 @@ export function tokensXaml(css) {
   ].join('\n');
 }
 
-export const readTokens = () => tokensXaml(readFileSync(join(root, 'styles.css'), 'utf8'));
+export const readTokens = () => tokensXaml(readFileSync(join(root, 'react/styles.css'), 'utf8'));
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   writeFileSync(tokensPath, readTokens());

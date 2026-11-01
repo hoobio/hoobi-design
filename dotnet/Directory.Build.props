@@ -14,7 +14,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <RepositoryUrl>https://dev.azure.com/Hoobi/Hoobi/_git/hoobi-design</RepositoryUrl>
     <IsPackable>false</IsPackable>
-    <Version Condition="'$(Version)' == ''">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../package.json')), '"version":\s*"([^"]+)"').Groups[1].Value)</Version>
+    <Version Condition="'$(Version)' == ''">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../react/package.json')), '"version":\s*"([^"]+)"').Groups[1].Value)</Version>
   </PropertyGroup>
 
 </Project>

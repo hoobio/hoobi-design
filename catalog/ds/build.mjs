@@ -19,11 +19,12 @@ import EXAMPLES from './examples.mjs';
 const here = dirname(fileURLToPath(import.meta.url));
 const catalog = resolve(here, '..');
 const repo = resolve(catalog, '..');
+const pkg = join(repo, 'react');
 const outArg = process.argv.indexOf('--out');
 const root = resolve(outArg > 0 ? process.argv[outArg + 1] : join(catalog, 'design-system'));
 const out = join(root, 'project');
 
-const read = (p) => readFileSync(join(repo, p), 'utf8');
+const read = (p) => readFileSync(join(pkg, p), 'utf8');
 const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8' }).trim();
 const version = JSON.parse(read('package.json')).version;
 const sha = git('rev-parse', '--short', 'HEAD');
@@ -104,7 +105,7 @@ function tokens() {
         style: get('font-style'),
       };
     })
-    .filter((f) => existsSync(join(repo, f.file)));
+    .filter((f) => existsSync(join(pkg, f.file)));
   const typeStyles = [...styles.entries()].map(([base, s]) => ({
     ...s,
     fontWeight: s.fontWeight ?? 400,
@@ -120,8 +121,8 @@ function tokens() {
       package: '@hoobi/design',
       version,
       paths: {
-        tokens: ['styles.css'],
-        fonts: fonts.map((f) => f.file),
+        tokens: ['react/styles.css'],
+        fonts: fonts.map((f) => `react/${f.file}`),
         docs: ['AGENTS.md', 'catalog/src/pages.tsx', 'catalog/ds'],
       },
       synced: now.slice(0, 10),
@@ -198,7 +199,7 @@ export const jsxs = (type, props, key) => make(type, props, key, true);`;
   const [result] = await build({
     configFile: false,
     logLevel: 'warn',
-    root: repo,
+    root: pkg,
     define: { 'process.env.NODE_ENV': '"production"' },
     plugins: [
       {
@@ -212,7 +213,7 @@ export const jsxs = (type, props, key) => make(type, props, key, true);`;
       write: false,
       minify: true,
       lib: {
-        entry: join(repo, 'dist/index.js'),
+        entry: join(pkg, 'dist/index.js'),
         formats: ['iife'],
         name: 'HoobiDesign',
         fileName: () => 'bundle.js',
@@ -235,7 +236,7 @@ export const jsxs = (type, props, key) => make(type, props, key, true);`;
 function indexDts(files) {
   const reactTypes = new Set();
   const bodies = files.map((f) =>
-    readFileSync(join(repo, 'dist', `${f}.d.ts`), 'utf8')
+    readFileSync(join(pkg, 'dist', `${f}.d.ts`), 'utf8')
       .split('\n')
       .filter((line) => {
         const named = line.match(/^import (?:type )?\{([^}]+)\} from ['"]react['"];?$/)?.[1];
@@ -252,7 +253,7 @@ function indexDts(files) {
 }
 
 function propsOf(file, name) {
-  const dts = readFileSync(join(repo, 'dist', `${file}.d.ts`), 'utf8');
+  const dts = readFileSync(join(pkg, 'dist', `${file}.d.ts`), 'utf8');
   const start = dts.search(
     new RegExp(`(/\\*\\*(?:(?!\\*/)[\\s\\S])*\\*/\\s*)?export (interface|type) ${name}Props\\b`),
   );
@@ -538,8 +539,8 @@ try {
   write('tokens.json', `${JSON.stringify(t, null, 2)}\n`);
   write('tokens.css', tokensCss(t));
   mkdirSync(join(out, 'fonts'), { recursive: true });
-  for (const f of t.type.fonts) copyFileSync(join(repo, f.file), join(out, f.file));
-  copyFileSync(join(repo, 'fonts/OFL.txt'), join(out, 'fonts/OFL.txt'));
+  for (const f of t.type.fonts) copyFileSync(join(pkg, f.file), join(out, f.file));
+  copyFileSync(join(pkg, 'fonts/OFL.txt'), join(out, 'fonts/OFL.txt'));
 
   const guidance = sections(readFileSync(join(here, 'guidance.md'), 'utf8'));
   const libNames = Object.keys(lib);

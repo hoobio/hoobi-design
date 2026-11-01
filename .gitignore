@@ -3,7 +3,7 @@ dist/
 *.tgz
 *.log
 .tw-check.css
-fonts/DankMono-*.woff2
+react/fonts/DankMono-*.woff2
 catalog/design-system/
 dotnet/**/bin/
 dotnet/**/obj/

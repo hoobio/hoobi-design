@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { readTokens, tokensPath } from './dotnet/build-tokens.mjs';
+import { readTokens, tokensPath } from '../dotnet/build-tokens.mjs';
 
 /**
  * Enforces the rules in AGENTS.md. Each check exists because the pattern it
@@ -66,7 +66,7 @@ const exported = [...index.matchAll(/export \{\s*([^}]+)\}/g)]
   .flatMap(([, names]) => names.split(','))
   .map((n) => n.trim())
   .filter((n) => n && !n.startsWith('type ') && !NON_VISUAL.has(n));
-const pages = readFileSync('catalog/src/pages.tsx', 'utf8');
+const pages = readFileSync('../catalog/src/pages.tsx', 'utf8');
 // Parts of one component share its page: SettingGroup and SettingList are SettingRow's.
 const PARTS = {
   SettingGroup: 'SettingRow',
@@ -90,7 +90,7 @@ for (const exportedName of exported) {
 // title (Alert, Section, PageHeader) are headings, not tooltips, and are not matched here.
 for (const file of [
   ...readdirSync('src').map((f) => `src/${f}`),
-  ...readdirSync('catalog/src').map((f) => `catalog/src/${f}`),
+  ...readdirSync('../catalog/src').map((f) => `../catalog/src/${f}`),
 ]) {
   if (!file.endsWith('.tsx')) continue;
   const text = readFileSync(file, 'utf8');
