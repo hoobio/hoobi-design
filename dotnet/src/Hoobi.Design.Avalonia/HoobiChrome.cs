@@ -10,6 +10,55 @@ namespace Hoobi.Design.Avalonia;
 public static class HoobiChrome
 {
     private const string InactiveClass = "inactive";
+    private static readonly TimeSpan MinimiseAnimation = TimeSpan.FromMilliseconds(300);
+
+    public static TimeSpan DoubleClickTime => Native.DoubleClickTime();
+
+    public static void Cloak(Window window, bool cloaked)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        if (OperatingSystem.IsWindows() && window.TryGetPlatformHandle() is { HandleDescriptor: "HWND", Handle: var handle })
+        {
+            HoobiChromeInterop.Cloak(handle, cloaked);
+        }
+    }
+
+    public static void MinimiseThenHide(Window window, Action? hide = null)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        hide ??= window.Hide;
+        if (!window.IsVisible || !Native.MinimizeAnimation())
+        {
+            hide();
+            return;
+        }
+
+        window.WindowState = WindowState.Minimized;
+        // The OS raises no event when the minimise animation ends, and hiding earlier cancels it.
+        DispatcherTimer.RunOnce(
+            () =>
+            {
+                if (window.IsVisible && window.WindowState == WindowState.Minimized)
+                {
+                    hide();
+                }
+            },
+            MinimiseAnimation);
+    }
+
+    public static bool ApplyTransparency(Window window, bool acrylic)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        acrylic &= TransparencyEnabled();
+        window.TransparencyLevelHint = acrylic
+            ? [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.Transparent]
+            : [WindowTransparencyLevel.Transparent];
+        return acrylic;
+    }
+
+    private static bool TransparencyEnabled() =>
+        !OperatingSystem.IsWindows()
+        || Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "EnableTransparency", 1) is not 0;
 
     public static IDisposable Attach(Window window, Action? onSessionEnding = null)
     {

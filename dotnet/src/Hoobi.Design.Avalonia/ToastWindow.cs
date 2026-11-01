@@ -33,8 +33,6 @@ public sealed class ToastWindow : Window
         // The window template lays a transparent hit-test panel under the whole client area, so the shadow gutter would take clicks; the toast holds nothing to click.
         IsHitTestVisible = false;
         _glyph = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Classes = { "Icon" } };
-        _glyph.Bind(TextBlock.TextProperty, _glyph.GetResourceObservable("Glyph.CheckMark"));
-        _glyph.Bind(TextBlock.ForegroundProperty, _glyph.GetResourceObservable("SystemFillColorSuccessBrush"));
         _message = new TextBlock { MaxWidth = 480, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center };
         _message.Bind(TextBlock.FontSizeProperty, _message.GetResourceObservable("BodyTextBlockFontSize"));
         _card = new Border
@@ -64,7 +62,9 @@ public sealed class ToastWindow : Window
 
     public string? Text => _message.Text;
 
-    public bool IsSuccess => _glyph.IsVisible;
+    public Tone Tone { get; private set; }
+
+    public bool IsSuccess => Tone == Tone.Success;
 
     public bool IsHideScheduled => _hideTimer.IsEnabled;
 
@@ -72,7 +72,9 @@ public sealed class ToastWindow : Window
 
     public double CardOpacity => _card.GetBaseValue(OpacityProperty).GetValueOrDefault();
 
-    public static void Show(TopLevel? source, string text, bool success = true) => (Current ??= new ToastWindow()).Present(source, text, success);
+    public static void Show(TopLevel? source, string text, bool success = true) => Show(source, text, success ? Tone.Success : Tone.Neutral);
+
+    public static void Show(TopLevel? source, string text, Tone tone) => (Current ??= new ToastWindow()).Present(source, text, tone);
 
     public static PixelPoint Place(PixelRect workArea, Size size, double scaling)
     {
@@ -81,12 +83,17 @@ public sealed class ToastWindow : Window
         return new PixelPoint(workArea.X + ((workArea.Width - width) / 2), workArea.Bottom - height);
     }
 
-    public void Present(TopLevel? source, string text, bool success)
+    public void Present(TopLevel? source, string text, bool success) => Present(source, text, success ? Tone.Success : Tone.Neutral);
+
+    public void Present(TopLevel? source, string text, Tone tone)
     {
         _hideTimer.Stop();
         _fadeTimer.Stop();
         _message.Text = text;
-        _glyph.IsVisible = success;
+        Tone = tone;
+        _glyph.IsVisible = tone != Tone.Neutral;
+        _glyph.Bind(TextBlock.TextProperty, _glyph.GetResourceObservable(Toned.GlyphKeyFor(tone)));
+        _glyph.Bind(TextBlock.ForegroundProperty, _glyph.GetResourceObservable(tone == Tone.Success ? "SystemFillColorSuccessBrush" : Toned.BrushKeyFor(tone)));
         _screen = source?.Screens?.ScreenFromTopLevel(source) ?? Screens.Primary;
         Show();
         PlaceOnScreen();

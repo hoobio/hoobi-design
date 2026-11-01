@@ -417,6 +417,21 @@ An app overrides `Concurrent` with `<ConcurrentGarbageCollection>` in the projec
 
 Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the private working set, as Task Manager shows it. Measure with the app in the tray, and record the figures before and after a change in the app's `AGENTS.md`. Steward's reference figures: 4 to 15 MB private working set in the tray between passes against 128 MB before trimming, 7 to 14 ms of GC pause per trim, and about 100 MB of committed private bytes (Skia, ANGLE, the runtime) unchanged.
 
+Components and helpers:
+
+- `LevelMeter` (`Levels`, `Hold`, `Volume`, `WarnAt`, `DangerAt`, `Position`)
+- `RichTextBlock` (`Blocks`, `LinkClicked`, `LinkCommand`), `RichBlock`, `RichBlockKind`, `RichRun`
+- `TextHighlight.Start` and `TextHighlight.Length`
+- `IconImage` (`FallbackSource`, `Failed`)
+- `ImageLoader` (`Load`, `Scaling`) and `RemoteImage` (`MarkFailed`, `HasFailed`, `Failed`)
+- `Tone`, `Toned.Tone`, `Toned.BrushKeyFor`, `Toned.ButtonThemeKeyFor`, `Toned.GlyphKeyFor`, `Toned.ClassFor`
+- `ToneConverters.Brush`, `ToneConverters.ButtonTheme`, `ToneConverters.Glyph`, `ToneConverters.Initials`
+- `PageEntrance.PlayAsync`
+- `HoverSubmenu.IsEnabled`
+- `Motion.Decelerate`, `Motion.Accelerate`, `Motion.SubmenuDelay`
+- `HoobiChrome.Cloak`, `HoobiChrome.DoubleClickTime`, `HoobiChrome.MinimiseThenHide`, `HoobiChrome.ApplyTransparency`
+- `ToastWindow.Show(source, text, Tone)` and `ToastWindow.Tone`
+
 ### Avalonia and Windows rules
 
 - In Avalonia 12 a template's own value outranks a style setter that has no pseudo-class. Target the template part (`/template/ ContentPresenter#PART_ContentPresenter`).

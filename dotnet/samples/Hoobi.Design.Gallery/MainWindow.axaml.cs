@@ -22,6 +22,7 @@ public partial class MainWindow : Window
         ("Window chrome", () => new ChromePage()),
     ];
 
+        ("Components", () => new ComponentsPage()),
     public MainWindow()
     {
         InitializeComponent();

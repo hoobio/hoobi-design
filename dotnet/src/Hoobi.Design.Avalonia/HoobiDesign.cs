@@ -10,7 +10,7 @@ public static class HoobiDesign
 {
     public const string FontCollection = "fonts:Hoobi";
 
-    private static readonly string[] EmojiFamilies = ["Segoe UI Emoji"];
+    private static readonly string[] EmojiFamilies = ["Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji"];
 
     private static bool _registered;
 
