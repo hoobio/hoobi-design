@@ -3391,6 +3391,56 @@ export function MenuPage() {
       </Demo>
 
       <Demo
+        title="Submenus"
+        note="Menu.Sub is a row that opens its own rows, nested to any depth. With a mouse it opens on hover after 200ms, or at once on a click; Enter or ArrowRight opens it from the keyboard and moves focus into it, and ArrowLeft or Escape closes one level and returns focus to the row. The panel cascades to the right of its parent, flips to the left at the viewport edge and is clamped on screen. On a touch screen or below 40rem the submenu replaces the rows in place, under a back row that names it. Selecting any item closes the whole menu."
+        code={`<Menu label="Load preset">
+  <Menu.Item onClick={clear}>No gear</Menu.Item>
+  <Menu.Sub label="Simmed builds">
+    <Menu.Sub label="Pre-raid">
+      <Menu.Sub label="Fury">
+        <Menu.Item onClick={load}>Dual wield</Menu.Item>
+        <Menu.Item onClick={load}>Two-hander</Menu.Item>
+      </Menu.Sub>
+      <Menu.Sub label="Arms">
+        <Menu.Item onClick={load}>Two-hander</Menu.Item>
+      </Menu.Sub>
+    </Menu.Sub>
+    <Menu.Sub label="Phase 1">...</Menu.Sub>
+  </Menu.Sub>
+</Menu>`}
+      >
+        <div className="flex w-full flex-wrap justify-between gap-4">
+          {(['start', 'end'] as const).map((align) => (
+            <Menu
+              key={align}
+              label={align === 'start' ? 'Load preset' : 'At the edge'}
+              align={align}
+            >
+              <Menu.Item onClick={() => undefined}>No gear</Menu.Item>
+              <Menu.Sub label="Simmed builds" icon={<KeyIcon />}>
+                {['Pre-raid', 'Phase 1'].map((phase) => (
+                  <Menu.Sub key={phase} label={phase}>
+                    <Menu.Label>Warrior</Menu.Label>
+                    <Menu.Sub label="Fury">
+                      <Menu.Item onClick={() => undefined}>Dual wield</Menu.Item>
+                      <Menu.Item onClick={() => undefined}>Two-hander</Menu.Item>
+                    </Menu.Sub>
+                    <Menu.Sub label="Arms">
+                      <Menu.Item onClick={() => undefined}>Two-hander</Menu.Item>
+                    </Menu.Sub>
+                  </Menu.Sub>
+                ))}
+              </Menu.Sub>
+              <Menu.Divider />
+              <Menu.Item tone="danger" onClick={() => undefined}>
+                Reset
+              </Menu.Item>
+            </Menu>
+          ))}
+        </div>
+      </Demo>
+
+      <Demo
         title="Alignment"
         note="The panel is fixed and placed off the trigger's rect when it opens, so no scroll-container ancestor can clip it. With align unset it hangs from the trigger's left edge in the left half of the viewport and its right edge in the right half. align='end' forces the right edge."
         code={`<Menu label="More" align="end" variant="ghost">...</Menu>`}
@@ -3466,6 +3516,12 @@ export function MenuPage() {
             'children, className',
             '',
             'Group caption on the same 12px rhythm as the rows.',
+          ],
+          [
+            'Menu.Sub',
+            'label, icon, children',
+            '',
+            'A row with a chevron that opens its children as a submenu: a cascading panel beside it with a mouse, the rows replaced in place under a back row on touch or below 40rem. Nests to any depth; its rows set their own icon gutter.',
           ],
           [
             'Menu.Divider',

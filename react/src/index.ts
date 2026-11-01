@@ -69,6 +69,7 @@ export {
   type MenuItemProps,
   type MenuLabelProps,
   type MenuProps,
+  type MenuSubProps,
 } from './Menu.js';
 export { Markdown, type MarkdownProps } from './Markdown.js';
 export { Modal, type ModalProps } from './Modal.js';
