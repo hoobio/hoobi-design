@@ -30,6 +30,53 @@ var owned = WriteKeys == null && !string.IsNullOrEmpty(OwnedKeys) && File.Exists
     ? new HashSet<string>(File.ReadAllLines(OwnedKeys), StringComparer.Ordinal)
     : new HashSet<string>(StringComparer.Ordinal);
 var keys = new SortedSet<string>(StringComparer.Ordinal);
+var popupExempt = new Regex(@"<!--\s*popup-ok:\s*\S");
+var popupKeys = new HashSet<string>(StringComparer.Ordinal) { "FlyoutPresenterBackground", "MenuFlyoutPresenterBackground", "ComboBoxDropDownBackground" };
+var popupTypes = new HashSet<string>(StringComparer.Ordinal) { "FlyoutPresenter", "MenuFlyoutPresenter", "ToolTip", "ContextMenu", "DatePickerPresenter", "TimePickerPresenter" };
+var popupPart = new Regex(@"#(?:PopupBorder|PART_SuggestionsContainer|DropDownRoot)\b");
+var selectorType = new Regex(@"^(?:\w+\|)?(\w+)");
+
+bool PopupSelector(string selector) => selector.Split(',').Any(part =>
+{
+    var tokens = part.Replace("/template/", " ").Split(new[] { ' ', '>' }, StringSplitOptions.RemoveEmptyEntries);
+    if (tokens.Length == 0)
+    {
+        return false;
+    }
+
+    var last = tokens[tokens.Length - 1];
+    var type = selectorType.Match(last);
+    return popupPart.IsMatch(last) || (type.Success && popupTypes.Contains(type.Groups[1].Value));
+});
+
+bool PopupTarget(XElement setter)
+{
+    for (var owner = setter.Parent; owner != null; owner = owner.Parent)
+    {
+        if (owner.Name.LocalName == "Style" && owner.Attribute("Selector") is { } selector)
+        {
+            if (!selector.Value.TrimStart().StartsWith("^", StringComparison.Ordinal))
+            {
+                return PopupSelector(selector.Value);
+            }
+
+            if (PopupSelector(selector.Value.Replace("^", "")))
+            {
+                return true;
+            }
+        }
+        else if (owner.Name.LocalName == "ControlTheme")
+        {
+            var target = owner.Attribute("TargetType")?.Value ?? "";
+            return popupTypes.Contains(target.Substring(target.IndexOf(':') + 1));
+        }
+    }
+
+    return false;
+}
+
+bool AcrylicOff(string property, string value) =>
+    property.EndsWith("Acrylic.IsEnabled", StringComparison.Ordinal) && string.Equals(value.Trim(), "False", StringComparison.OrdinalIgnoreCase);
 
 string Literal(string property, string value)
 {
@@ -82,6 +129,15 @@ foreach (var item in Files)
         }
     }
 
+    void ReportPopup(IXmlLineInfo at, string what)
+    {
+        var line = at.LineNumber;
+        if (!(line > 1 && popupExempt.IsMatch(lines[line - 2])))
+        {
+            Log.LogError(null, "HOOBI003", null, path, line, at.LinePosition, 0, 0, "{0}: every popup surface takes the Mirage acrylic from Hoobi.Design.Avalonia; change the design system, or put <!-- popup-ok: reason --> on the line above.", what);
+        }
+    }
+
     foreach (var element in document.Descendants())
     {
         var key = element.Attribute(xaml + "Key");
@@ -98,6 +154,34 @@ foreach (var item in Files)
         if (WriteKeys != null)
         {
             continue;
+        }
+
+        if (key != null && (popupKeys.Contains(key.Value) || key.Value.StartsWith("HoobiFlyoutAcrylic", StringComparison.Ordinal)))
+        {
+            ReportPopup(key, "x:Key \"" + key.Value + "\" redefines a popup surface resource");
+        }
+
+        foreach (var attribute in element.Attributes().Where(attribute => AcrylicOff(attribute.Name.LocalName, attribute.Value)))
+        {
+            ReportPopup(attribute, "Acrylic.IsEnabled=\"False\"");
+        }
+
+        if (popupTypes.Contains(element.Name.LocalName) && element.Attribute("Background") is { } background)
+        {
+            ReportPopup(background, element.Name.LocalName + " Background");
+        }
+
+        if (element.Name.LocalName == "Setter" && element.Attribute("Property") is { } popupProperty)
+        {
+            var popupValue = element.Attribute("Value")?.Value ?? "";
+            if (AcrylicOff(popupProperty.Value, popupValue))
+            {
+                ReportPopup(popupProperty, "Acrylic.IsEnabled set to False");
+            }
+            else if (popupProperty.Value == "Background" && PopupTarget(element))
+            {
+                ReportPopup(popupProperty, "Background on a popup surface");
+            }
         }
 
         foreach (var attribute in element.Attributes().Where(attribute => attribute.Name.Namespace == XNamespace.None))

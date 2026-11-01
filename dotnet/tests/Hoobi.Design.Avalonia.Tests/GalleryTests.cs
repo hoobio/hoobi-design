@@ -65,6 +65,32 @@ public sealed partial class GalleryTests(AvaloniaSession session)
         Assert.True(flashes.Count == 0, string.Join(Environment.NewLine, flashes));
     });
 
+    [Fact]
+    public void Every_popup_surface_takes_the_acrylic() => session.Run(() =>
+    {
+        var window = ShowGallery();
+        var violations = new SortedSet<string>(StringComparer.Ordinal);
+        try
+        {
+            foreach (var (name, _) in MainWindow.Pages)
+            {
+                window.Navigate(name);
+                AvaloniaSession.Pump();
+                violations.UnionWith(PopupSurfaceProbe.Probe(window).Select(violation => $"{name}: {violation}"));
+                foreach (var shot in OpenEachPopup(window))
+                {
+                    violations.UnionWith(PopupSurfaceProbe.CheckOpen(window).Select(violation => $"{name} {shot}: {violation}"));
+                }
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        Assert.True(violations.Count == 0, string.Join(Environment.NewLine, violations));
+    });
+
     [Theory]
     [MemberData(nameof(PageNames))]
     public void Text_ink_is_centred_on_every_page(string page) => session.Run(() =>
@@ -225,6 +251,37 @@ public sealed partial class GalleryTests(AvaloniaSession session)
             AvaloniaSession.Pump();
             yield return "combo box list";
             combo.IsDropDownOpen = false;
+            AvaloniaSession.Pump();
+        }
+
+        foreach (var suggest in page.GetVisualDescendants().OfType<AutoCompleteBox>().Where(box => box.IsEffectivelyEnabled).ToList())
+        {
+            suggest.IsDropDownOpen = true;
+            AvaloniaSession.Pump();
+            yield return "suggestions";
+            suggest.IsDropDownOpen = false;
+            AvaloniaSession.Pump();
+        }
+
+        foreach (var calendar in page.GetVisualDescendants().OfType<CalendarDatePicker>().Where(picker => picker.IsEffectivelyEnabled).ToList())
+        {
+            calendar.IsDropDownOpen = true;
+            AvaloniaSession.Pump();
+            yield return "calendar";
+            calendar.IsDropDownOpen = false;
+            AvaloniaSession.Pump();
+        }
+
+        foreach (var picker in page.GetVisualDescendants().OfType<TemplatedControl>().Where(control => control is DatePicker or TimePicker && control.IsEffectivelyEnabled).ToList())
+        {
+            picker.GetVisualDescendants().OfType<Button>().First().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            AvaloniaSession.Pump();
+            yield return $"{picker.GetType().Name} flyout";
+            foreach (var popup in window.OpenedPopups.ToList())
+            {
+                popup.Close();
+            }
+
             AvaloniaSession.Pump();
         }
 

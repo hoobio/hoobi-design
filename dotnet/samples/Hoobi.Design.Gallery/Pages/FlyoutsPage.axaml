@@ -25,6 +25,19 @@
                 <Button Grid.Column="2" Content="Account" IsEnabled="False" />
             </Grid>
             <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="FlyoutPresenter" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Filter">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft">
+                            <StackPanel Width="220" Spacing="4" Margin="8">
+                                <CheckBox Content="Updates only" IsChecked="True" />
+                                <CheckBox Content="Ignored" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
                 <TextBlock Classes="FieldLabel" Text="FlyoutPresenter.Tinted.Flush.Below" VerticalAlignment="Center" />
                 <Button Grid.Column="1" Content="Installs">
                     <Button.Flyout>
@@ -85,6 +98,21 @@
                     <ComboBoxItem Content="Daily" />
                     <ComboBoxItem Content="Weekly" />
                 </ComboBox>
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="AutoCompleteBox suggestions" VerticalAlignment="Center" />
+                <AutoCompleteBox x:Name="Suggest" Grid.Column="1" Width="200" HorizontalAlignment="Left" MinimumPrefixLength="0" Text="We" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="CalendarDatePicker" VerticalAlignment="Center" />
+                <CalendarDatePicker Grid.Column="1" Width="200" />
+            </Grid>
+            <Grid ColumnDefinitions="240,220,220">
+                <TextBlock Classes="FieldLabel" Text="DatePicker, TimePicker" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="8">
+                    <DatePicker />
+                    <TimePicker />
+                </StackPanel>
             </Grid>
         </StackPanel>
     </ScrollViewer>

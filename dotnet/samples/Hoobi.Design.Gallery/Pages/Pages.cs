@@ -115,7 +115,11 @@ public partial class StatusPage : UserControl
 
 public partial class FlyoutsPage : UserControl
 {
-    public FlyoutsPage() => InitializeComponent();
+    public FlyoutsPage()
+    {
+        InitializeComponent();
+        Suggest.ItemsSource = new[] { "WeakAuras", "Weapon swap", "Details" };
+    }
 }
 
 public partial class ChromePage : UserControl

@@ -47,7 +47,7 @@ public sealed class BuildChecksTests : IDisposable
               </PropertyGroup>
               <ItemGroup>
                 <PackageReference Include="Hoobi.Design.Avalonia" Version="{Version}" />
-                <HoobiDesignChecksExclude Include="Bad.axaml" Condition="'$(ExcludeBad)' == 'true'" />
+                <HoobiDesignChecksExclude Include="Bad.axaml;Popup.axaml" Condition="'$(ExcludeBad)' == 'true'" />
                 <RuntimeHostConfigurationOption Update="System.GC.ConserveMemory" Value="7" Condition="'$(ConserveSeven)' == 'true'" />
               </ItemGroup>
             </Project>
@@ -114,14 +114,40 @@ public sealed class BuildChecksTests : IDisposable
               </ResourceDictionary.ThemeDictionaries>
             </ResourceDictionary>
             """);
+        File.WriteAllText(Path.Combine(consumer, "Popup.axaml"), """
+            <UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:hoobi="using:Hoobi.Design.Avalonia">
+              <UserControl.Resources>
+                <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="{DynamicResource HoobiSurfaceColor}" />
+                <!-- popup-ok: fixture exemption -->
+                <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{DynamicResource HoobiSurfaceColor}" />
+                <x:Double x:Key="HoobiFlyoutAcrylicTintOpacity">1</x:Double>
+              </UserControl.Resources>
+              <UserControl.Styles>
+                <Style Selector="FlyoutPresenter.Mine"><Setter Property="Background" Value="{DynamicResource HoobiSurfaceBrush}" /></Style>
+                <Style Selector="ComboBox /template/ Border#PopupBorder"><Setter Property="hoobi:Acrylic.IsEnabled" Value="False" /></Style>
+                <Style Selector="FlyoutPresenter TextBlock"><Setter Property="Background" Value="{DynamicResource HoobiSurfaceBrush}" /></Style>
+              </UserControl.Styles>
+              <StackPanel>
+                <ToolTip Background="{DynamicResource HoobiSurfaceBrush}" />
+                <Border hoobi:Acrylic.IsEnabled="False" />
+                <Border hoobi:Acrylic.IsEnabled="True" />
+              </StackPanel>
+            </UserControl>
+            """);
         var failed = AssertBuild(1, "build", consumer, "--no-restore");
         foreach (var line in new[] { 2, 3, 4, 5, 6, 7, 8, 11 })
         {
             Assert.Contains($"Bad.axaml({line},", failed, StringComparison.Ordinal);
         }
 
+        foreach (var line in new[] { 3, 6, 9, 10, 14, 15 })
+        {
+            Assert.Contains($"Popup.axaml({line},", failed, StringComparison.Ordinal);
+        }
+
         Assert.Equal(6, Count(failed, "error HOOBI001"));
         Assert.Equal(2, Count(failed, "error HOOBI002"));
+        Assert.Equal(6, Count(failed, "error HOOBI003"));
         Assert.DoesNotContain("Clean.axaml(", failed, StringComparison.Ordinal);
         Assert.DoesNotContain("Local.axaml(", failed, StringComparison.Ordinal);
 

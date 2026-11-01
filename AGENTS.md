@@ -344,7 +344,7 @@ double-signalling a state that the border or the ring already shows.
 | Package                         | Contents                                                                                                                                                                                                                              |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Hoobi.Design.Avalonia`         | `HoobiTheme` (tokens, control themes, dialogs, settings cards, glyphs), the fonts, `UseHoobiDesign`, `AppDialogs`, `ColorShade`, `HoobiChrome`, `IdleMemory`, `ToastWindow`, `ForegroundGate`, `TrayMenuFocus`, `DialogIntent`, and the buildTransitive props and targets |
-| `Hoobi.Design.Avalonia.Testing` | `HoverFlashProbe`, `TextCentring`, `HeadlessSession`                                                                                                                                                                                  |
+| `Hoobi.Design.Avalonia.Testing` | `HoverFlashProbe`, `PopupSurfaceProbe`, `TextCentring`, `HeadlessSession`                                                                                                                                                             |
 | `Hoobi.Desktop.Windows`         | Windows plumbing (see Windows desktop apps)                                                                                                                                                                                           |
 
 ### Consumer setup
@@ -372,7 +372,7 @@ The native theme differs from the web in these places:
 
 Value keys carry the `Hoobi` prefix (`HoobiBgBrush`, `HoobiAccentColor`). Control themes and resources that override FluentAvalonia or WinUI keep the WinUI names (`TitleBarHeight`, `CaptionTextBlockFontSize`).
 
-Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`.
+Classes: `Button.RowOverlay` (with `SubtleButtonStyle`, laid over a `Border.Row`), `ToggleButton.Disclosure`, `TextBox.Multiline`, `TextBox.Invalid`, `ComboBox.Invalid`, `TextBox.revealPasswordButton` (hold to reveal), `ItemsControl.KeyCaps` and `Border.KeyCap`, `Highlighted` on `Border.Row`, `Border.Group` and `SettingsCard`, `Danger` on `FAContentDialog` (critical primary button), `Icon` and `Danger` on `CaptionButtonTheme`. `HoobiHighlightBrush` is the web `bg-accent/15` composited over `bg`. Every popup surface takes the Mirage acrylic by default, plain `FlyoutPresenter` included; `FlyoutPresenter.Tinted` is kept and changes nothing.
 
 A button with its own fill takes the `Tinted` class. The hover and pressed fills come from `ColorShade.Hover` and `ColorShade.Pressed`, which mix the fill towards `HoobiBgColor`.
 
@@ -387,9 +387,12 @@ The `buildTransitive` targets run before `CoreCompile` in every consuming projec
 - `HOOBI001`: a literal colour in an `.axaml` file: a hex or named colour in a colour property (`*Background`, `*Foreground`, `*Fill`, `*Stroke`, `*Color`, `*Brush`) as an attribute, a setter `Value` or a property element, the content of a `Color` or `SolidColorBrush` element, or a hex inside a `BoxShadow` or `BoxShadows` value. Hex in other places (a `#Name` selector, text) is not a colour. `Transparent` is allowed as a hit-test fill. A literal needs `<!-- hex-ok: reason -->` on the line above.
 - `HOOBI002`: an `x:Key` that the package already defines, at app scope: in a file whose root is a `ResourceDictionary` or `Styles`, or in `Application.Resources`, `Styles.Resources`, `Style.Resources` or `ControlTheme.Resources`. A key in an element's own `Resources` or `Styles` (a control, window or dialog, such as `ContentDialogMinWidth` in `FAContentDialog.Resources`) is a local override and is allowed. The list of package-owned keys is generated when the package is packed.
 
-`HoobiDesignChecks=false` turns both checks off for a project. `HoobiDesignChecksExclude` removes named `.axaml` files from them.
+- `HOOBI003`: a popup surface that drops the Mirage acrylic: `Acrylic.IsEnabled` set to False, a Background on a popup presenter (`FlyoutPresenter`, `MenuFlyoutPresenter`, `ToolTip`, `ContextMenu`, the picker presenters, or the ComboBox, AutoCompleteBox and CalendarDatePicker popup borders), or an `x:Key` of `FlyoutPresenterBackground`, `MenuFlyoutPresenterBackground`, `ComboBoxDropDownBackground` or `HoobiFlyoutAcrylic*` at any scope. An exception needs `<!-- popup-ok: reason -->` on the line above.
 
-Every consumer runs `HoverFlashProbe` over its own pages and popups in its tests. Consumers stay on the current package version through Renovate. The rule in Library-only changes (library components are not mutated or restyled inside a consuming service) applies to native apps in full.
+`HoobiDesignChecks=false` turns the checks off for a project. `HoobiDesignChecksExclude` removes named `.axaml` files from them.
+
+Every consumer runs `HoverFlashProbe` over its own pages and popups in its tests.
+`PopupSurfaceProbe.Probe(top)` opens each ComboBox, flyout button and context menu under a TopLevel (`CheckOpen(top)` checks the popups already open) and reports a popup with no acrylic surface or with a fill that covers it; the gallery tests run it on every page. Consumers stay on the current package version through Renovate. The rule in Library-only changes (library components are not mutated or restyled inside a consuming service) applies to native apps in full.
 
 ### Hover and press rules
 
