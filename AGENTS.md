@@ -100,12 +100,15 @@ FlowCanvas (a node graph for a workflow builder: HTML nodes over an SVG edge lay
 edges routed round every node with rounded corners only at a turn, siblings sharing one trunk,
 ports at a fixed offset from the node top so nodes at one y line up, drags snapped to the 8px grid
 and pulled level with a wired port within 12px; positions, edges and selection are the
-consumer's), Markdown
+consumer's), RepeatList (one row of controls per item of a list the consumer owns, a remove at
+the end of each row and an add under the last; cells are sized sm, md or lg and wrap onto a second
+line in a narrow container; optional column labels drawn once at the cells' widths), Markdown
 (the subset Seerr renders - paragraphs, strong, em, lists - built as React nodes, never HTML;
 anything else, a link included, stays text; `inline` for a label), and the
 settings field set - FieldLabel
 (the one label row: the `(i)` and the right-hand slot), SecretField, DurationInput, CronInput
-(with `cronRuns`, a zero-dependency five-field matcher) and CopyField - plus `cx`,
+(with `cronRuns`, a zero-dependency five-field matcher, and `describeCron`, the plain-English
+caption for the common shapes, null for the rest) and CopyField - plus `cx`,
 `mirageImage` and `markFavicon`.
 
 Mirage comes in six strengths: `.mirage-layer` behind a whole app, `.mirage-scoped` as a card's
