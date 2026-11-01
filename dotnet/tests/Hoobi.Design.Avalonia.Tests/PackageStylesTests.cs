@@ -57,7 +57,9 @@ public sealed class PackageStylesTests(AvaloniaSession session)
             IsExpanded = false,
             ExpandedContent = new Border { Height = 120 },
         };
+        var clock = new ManualClock();
         var window = Host(card);
+        clock.Attach(window);
         try
         {
             var slide = card.GetVisualDescendants().OfType<SlideExpander>().Single();
@@ -65,23 +67,14 @@ public sealed class PackageStylesTests(AvaloniaSession session)
             Assert.Equal(0, slide.Bounds.Height);
 
             card.RaiseClick();
-            var heights = new List<double>();
-            AvaloniaSession.WaitFor(() =>
-            {
-                AvaloniaSession.Pump(1);
-                heights.Add(slide.Bounds.Height);
-                return slide.Bounds.Height >= 120;
-            });
+            var heights = Frames(clock, () => slide.Bounds.Height);
             Assert.Contains(heights, height => height > 0 && height < 120);
-            AvaloniaSession.Pump();
-            Assert.Equal(120, slide.Bounds.Height);
+            Assert.Equal(120, heights[^1]);
 
             card.RaiseClick();
-            AvaloniaSession.WaitFor(() =>
-            {
-                AvaloniaSession.Pump(1);
-                return slide.Bounds.Height == 0;
-            });
+            heights = Frames(clock, () => slide.Bounds.Height);
+            Assert.Contains(heights, height => height > 0 && height < 120);
+            Assert.Equal(0, heights[^1]);
         }
         finally
         {
@@ -155,6 +148,21 @@ public sealed class PackageStylesTests(AvaloniaSession session)
             window.Close();
         }
     });
+
+    private static List<double> Frames(ManualClock clock, Func<double> sample)
+    {
+        var samples = new List<double>();
+        for (var frame = 0; frame < 40; frame++)
+        {
+            clock.Advance(TimeSpan.FromMilliseconds(16));
+            AvaloniaSession.Pump(1);
+            samples.Add(sample());
+        }
+
+        AvaloniaSession.Pump();
+        samples.Add(sample());
+        return samples;
+    }
 
     private static Window Host(Control content)
     {
