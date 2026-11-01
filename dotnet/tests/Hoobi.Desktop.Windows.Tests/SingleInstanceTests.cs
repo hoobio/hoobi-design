@@ -15,9 +15,7 @@ public sealed class SingleInstanceTests
             {
                 first.ListenForShow(shown.Set);
 
-                var second = Task.Run(() => SingleInstance.TryAcquire(name, showRunning: true, TimeSpan.Zero, out _), TestContext.Current.CancellationToken).GetAwaiter().GetResult();
-
-                Assert.False(second);
+                Assert.False(AcquireOnAnotherThread(name, showRunning: true));
                 Assert.True(shown.Wait(TimeSpan.FromSeconds(5)));
             }
         }, TestContext.Current.CancellationToken);
@@ -36,9 +34,7 @@ public sealed class SingleInstanceTests
             {
                 first.ListenForShow(shown.Set);
 
-                var second = Task.Run(() => SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out _), TestContext.Current.CancellationToken).GetAwaiter().GetResult();
-
-                Assert.False(second);
+                Assert.False(AcquireOnAnotherThread(name, showRunning: false));
                 Assert.False(shown.Wait(TimeSpan.FromMilliseconds(300)));
             }
         }, TestContext.Current.CancellationToken);
@@ -73,5 +69,19 @@ public sealed class SingleInstanceTests
             Assert.True(SingleInstance.TryAcquire(name, showRunning: false, TimeSpan.Zero, out var instance));
             instance.Dispose();
         }, TestContext.Current.CancellationToken);
+    }
+
+    // A Mutex is re-entrant on its owning thread, and a blocking wait on Task.Run can inline onto the caller.
+    private static bool AcquireOnAnotherThread(string name, bool showRunning)
+    {
+        var acquired = false;
+        var thread = new Thread(() =>
+        {
+            acquired = SingleInstance.TryAcquire(name, showRunning, TimeSpan.Zero, out var instance);
+            instance?.Dispose();
+        });
+        thread.Start();
+        thread.Join();
+        return acquired;
     }
 }
