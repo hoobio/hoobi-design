@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import {
   copyFileSync,
+  existsSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -101,7 +102,7 @@ function tokens() {
       weight: get('font-weight'),
       style: get('font-style'),
     };
-  });
+  }).filter((f) => existsSync(join(repo, f.file)));
   const typeStyles = [...styles.entries()].map(([base, s]) => ({
     ...s,
     fontWeight: s.fontWeight ?? 400,
