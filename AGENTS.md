@@ -27,9 +27,17 @@ The npm package has zero runtime dependencies. Peer deps only: react >=19, react
 ## Layout
 
 ```
-styles.css                       # tokens (@theme static), @font-face, base layer, utilities
-fonts/                           # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2, fetched, gitignored)
-src/*.tsx                        # one component per file, re-exported from src/index.ts
+package.json                     # private workspace root: build, typecheck, test and tokens proxy to react/ and tokens/
+tokens/
+  tokens.css                         # the one token source: the @theme static block, every colour, radius, duration and easing
+  build.mjs                          # tokens.css to react/styles.css @theme and dotnet Themes/Tokens.axaml; --check
+react/                           # the npm package @hoobi/design
+  package.json                       # name, version, exports, files
+  styles.css                         # @theme static (generated), @font-face, base layer, utilities
+  fonts/                             # Hanken Grotesk latin variable (+italic) + Dank Mono (woff2, fetched, gitignored); README.md has the licences
+  src/*.tsx                          # one component per file, re-exported from src/index.ts
+  test/                              # node:test against dist/
+  check.mjs                          # the design-rule checks (below)
 catalog/                         # hand-rolled Vite reference page (see below)
 dotnet/                          # Hoobi.Design.slnx: the Avalonia theme, the Windows helpers, their tests and the gallery
   src/Hoobi.Design.Avalonia/         # HoobiTheme (Themes/*.axaml), controls, fonts, buildTransitive props and targets
@@ -37,10 +45,11 @@ dotnet/                          # Hoobi.Design.slnx: the Avalonia theme, the Wi
   src/Hoobi.Desktop.Windows/         # Store updates, start at sign-in, restart registration, single instance, watchdog
   samples/Hoobi.Design.Gallery/      # the native catalog
   tests/                             # one test project per package
-  build-tokens.mjs                   # styles.css to Themes/Tokens.axaml
   tools/Measure-Memory.ps1           # working set sampler
 operations/pipelines/publish.yaml
 ```
+
+The pnpm workspace root is the repo root, with `react/` and `catalog/` as its packages. The root `package.json` is private and is never published.
 
 `tsc` is the whole build for the library itself. No Vite lib mode, no tsup, no Storybook.
 
@@ -58,7 +67,8 @@ operations/pipelines/publish.yaml
 
 The library's `@source "./dist"` makes the consumer's Tailwind scan the compiled components, so the
 utility classes the components use get generated. Fonts are referenced with relative `url()` so
-Vite hashes them and respects `base`.
+Vite hashes them and respects `base`. Both paths are relative to `styles.css` at the package root
+(`react/` in this repo).
 
 Consumers need the scoped registry in their own `.npmrc`:
 
@@ -270,7 +280,7 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
   Numbers show their default; a secret's placeholder is SecretField's own.
 - Layer scale (native ports mirror it): `bg` `#181c26`, `surface` `#1f2430`, `surface-raised` `#242936`, `chip` `#15181f` (one step below bg).
 - Dark only. `color-scheme: dark`, no light-mode variants, no `dark:` prefixes.
-- Everything comes from a token in `styles.css`. No literal hex in component files.
+- Everything comes from a token in `tokens/tokens.css` (the `@theme static` block of `styles.css` is generated from it). No literal hex in component files.
 - Semantic colours (`--color-success/warn/danger/info`) are literal hex on purpose: Tailwind's
   opacity modifiers (`bg-warn/10`) cannot decompose a nested `var()`.
 - Root font-size 18px, 16px under 40rem. Hanken Grotesk everywhere; Dank Mono only for a
@@ -367,7 +377,9 @@ double-signalling a state that the border or the ring already shows.
 
 ### Tokens and native divergences
 
-`dotnet/build-tokens.mjs` generates `Themes/Tokens.axaml` from the `@theme static` block of `styles.css` (`node dotnet/build-tokens.mjs`). `check.mjs` fails when `Tokens.axaml` is stale. Hand edits to `Tokens.axaml` are lost on the next generation.
+`tokens/tokens.css` is the one token source for both platforms. It is CSS custom properties in an `@theme static` block, so the web takes it verbatim and its comments stay beside the values. It holds every colour, radius, shadow, duration and easing, the native-only ones included (Fluent's dark-theme ARGB values that FluentAvalonia keys expect, the clear rest states, the dialog strokes), and those are web tokens too. Alpha is `#rrggbbaa` or `color-mix(in srgb, <colour> <p>%, transparent)`, which gives the colour's RGB at alpha `round(p * 255 / 100)`.
+
+`node tokens/build.mjs` (or `pnpm tokens`) copies the block into `react/styles.css` and generates `Themes/Tokens.axaml`: a `Hoobi<Name>Color` and `Hoobi<Name>Brush` per colour, `HoobiRadius*`, `HoobiShadow*` (`BoxShadows`) and `HoobiEase*`. Durations are web tokens only: `Motion` holds the native durations, because they are zero when Windows turns off client-area animation. `Resources.axaml` holds no literal colour: every brush refers to a generated key (`Transparent` is allowed, as in HOOBI001). `check.mjs` (and `node tokens/build.mjs --check` alone) fails when `styles.css` or `Tokens.axaml` is stale and when `Resources.axaml` holds a hex or named colour. Hand edits to either generated file are lost on the next generation.
 
 The native theme differs from the web in these places:
 
@@ -569,20 +581,25 @@ commit and shipped together with the consumer updates.
 
 ## Build and verification
 
-pnpm workspace: the root is the library, `catalog/` is the one workspace package and links the
-library through `workspace:*`. One `pnpm install` at the root installs both; the only lockfile is
-`pnpm-lock.yaml` at the root.
+pnpm workspace: the repo root is the workspace root, `react/` (the library) and `catalog/` are its
+packages, and the catalog links the library through `workspace:*`. One `pnpm install` at the root
+installs both; the only lockfile is `pnpm-lock.yaml` at the root. The root scripts proxy to
+`react/`, so every command below runs from the root.
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm run typecheck
 pnpm run build
-npm pack --dry-run     # must list dist/, styles.css, fonts/, LICENSE and nothing else
+pnpm test
+(cd react && npm pack --dry-run)   # must list dist/, styles.css, fonts/ (no README.md), LICENSE, README.md, package.json and nothing else
 ```
 
-Dank Mono is licensed and is not in the repo or its history. The three woff2 files are the
+`react/LICENSE` is a copy of the root `LICENSE`, because npm packs `LICENSE` and `README.md` from the
+package folder. The two stay identical.
+
+Dank Mono is licensed (`react/fonts/README.md`) and is not in the repo or its history. The three woff2 files are the
 universal package `hoobi-design-fonts-dankmono` 1.0.0 on the Hoobi feed. `pnpm fonts:fetch`
-downloads them into `fonts/` (gitignored) when `az` is signed in to the Hoobi org, and prints a
+downloads them into `react/fonts/` (gitignored) when `az` is signed in to the Hoobi org, and prints a
 message and does nothing otherwise; mono text then falls back to Cascadia Mono or the system
 monospace. The pipelines download the package before the build and fail when it is missing, so
 the published npm package always ships the files. `fonts:fetch` fails too when `CI` or `TF_BUILD`
@@ -592,7 +609,7 @@ is set.
 gets looked at in the catalog dev server with the browser - not reasoned about, looked at:
 
 ```bash
-pnpm run build                  # catalog consumes ../ via workspace:*, so library dist first
+pnpm run build                  # catalog consumes ../react via workspace:*, so library dist first
 pnpm -C catalog dev      # Vite on :5173
 ```
 
@@ -611,15 +628,17 @@ HOOBI_GALLERY_PNG_DIR=<folder> dotnet test --project tests/Hoobi.Design.Avalonia
 
 A change to `.axaml`, a control theme or a native token is verified in the gallery PNGs as well: open each changed page's PNG and check spacing, alignment and tones, as for the web catalog. A style that was never rendered is not verified.
 
-`pnpm run typecheck` also runs `check.mjs`, which enforces the rules this file states: no
+`pnpm run typecheck` also runs `react/check.mjs`, which enforces the rules this file states: no
 literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
 lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
-in `catalog/src/pages.tsx`. It also fails when `Themes/Tokens.axaml` is stale against `styles.css`.
+in `catalog/src/pages.tsx`. It also fails when `react/styles.css` or `Themes/Tokens.axaml` is
+stale against `tokens/tokens.css`, and when `Themes/Resources.axaml` holds a literal colour.
 
-Sanity-check token to utility generation after touching `styles.css`:
+A token change is made in `tokens/tokens.css`, then `pnpm tokens` regenerates both platforms.
+Sanity-check token to utility generation after it:
 
 ```bash
-pnpm dlx @tailwindcss/cli@4.3.3 -i styles.css -o ./.tw-check.css   # gitignored
+cd react && pnpm dlx @tailwindcss/cli@4.3.3 -i styles.css -o ./.tw-check.css   # gitignored
 ```
 
 ## Catalog
@@ -632,7 +651,7 @@ Deliberately **not** Storybook. Plain anchors, one flat `pages.tsx`, no addons, 
 doc-extraction pipeline. Prop tables are hand-written.
 
 ```bash
-pnpm run build            # the library first: catalog consumes ../ via workspace:*
+pnpm run build            # the library first: catalog consumes ../react via workspace:*
 pnpm -C catalog dev
 pnpm -C catalog build     # -> catalog/dist/index.html, one self-contained file, fonts inlined
 ```
@@ -648,14 +667,14 @@ real components, rules and tokens. It moved there from the standalone claude.ai/
 because claude.ai/design closes on 14 December 2026. `pnpm -C catalog build:ds` (library `dist`
 first) runs `catalog/ds/build.mjs`, which writes the artifact's files to
 `catalog/design-system/project/` (gitignored): `tokens.json` and `tokens.css` from the `@theme`
-block, the fonts, a brand book from `catalog/ds/brand.md`, the library as one IIFE
+block (colours resolved through `tokens/build.mjs`), the fonts, a brand book from `catalog/ds/brand.md`, the library as one IIFE
 `components/bundle.js` (`window.HoobiDesign`) with the catalog's compiled stylesheet, and a card per
 component whose live preview mounts the catalog page's own `<Demo>` examples, or the overrides in
 `catalog/ds/examples.mjs`. It fails on a token without a note in `catalog/ds/usage.json` and on any
 file that breaks the artifact format.
 
 Sync runs at release time, not per commit, so the system shows what consumers can `pnpm add`. After
-`pnpm version && git push --follow-tags`, run `/design-sync` (`.claude/skills/design-sync/`): it
+`pnpm -C react version && git push --follow-tags`, run `/design-sync` (`.claude/skills/design-sync/`): it
 builds the files and publishes them to the artifact with the Artifact tool, the index
 `design-system.json` last, keeping `"editing": "code"` so the page stays read-only.
 `catalog/src/pages.tsx` is the one page registry: the catalog nav and the generator both read it,
@@ -667,13 +686,13 @@ The end-to-end ritual (verify -> version -> tag push -> pipeline to green -> Des
 decision -> consumer repin) is the **`release` skill** (`.claude/skills/release/`). Mechanics:
 
 ```bash
-pnpm version patch      # or minor/major
+pnpm -C react version patch      # or minor/major; commits react/package.json and tags v<version>
 git push --follow-tags
 ```
 
 The `v*` tag fires `operations/pipelines/publish.yaml` (pipeline `hoobi-design`, definition 23, Home
 Lab pool): npmAuthenticate -> pnpm install --frozen-lockfile -> typecheck -> build -> guard that the tag matches
-`package.json` version -> publish, skipped when that version is already on the feed. The same run then installs the .NET SDK, runs `dotnet test` on `Hoobi.Design.Avalonia.Tests` (the Windows test project cannot run on the Linux agent), packs the three projects with `-p:Version=<tag version>` and pushes the `.nupkg` files with `--skip-duplicate`. The NuGet version comes from `package.json` (`dotnet/Directory.Build.props`), so one bump releases npm and NuGet together.
+`react/package.json` version -> `npm publish ./react` from the root (so npm reads the root `.npmrc` that npmAuthenticate writes), skipped when that version is already on the feed. The same run then installs the .NET SDK, runs `dotnet test` on `Hoobi.Design.Avalonia.Tests` (the Windows test project cannot run on the Linux agent), packs the three projects with `-p:Version=<tag version>` and pushes the `.nupkg` files with `--skip-duplicate`. The NuGet version comes from `react/package.json` (`dotnet/Directory.Build.props`), so one bump releases npm and NuGet together.
 
 Consumers on GitHub Actions restore through OIDC, with no secret: each job that restores gets `id-token: write`, runs `azure/login` with the repo variables `ADO_HOOBI_ARTIFACTS_PULL_CLIENT_ID` and `ADO_HOOBI_TENANT_ID`, takes a token for the Azure DevOps resource (`499b84ac-1321-427f-aa17-267ca6975798`) and sets it as the `Hoobi` source password. The identity is the Entra app `hoobi-github-ado-nuget-pull` in the Hoobi tenant, with Reader on the feed and one flexible federated credential for every `hoobio` repo (`repository_owner_id` is in the expression because Entra rejects `sub` alone as mutable). The Hoobi feed rejects anonymous restore with 401.
 

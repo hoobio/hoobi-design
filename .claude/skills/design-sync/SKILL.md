@@ -11,7 +11,7 @@ so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
 - **Target:** "Hoobi Design", https://claude.ai/artifact/N5rDQuXjYLMJ7VQ6Q8wxHB. Its content is
   files under `project/`; everything else in the artifact belongs to the Design System type and is
   refused.
-- **When:** after a release (`pnpm version` + `git push --follow-tags`), once the publish pipeline
+- **When:** after a release (`pnpm -C react version` + `git push --follow-tags`), once the publish pipeline
   is green. The system shows what consumers can `pnpm add`, so never sync unreleased `main` unless
   explicitly asked to preview.
 - **Mode:** the index carries `"editing": "code"`, so the page is read-only and every change comes
@@ -19,7 +19,7 @@ so Claude generates Hoobi-shaped UI from the real components, rules and tokens.
 
 ## Procedure
 
-1. Build (library `dist` first, the catalog consumes `../` via `workspace:*`):
+1. Build from the repo root (library `dist` first, the catalog consumes `../react` via `workspace:*`):
 
    ```bash
    pnpm run build && pnpm -C catalog build:ds

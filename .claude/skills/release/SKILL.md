@@ -15,8 +15,9 @@ tag exists.
    component was LOOKED at in the catalog (`pnpm run build` then `pnpm -C catalog dev`) -
    a component that was never rendered is not verified.
 2. **Commit** on main (conventional-commit + gitmoji, no AI-attribution trailers).
-3. **Version + tag**: `pnpm version patch|minor` (additive props/components -> minor; visual or
-   behavioural fixes -> patch), then `git push origin main --follow-tags`.
+3. **Version + tag**: `pnpm -C react version patch|minor` from the repo root (additive
+   props/components -> minor; visual or behavioural fixes -> patch). It commits `react/package.json`
+   and tags `v<ver>`. Then `git push origin main --follow-tags`.
 4. **Monitor pipeline 23** for the `refs/tags/v<ver>` run to `succeeded` (background poll ~30s):
    `az pipelines runs list --org https://dev.azure.com/Hoobi --project Hoobi --pipeline-ids 23
    --branch refs/tags/v<ver> --top 1`. The feed has the version only after this is green; do
@@ -30,7 +31,7 @@ tag exists.
 ## NuGet side
 
 The same `v*` tag publishes three NuGet packages to the Hoobi feed: `Hoobi.Design.Avalonia`,
-`Hoobi.Design.Avalonia.Testing` and `Hoobi.Desktop.Windows`. The version is `package.json`'s, so
+`Hoobi.Design.Avalonia.Testing` and `Hoobi.Desktop.Windows`. The version is `react/package.json`'s, so
 one bump releases npm and NuGet together. Pipeline 23 packs with `-p:Version=<tag version>` and
 pushes with `--skip-duplicate`. It runs `dotnet test` for `Hoobi.Design.Avalonia.Tests` only: the
 Windows test project cannot run on the Linux agent.
