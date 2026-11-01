@@ -6,7 +6,7 @@ import type { PointerEvent, FocusEvent } from 'react';
  * one is clipped by any scrolling or clipping ancestor - a page shell's <main>, a card
  * that rounds by clipping - and the tip needs to stay readable.
  *
- * No positioning library and no state: two lines of measurement, and the CSS in
+ * No positioning library and no state: the anchor and tip are measured, and the CSS in
  * the base layer renders and positions the tip at that point.
  */
 function fixedHost(el: HTMLElement): DOMRect | null {
@@ -22,6 +22,28 @@ function fixedHost(el: HTMLElement): DOMRect | null {
       return node.getBoundingClientRect();
   }
   return null;
+}
+
+type Rect = Pick<DOMRect, 'left' | 'top' | 'right' | 'bottom' | 'width' | 'height'>;
+
+export function tipPosition(
+  r: Rect,
+  placement: 'above' | 'right',
+  tip: { width: number; height: number },
+  vw: number,
+  vh: number,
+  margin = 8,
+) {
+  const { width: w, height: h } = tip;
+  if (placement === 'right') {
+    const x = r.right + 8 + w > vw - margin ? r.left - 8 - w : r.right + 8;
+    const cy = r.top + r.height / 2;
+    const y = Number.isNaN(h) ? cy : Math.max(margin + h / 2, Math.min(cy, vh - margin - h / 2));
+    return { x, y, below: false };
+  }
+  const x = Math.max(margin + w / 2, Math.min(r.left + r.width / 2, vw - margin - w / 2));
+  const below = r.top - 6 - h < margin;
+  return { x, y: below ? r.bottom + 6 : r.top - 6, below };
 }
 
 export function tipAnchor(
@@ -41,10 +63,23 @@ export function tipAnchor(
     // backdrop-filter, filter, transform or contain on an ancestor (a flyout's mirage, say) makes
     // that ancestor the containing block for a fixed child, so the viewport point is rebased onto it.
     const host = fixedHost(el);
-    const x = (placement === 'right' ? r.right + 8 : r.left + r.width / 2) - (host?.left ?? 0);
-    const y = (placement === 'right' ? r.top + r.height / 2 : r.top - 6) - (host?.top ?? 0);
-    el.style.setProperty('--tip-x', `${String(x)}px`);
-    el.style.setProperty('--tip-y', `${String(y)}px`);
+    const set = (p: { x: number; y: number; below: boolean }) => {
+      el.style.setProperty('--tip-x', `${String(p.x - (host?.left ?? 0))}px`);
+      el.style.setProperty('--tip-y', `${String(p.y - (host?.top ?? 0))}px`);
+      if (p.below) el.style.setProperty('--tip-ty', '0');
+      else el.style.removeProperty('--tip-ty');
+    };
+    const root = document.documentElement;
+    const vw = root.clientWidth;
+    const vh = root.clientHeight;
+    set(tipPosition(r, placement, { width: 0, height: 0 }, vw, vh));
+    const box = getComputedStyle(el, '::after');
+    const width = parseFloat(box.width);
+    const tip = {
+      width: Number.isNaN(width) ? parseFloat(box.maxWidth) || 0 : width,
+      height: parseFloat(box.height),
+    };
+    set(tipPosition(r, placement, tip, vw, vh));
   };
   const base = {
     'data-tip': text,
