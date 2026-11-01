@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { readTokens, tokensPath } from '../dotnet/build-tokens.mjs';
+import { readTokens, tokensPath } from '../tokens/build.mjs';
 
 /**
  * Enforces the rules in AGENTS.md. Each check exists because the pattern it
