@@ -255,31 +255,36 @@ export function Shell({
       </>
     );
 
-  const pane = (area: NavArea) => (
-    <NavAreaContext.Provider value={area}>
-      <div className="flex h-full min-h-0 flex-col overflow-x-hidden">
-        <div
-          className={cx(
-            'scroll-hints min-h-0 flex-1 overflow-y-auto px-1 py-1',
-            // The rail is 48px: an 8px scrollbar inside it shoves every mark off-centre.
-            // Wheel and touch still scroll a hidden one, and the tips still name the rows.
-            area === 'side' && collapsed ? 'no-scrollbar' : 'styled-scrollbar',
-          )}
-          style={
-            {
-              '--scroll-edge': `var(--color-${area === 'overlay' ? 'surface' : paneSurface === 'contrast' ? 'chip' : 'bg'})`,
-            } as CSSProperties
-          }
-        >
-          {/* Scroll cues indicate there is more content above or below when the scrollbar is hidden. */}
-          <div aria-hidden className="scroll-hint-top" />
-          {nav}
-          <div aria-hidden className="scroll-hint-bottom" />
+  const pane = (area: NavArea) => {
+    const railed = area === 'side' && collapsed;
+    return (
+      <NavAreaContext.Provider value={area}>
+        <div className="flex h-full min-h-0 flex-col overflow-x-hidden">
+          <div
+            className={cx(
+              'min-h-0 flex-1 overflow-y-auto px-1 py-1',
+              // The rail is 48px: an 8px scrollbar inside it shoves every mark off-centre.
+              // Wheel and touch still scroll a hidden one, and the tips still name the rows.
+              railed ? 'scroll-hints no-scrollbar' : 'styled-scrollbar',
+            )}
+            style={
+              railed
+                ? ({
+                    '--scroll-edge': `var(--color-${paneSurface === 'contrast' ? 'chip' : 'bg'})`,
+                  } as CSSProperties)
+                : undefined
+            }
+          >
+            {/* The cues stand in for the rail's hidden scrollbar; a visible one needs none, and a fade there smears the last row. */}
+            {railed ? <div aria-hidden className="scroll-hint-top" /> : null}
+            {nav}
+            {railed ? <div aria-hidden className="scroll-hint-bottom" /> : null}
+          </div>
+          {navFooter ? <div className="px-1 py-1">{navFooter}</div> : null}
         </div>
-        {navFooter ? <div className="px-1 py-1">{navFooter}</div> : null}
-      </div>
-    </NavAreaContext.Provider>
-  );
+      </NavAreaContext.Provider>
+    );
+  };
 
   return (
     <ShellContext.Provider
