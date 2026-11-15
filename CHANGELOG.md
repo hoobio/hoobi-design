@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.2](https://github.com/hoobio/hoobi-design/compare/v0.56.1...v0.56.2) (2026-11-15)
+
+
+### Bug Fixes
+
+* 🐛 library buttons no longer submit a surrounding form ([2dcba8b](https://github.com/hoobio/hoobi-design/commit/2dcba8b5c9b28701b8681e264ddb1b2b93749793))
+
 ## [0.56.1](https://github.com/hoobio/hoobi-design/compare/v0.56.0...v0.56.1) (2026-11-15)
 
 
