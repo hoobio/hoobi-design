@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode, type SyntheticEvent } from 'react';
 import { cx } from './cx.js';
 
 export interface ModalProps {
@@ -25,16 +25,17 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
-  const onBackdrop = (e: MouseEvent<HTMLDialogElement>) => {
+  // React bubbles close, cancel and click from a dialog nested inside this one, so each acts only on this dialog's own event.
+  const own = (e: SyntheticEvent<HTMLDialogElement>) => {
     if (e.target === ref.current) onClose();
   };
 
   return (
     <dialog
       ref={ref}
-      onClose={onClose}
-      onCancel={onClose}
-      onClick={onBackdrop}
+      onClose={own}
+      onCancel={own}
+      onClick={own}
       className={cx(
         'm-auto max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-[color-mix(in_srgb,var(--color-smoke)_60%,transparent)]',
         SIZES[size],
