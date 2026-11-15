@@ -46,6 +46,18 @@
     <SolidColorBrush x:Key="HoobiDangerBrush" Color="{StaticResource HoobiDangerColor}" />
     <Color x:Key="HoobiInfoColor">#FF73D0FF</Color>
     <SolidColorBrush x:Key="HoobiInfoBrush" Color="{StaticResource HoobiInfoColor}" />
+    <Color x:Key="HoobiQualityPoorColor">#FF9D9D9D</Color>
+    <SolidColorBrush x:Key="HoobiQualityPoorBrush" Color="{StaticResource HoobiQualityPoorColor}" />
+    <Color x:Key="HoobiQualityCommonColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="HoobiQualityCommonBrush" Color="{StaticResource HoobiQualityCommonColor}" />
+    <Color x:Key="HoobiQualityUncommonColor">#FF1EFF00</Color>
+    <SolidColorBrush x:Key="HoobiQualityUncommonBrush" Color="{StaticResource HoobiQualityUncommonColor}" />
+    <Color x:Key="HoobiQualityRareColor">#FF4D9BFF</Color>
+    <SolidColorBrush x:Key="HoobiQualityRareBrush" Color="{StaticResource HoobiQualityRareColor}" />
+    <Color x:Key="HoobiQualityEpicColor">#FFC27BFF</Color>
+    <SolidColorBrush x:Key="HoobiQualityEpicBrush" Color="{StaticResource HoobiQualityEpicColor}" />
+    <Color x:Key="HoobiQualityLegendaryColor">#FFFF8000</Color>
+    <SolidColorBrush x:Key="HoobiQualityLegendaryBrush" Color="{StaticResource HoobiQualityLegendaryColor}" />
     <Color x:Key="HoobiChipColor">#FF15181F</Color>
     <SolidColorBrush x:Key="HoobiChipBrush" Color="{StaticResource HoobiChipColor}" />
     <Color x:Key="HoobiSmokeColor">#FF06070A</Color>

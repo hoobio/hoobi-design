@@ -357,6 +357,43 @@ const every5 = Array.from({ length: 12 }, (_, i) => ({ at: at(i * 5 + 2) }));
 <Rating value={4} size="sm" label="Read only" />`,
     },
   ],
+  SegmentedControl: [
+    {
+      title: 'Two to four options',
+      code: `const [iterations, setIterations] = useState('5000');
+
+<SegmentedControl
+  label="Iterations"
+  options={[
+    { value: '1000', label: '1,000' },
+    { value: '5000', label: '5,000' },
+    { value: '20000', label: '20,000' },
+  ]}
+  value={iterations}
+  onChange={setIterations}
+/>`,
+    },
+  ],
+  RadioCards: [
+    {
+      title: 'On a Card',
+      code: `const [start, setStart] = useState('equipped');
+
+<Card className="w-full max-w-[28rem]">
+  <RadioCards
+    legend="Starting gear"
+    name="start"
+    value={start}
+    onChange={setStart}
+    options={[
+      { value: 'equipped', title: 'Equipped gear', description: 'Start from what the character wears now.' },
+      { value: 'owned', title: 'Owned items', description: 'Pick the best set from the bags and the bank.' },
+      { value: 'preset', title: 'Preset', description: 'A pre-raid best-in-slot list.', disabled: true, disabledReason: 'No preset exists for this spec yet.' },
+    ]}
+  />
+</Card>`,
+    },
+  ],
   Switch: [
     {
       title: 'On and off',

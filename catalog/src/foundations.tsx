@@ -38,6 +38,18 @@ const GROUPS: { group: string; note: string; names: string[] }[] = [
     note: 'Literal hex on purpose, so Tailwind opacity modifiers such as bg-warn/10 can decompose them.',
     names: ['success', 'warn', 'danger', 'info'],
   },
+  {
+    group: 'Item quality',
+    note: 'Text colours for item names, each at least 4.5:1 on surface and surface-raised. Rare and epic are lighter than the game colours, which are 3.22:1 and 3.18:1 on surface.',
+    names: [
+      'quality-poor',
+      'quality-common',
+      'quality-uncommon',
+      'quality-rare',
+      'quality-epic',
+      'quality-legendary',
+    ],
+  },
 ];
 
 export function Colour() {

@@ -117,6 +117,18 @@ The master on/off: a setting that acts, `role="switch"`. A value in a set is a `
 
 A value in a set. A setting that acts is a `Switch`.
 
+## SegmentedControl
+
+A short, exclusive choice of 2 to 4 options at 32px, with a visible `label` (`hideLabel` inside a `SettingRow`). Native radios in a radiogroup. The selected segment is filled with `surface-raised`; the accent is not used.
+
+## RadioCards
+
+A fieldset with a visible `legend` and a native radio per option, drawn as a card with a title and a one-line description. Selection is a fill and a check icon. `detail` holds further controls and renders under the card only while that option is selected. `disabledReason` is the card's tooltip. Cards stack in one column.
+
+## Delta
+
+A `Badge` for a signed change. The sign is always printed: `+`, the real minus `−` (U+2212) and `±` at zero. Success for a gain, danger for a loss, neutral at zero. `invert` is for a value where lower is better.
+
 ## CodeBlock
 
 Bring your own engine: install highlight.js and pass its markup as `html`. The stylesheet maps standard hljs token classes onto the theme tokens, so any grammar renders in Ayu Mirage.

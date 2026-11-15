@@ -43,6 +43,13 @@ export { CronInput, type CronInputProps, type CronPreset } from './CronInput.js'
 export { DurationInput, type DurationInputProps, type DurationUnit } from './DurationInput.js';
 export { Divider, type DividerProps } from './Divider.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
+export { Delta, type DeltaProps } from './Delta.js';
+export { RadioCards, type RadioCardOption, type RadioCardsProps } from './RadioCards.js';
+export {
+  SegmentedControl,
+  type SegmentedControlProps,
+  type SegmentedOption,
+} from './SegmentedControl.js';
 export { CodeBlock, type CodeBlockProps } from './CodeBlock.js';
 export { ColorPicker, type ColorPickerProps } from './ColorPicker.js';
 export { ConfirmButton, type ConfirmButtonProps } from './ConfirmButton.js';

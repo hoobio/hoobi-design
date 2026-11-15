@@ -95,6 +95,12 @@ Timeline (`Timeline.Item`), DescriptionList,
 Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, a `Shell.Item` with `children` is an accordion of icon-less sub-items shown while it is active, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
 Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
+SegmentedControl (2 to 4 labelled options at 32px, native radios in a radiogroup, the selected
+segment filled with no accent), RadioCards (a fieldset with a visible legend and a native radio per
+option drawn as a card with a title and a description; selection is a fill and a check; `detail`
+holds further controls and renders under the card only while it is selected; `disabledReason` is
+the card's tooltip), Delta (a Badge for a signed change: `+` success, `−` danger, `±` neutral at
+zero, `invert` for lower-is-better),
 Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no context, because
 the caller is usually a poll or a socket, not a component),
 Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes),
@@ -273,7 +279,7 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
 
 ## Design rules
 
-- **Settings are one surface level.** Rows are `bg-surface` separated by a 1px seam of `bg-bg`
+- **Settings are one surface level** (the general rule is under Page layout). Rows are `bg-surface` separated by a 1px seam of `bg-bg`
   (`SettingList`), a group title is caption text, never a box, and nothing on a settings page sits
   below caption (14px): label `text-body`, description `text-caption text-text-dim`, only when the
   label cannot say it alone and never restating a value a control on the page already shows.
@@ -315,6 +321,40 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
   name. Components stay controlled and dependency-free (`open` + `onOpenChange` + `id`) and the
   consumer's router owns the URL. Transient controls are excepted: an
   armed destructive button or a flyout that closes on the next click is not view state.
+
+### Page layout
+
+- **A surface is never nested in another surface.** This applies to every component. A `Card`,
+  `SettingList`, `Stat` or option card does not sit on a surface of its own kind or inside a
+  `Card` body. Fields and option cards inside a surface fill with `bg-chip`. Content that needs
+  grouping inside a surface uses a `Divider` or a caption title.
+- A panel takes its size from its content or from its grid row. A fixed `min-height` is allowed
+  only for a loading skeleton.
+- In a two-column work area, the shorter column ends within one card height of the longer one at
+  1440px. Content moves between columns before a spacer is added.
+- A media or 3D panel takes its height from its row (stretch) or from an `aspect-ratio`.
+- The page regions, in order, are: Shell, PageHeader, one banner slot, one Tabs row, the work area
+  with an optional aside, UnsavedBar.
+- A view has at most one Tabs row, one toolbar row and one banner slot. A second set of choices
+  is a list in the aside, a `Select` or a `Menu`. It is never a strip above the Tabs.
+- Banners have a priority order. One banner shows at a time.
+
+### Actions and controls
+
+- A toolbar shows at most three buttons: one primary or one secondary pair, and one overflow
+  `Menu`. More actions go into the `Menu` under `Menu.Label` groups.
+- Every `Select`, `MultiSelect`, `SegmentedControl` and toggle group has a visible `label`, or sits
+  in a group with a visible legend. Two adjacent dropdowns with hidden labels are not allowed.
+- A control that only configures another action sits inside that action's popover or dialog, or
+  directly beside its button as a ghost control. It is not a peer button in the toolbar.
+- Controls that start the same task from different inputs (a new build from equipped gear, from
+  owned items, from a preset) are one entry point with the input as a choice inside it.
+- A view has one accent element. While `UnsavedBar` shows, the page primaries render as secondary.
+- Selection is shown by fill (`surface-raised`) and a check icon or a `Badge`. The accent is not a
+  selection ring.
+- Item quality text uses the `--color-quality-*` tokens (`poor`, `common`, `uncommon`, `rare`,
+  `epic`, `legendary`). Each is at least 4.5:1 on `surface` and `surface-raised`. `rare` and `epic`
+  are lighter than the game colours, which are 3.22:1 and 3.18:1 on `surface`.
 
 ### WinUI 3 conventions
 

@@ -29,6 +29,13 @@
   --color-danger: #f28779;
   --color-info: #73d0ff;
 
+  --color-quality-poor: #9d9d9d;
+  --color-quality-common: #ffffff;
+  --color-quality-uncommon: #1eff00;
+  --color-quality-rare: #4d9bff;
+  --color-quality-epic: #c27bff;
+  --color-quality-legendary: #ff8000;
+
   --color-chip: #15181f;
 
   /* Fluent's smoke (SmokeFillColorDefault #4D000000) tinted to the palette; black over a page this dark caps at a 1.36:1 dim, so the use site carries twice Fluent's alpha. */

@@ -14,8 +14,10 @@ import {
   CodeBlock,
   ColorPicker,
   ConfirmButton,
+  Delta,
   DescriptionList,
   Divider,
+  FormDialog,
   Input,
   Markdown,
   Menu,
@@ -26,12 +28,14 @@ import {
   Persona,
   Popover,
   Progress,
+  RadioCards,
   Rating,
   ReorderGrip,
   ReorderList,
   RepeatList,
   RichTooltip,
   Section,
+  SegmentedControl,
   Select,
   Sheet,
   Shell,
@@ -3627,6 +3631,270 @@ export function CheckboxPage() {
             '',
             'On the label wrapper, which is the 44px touch target under a coarse pointer. The painted box stays 20px.',
           ],
+        ]}
+      />
+    </>
+  );
+}
+
+export function SegmentedControlPage() {
+  const [iterations, setIterations] = useState('5000');
+  const [kind, setKind] = useState('items');
+  return (
+    <>
+      <Import names="SegmentedControl" />
+      <Demo
+        title="Two to four options"
+        note="A short, exclusive choice, 32px high. The radios are native, so the arrow keys move the choice and the global focus ring shows on the segment. The selected segment is filled with surface-raised on a chip track: no accent, no border."
+        code={`<SegmentedControl
+  label="Iterations"
+  options={[
+    { value: '1000', label: '1,000' },
+    { value: '5000', label: '5,000' },
+    { value: '20000', label: '20,000' },
+  ]}
+  value={iterations}
+  onChange={setIterations}
+/>`}
+      >
+        <SegmentedControl
+          label="Iterations"
+          options={[
+            { value: '1000', label: '1,000' },
+            { value: '5000', label: '5,000' },
+            { value: '20000', label: '20,000' },
+          ]}
+          value={iterations}
+          onChange={setIterations}
+        />
+      </Demo>
+
+      <Demo
+        title="Label, info and disabled"
+        note="The label is a FieldLabel, so it takes info like every other field. hideLabel keeps it for screen readers inside a SettingRow. A disabled control dims."
+        code={`<SegmentedControl
+  label="Show"
+  info="Which part of the gear the comparison covers."
+  options={[{ value: 'items', label: 'Items' }, { value: 'enchants', label: 'Enchants' }]}
+  value={kind}
+  onChange={setKind}
+/>
+<SegmentedControl label="Locked" disabled options={...} value="items" onChange={...} />`}
+      >
+        <SegmentedControl
+          label="Show"
+          info="Which part of the gear the comparison covers."
+          options={[
+            { value: 'items', label: 'Items' },
+            { value: 'enchants', label: 'Enchants' },
+          ]}
+          value={kind}
+          onChange={setKind}
+        />
+        <SegmentedControl
+          label="Locked"
+          disabled
+          options={[
+            { value: 'items', label: 'Items' },
+            { value: 'enchants', label: 'Enchants' },
+          ]}
+          value="items"
+          onChange={() => undefined}
+        />
+      </Demo>
+
+      <Props
+        rows={[
+          ['label', 'ReactNode', 'required', 'The visible label, a FieldLabel.'],
+          ['hideLabel', 'boolean', 'false', 'Read to screen readers, not drawn.'],
+          ['info', 'string', '', 'An (i) beside the label.'],
+          ['options', '{ value: string; label: ReactNode }[]', 'required', '2 to 4 options.'],
+          ['value', 'string', 'required', 'The selected option.'],
+          ['onChange', '(value: string) => void', 'required', 'Fires with the new value.'],
+          ['disabled', 'boolean', 'false', 'Dims the control and takes the radios out of use.'],
+          ['className', 'string', '', 'On the wrapper.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function RadioCardsPage() {
+  const [start, setStart] = useState('equipped');
+  const [open, setOpen] = useState(false);
+  const [dialogStart, setDialogStart] = useState('equipped');
+  const [preset, setPreset] = useState('pre-raid');
+  const options = () => [
+    {
+      value: 'equipped',
+      title: 'Equipped gear',
+      description: 'Start from what the character wears now.',
+    },
+    {
+      value: 'owned',
+      title: 'Owned items',
+      description: 'Pick the best set from the bags and the bank.',
+      detail: (
+        <Select
+          label="Slots to fill"
+          value={preset}
+          onChange={(e) => {
+            setPreset(e.target.value);
+          }}
+        >
+          <option value="pre-raid">All slots</option>
+          <option value="weapons">Weapons only</option>
+        </Select>
+      ),
+    },
+    {
+      value: 'preset',
+      title: 'Preset',
+      description: 'A pre-raid best-in-slot list.',
+      disabled: true,
+      disabledReason: 'No preset exists for this spec yet.',
+    },
+  ];
+  return (
+    <>
+      <Import names="RadioCards" />
+      <Demo
+        title="On a Card"
+        note="A fieldset with a visible legend and a native radio per option, so the arrow keys, the form value and the global focus ring are the platform's. Each option is a card with a title and a one-line description. The selected card is filled with surface-raised and carries a check; the accent is not a ring. An unselected card fills as a field does, with chip. Hover the disabled card for its reason."
+        stack
+        code={`<RadioCards
+  legend="Starting gear"
+  name="start"
+  value={start}
+  onChange={setStart}
+  options={[
+    { value: 'equipped', title: 'Equipped gear', description: 'Start from what the character wears now.' },
+    { value: 'owned', title: 'Owned items', description: 'Pick the best set from the bags and the bank.',
+      detail: <Select label="Slots to fill" ... /> },
+    { value: 'preset', title: 'Preset', description: 'A pre-raid best-in-slot list.',
+      disabled: true, disabledReason: 'No preset exists for this spec yet.' },
+  ]}
+/>`}
+      >
+        <Card className="w-full max-w-[28rem]">
+          <RadioCards
+            legend="Starting gear"
+            name="start"
+            value={start}
+            onChange={setStart}
+            options={options()}
+          />
+        </Card>
+      </Demo>
+
+      <Demo
+        title="In a FormDialog"
+        note="A Modal fills with surface-raised, and the unselected cards still read against it because they fill with chip. detail renders under the selected card, outside its label, so the controls in it are not part of the radio's name."
+        code={`<FormDialog open={open} title="New build" submitLabel="Create build" onSubmit={...} onCancel={...}>
+  <RadioCards legend="Starting gear" name="dialog-start" value={start} onChange={setStart} options={...} />
+</FormDialog>`}
+      >
+        <Button
+          variant="primary"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          New build
+        </Button>
+        <FormDialog
+          open={open}
+          title="New build"
+          submitLabel="Create build"
+          onSubmit={() => {
+            setOpen(false);
+          }}
+          onCancel={() => {
+            setOpen(false);
+          }}
+        >
+          <RadioCards
+            legend="Starting gear"
+            name="dialog-start"
+            value={dialogStart}
+            onChange={setDialogStart}
+            options={options()}
+          />
+        </FormDialog>
+      </Demo>
+
+      <Props
+        rows={[
+          ['legend', 'ReactNode', 'required', 'The visible group label, drawn as a FieldLabel in the fieldset legend.'],
+          ['name', 'string', 'required', 'The radio group name.'],
+          ['value', 'string', 'required', 'The selected option.'],
+          ['onChange', '(value: string) => void', 'required', 'Fires with the new value.'],
+          [
+            'options',
+            '{ value, title, description?, disabled?, disabledReason?, detail? }[]',
+            'required',
+            'One card each. description is one line. disabledReason is the tooltip of a disabled card. detail is further controls, rendered under the card only while it is selected.',
+          ],
+          ['className', 'string', '', 'On the fieldset.'],
+        ]}
+      />
+    </>
+  );
+}
+
+export function DeltaPage() {
+  return (
+    <>
+      <Import names="Delta" />
+      <Playground
+        knobs={{
+          value: { kind: 'text', init: '4.2' },
+          suffix: { kind: 'text', init: '%' },
+          invert: { kind: 'boolean', init: false },
+        }}
+        render={(v) => (
+          <Delta
+            value={Number(v.value) || 0}
+            suffix={(v.suffix as string) || undefined}
+            invert={v.invert as boolean}
+          />
+        )}
+        code={(v) =>
+          `<Delta value={${String(Number(v.value) || 0)}}${v.suffix ? ` suffix="${String(v.suffix)}"` : ''}${v.invert ? ' invert' : ''} />`
+        }
+      />
+
+      <Demo
+        title="Gain, loss, zero"
+        note="A Badge for a signed change. The sign is always printed: + for a gain, the real minus sign (U+2212) for a loss and ± at zero. Success, danger and neutral. The digits are tabular so a column of them lines up."
+        code={`<Delta value={4.2} suffix="%" />
+<Delta value={-1.5} suffix="%" />
+<Delta value={0} suffix="%" />`}
+      >
+        <Delta value={4.2} suffix="%" />
+        <Delta value={-1.5} suffix="%" />
+        <Delta value={0} suffix="%" />
+      </Demo>
+
+      <Demo
+        title="Lower is better and a format"
+        note="invert is for a value where a fall is the gain, such as a time. format receives the magnitude without its sign."
+        code={`<Delta value={-12} suffix="s" invert />
+<Delta value={30} suffix="s" invert />
+<Delta value={-1200} format={(n) => n.toLocaleString('en-US')} />`}
+      >
+        <Delta value={-12} suffix="s" invert />
+        <Delta value={30} suffix="s" invert />
+        <Delta value={-1200} format={(n) => n.toLocaleString('en-US')} />
+      </Demo>
+
+      <Props
+        rows={[
+          ['value', 'number', 'required', 'The signed change. Zero prints ±0.'],
+          ['format', '(abs: number) => string', 'String', 'Formats the magnitude, sign excluded.'],
+          ['suffix', 'string', '', 'Printed after the magnitude: %.'],
+          ['invert', 'boolean', 'false', 'Lower is better: a fall is success and a rise is danger.'],
+          ['className', 'string', '', 'On the Badge.'],
         ]}
       />
     </>

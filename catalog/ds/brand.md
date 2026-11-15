@@ -31,9 +31,22 @@ Components are React, in `components/bundle.js` as `window.HoobiDesign`. Styling
 - Control density: 32px (`h-8`) for Button md, Input, Select and Tabs; 28px (`h-7`) for Button sm; 48px chrome heights.
 - Text in a filled box (a field, pill, chip, button) is vertically centred, never top-aligned with padding.
 - Settings are one surface level: `SettingList` rows on `bg-surface`, a 1px seam of `bg-bg` between, a group title in caption text, never a box.
+- A surface is never nested in another surface. Fields and option cards inside a surface fill with `bg-chip`.
+- A panel takes its size from its content or its grid row; a fixed `min-height` is for a loading skeleton only. In a two-column work area the shorter column ends within one card height of the longer. A media or 3D panel takes its height from its row or an `aspect-ratio`.
+- Page regions in order: Shell, PageHeader, one banner slot, one Tabs row, the work area with an optional aside, UnsavedBar. A view has at most one Tabs row, one toolbar row and one banner slot; one banner shows at a time.
 - Segmented cards are **sliced**: a 1px hairline of page background between full-bleed sections. `Divider` bleeds to the surface's edges by default; `Card padded={false}` lets flush content reach them.
 - Mobile first: every component survives a 360px viewport. `min-w-0` on flex children, wrapping headers, scrollable tab strips, 44px touch targets under `pointer: coarse`.
 - Every state a person can reach is reachable by URL: a page is a path, a filter or tab is in the query string, anything expandable has a static id.
+
+## Actions and controls
+
+- A toolbar shows at most three buttons: one primary or one secondary pair, and one overflow `Menu`. More actions go into the `Menu` under `Menu.Label` groups.
+- Every `Select`, `MultiSelect`, `SegmentedControl` and toggle group has a visible `label`, or sits in a group with a visible legend.
+- A control that only configures another action sits inside that action's popover or dialog, or beside its button as a ghost control.
+- Controls that start the same task from different inputs are one entry point with the input as a choice inside it.
+- One accent element per view. While `UnsavedBar` shows, page primaries render as secondary.
+- Selection is shown by fill (`surface-raised`) and a check icon or a `Badge`. The accent is not a selection ring.
+- Item quality text uses `color-quality-poor`, `-common`, `-uncommon`, `-rare`, `-epic` and `-legendary`, each at least 4.5:1 on surface and surface-raised.
 
 ## Shape and depth
 

@@ -5,6 +5,7 @@ import {
   Card,
   Divider,
   Input,
+  SegmentedControl,
   SettingList,
   SettingRow,
   Switch,
@@ -40,6 +41,48 @@ export function Rules() {
           <Button variant="primary">Details</Button>
           <Button variant="primary">Dismiss</Button>
         </>
+      </DoDont>
+
+      <DoDont
+        rule="A surface is never nested in another surface"
+        why="This holds for every component, not only settings. Two fills one step apart make the reader work out which box is the thing. Groups inside a surface are told apart by a hairline Divider or a caption title, and fields inside it fill with chip."
+        doLabel="One surface, a Divider between groups."
+        dontLabel="A raised box inside a surface."
+      >
+        <Card className="w-64">
+          <div className="text-body-strong text-text">Rockman EXE</div>
+          <Divider />
+          <div className="text-caption text-text-dim">56 episodes, one pack.</div>
+        </Card>
+        <Card className="w-64">
+          <div className="rounded-panel bg-surface-raised p-3">
+            <div className="text-body-strong text-text">Rockman EXE</div>
+            <div className="mt-1 text-caption text-text-dim">56 episodes, one pack.</div>
+          </div>
+        </Card>
+      </DoDont>
+
+      <DoDont
+        rule="Selection by fill"
+        why="The selected option is the filled one, with a check where the option is a card. An accent ring is the focus ring's language, and a selected card with a ring and a focused card with a ring cannot be told apart."
+        doLabel="A filled segment."
+        dontLabel="An accent ring on the selected option."
+      >
+        <SegmentedControl
+          label="Items"
+          options={[
+            { value: 'a', label: 'Items' },
+            { value: 'b', label: 'Enchants' },
+          ]}
+          value="a"
+          onChange={() => undefined}
+        />
+        <div className="flex gap-1 rounded-control bg-chip p-0.5">
+          <span className="rounded-control px-3 py-1 text-body text-text ring-2 ring-accent">
+            Items
+          </span>
+          <span className="rounded-control px-3 py-1 text-body text-text-dim">Enchants</span>
+        </div>
       </DoDont>
 
       <DoDont
