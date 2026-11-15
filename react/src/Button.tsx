@@ -38,6 +38,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   return (
+    // type-ok: the default is the native submit, so a consumer button in a form keeps submitting
     <button
       disabled={disabled ?? busy}
       aria-busy={busy || undefined}

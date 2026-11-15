@@ -85,6 +85,21 @@ for (const exportedName of exported) {
   }
 }
 
+// A button without a type submits any form it sits in (a MultiSelect Clear started a sim inside
+// FormDialog). Every library button states its type; 'type-ok: reason' on the line above exempts.
+for (const f of src) {
+  const lines = readFileSync(`src/${f}`, 'utf8').split('\n');
+  lines.forEach((line, i) => {
+    if (!/<(button|Button|ActionButton|ConfirmButton)\b/.test(line)) return;
+    if (/type-ok/.test(lines[i - 1] ?? '')) return;
+    const tag = lines
+      .slice(i, i + 40)
+      .join('\n')
+      .split(/(?<!=)>/)[0];
+    if (!/\btype=/.test(tag)) errors.push(`src/${f}:${i + 1}: button without a type - add type="button"`);
+  });
+}
+
 // Every tooltip is the Tooltip component (or tipAnchor): a native title= on a DOM element is
 // the browser's own yellow box, late, unstyled and invisible to touch. Component props named
 // title (Alert, Section, PageHeader) are headings, not tooltips, and are not matched here.

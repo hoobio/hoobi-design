@@ -88,6 +88,7 @@ export function ActionButton({
         : children;
 
   return (
+    // type-ok: consumer-facing, forwards to Button whose default is kept
     <Button
       {...rest}
       {...(state === 'failure' ? tipAnchor(message) : {})}

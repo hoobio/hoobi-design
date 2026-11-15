@@ -1064,6 +1064,7 @@ export function FlowCanvas({
       </div>
 
       <Button
+        type="button"
         size="sm"
         className="absolute right-2 bottom-2"
         onPointerDown={(event) => {

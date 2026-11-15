@@ -161,6 +161,7 @@ export function SecretField({
             </button>
           </div>
           <Button
+            type="button"
             onClick={() => {
               copy(revealedValue ?? '');
             }}
@@ -170,7 +171,7 @@ export function SecretField({
             {copied ? t.copied : t.copy}
           </Button>
           {onRegenerate ? (
-            <Button variant="ghost" onClick={onRegenerate} disabled={disabled}>
+            <Button type="button" variant="ghost" onClick={onRegenerate} disabled={disabled}>
               {t.regenerate}
             </Button>
           ) : null}
@@ -189,7 +190,7 @@ export function SecretField({
           {setBadge}
         </span>
         {onRotate ? (
-          <Button onClick={onRotate} disabled={disabled}>
+          <Button type="button" onClick={onRotate} disabled={disabled}>
             {t.rotate}
           </Button>
         ) : null}

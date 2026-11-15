@@ -38,6 +38,7 @@ export function ConfirmButton({
   );
 
   return (
+    // type-ok: consumer-facing, forwards to Button whose default is kept
     <Button
       variant={armed ? 'danger' : variant}
       onClick={() => {

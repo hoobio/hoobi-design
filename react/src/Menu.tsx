@@ -504,6 +504,7 @@ export function Menu({
   return (
     <div ref={rootRef} className={cx('relative inline-flex', className)}>
       <Button
+        type="button"
         variant={variant}
         size={size}
         disabled={disabled}

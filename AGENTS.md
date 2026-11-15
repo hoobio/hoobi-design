@@ -676,7 +676,7 @@ A change to `.axaml`, a control theme or a native token is verified in the galle
 
 `pnpm run typecheck` also runs `react/check.mjs`, which enforces the rules this file states: no
 literal hex in `src/*.tsx` (a `// hex-ok: reason` line above exempts, `hex-ok x2` covers two
-lines), no bespoke focus styling, no box shadows, and every export in `src/index.ts` has a page
+lines), no bespoke focus styling, no box shadows, no `<button`/`<Button` JSX in `src/*.tsx` without a `type` (a `// type-ok: reason` line above exempts), and every export in `src/index.ts` has a page
 in `catalog/src/pages.tsx`. It also fails when `react/styles.css` or `Themes/Tokens.axaml` is
 stale against `tokens/tokens.css`, and when `Themes/Resources.axaml` holds a literal colour.
 

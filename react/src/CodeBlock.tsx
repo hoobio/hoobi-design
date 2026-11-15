@@ -84,6 +84,7 @@ function CopyButton({ code }: { code: string }) {
     // given stylesheet order.
     <span className="absolute top-1.5 right-1.5 rounded-control bg-chip">
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         onClick={() => {

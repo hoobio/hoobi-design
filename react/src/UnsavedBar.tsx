@@ -58,10 +58,11 @@ export function UnsavedBar({
           </span>
         </span>
         <div className="flex shrink-0 gap-2">
-          <Button variant="ghost" onClick={onDiscard} disabled={saving}>
+          <Button type="button" variant="ghost" onClick={onDiscard} disabled={saving}>
             {discardLabel}
           </Button>
           <ActionButton
+            type="button"
             variant="primary"
             busy={saving}
             successLabel="Saved"

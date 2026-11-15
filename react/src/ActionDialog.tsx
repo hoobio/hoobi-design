@@ -117,10 +117,11 @@ export function ActionDialog({
           strength for visibility. */}
       {error ? <Alert tone="danger" title={error} className="mt-4" /> : null}
       <div className="mt-4 flex flex-wrap justify-end gap-2">
-        <Button ref={cancelRef} variant="ghost" disabled={pending} onClick={onCancel}>
+        <Button type="button" ref={cancelRef} variant="ghost" disabled={pending} onClick={onCancel}>
           {cancelLabel}
         </Button>
         <Button
+          type="button"
           ref={actionRef}
           variant={tone === 'danger' ? 'danger' : 'primary'}
           busy={pending}

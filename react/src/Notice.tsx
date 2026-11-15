@@ -103,6 +103,7 @@ export function Notice({
           </div>
           {onDismiss ? (
             <Button
+              type="button"
               variant="ghost"
               size="sm"
               aria-label="Dismiss"

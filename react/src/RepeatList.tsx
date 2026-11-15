@@ -94,6 +94,7 @@ export function RepeatList<T>({
           <div key={i} className="flex items-start gap-1.5">
             <Cells cells={row} />
             <Button
+              type="button"
               variant="ghost"
               aria-label={name}
               {...tipAnchor(name)}
@@ -110,6 +111,7 @@ export function RepeatList<T>({
       })}
       <div>
         <Button
+          type="button"
           size="sm"
           variant="ghost"
           onClick={() => {
