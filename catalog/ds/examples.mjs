@@ -323,6 +323,55 @@ const toggle = (key) => setExpanded((now) => { const next = new Set(now); if (ne
 </ReorderList>`,
     },
   ],
+  RepeatList: [
+    {
+      title: 'One row of controls per item',
+      stack: true,
+      height: 220,
+      code: `const [policies, setPolicies] = useState([
+  { path: '/media/anime/series', audio: 'jpn', subtitle: 'eng' },
+  { path: '/media/anime/movies', audio: 'jpn', subtitle: 'eng' },
+]);
+
+<RepeatList
+  items={policies}
+  onChange={setPolicies}
+  newItem={() => ({ path: '', audio: '', subtitle: '' })}
+  columns={['Folder', 'Audio', 'Subtitle']}
+  addLabel="Add folder"
+  minItems={1}
+  cells={(p, update) => [
+    { key: 'path', size: 'lg', node: <Input label="Folder" hideLabel mono value={p.path} onChange={(e) => update({ ...p, path: e.target.value })} /> },
+    { key: 'audio', size: 'sm', node: <Input label="Audio" hideLabel mono value={p.audio} onChange={(e) => update({ ...p, audio: e.target.value })} /> },
+    { key: 'subtitle', size: 'sm', node: <Input label="Subtitle" hideLabel mono value={p.subtitle} onChange={(e) => update({ ...p, subtitle: e.target.value })} /> },
+  ]}
+/>`,
+    },
+  ],
+  FlowCanvas: [
+    {
+      title: 'A trigger feeding an action',
+      stack: true,
+      flush: true,
+      height: 320,
+      code: `const [nodes, setNodes] = useState([
+  { id: 'trigger', x: 0, y: 40, title: 'On import', subtitle: 'Trigger', inputs: [], outputs: [{ id: 'out' }], footer: <Badge>214 runs</Badge> },
+  { id: 'action', x: 320, y: 40, title: 'Notify', subtitle: 'Action', inputs: [{ id: 'in' }], outputs: [], tone: 'info' },
+]);
+const [edges, setEdges] = useState([{ id: 'e1', from: 'trigger', fromPort: 'out', to: 'action', toPort: 'in' }]);
+const [selected, setSelected] = useState(null);
+
+<FlowCanvas
+  nodes={nodes}
+  edges={edges}
+  selected={selected}
+  onSelect={setSelected}
+  onMove={(id, x, y) => setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, x, y } : n)))}
+  onConnect={(c) => setEdges((es) => [...es, { id: crypto.randomUUID(), ...c }])}
+  height={280}
+/>`,
+    },
+  ],
   TimeAxis: [
     {
       title: 'A schedule, three jobs and a single firing',

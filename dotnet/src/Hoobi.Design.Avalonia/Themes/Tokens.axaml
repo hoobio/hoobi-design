@@ -36,7 +36,7 @@
     <SolidColorBrush x:Key="HoobiAccentHoverBrush" Color="{StaticResource HoobiAccentHoverColor}" />
     <Color x:Key="HoobiOnAccentColor">#FFFFFFFF</Color>
     <SolidColorBrush x:Key="HoobiOnAccentBrush" Color="{StaticResource HoobiOnAccentColor}" />
-    <Color x:Key="HoobiAccentFillColor">#FF357AC2</Color>
+    <Color x:Key="HoobiAccentFillColor">#FF3478BE</Color>
     <SolidColorBrush x:Key="HoobiAccentFillBrush" Color="{StaticResource HoobiAccentFillColor}" />
     <Color x:Key="HoobiSuccessColor">#FFBAE67E</Color>
     <SolidColorBrush x:Key="HoobiSuccessBrush" Color="{StaticResource HoobiSuccessColor}" />

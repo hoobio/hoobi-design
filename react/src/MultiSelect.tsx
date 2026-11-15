@@ -56,7 +56,7 @@ export function MultiSelect({
           <span className="min-w-0 truncate">{value.length > 0 ? label : (placeholder ?? label)}</span>
           <span className="flex shrink-0 items-center gap-1.5">
             {value.length > 0 ? (
-              <Badge tone="accent" size="sm">
+              <Badge tone="accent" size="md">
                 {value.length}
               </Badge>
             ) : null}

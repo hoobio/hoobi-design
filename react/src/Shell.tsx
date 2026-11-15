@@ -505,7 +505,7 @@ function ShellItem({
       <Comp
         aria-current={active ? 'page' : undefined}
         className={cx(
-          'relative flex h-8 items-center rounded-control px-3 text-[0.8333rem] whitespace-nowrap pointer-coarse:min-h-11',
+          'relative flex h-8 items-center rounded-control px-3 text-[max(0.8333rem,14px)] whitespace-nowrap pointer-coarse:min-h-11',
           active ? 'bg-surface text-text' : 'text-text-dim hover:bg-surface hover:text-text',
           className,
         )}
@@ -743,7 +743,7 @@ function ShellGroup({ label, children }: ShellGroupProps) {
       {railed ? (
         <div className="-mx-1 my-2 border-t border-bg" />
       ) : (
-        <div className="px-3 pt-4 pb-1 text-caption whitespace-nowrap text-text-mute">{label}</div>
+        <div className="px-3 pt-4 pb-1 text-caption whitespace-nowrap text-text-dim">{label}</div>
       )}
       {children}
     </div>

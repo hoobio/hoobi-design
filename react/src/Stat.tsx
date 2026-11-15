@@ -51,9 +51,9 @@ export function Stat({
     <>
       {icon ? <span className={cx('mt-1 shrink-0', TONES[tone])}>{icon}</span> : null}
       <div className={cx('flex min-w-0 flex-col', flush ? 'gap-0.5' : 'gap-1')}>
-        <p className="text-caption text-text-dim">{label}</p>
+        <p className={cx('text-caption', tint ? 'text-text' : 'text-text-dim')}>{label}</p>
         <p className={cx('text-title tabular-nums', flush && 'truncate', TONES[tone])}>{value}</p>
-        {sub ? <p className="text-caption text-text-mute">{sub}</p> : null}
+        {sub ? <p className={cx('text-caption', tint ? 'text-text' : 'text-text-dim')}>{sub}</p> : null}
       </div>
     </>
   );
