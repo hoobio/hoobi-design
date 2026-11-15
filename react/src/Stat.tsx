@@ -83,7 +83,7 @@ export interface StatStripProps {
 
 const COLUMNS: Record<NonNullable<StatStripProps['columns']>, string> = {
   2: 'grid-cols-2',
-  3: 'grid-cols-3',
+  3: 'grid-cols-1 min-[560px]:grid-cols-3',
   4: 'grid-cols-2 min-[760px]:grid-cols-4',
 };
 
