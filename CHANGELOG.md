@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.0](https://github.com/hoobio/hoobi-design/compare/v0.55.2...v0.56.0) (2026-11-15)
+
+
+### Features
+
+* ✨ RadioCards, SegmentedControl, Delta, item quality tokens and page layout rules ([0341657](https://github.com/hoobio/hoobi-design/commit/0341657ba1e72a2273e328541c2302d26c52c791))
+
 ## [0.55.2](https://github.com/hoobio/hoobi-design/compare/v0.55.1...v0.55.2) (2026-11-15)
 
 
