@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.55.2](https://github.com/hoobio/hoobi-design/compare/v0.55.1...v0.55.2) (2026-11-15)
+
+
+### Bug Fixes
+
+* 🐛 a dialog nested inside a Modal or Sheet no longer closes it: each closes only on its own close, Escape or backdrop click ([b9c4385](https://github.com/hoobio/hoobi-design/commit/b9c4385129caceff0c0e07f1eda0e96dc38635e8))
+
 ## [0.55.1](https://github.com/hoobio/hoobi-design/compare/v0.55.0...v0.55.1) (2026-11-01)
 
 
