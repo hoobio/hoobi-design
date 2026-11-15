@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.56.1](https://github.com/hoobio/hoobi-design/compare/v0.56.0...v0.56.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* 🐛 a three-column StatStrip stacks below 560px, so its values are not cut off on a phone ([cf0fd02](https://github.com/hoobio/hoobi-design/commit/cf0fd0263c33bb539545dfbcebce75da6c85c566))
+* 🐛 primary button label, Shell group labels and Stat sub text reach 4.5:1, and caption and the MultiSelect count stay at 14px on small screens ([b8cb9cf](https://github.com/hoobio/hoobi-design/commit/b8cb9cfe664d75143f0f4db4afd349e4f7cd5f3b))
+
 ## [0.56.0](https://github.com/hoobio/hoobi-design/compare/v0.55.2...v0.56.0) (2026-11-15)
 
 
