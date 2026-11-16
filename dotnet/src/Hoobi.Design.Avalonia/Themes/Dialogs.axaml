@@ -22,7 +22,8 @@
                                 MaxWidth="{DynamicResource ContentDialogMaxWidth}"
                                 MinHeight="{DynamicResource ContentDialogMinHeight}"
                                 MaxHeight="{DynamicResource ContentDialogMaxHeight}"
-                                HorizontalAlignment="Center"
+                                Margin="{StaticResource HoobiDialogGutter}"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 Effect="{StaticResource HoobiDialogShadow}"
                                 BackgroundSizing="{TemplateBinding BackgroundSizing}">

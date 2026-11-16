@@ -44,6 +44,27 @@ public sealed class DialogTests(AvaloniaSession session)
     });
 
     [Fact]
+    public void A_dialog_in_a_narrow_window_keeps_a_gutter_to_the_window_edges() => session.Run(() =>
+    {
+        var window = new Window { Width = 440, Height = 600 };
+        window.Show();
+        var dialog = new FAContentDialog { Title = "Title", Content = "Body", PrimaryButtonText = "Go", CloseButtonText = "Cancel" };
+
+        var shown = AppDialogs.ShowAsync(dialog, window);
+        AvaloniaSession.WaitFor(() => dialog.IsLoaded);
+        window.CaptureRenderedFrame();
+
+        var background = dialog.GetVisualDescendants().OfType<Border>().First(border => border.Name == "BackgroundElement");
+        var left = background.Bounds.X;
+        var width = background.Bounds.Width;
+        AvaloniaSession.CloseDialog(dialog, shown);
+        window.Close();
+
+        Assert.Equal(24, left);
+        Assert.Equal(392, width);
+    });
+
+    [Fact]
     public void Closing_the_owner_of_an_open_dialog_releases_the_queue_for_the_next_window() => session.Run(() =>
     {
         var first = new Window { Width = 800, Height = 600 };

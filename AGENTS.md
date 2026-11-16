@@ -565,6 +565,7 @@ Measure memory with `tools/Measure-Memory.ps1 <process name>`. The number is the
 - Variable fonts do not render per weight. Ship static TTFs.
 - FluentAvalonia resource names clash with unprefixed app keys. App keys carry the `Hoobi` prefix and are referenced with `StaticResource`.
 - Show every dialog through `AppDialogs.ShowAsync` or `AppDialogs.ShowMessageAsync`. They queue a second dialog behind the open one, wait for `ForegroundGate`, cancel a `Hide()` that arrives before the dialog is shown (FluentAvalonia 3.1.0 throws on a dialog that was never shown), return `None` and release the queue when the owner closes, and shorten the open and close fades to 83 ms.
+- A dialog is 440 wide and keeps a 24px gutter (`HoobiDialogGutter`) to the window edges. In a window under 488 wide the dialog is narrower, down to `ContentDialogMinWidth` (320).
 - Avalonia's `Button.OnKeyUp` clicks on a Space key-up with no key-down, so a key held over from before a dialog opened can confirm it. `DialogIntent` (applied by `AppDialogs`) counts a press when its key-down came after the dialog opened.
 - A tray menu opens without focus; `TrayMenuFocus` gives it focus. `SetForegroundWindow` is refused to a process that did not receive the last input, and a tray click goes to Explorer, so `ForegroundGate.ForceForeground` borrows Explorer's input queue for the call.
 - An app that closes to the tray quits on `WM_QUERYENDSESSION` or `WM_ENDSESSION`: it passes its quit to `HoobiChrome.Attach` as `onSessionEnding`.

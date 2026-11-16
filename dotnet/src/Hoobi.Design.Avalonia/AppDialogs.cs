@@ -72,7 +72,7 @@ public static class AppDialogs
                 {
                     if (e.NameScope.Find<Border>("BackgroundElement") is { } panel)
                     {
-                        panel.Margin = new Thickness(0, shellTop, 0, 0);
+                        panel.Margin = new Thickness(panel.Margin.Left, panel.Margin.Top + shellTop, panel.Margin.Right, panel.Margin.Bottom);
                     }
                 };
             }
