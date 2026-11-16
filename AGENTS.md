@@ -352,6 +352,7 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
   - `TextBlock.GroupHeader` margin: it is the space between groups, not an inset.
   - The dialog button strip (24,0,24,24): the dialog body above it supplies the top 24.
 - On the web, Card, Modal and Sheet use one `--pad` value on all sides.
+- In the React package a container surface's padding is one `p-*` utility, never a `px-*`/`py-*` pair. A `px-*`/`py-*` pair is only for an exempt control (its text centred in a fixed height) or where the request asks for asymmetric padding.
 
 ### Actions and controls
 

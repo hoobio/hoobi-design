@@ -836,7 +836,7 @@ function NestedPopoverDemo() {
         onReorder={setRows}
       >
         {(row, handle) => (
-          <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+          <div className="flex items-center gap-3 rounded-panel bg-surface p-2">
             <ReorderGrip {...handle} />
             <span className="min-w-0 flex-1 truncate text-caption text-text">{row.name}</span>
             <Popover
@@ -924,7 +924,7 @@ export function PopoverPage() {
         code={`<div style={{ transform: 'translateZ(0)' }}>
   <ReorderList items={rows} itemKey={(r) => r.id} onReorder={setRows}>
     {(row, handle) => (
-      <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+      <div className="flex items-center gap-3 rounded-panel bg-surface p-2">
         <ReorderGrip {...handle} />
         <span className="min-w-0 flex-1 truncate text-caption">{row.name}</span>
         <Popover
@@ -2414,7 +2414,7 @@ export function ReorderListPage() {
   onReorder={setStages}
 >
   {(stage, handle) => (
-    <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+    <div className="flex items-center gap-3 rounded-panel bg-surface p-2">
       <ReorderGrip {...handle} />
       <Badge tone={stage.tone} dot>{stage.name}</Badge>
       <span className="ml-auto pr-2 text-caption text-text-mute tabular-nums">{stage.runs}</span>
@@ -2431,7 +2431,7 @@ export function ReorderListPage() {
             onReorder={setStages}
           >
             {(stage, handle) => (
-              <div className="flex items-center gap-3 rounded-panel bg-surface px-2 py-2">
+              <div className="flex items-center gap-3 rounded-panel bg-surface p-2">
                 <ReorderGrip {...handle} />
                 <Badge tone={stage.tone} dot>
                   {stage.name}

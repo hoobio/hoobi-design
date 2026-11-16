@@ -263,7 +263,7 @@ export function Shell({
         <div className="flex h-full min-h-0 flex-col overflow-x-hidden">
           <div
             className={cx(
-              'min-h-0 flex-1 overflow-y-auto px-1 py-1',
+              'min-h-0 flex-1 overflow-y-auto p-1',
               // The rail is 48px: an 8px scrollbar inside it shoves every mark off-centre.
               // Wheel and touch still scroll a hidden one, and the tips still name the rows.
               railed ? 'scroll-hints no-scrollbar' : 'styled-scrollbar',
@@ -281,7 +281,7 @@ export function Shell({
             {nav}
             {railed ? <div aria-hidden className="scroll-hint-bottom" /> : null}
           </div>
-          {navFooter ? <div className="px-1 py-1">{navFooter}</div> : null}
+          {navFooter ? <div className="p-1">{navFooter}</div> : null}
         </div>
       </NavAreaContext.Provider>
     );
