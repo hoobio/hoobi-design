@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.57.0](https://github.com/hoobio/hoobi-design/compare/v0.56.3...v0.57.0) (2026-11-16)
+
+
+### Features
+
+* ✨ rows, slots, alerts and settings cards have the same padding on all four sides ([f8d40d9](https://github.com/hoobio/hoobi-design/commit/f8d40d907d23892f07dae1d5727cdf13d29c5848))
+* ✨ SmoothScroll.Centre scrolls a control to the middle of its scroll viewer with the wheel easing ([2bf8716](https://github.com/hoobio/hoobi-design/commit/2bf8716a59e3ef740bdf30bc16cf1a6e4b010a85))
+
 ## [0.56.3](https://github.com/hoobio/hoobi-design/compare/v0.56.2...v0.56.3) (2026-11-16)
 
 
