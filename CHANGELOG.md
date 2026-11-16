@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.3](https://github.com/hoobio/hoobi-design/compare/v0.56.2...v0.56.3) (2026-11-16)
+
+
+### Bug Fixes
+
+* 🐛 a dialog keeps a 24px gutter to the window edges in a narrow window ([9f4bc36](https://github.com/hoobio/hoobi-design/commit/9f4bc36c8066dcb581eca59b918dd1e00c9a25b2))
+
 ## [0.56.2](https://github.com/hoobio/hoobi-design/compare/v0.56.1...v0.56.2) (2026-11-15)
 
 
