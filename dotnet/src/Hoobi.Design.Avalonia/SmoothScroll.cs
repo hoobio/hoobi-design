@@ -80,6 +80,34 @@ public static class SmoothScroll
 
     public static void SetIsEnabled(ScrollViewer viewer, bool value) => viewer.SetValue(IsEnabledProperty, value);
 
+    public static double CentredOffset(double top, double height, double viewport, double max) =>
+        Math.Clamp(top + ((height - viewport) / 2), 0, max);
+
+    public static void Centre(ScrollViewer viewer, Visual target)
+    {
+        viewer.UpdateLayout();
+        if (target.TranslatePoint(default, viewer) is not { } point)
+        {
+            return;
+        }
+
+        var animation = Animation(viewer);
+        var y = CentredOffset(viewer.Offset.Y + point.Y, target.Bounds.Height, viewer.Viewport.Height, Max(viewer));
+        if (!Motion.Enabled)
+        {
+            animation.Cancel();
+            Write(viewer, y);
+            return;
+        }
+
+        var running = animation.IsActive;
+        animation.Wheel(viewer.Offset.Y, y - animation.Aim(viewer.Offset.Y), Max(viewer), Now);
+        if (!running)
+        {
+            RequestFrame(viewer, animation);
+        }
+    }
+
     private static TimeSpan Now => Stopwatch.GetElapsedTime(Origin);
 
     private static double Max(ScrollViewer viewer) => Math.Max(0, viewer.Extent.Height - viewer.Viewport.Height);
