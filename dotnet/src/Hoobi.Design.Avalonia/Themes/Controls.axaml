@@ -1273,7 +1273,7 @@
     </Style>
     <Style Selector="Border.Row">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.5" />
@@ -1285,26 +1285,22 @@
     </Style>
     <Style Selector="Border.Row.Field">
         <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
-        <Setter Property="MinHeight" Value="56" />
     </Style>
     <Style Selector="Border.Row.Switch">
-        <Setter Property="Padding" Value="16,8" />
-        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
     </Style>
     <Style Selector="Border.Row.Switch.Child">
-        <Setter Property="Padding" Value="40,8,16,8" />
+        <Setter Property="Padding" Value="40,16,16,16" />
     </Style>
     <Style Selector="Border.Row.Switch ToggleSwitch">
         <!-- A boxed 14px label in this row centres its capitals one pixel above the knob track, so the switch rises one pixel to meet them. -->
         <Setter Property="Margin" Value="0,-1,-12,1" />
     </Style>
     <Style Selector="Border.Row.KeyValue">
-        <Setter Property="Padding" Value="16,0" />
-        <Setter Property="Height" Value="37" />
+        <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
     </Style>
     <Style Selector="Border.Row.Hairline">
-        <Setter Property="Padding" Value="16,8" />
-        <Setter Property="MinHeight" Value="{StaticResource HoobiCardRowMinHeight}" />
+        <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
         <Setter Property="BorderBrush" Value="{DynamicResource HoobiBgBrush}" />
     </Style>
@@ -1350,7 +1346,7 @@
     <Style Selector="Border.Slot">
         <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
         <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
-        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="Padding" Value="12" />
     </Style>
     <Style Selector="Border.Divider">
         <Setter Property="Height" Value="1" />
@@ -1430,7 +1426,7 @@
     <Style Selector="Border.Alert">
         <Setter Property="Background" Value="{DynamicResource HoobiCautionTintBrush}" />
         <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
-        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Padding" Value="12" />
         <Setter Property="TextElement.FontSize" Value="{StaticResource ControlContentThemeFontSize}" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemFillColorCautionBrush}" />
     </Style>

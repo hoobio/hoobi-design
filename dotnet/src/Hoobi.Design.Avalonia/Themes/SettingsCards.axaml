@@ -9,9 +9,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource HoobiSettingsCardStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
-            <Setter Property="MinHeight" Value="68" />
-            <!-- Avalonia rounds a half pixel to even where WinUI rounds up, so 15 at 150% would lose a pixel. -->
-            <Setter Property="Padding" Value="16,15.01" />
+            <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Template">
                 <ControlTemplate>
@@ -161,7 +159,7 @@
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="MinHeight" Value="{StaticResource HoobiCardRowMinHeight}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
-        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="Padding" Value="{StaticResource HoobiCardRowPadding}" />
     </Style>
     <Style Selector="hoobi|SettingsCard hoobi|SettingsCard.Item">
         <Setter Property="Padding" Value="{StaticResource SettingsExpanderItemPadding}" />

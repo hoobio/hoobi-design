@@ -339,6 +339,20 @@ named `ActionDialog`, not `ConfirmDialog`, for the same reason.
   is a list in the aside, a `Select` or a `Menu`. It is never a strip above the Tabs.
 - Banners have a priority order. One banner shows at a time.
 
+### Container padding
+
+- A container surface has the same padding on all four sides. The padding above and below the content equals the padding to its left and right. Container surfaces are rows, cards, groups, slots, alerts, settings cards, expander headers and dialogs. In the Avalonia package the value is 16 for rows and settings cards (`HoobiCardRowPadding`, `Border.Row` and its variants, `SettingsCard`, `SettingsCard.Item`), 12 for `Border.Slot`, `Border.Alert` and `Border.Inset`, and 24 for dialogs (`ContentDialogPadding`).
+- A fixed `Height` or `MinHeight` on a container surface does not stand in for padding. A row takes its height from its content plus the padding, so a one-line row is 16 above and below its line, and a row that holds a 32px control is 16 above and below the control. `Border.Row.Switch`, `Border.Row.KeyValue` and `Border.Row.Hairline` set no height.
+- `Border.Row.Switch.Child` has a 40px left padding that indents the row under its parent. Its top, right and bottom padding is 16.
+- A control is exempt. A button, text box, combo box, menu item, tooltip, badge, key cap, tab, nav item or segmented item has a fixed height, and its text is centred in that height.
+- Five other values are exempt:
+  - `HoobiPageGutter` (26,7,26,26): the title bar above the page supplies the top space.
+  - `SettingsExpanderItemPadding` (58,8,44,8): the left and right insets align child rows with the header text and the chevron, and `HoobiCardRowMinHeight` (52) gives the row its height.
+  - `FAInfoBar` paddings: they are FluentAvalonia control internals.
+  - `TextBlock.GroupHeader` margin: it is the space between groups, not an inset.
+  - The dialog button strip (24,0,24,24): the dialog body above it supplies the top 24.
+- On the web, Card, Modal and Sheet use one `--pad` value on all sides.
+
 ### Actions and controls
 
 - A toolbar shows at most three buttons: one primary or one secondary pair, and one overflow

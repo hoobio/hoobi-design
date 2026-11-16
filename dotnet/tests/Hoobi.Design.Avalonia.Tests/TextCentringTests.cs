@@ -48,7 +48,7 @@ public sealed class TextCentringTests(AvaloniaSession session)
         }),
         ["TextBox mono 13"] = text => Self(new TextBox { Height = 32, Width = 300, FontSize = 13, FontFamily = AvaloniaSession.Resource<FontFamily>("HoobiMonoFontFamily"), Text = text }),
         ["KeyValue row mono caption"] = text => KeyValueMono(text, 12, double.NaN),
-        ["KeyValue row mono 13 in 36"] = text => KeyValueMono(text, 13, 36),
+        ["KeyValue row mono 13"] = text => KeyValueMono(text, 13, double.NaN),
         ["Button"] = text => Self(new Button { Content = text }),
         ["Button accent"] = text => Self(new Button { Content = text, Theme = AvaloniaSession.Resource<ControlTheme>("AccentButtonStyle") }),
         ["ToggleButton"] = text => Self(new ToggleButton { Content = text }),
