@@ -151,7 +151,7 @@ function ToastItem({ record }: { record: ToastRecord }) {
       onFocus={hold}
       onBlur={release}
       className={cx(
-        'mirage-flyout pointer-events-auto relative isolate flex items-start gap-2.5 rounded-panel px-3 py-2.5',
+        'mirage-flyout pointer-events-auto relative isolate flex items-start gap-2.5 rounded-panel p-3',
         "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-panel before:content-['']",
         TONE_WASHES[tone],
         record.leaving ? 'toast-out' : 'toast-in',

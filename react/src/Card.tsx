@@ -47,7 +47,7 @@ export function Card({
       <div
         className={cx(
           'flex items-baseline justify-between gap-3',
-          padded ? 'mb-3' : 'border-b border-bg px-4 py-3',
+          padded ? 'mb-3' : 'border-b border-bg p-4',
         )}
       >
         {title ? <h3 className="text-body-strong text-text">{title}</h3> : <span />}

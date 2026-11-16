@@ -116,7 +116,7 @@ function TimelineComment({ author, time, emphasis = false, children }: TimelineC
       </span>
       <div
         className={cx(
-          'rounded-panel bg-surface px-3.5 py-2.5 text-body break-words whitespace-pre-wrap',
+          'rounded-panel bg-surface p-3 text-body break-words whitespace-pre-wrap',
           emphasis ? 'text-text' : 'text-text-dim',
         )}
       >

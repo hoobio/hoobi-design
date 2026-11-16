@@ -45,7 +45,7 @@ export function RadioCards({ legend, name, value, onChange, options, className }
             <label
               {...tipAnchor(o.disabled ? o.disabledReason : undefined)}
               className={cx(
-                'flex min-h-11 items-start gap-3 rounded-panel px-3 py-2.5 select-none',
+                'flex min-h-11 items-start gap-3 rounded-panel p-3 select-none',
                 o.disabled && o.disabledReason && 'tip-fixed',
                 selected ? 'bg-surface-raised' : 'bg-chip',
                 o.disabled ? 'cursor-default opacity-50' : 'cursor-pointer',

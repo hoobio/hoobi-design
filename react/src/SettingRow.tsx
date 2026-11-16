@@ -76,7 +76,7 @@ export function SettingRow({
   return (
     <div
       className={cx(
-        'flex min-w-0 flex-col gap-3 px-4 py-3.5 scroll-mt-4',
+        'flex min-w-0 flex-col gap-3 p-4 scroll-mt-4',
         highlight ? 'bg-accent/15' : 'bg-surface',
         className,
       )}

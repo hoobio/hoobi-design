@@ -60,7 +60,7 @@ export function Stat({
   return flush ? (
     <div
       className={cx(
-        'flex min-w-0 items-start gap-3 px-4 py-3',
+        'flex min-w-0 items-start gap-3 p-4',
         tint ? SLICED_TINTS[tint] : 'bg-surface',
         className,
       )}

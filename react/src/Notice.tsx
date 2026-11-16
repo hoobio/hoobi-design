@@ -95,7 +95,7 @@ export function Notice({
     >
       <div className="mirage-scoped" style={{ '--mirage-image': mirageImage() } as CSSProperties}>
         <div className={cx('absolute inset-0', TONE_WASHES[tone])} />
-        <div className="relative flex items-start gap-3 px-5 py-4">
+        <div className="relative flex items-start gap-3 p-4">
           {icon ? <span className={cx('mt-0.5 shrink-0', TONE_TEXTS[tone])}>{icon}</span> : null}
           <div className="min-w-0 flex-1">
             <p className="text-body-strong">{title}</p>
