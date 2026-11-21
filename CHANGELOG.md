@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.57.1](https://github.com/hoobio/hoobi-design/compare/v0.57.0...v0.57.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* 🐛 A Modal backdrop click closes the dialog only when the press and the release are both on the backdrop ([f6754a1](https://github.com/hoobio/hoobi-design/commit/f6754a1a509f1ecfebe8b41907f4520c7a6c7848))
+* 🐛 Container surfaces use symmetric p-* padding, matching the design spec ([002fd22](https://github.com/hoobio/hoobi-design/commit/002fd22169439305fd18ad371fac2bb2fc4785e9))
+
 ## [0.57.0](https://github.com/hoobio/hoobi-design/compare/v0.56.3...v0.57.0) (2026-11-16)
 
 
