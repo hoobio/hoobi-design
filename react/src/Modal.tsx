@@ -30,12 +30,20 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
     if (e.target === ref.current) onClose();
   };
 
+  const pressedBackdrop = useRef(false);
+
   return (
     <dialog
       ref={ref}
       onClose={own}
       onCancel={own}
-      onClick={own}
+      onMouseDown={(e) => {
+        pressedBackdrop.current = e.target === ref.current;
+      }}
+      onClick={(e) => {
+        if (pressedBackdrop.current) own(e);
+        pressedBackdrop.current = false;
+      }}
       className={cx(
         'm-auto max-h-[min(85dvh,calc(100dvh-2rem))] rounded-panel bg-surface-raised p-0 text-text backdrop:bg-[color-mix(in_srgb,var(--color-smoke)_60%,transparent)]',
         SIZES[size],
