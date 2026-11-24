@@ -14,7 +14,7 @@ renders in Ayu Mirage), Modal, Tabs (controlled), Table (sortable columns, contr
 Timeline (`Timeline.Item`), DescriptionList,
 Section (`panel` for a settings-shaped surface), Shell (the one page chrome; `bar={false}` for a full-height pane, a `Shell.Item` with `children` is an accordion of icon-less sub-items shown while it is active, and `Shell.MenuItem` /
 `MenuLabel` / `MenuDivider` are Menu's rows for the user flyout), Progress, Spinner, Alert, Input,
-Select, Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
+Select (a native select), ColumnSelect (a single choice whose options show three aligned columns with no header: a label, a detail that takes the remaining width and truncates, and a right-aligned tabular trailing value; a select-only combobox with focus kept on the trigger, `aria-activedescendant`, Up/Down/Home/End, Enter or Space to pick, Escape to close, type-ahead on the label; the list is a `grid` with `subgrid` rows raised into the top layer through `flyout.ts`, at least as wide as the trigger; options are 44px tall on a coarse pointer; the closed trigger is Select's 32px chip and shows the selected label and detail), Banner (the headline, body and chips share one wrapping row with `actions`: text left, actions right and vertically centred, and the actions wrap below the text, still right-aligned, when the row is too narrow), Checkbox, Switch (the master on/off; role="switch", where Checkbox is a value in a set),
 SegmentedControl (2 to 4 labelled options at 32px, native radios in a radiogroup, the selected
 segment filled with no accent), RadioCards (a fieldset with a visible legend and a native radio per
 option drawn as a card with a title and a description; selection is a fill and a check; `detail`
@@ -23,7 +23,7 @@ the card's tooltip), Delta (a Badge for a signed change: `+` success, `−` dang
 zero, `invert` for lower-is-better),
 Toast (one `Toaster` mounted at the root plus a module-level `toast()` - no context, because
 the caller is usually a poll or a socket, not a component),
-Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes),
+Notice (state news that outranks a toast: centred, mirage-backed, up until the state changes; the title and the children share one wrapping row, so a short message is one line),
 Rating, ChipInput (chips + an inline query + suggestions Tab takes), Stat (the Card variant for one
 number; StatStrip slices a row of them into one surface), BarList (label / toned track / tabular readout, not a chart library),
 ColorPicker (WinUI's anatomy: a hue and saturation ring, a value slider, a preview and a hex box,

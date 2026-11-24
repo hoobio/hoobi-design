@@ -4,6 +4,11 @@ export { Badge, type BadgeProps, type BadgeSize, type BadgeTone } from './Badge.
 export { Banner, type BannerProps } from './Banner.js';
 export { BarList, type BarFill, type BarListItem, type BarListProps } from './BarList.js';
 export { ChipInput, type Chip, type ChipInputProps } from './ChipInput.js';
+export {
+  ColumnSelect,
+  type ColumnSelectOption,
+  type ColumnSelectProps,
+} from './ColumnSelect.js';
 export { Notice, type NoticePlacement, type NoticeProps, type NoticeTone } from './Notice.js';
 export { Rating, type RatingProps, type RatingSize } from './Rating.js';
 export { Stat, StatStrip, type StatProps, type StatStripProps, type StatTone } from './Stat.js';

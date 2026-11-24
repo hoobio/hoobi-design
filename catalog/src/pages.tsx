@@ -35,6 +35,7 @@ import {
   ChipInputPage,
   CodeBlockPage,
   ColorPickerPage,
+  ColumnSelectPage,
   ConfirmButtonPage,
   CxPage,
   DeltaPage,
@@ -330,6 +331,13 @@ export const PAGES: Page[] = [
     title: 'MultiSelect',
     caption: 'A categorical filter: Popover trigger, Checkbox rows, a Clear row.',
     render: () => <MultiSelectPage />,
+  },
+  {
+    id: 'column-select',
+    group: 'Inputs',
+    title: 'ColumnSelect',
+    caption: 'A single choice whose options show aligned label, detail and trailing columns.',
+    render: () => <ColumnSelectPage />,
   },
   {
     id: 'modal',

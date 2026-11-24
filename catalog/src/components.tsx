@@ -13,6 +13,8 @@ import {
   type Chip,
   CodeBlock,
   ColorPicker,
+  ColumnSelect,
+  type ColumnSelectOption,
   ConfirmButton,
   Delta,
   DescriptionList,
@@ -1680,6 +1682,125 @@ export function MultiSelectPage() {
           ],
           ['className', 'string', '', "Applied to Popover's own root element."],
           ['...rest', 'HTMLAttributes<HTMLDivElement>', '', "Forwarded to Popover's root."],
+        ]}
+      />
+    </>
+  );
+}
+
+const SUFFIX_STATS = ['Agi', 'Str', 'Sta', 'Int', 'Spi', 'Crit', 'Hit', 'Haste', 'AP', 'SP'];
+const SUFFIX_NAMES = [
+  'Tiger',
+  'Monkey',
+  'Bear',
+  'Eagle',
+  'Owl',
+  'Whale',
+  'Boar',
+  'Falcon',
+  'Wolf',
+  'Gorilla',
+  'Sorcerer',
+  'Elder',
+  'Champion',
+  'Soldier',
+  'Physician',
+  'Prophet',
+  'Invoker',
+  'Bandit',
+  'Beast',
+  'Vision',
+];
+const SUFFIX_OPTIONS: ColumnSelectOption[] = SUFFIX_NAMES.map((name, i) => ({
+  value: name.toLowerCase(),
+  label: `of the ${name}`,
+  detail: [0, 3, 5, 7]
+    .slice(0, 2 + (i % 3))
+    .map((n) => `+${String(15 - n)} ${SUFFIX_STATS[(i + n) % SUFFIX_STATS.length] ?? ''}`)
+    .join(', '),
+  trailing: (48.2 - i * 2.3).toFixed(1),
+}));
+
+export function ColumnSelectPage() {
+  const [suffix, setSuffix] = useState<string | undefined>('tiger');
+  const [empty, setEmpty] = useState<string | undefined>(undefined);
+  return (
+    <>
+      <Import names="ColumnSelect, type ColumnSelectOption" />
+      <Demo
+        title="Anatomy"
+        note="A single choice whose options have parts: a label, a detail that takes the remaining width and truncates, and a right-aligned tabular trailing value. The columns line up across options, and there is no header. The trigger is the same 32px chip as Select and shows the selected label and detail. Focus stays on the trigger: Up, Down, Home and End move, Enter or Space picks, Escape closes, and typing jumps by label."
+        stack
+        code={`<ColumnSelect
+  label="Suffix"
+  value={suffix}
+  onChange={setSuffix}
+  options={[
+    { value: 'tiger', label: 'of the Tiger', detail: '+15 Agi, +15 Str', trailing: '48.2' },
+    { value: 'monkey', label: 'of the Monkey', detail: '+15 Agi, +15 Sta', trailing: '45.9' },
+  ]}
+/>`}
+      >
+        <ColumnSelect
+          label="Suffix"
+          className="w-96 max-w-full"
+          options={SUFFIX_OPTIONS}
+          value={suffix}
+          onChange={setSuffix}
+        />
+        <ColumnSelect
+          label="No selection"
+          className="w-96 max-w-full"
+          placeholder="No suffix"
+          options={SUFFIX_OPTIONS}
+          value={empty}
+          onChange={setEmpty}
+        />
+        <ColumnSelect
+          label="Disabled"
+          className="w-96 max-w-full"
+          disabled
+          options={SUFFIX_OPTIONS}
+          value="tiger"
+          onChange={() => undefined}
+        />
+      </Demo>
+
+      <Demo
+        title="Inside a list row"
+        note="A hidden label, as in a picker row. The list opens in the top layer, so the row's own clipping does not cut it off."
+        code={`<ColumnSelect label="Suffix for Bloodlust Breastplate" hideLabel options={options} value={suffix} onChange={setSuffix} />`}
+      >
+        <div className="flex w-full flex-col gap-1 overflow-hidden rounded-panel bg-surface-raised p-3">
+          <span className="text-body text-text">Bloodlust Breastplate</span>
+          <ColumnSelect
+            label="Suffix for Bloodlust Breastplate"
+            hideLabel
+            className="w-96 max-w-full"
+            options={SUFFIX_OPTIONS}
+            value={suffix}
+            onChange={setSuffix}
+          />
+        </div>
+      </Demo>
+
+      <Props
+        rows={[
+          [
+            'options',
+            'ColumnSelectOption[]',
+            '',
+            'value, label (a string, matched by type-ahead), optional detail and trailing nodes, disabled.',
+          ],
+          ['value', 'string | undefined', '', 'The selected option value. Unset shows placeholder.'],
+          ['onChange', '(value: string) => void', '', 'Called with the picked option value.'],
+          ['label', 'ReactNode', '', 'Caption-sized label, linked by id.'],
+          ['hideLabel', 'boolean', 'false', 'The label is read to screen readers but not drawn.'],
+          ['info', 'string', '', 'What this field means, on an (i) beside the label.'],
+          ['error', 'ReactNode', '', 'Validation failure, under the control.'],
+          ['placeholder', 'string', '', 'Trigger text while nothing is selected.'],
+          ['maxHeight', 'number | string', '24rem', 'Tallest the list grows before it scrolls.'],
+          ['className', 'string', '', 'Applied to the wrapper, not the trigger.'],
         ]}
       />
     </>
