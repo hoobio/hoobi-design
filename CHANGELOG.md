@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.58.0](https://github.com/hoobio/hoobi-design/compare/v0.57.2...v0.58.0) (2026-11-24)
+
+
+### Features
+
+* ✨ Banner actions sit right of the text on one wrapping row, and a Notice title shares its row with the text ([c139cb8](https://github.com/hoobio/hoobi-design/commit/c139cb80945d6a318de9e36430e36f933672ac3e))
+* ✨ ColumnSelect picks one option shown as aligned label, detail and trailing columns ([bcff2d3](https://github.com/hoobio/hoobi-design/commit/bcff2d337f372c5a8e2afebbbcac35accc32e5fc))
+
 ## [0.57.2](https://github.com/hoobio/hoobi-design/compare/v0.57.1...v0.57.2) (2026-11-24)
 
 
