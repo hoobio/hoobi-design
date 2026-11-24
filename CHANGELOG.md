@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.60.0](https://github.com/hoobio/hoobi-design/compare/v0.59.0...v0.60.0) (2026-11-24)
+
+
+### Features
+
+* ✨ MultiSelect options take disabled, shown in the disabled style, never selectable and dropped from the count and from onChange ([f4ee28f](https://github.com/hoobio/hoobi-design/commit/f4ee28f4260ff446685d8c351a77cf644f87edb0))
+
 ## [0.59.0](https://github.com/hoobio/hoobi-design/compare/v0.58.0...v0.59.0) (2026-11-24)
 
 
