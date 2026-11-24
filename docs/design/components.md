@@ -6,7 +6,7 @@ Button, ConfirmButton (arm-then-confirm, built on Button), Menu (anchored flyout
 `Menu.Label` / `Menu.Divider`, and `Menu.Sub` for a nested submenu: a cascading panel beside its
 row with a fine pointer, flipped and clamped at the viewport edge, and drill-down in place under a
 back row on `(pointer: coarse), (max-width: 40rem)`; one open path per menu, so Escape closes one
-level and a leaf closes the whole menu), Badge (tone + optional dot + tooltip, covers status dots; `color`
+level and a leaf closes the whole menu; an icon-less row reserves the icon gutter when another row of its menu has an icon, and `gutter={false}` on `Menu.Item` or `Menu.Sub` drops it, set on every row of a group in which no row has an icon), Badge (tone + optional dot + tooltip, covers status dots; `color`
 swaps the tone for an arbitrary hex - the coloured-chip primitive), Card
 (optional scoped mirage), CodeBlock (bring-your-own-engine: consumers install highlight.js and pass
 `html`; the stylesheet maps standard hljs token classes onto the theme tokens, so any grammar

@@ -3489,7 +3489,7 @@ export function MenuPage() {
     user@example.com
   </Menu.Item>
   <Menu.Divider />
-  <Menu.Item tone="danger" onClick={signOut}>Sign out</Menu.Item>
+  <Menu.Item tone="danger" gutter={false} onClick={signOut}>Sign out</Menu.Item>
 </Menu>`}
       >
         <Menu label="Account">
@@ -3508,7 +3508,7 @@ export function MenuPage() {
             user@example.com
           </Menu.Item>
           <Menu.Divider />
-          <Menu.Item tone="danger" onClick={() => undefined}>
+          <Menu.Item tone="danger" gutter={false} onClick={() => undefined}>
             Sign out
           </Menu.Item>
         </Menu>
@@ -3625,7 +3625,7 @@ export function MenuPage() {
           ['children', 'ReactNode', 'required', 'Menu.Item / Menu.Label / Menu.Divider rows.'],
           [
             'Menu.Item',
-            'icon, tone, action, ...button props',
+            'icon, tone, action, gutter, ...button props',
             '',
             '40px row. tone="danger" for a destructive one. Selecting it closes the menu.',
           ],
@@ -3636,6 +3636,12 @@ export function MenuPage() {
             'Trailing control, right-aligned. Its own button, so its clicks never reach the row.',
           ],
           [
+            'Menu.Item / Menu.Sub gutter',
+            'boolean',
+            'true',
+            'An icon-less row reserves the icon gutter when another row of its menu has an icon, so the labels align. Set gutter={false} on every row of a group in which no row has an icon (a divider sets the group apart), so that group sits flush left.',
+          ],
+          [
             'Menu.Label',
             'children, className',
             '',
@@ -3643,7 +3649,7 @@ export function MenuPage() {
           ],
           [
             'Menu.Sub',
-            'label, icon, children',
+            'label, icon, gutter, children',
             '',
             'A row with a chevron that opens its children as a submenu: a cascading panel beside it with a mouse, the rows replaced in place under a back row on touch or below 40rem. Nests to any depth; its rows set their own icon gutter.',
           ],

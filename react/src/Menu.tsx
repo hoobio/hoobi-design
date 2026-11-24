@@ -48,12 +48,14 @@ export interface MenuItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tone?: 'neutral' | 'danger';
   /** Trailing control on the row - its own button, so its clicks never reach the row. */
   action?: ReactNode;
+  gutter?: boolean;
 }
 
 export interface MenuSubProps {
   /** The row's content, and the back row's in the drill-down panel. */
   label: ReactNode;
   icon?: ReactNode;
+  gutter?: boolean;
   /** The submenu's rows: Menu.Item, Menu.Label, Menu.Divider and further Menu.Sub. */
   children: ReactNode;
 }
@@ -126,8 +128,8 @@ export function MenuGutter({ children }: { children: ReactNode }) {
   );
 }
 
-function RowIcon({ icon }: { icon: ReactNode }) {
-  const gutter = useContext(MenuGutterContext);
+function RowIcon({ icon, gutter: own = true }: { icon: ReactNode; gutter?: boolean }) {
+  const gutter = useContext(MenuGutterContext) && own;
   // A wrapped icon keeps every row's glyph on the same 20px cell.
   if (icon !== undefined) {
     return (
@@ -154,6 +156,7 @@ export function MenuItem({
   icon,
   tone = 'neutral',
   action,
+  gutter,
   className,
   children,
   onClick,
@@ -177,7 +180,7 @@ export function MenuItem({
   );
   const inner = (
     <>
-      <RowIcon icon={icon} />
+      <RowIcon icon={icon} gutter={gutter} />
       <span className="min-w-0 flex-1 truncate text-left">{children}</span>
     </>
   );
@@ -223,7 +226,7 @@ export function MenuItem({
   );
 }
 
-export function MenuSub({ label, icon, children }: MenuSubProps) {
+export function MenuSub({ label, icon, gutter, children }: MenuSubProps) {
   const { nav, depth, hidden } = useLevel();
   const id = useId();
   const rowRef = useRef<HTMLButtonElement>(null);
@@ -359,7 +362,7 @@ export function MenuSub({ label, icon, children }: MenuSubProps) {
         }}
         className={cx(ROW, 'text-text hover:bg-surface', open && 'bg-surface')}
       >
-        <RowIcon icon={icon} />
+        <RowIcon icon={icon} gutter={gutter} />
         <span className="min-w-0 flex-1 truncate text-left">{label}</span>
         <Chevron d={CHEVRON_RIGHT} />
       </button>
