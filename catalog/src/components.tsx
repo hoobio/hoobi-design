@@ -1664,7 +1664,7 @@ export function MultiSelectPage() {
             'options',
             'MultiSelectOption[]',
             '',
-            'value, label (a node, so an option can be coloured), optional iconUrl (16px).',
+            'value, label (a node, so an option can be coloured), optional iconUrl (16px), optional disabled (disabled style, cannot be toggled, its value is dropped from the count and from onChange).',
           ],
           ['value', 'string[]', '', 'The selected option values, in any order.'],
           [

@@ -10,6 +10,8 @@ export interface MultiSelectOption {
   value: string;
   label: ReactNode;
   iconUrl?: string;
+  /** Shown in the disabled style and never selectable; a value of it in `value` is ignored. */
+  disabled?: boolean;
 }
 
 export interface MultiSelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -33,10 +35,11 @@ export function MultiSelect({
   className,
   ...rest
 }: MultiSelectProps) {
+  const selected = value.filter((v) => !options.some((o) => o.value === v && o.disabled));
   const toggle = (optionValue: string) => {
-    const next = value.includes(optionValue)
-      ? value.filter((v) => v !== optionValue)
-      : [...value, optionValue];
+    const next = selected.includes(optionValue)
+      ? selected.filter((v) => v !== optionValue)
+      : [...selected, optionValue];
     const known = options.filter((o) => next.includes(o.value)).map((o) => o.value);
     const unknown = next.filter((v) => !options.some((o) => o.value === v));
     onChange([...known, ...unknown]);
@@ -53,11 +56,11 @@ export function MultiSelect({
           className="flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-control bg-chip pr-2.5 pl-3 text-body text-text"
           {...props}
         >
-          <span className="min-w-0 truncate">{value.length > 0 ? label : (placeholder ?? label)}</span>
+          <span className="min-w-0 truncate">{selected.length > 0 ? label : (placeholder ?? label)}</span>
           <span className="flex shrink-0 items-center gap-1.5">
-            {value.length > 0 ? (
+            {selected.length > 0 ? (
               <Badge tone="accent" size="md">
-                {value.length}
+                {selected.length}
               </Badge>
             ) : null}
             <ChevronIcon
@@ -74,8 +77,9 @@ export function MultiSelect({
         {options.map((option) => (
           <Checkbox
             key={option.value}
-            className="w-full rounded-control px-2.5 hover:bg-surface"
-            checked={value.includes(option.value)}
+            className={cx('w-full rounded-control px-2.5', !option.disabled && 'hover:bg-surface')}
+            checked={selected.includes(option.value)}
+            disabled={option.disabled}
             onChange={() => {
               toggle(option.value);
             }}
@@ -96,7 +100,7 @@ export function MultiSelect({
           variant="ghost"
           size="sm"
           className="justify-start"
-          disabled={value.length === 0}
+          disabled={selected.length === 0}
           onClick={() => {
             onChange([]);
           }}
