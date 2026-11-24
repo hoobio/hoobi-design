@@ -95,11 +95,11 @@ export function Notice({
     >
       <div className="mirage-scoped" style={{ '--mirage-image': mirageImage() } as CSSProperties}>
         <div className={cx('absolute inset-0', TONE_WASHES[tone])} />
-        <div className="relative flex items-start gap-3 p-4">
+        <div className="relative flex items-start gap-3 px-4 py-3">
           {icon ? <span className={cx('mt-0.5 shrink-0', TONE_TEXTS[tone])}>{icon}</span> : null}
-          <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-0.5">
             <p className="text-body-strong">{title}</p>
-            {children ? <div className="text-text-dim">{children}</div> : null}
+            {children ? <div className="min-w-0 grow text-text-dim">{children}</div> : null}
           </div>
           {onDismiss ? (
             <Button
