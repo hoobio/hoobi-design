@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.57.2](https://github.com/hoobio/hoobi-design/compare/v0.57.1...v0.57.2) (2026-11-24)
+
+
+### Bug Fixes
+
+* 🐛 Tooltips show in the top layer, so a Popover, Menu, Modal or FormDialog no longer clips them ([1fdf537](https://github.com/hoobio/hoobi-design/commit/1fdf537ea4591b1e9aa7e480113abe543b3cbaf5))
+
 ## [0.57.1](https://github.com/hoobio/hoobi-design/compare/v0.57.0...v0.57.1) (2026-11-21)
 
 
