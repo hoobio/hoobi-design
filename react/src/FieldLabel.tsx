@@ -69,7 +69,7 @@ export function InfoTip({ text, id, className }: InfoTipProps) {
         aria-hidden
         {...tipAnchor(text, 'above', false)}
         className={cx(
-          'tip-fixed inline-flex size-4 shrink-0 items-center justify-center text-text-mute',
+          'inline-flex size-4 shrink-0 items-center justify-center text-text-mute',
           className,
         )}
       >

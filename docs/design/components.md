@@ -28,9 +28,7 @@ Rating, ChipInput (chips + an inline query + suggestions Tab takes), Stat (the C
 number; StatStrip slices a row of them into one surface), BarList (label / toned track / tabular readout, not a chart library),
 ColorPicker (WinUI's anatomy: a hue and saturation ring, a value slider, a preview and a hex box,
 with an optional nearest-swatch name from a palette you pass),
-Slider, Tooltip (`[data-tip]` in CSS, placed fixed off the anchor by `tipAnchor` so no
-scrolling or clipping ancestor can cut it off, and clamped inside the viewport with an 8px margin,
-flipping below the anchor when there is no room above), RichTooltip (the same idea with nodes in it: a
+Slider, Tooltip (any HTML element with `data-tip`, `tipAnchor` included: listeners on the document show the text in one `.tip-layer` box raised into the top layer with `popover="manual"`, so no scrolling or clipping ancestor, flyout or modal can cut it off, and it stacks above an open Popover, Menu or Modal; placed off the anchor's rect, clamped inside the viewport with an 8px margin, flipping below the anchor when there is no room above, and hidden on scroll, Escape, window blur and anchor removal; a page without the library's JS falls back to the CSS `::after` tip), RichTooltip (the same idea with nodes in it: a
 title and a few lines, following the pointer), Popover (an anchored panel under a trigger of the
 consumer's choosing - Menu without the rows), ActionDialog, Steps (chevrons wide, a stacked
 list narrow), SectionNav, UnsavedBar (`sections` or a free `message`), the list-row primitive -

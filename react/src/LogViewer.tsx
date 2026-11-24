@@ -292,7 +292,7 @@ export function LogViewer({
                         setCtx(l.ctx ?? null);
                       }}
                       {...tipAnchor('Filter to this context')}
-                      className="tip-fixed justify-self-start text-left whitespace-nowrap text-accent-purple hover:text-accent-cyan"
+                      className="justify-self-start text-left whitespace-nowrap text-accent-purple hover:text-accent-cyan"
                     >
                       [{l.ctx}]
                     </button>

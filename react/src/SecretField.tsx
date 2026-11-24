@@ -113,7 +113,7 @@ export function SecretField({
   const lock = (
     <span
       {...tipAnchor(t.stored)}
-      className="tip-fixed inline-flex shrink-0 items-center text-text-mute"
+      className="inline-flex shrink-0 items-center text-text-mute"
     >
       <LockIcon className="size-4" />
     </span>

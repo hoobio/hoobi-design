@@ -1,28 +1,4 @@
-import type { PointerEvent, FocusEvent } from 'react';
-
-/**
- * Anchor props for the house tooltip. The tip is `position: fixed` and placed off the
- * anchor's own rect as the pointer or focus arrives, because an absolutely positioned
- * one is clipped by any scrolling or clipping ancestor - a page shell's <main>, a card
- * that rounds by clipping - and the tip needs to stay readable.
- *
- * No positioning library and no state: the anchor and tip are measured, and the CSS in
- * the base layer renders and positions the tip at that point.
- */
-function fixedHost(el: HTMLElement): DOMRect | null {
-  for (let node = el.parentElement; node; node = node.parentElement) {
-    const style = getComputedStyle(node);
-    if (
-      style.backdropFilter !== 'none' ||
-      style.filter !== 'none' ||
-      style.transform !== 'none' ||
-      style.perspective !== 'none' ||
-      /paint|layout|strict|content/.test(style.contain)
-    )
-      return node.getBoundingClientRect();
-  }
-  return null;
-}
+import { raiseFlyout } from './flyout.js';
 
 type Rect = Pick<DOMRect, 'left' | 'top' | 'right' | 'bottom' | 'width' | 'height'>;
 
@@ -46,6 +22,88 @@ export function tipPosition(
   return { x, y: below ? r.bottom + 6 : r.top - 6, below };
 }
 
+// One box in the top layer: a flyout's backdrop-filter and overflow clip a tip drawn inside it.
+let box: HTMLDivElement | undefined;
+let anchor: HTMLElement | undefined;
+let lower = (): void => undefined;
+let described = false;
+let watch: MutationObserver | undefined;
+
+function tipOf(target: EventTarget | null): HTMLElement | undefined {
+  let el = target instanceof Element ? target.closest('[data-tip]') : null;
+  while (el && !(el instanceof HTMLElement)) el = el.parentElement?.closest('[data-tip]') ?? null;
+  return el ?? undefined;
+}
+
+export function hideTip(): void {
+  if (!anchor) return;
+  if (described) anchor.removeAttribute('aria-describedby');
+  anchor = undefined;
+  watch?.disconnect();
+  lower();
+  box?.remove();
+}
+
+export function showTip(el: HTMLElement): void {
+  hideTip();
+  const text = el.dataset.tip;
+  if (!text) return;
+  box ??= Object.assign(document.createElement('div'), { id: 'hoobi-tip', className: 'tip-layer' });
+  box.setAttribute('role', 'tooltip');
+  box.textContent = text;
+  anchor = el;
+  described = !el.hasAttribute('aria-describedby') && !el.hasAttribute('aria-description');
+  if (described) el.setAttribute('aria-describedby', box.id);
+  document.body.append(box);
+  lower = raiseFlyout(box);
+  const right = el.dataset.tipPlace === 'right';
+  const root = document.documentElement;
+  const { width, height } = box.getBoundingClientRect();
+  const p = tipPosition(
+    el.getBoundingClientRect(),
+    right ? 'right' : 'above',
+    { width, height },
+    root.clientWidth,
+    root.clientHeight,
+  );
+  box.style.left = `${String(p.x)}px`;
+  box.style.top = `${String(p.y)}px`;
+  box.style.translate = right ? '0 -50%' : `-50% ${p.below ? '0' : '-100%'}`;
+  watch ??= new MutationObserver(() => {
+    if (anchor && (!anchor.isConnected || anchor.dataset.tip !== box?.textContent)) {
+      const still = anchor.isConnected && anchor.dataset.tip ? anchor : undefined;
+      if (still) showTip(still);
+      else hideTip();
+    }
+  });
+  watch.observe(document.body, { childList: true, subtree: true });
+  watch.observe(el, { attributes: true, attributeFilter: ['data-tip'] });
+}
+
+if (typeof document !== 'undefined' && !document.documentElement.hasAttribute('data-tip-layer')) {
+  document.documentElement.setAttribute('data-tip-layer', '');
+  document.addEventListener('mouseover', (e) => {
+    const el = tipOf(e.target);
+    if (el && el !== anchor) showTip(el);
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (!anchor || !(e.target instanceof Node) || !anchor.contains(e.target)) return;
+    if (!(e.relatedTarget instanceof Node && anchor.contains(e.relatedTarget))) hideTip();
+  });
+  document.addEventListener('focusin', (e) => {
+    if (e.target instanceof HTMLElement && e.target.matches('[data-tip]:focus-visible'))
+      showTip(e.target);
+  });
+  document.addEventListener('focusout', (e) => {
+    if (e.target === anchor) hideTip();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideTip();
+  });
+  document.addEventListener('scroll', hideTip, true);
+  window.addEventListener('blur', hideTip);
+}
+
 export function tipAnchor(
   text: string | undefined,
   placement: 'above' | 'right' = 'above',
@@ -58,43 +116,7 @@ export function tipAnchor(
   focusable = true,
 ) {
   if (!text) return {};
-  const place = (el: HTMLElement) => {
-    const r = el.getBoundingClientRect();
-    // backdrop-filter, filter, transform or contain on an ancestor (a flyout's mirage, say) makes
-    // that ancestor the containing block for a fixed child, so the viewport point is rebased onto it.
-    const host = fixedHost(el);
-    const set = (p: { x: number; y: number; below: boolean }) => {
-      el.style.setProperty('--tip-x', `${String(p.x - (host?.left ?? 0))}px`);
-      el.style.setProperty('--tip-y', `${String(p.y - (host?.top ?? 0))}px`);
-      if (p.below) el.style.setProperty('--tip-ty', '0');
-      else el.style.removeProperty('--tip-ty');
-    };
-    const root = document.documentElement;
-    const vw = root.clientWidth;
-    const vh = root.clientHeight;
-    set(tipPosition(r, placement, { width: 0, height: 0 }, vw, vh));
-    const box = getComputedStyle(el, '::after');
-    const width = parseFloat(box.width);
-    const tip = {
-      width: Number.isNaN(width) ? parseFloat(box.maxWidth) || 0 : width,
-      height: parseFloat(box.height),
-    };
-    set(tipPosition(r, placement, tip, vw, vh));
-  };
-  const base = {
-    'data-tip': text,
-    'data-tip-place': placement,
-    onPointerEnter: (e: PointerEvent<HTMLElement>) => {
-      place(e.currentTarget);
-    },
-  };
+  const base = { 'data-tip': text, 'data-tip-place': placement };
   if (!focusable) return { ...base, tabIndex: -1 };
-  return {
-    ...base,
-    'aria-description': text,
-    tabIndex: 0,
-    onFocus: (e: FocusEvent<HTMLElement>) => {
-      place(e.currentTarget);
-    },
-  };
+  return { ...base, 'aria-description': text, tabIndex: 0 };
 }

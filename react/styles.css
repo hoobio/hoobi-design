@@ -341,10 +341,6 @@
 }
 
 @layer utilities {
-  /* CSS-only tooltip: content lives in the data-tip attribute, shown instantly on
-     hover and keyboard focus. No JS, no positioning library.
-     ponytail: centred above the anchor, no edge-collision handling - flip to a
-     positioning lib only if a real overflow case shows up. */
   [data-tip] {
     position: relative;
   }
@@ -355,6 +351,20 @@
     left: 50%;
     translate: -50%;
     z-index: 30;
+    /* display, not visibility: a hidden-but-laid-out box still contributes
+       scrollable overflow, and an 18rem tip on an anchor near the right edge of a
+       scroll container puts a horizontal scrollbar on it while nothing is hovered. */
+    display: none;
+  }
+  .tip-layer {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    border: 0;
+    overflow: visible;
+  }
+  [data-tip]::after,
+  .tip-layer {
     width: max-content;
     max-width: 18rem;
     padding: 4px 8px;
@@ -366,29 +376,12 @@
     font-weight: 400;
     white-space: normal;
     text-align: left;
-    /* display, not visibility: a hidden-but-laid-out box still contributes
-       scrollable overflow, and an 18rem tip on an anchor near the right edge of a
-       scroll container puts a horizontal scrollbar on it while nothing is hovered. */
-    display: none;
     pointer-events: none;
   }
-  [data-tip]:hover::after,
-  [data-tip]:focus-visible::after {
+  /* tip.ts sets data-tip-layer and shows .tip-layer in the top layer; ::after is the fallback without the JS. */
+  :root:not([data-tip-layer]) [data-tip]:hover::after,
+  :root:not([data-tip-layer]) [data-tip]:focus-visible::after {
     display: block;
-  }
-  /* Fixed variant: the box is placed outside every scrolling and clipping ancestor, from
-     --tip-x/--tip-y which the anchor sets on pointerenter and focus (see tipAnchor).
-     Default sits above the anchor and centred; 'right' hangs off its right edge, for
-     use in a nav rail. */
-  [data-tip].tip-fixed::after {
-    position: fixed;
-    bottom: auto;
-    left: var(--tip-x);
-    top: var(--tip-y);
-    translate: -50% var(--tip-ty, -100%);
-  }
-  [data-tip].tip-fixed[data-tip-place='right']::after {
-    translate: 0 -50%;
   }
 
   /* Mirage: the house material (Fluent's mica, named for Ayu Mirage). An image -
@@ -528,7 +521,8 @@
      has no relation to what a flyout covers and tints every one of them the same. 72% is the
      tint floor: below it a danger row drops under 4.5:1 over a table of bright coloured text. */
   .mirage-flyout,
-  [data-tip]::after {
+  [data-tip]::after,
+  .tip-layer {
     background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
     -webkit-backdrop-filter: blur(24px) saturate(1.4);
     backdrop-filter: blur(24px) saturate(1.4);

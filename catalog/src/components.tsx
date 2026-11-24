@@ -693,12 +693,11 @@ export function TooltipPage() {
 </Tooltip>`}
       />
       <p className="text-body text-text-dim">
-        The styles ship a <code className="text-accent-blue">[data-tip]</code> rule, so anything
-        with that attribute shows a tooltip, instantly on hover and on keyboard focus. Tooltip and
-        Badge place theirs <em>fixed</em>, off the anchor's own rect, because an absolutely
-        positioned tip is cut off by any scrolling or clipping ancestor - a page shell's main
-        column, a card that rounds by clipping. Still no positioning library: two lines of
-        measurement in <code className="text-accent-blue">tipAnchor</code>, and plain CSS places it.
+        Any HTML element with a <code className="text-accent-blue">data-tip</code> attribute shows a
+        tooltip, instantly on hover and on keyboard focus. The tip is one box in the top layer,
+        placed off the anchor's own rect, so no scrolling or clipping ancestor cuts it off - a page
+        shell's main column, a card that rounds by clipping, an open Popover or Modal. No
+        positioning library.
       </p>
       <Demo
         title="Any element as anchor"

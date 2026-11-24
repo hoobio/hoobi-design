@@ -8,13 +8,12 @@ export interface TooltipProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /**
- * The base layer renders [data-tip] on hover and keyboard focus; tabIndex makes the
- * anchor reachable so keyboard users get the tip too. Placed fixed off the anchor's
- * own rect, so no scrolling or clipping ancestor can cut it off.
+ * Shows `text` on hover and keyboard focus, in the top layer over any clipping ancestor or open
+ * flyout; tabIndex makes the anchor reachable so keyboard users get the tip too.
  */
 export function Tooltip({ text, children, className, ...rest }: TooltipProps) {
   return (
-    <span {...tipAnchor(text)} className={cx('tip-fixed inline-flex gap-1', className)} {...rest}>
+    <span {...tipAnchor(text)} className={cx('inline-flex gap-1', className)} {...rest}>
       {children}
     </span>
   );

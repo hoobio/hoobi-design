@@ -96,7 +96,6 @@ export function ActionButton({
       busy={busy || state === 'busy'}
       disabled={disabled}
       className={cx(
-        state === 'failure' && 'tip-fixed',
         // Important, because the variant's own fill/text utilities are equally specific:
         // CSS order, not class order, determines which one applies.
         state === 'success' && 'bg-success/15! text-success!',

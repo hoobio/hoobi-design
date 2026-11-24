@@ -75,8 +75,7 @@ export function Badge({
         {...tipAnchor(tooltip)}
         className={cx(
           'inline',
-          tooltip && 'tip-fixed',
-          coloured ? 'text-(--chip-color)' : TEXT_TONES[tone],
+            coloured ? 'text-(--chip-color)' : TEXT_TONES[tone],
           className,
         )}
         style={hued}
@@ -105,7 +104,6 @@ export function Badge({
         'inline-flex items-center rounded-chip whitespace-nowrap',
         coloured ? cx('chip-color', mirage && 'mirage-chip') : cx('bg-chip', t.text),
         SIZES[size].chip,
-        tooltip && 'tip-fixed',
         className,
       )}
       style={hued}
