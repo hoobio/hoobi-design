@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.59.0](https://github.com/hoobio/hoobi-design/compare/v0.58.0...v0.59.0) (2026-11-24)
+
+
+### Features
+
+* ✨ Menu.Item and Menu.Sub take gutter={false}, so a group with no icons drops the reserved icon gutter ([59becdd](https://github.com/hoobio/hoobi-design/commit/59becddcd5e56aec8adf2c8c31a96c4cd3db0e37))
+
 ## [0.58.0](https://github.com/hoobio/hoobi-design/compare/v0.57.2...v0.58.0) (2026-11-24)
 
 
